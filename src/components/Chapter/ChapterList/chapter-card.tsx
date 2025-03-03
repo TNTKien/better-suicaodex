@@ -30,11 +30,11 @@ export const ChapterCard = ({ chapters, finalChapter }: ChapterCardProps) => {
     return (
       <Accordion
         type="multiple"
-        className="w-full bg-card shadow-sm border rounded-[0.125rem]"
+        className="w-full bg-card shadow-xs border rounded-[0.125rem]"
         defaultValue={["chapter"]}
       >
         <AccordionItem value="chapter" className="border-none">
-          <AccordionTrigger className="p-1.5 [&[data-state=open]]:border-b">
+          <AccordionTrigger className="p-1.5 data-[state=open]:border-b">
             <p className="font-semibold text-sm md:text-base line-clamp-1">
               {chapters.chapter ? `Chapter ${chapters.chapter}` : "Oneshot"}
             </p>
@@ -72,7 +72,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
     >
       <Card
         className={cn(
-          "flex flex-col justify-between rounded-[0.125rem] px-1.5 py-1.5 shadow-sm relative min-h-14 hover:bg-accent",
+          "flex flex-col justify-between rounded-[0.125rem] px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent",
           className && className
         )}
       >
@@ -82,7 +82,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
               <img
                 src="/flags/vn.svg"
                 alt="Vietnamese"
-                className="inline-block select-none flex-shrink-0 !h-5 !w-5"
+                className="inline-block select-none shrink-0 h-5! w-5!"
               />
             )}
 
@@ -90,7 +90,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
               <img
                 src="/flags/en.svg"
                 alt="English"
-                className="inline-block select-none flex-shrink-0 !h-5 !w-5"
+                className="inline-block select-none shrink-0 h-5! w-5!"
               />
             )}
             {chapter.externalUrl && <ExternalLink size={16} />}

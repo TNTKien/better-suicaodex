@@ -27,12 +27,12 @@ export default function RecentlyCard({ manga }: RecentlyCardProps) {
       <CardContent className="p-0">
         <LazyLoadImage
           wrapperClassName={cn(
-            "!block rounded-sm object-cover w-full h-full",
-            !loaded && "aspect-[5/7]"
+            "block! rounded-sm object-cover w-full h-full",
+            !loaded && "aspect-5/7"
           )}
           placeholderSrc="/images/xidoco.webp"
           className={cn(
-            "h-auto w-full rounded-sm block object-cover aspect-[5/7]"
+            "h-auto w-full rounded-sm block object-cover aspect-5/7"
           )}
           src={src}
           alt={`Ảnh bìa ${manga.title}`}
@@ -43,8 +43,8 @@ export default function RecentlyCard({ manga }: RecentlyCardProps) {
         />
       </CardContent>
 
-      <CardFooter className="absolute bottom-0 p-2 bg-gradient-to-t from-black w-full rounded-b-sm dark:rounded-b-none h-[40%] max-h-full items-end">
-        <p className="text-base font-semibold line-clamp-2 hover:line-clamp-none text-white drop-shadow-sm">
+      <CardFooter className="absolute bottom-0 p-2 bg-linear-to-t from-black w-full rounded-b-sm dark:rounded-b-none h-[40%] max-h-full items-end">
+        <p className="text-base font-semibold line-clamp-2 hover:line-clamp-none text-white drop-shadow-xs">
           {manga.title}
         </p>
       </CardFooter>

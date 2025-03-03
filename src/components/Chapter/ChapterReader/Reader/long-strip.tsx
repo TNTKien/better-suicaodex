@@ -30,11 +30,11 @@ export default function LongStrip({ images }: LongStripProps) {
             }`}
           >
             <LazyLoadImage
-              wrapperClassName="!block"
+              wrapperClassName="block!"
               placeholderSrc={"/images/place-doro.webp"}
               className={cn(
                 "h-auto w-auto mx-auto",
-                config.reader.imageFit === "height" && "!max-h-screen"
+                config.reader.imageFit === "height" && "max-h-screen!"
               )}
               onLoad={() => setLoaded(true)}
               onError={(e) => {

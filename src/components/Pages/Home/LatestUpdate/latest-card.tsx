@@ -14,7 +14,7 @@ interface LatestCardProps {
 
 export default function LatestCard({ chapter }: LatestCardProps) {
   return (
-    <Card className="rounded-sm shadow-sm transition-colors duration-200">
+    <Card className="rounded-sm shadow-xs transition-colors duration-200">
       <CardContent className="flex gap-2 p-1">
         {!!chapter.manga.title && !!chapter.manga.cover && (
           <>
@@ -25,7 +25,7 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                 alt={chapter.manga.title}
                 placeholder="/images/xidoco.webp"
                 wrapper="w-20 h-auto border"
-                className="!w-20 !h-28 !object-cover"
+                className="w-20! h-28! object-cover!"
                 quality="256"
                 //isExpandable
               />
@@ -44,7 +44,7 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                   <img
                     src="/flags/vn.svg"
                     alt="Vietnamese"
-                    className="inline-block select-none flex-shrink-0 !h-5 !w-5"
+                    className="inline-block select-none shrink-0 h-5! w-5!"
                   />
                 )}
 
@@ -52,7 +52,7 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                   <img
                     src="/flags/en.svg"
                     alt="English"
-                    className="inline-block select-none flex-shrink-0 !h-5 !w-5"
+                    className="inline-block select-none shrink-0 h-5! w-5!"
                   />
                 )}
                 {chapter.externalUrl && <ExternalLink size={16} />}

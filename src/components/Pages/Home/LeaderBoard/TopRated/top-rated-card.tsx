@@ -21,7 +21,7 @@ export default function TopRatedCard({ manga }: TopRatedCardProps) {
             alt={manga.title}
             placeholder="/images/xidoco.webp"
             wrapper="w-20 h-auto border"
-            className="!w-20 !h-28 !object-cover"
+            className="w-20! h-28! object-cover!"
             quality="256"
           />
         </Link>

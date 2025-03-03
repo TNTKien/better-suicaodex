@@ -54,7 +54,7 @@ const MangaCover: FC<MangaCoverProps> = ({
             <DialogTitle className="hidden"></DialogTitle>
             <DialogDescription className="hidden"></DialogDescription>
 
-            <div className="max-w-screen-md max-h-screen flex justify-center items-center relative bg-gray-500 ease-in-out duration-300">
+            <div className="max-w-(--breakpoint-md) max-h-screen flex justify-center items-center relative bg-gray-500 ease-in-out duration-300">
               <img
                 src={
                   siteConfig.suicaodex.apiURL + "/covers/" + id + "/" + cover
@@ -70,8 +70,8 @@ const MangaCover: FC<MangaCoverProps> = ({
 
       <LazyLoadImage
         wrapperClassName={cn(
-          "!block rounded-sm object-cover",
-          !loaded && "aspect-[5/7]",
+          "block! rounded-sm object-cover",
+          !loaded && "aspect-5/7",
           wrapper
         )}
         placeholderSrc={placeholder}

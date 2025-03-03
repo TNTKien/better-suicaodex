@@ -278,7 +278,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
               />
             </div>
 
-            <div className="flex flex-grow gap-2 w-full">
+            <div className="flex grow gap-2 w-full">
               <Button size="icon" className="rounded-sm grow-0">
                 <ListPlus />
               </Button>

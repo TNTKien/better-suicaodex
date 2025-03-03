@@ -105,7 +105,7 @@ export default function ChapterNav({
     <>
       <div className="grid grid-cols-1 gap-2 mt-4 mx-auto">
         {!!nextChapter && (
-          <Button asChild size="lg" className="[&>svg]:!size-5">
+          <Button asChild size="lg" className="[&>svg]:size-5!">
             <Link href={`/chapter/${nextChapter}`}>
               <span>Chương tiếp theo</span>
               <ArrowRight />
@@ -113,7 +113,7 @@ export default function ChapterNav({
           </Button>
         )}
         {!!prevChapter && (
-          <Button asChild size="lg" className="[&>svg]:!size-5">
+          <Button asChild size="lg" className="[&>svg]:size-5!">
             <Link href={`/chapter/${prevChapter}`}>
               <span>Chương trước</span>
               <ArrowLeft />
@@ -122,7 +122,7 @@ export default function ChapterNav({
         )}
 
         {/* {!prevChapter && !nextChapter && (
-          <Button asChild size="lg" className="[&>svg]:!size-5">
+          <Button asChild size="lg" className="[&>svg]:size-5!">
             <Link href="/">
               <span>Trở về trang chủ</span>
             </Link>

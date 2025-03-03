@@ -57,7 +57,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
             cover={manga.cover}
             alt={manga.title}
             placeholder="/images/xidoco.webp"
-            className="shadow-md drop-shadow-md aspect-[7/10] !object-cover"
+            className="shadow-md drop-shadow-md aspect-7/10 object-cover!"
             wrapper="w-[130px] md:w-[200px] lg:w-[215px] h-auto"
             preload={true}
           />
@@ -72,7 +72,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
           }}
         >
           <Link href={`/manga/${manga.id}`}>
-            <p className="drop-shadow-md font-black text-xl line-clamp-5 sm:line-clamp-2 lg:text-4xl overflow-hidden lg:!leading-[2.75rem]">
+            <p className="drop-shadow-md font-black text-xl line-clamp-5 sm:line-clamp-2 lg:text-4xl overflow-hidden lg:leading-[2.75rem]!">
               {manga.title}
             </p>
           </Link>
