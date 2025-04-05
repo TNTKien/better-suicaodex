@@ -12,7 +12,8 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Thân thiện với độc giả Việt Nam (cụ thể là tôi).
 
 ## Tiến độ
-> UPDATE 30/03/2025: sắp tới sẽ tiến hành triển khai các chức năng liên quan đến người dùng (đăng nhập, đăng ký, lưu truyện...), nếu không cần những tính năng này, hãy chuyển sang nhánh [`no-auth`](https://github.com/TNTKien/better-suicaodex/tree/no-auth).
+Đây là nhánh không bao gồm nhóm chức năng tài khoản.
+[Demo](http://dev.suicaodex.com/)
 
 | Route | URL | suicaodex | better-suicaodex |
 | --- | --- | :---: | :---: |
@@ -25,10 +26,8 @@ Tuy vậy, SuicaoDex sẽ luôn:
 | Lịch sử đọc | /history | ✅ | ✅ |
 | Nhóm dịch | /groups | ✅ | ✅ |
 | Chi tiết nhóm dịch | /group/:id | ✅ | ✅ |
-| Đăng ký/Đăng nhập | /login | ✅ | ⬛ |
 | Thư viện | /my-library | ✅ | ☑️ (local) |
 | Thông báo | /notifications | ⬛ | ☑️ (local) |
-| Bình luận |  | ✅ | ⬛ |
 | Built-in API | /api/mangadex/ | ✅ | ❌ |
 
 > Loại bỏ built-in API vì tôi lười 👍
