@@ -20,7 +20,7 @@ export const siteConfig = {
   suicaodex: {
     domain: "https://suicaodex.com",
     dev_domain: "https://dev.suicaodex.com",
-    apiURL: "https://api.suicaodex.com", //pls use your own proxy server; or use built-in proxy, see /lib/axios.ts
+    apiURL: "https://api2.suicaodex.com", //pls use your own proxy server; or use built-in proxy, see /lib/axios.ts
   },
 };
 
