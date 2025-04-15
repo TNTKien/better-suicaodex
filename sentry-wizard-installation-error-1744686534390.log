@@ -1,0 +1,11 @@
+[23.18ms] ".env.local", ".env"
+Resolving dependencies
+Resolved, downloaded and extracted [654]
+Saved lockfile
+
+$ bun prisma generate
+Error: 
+EPERM: operation not permitted, rename 'F:\MANGA\better-suicaodex\node_modules\.prisma\client\query_engine-windows.dll.node.tmp4976' -> 'F:\MANGA\better-suicaodex\node_modules\.prisma\client\query_engine-windows.dll.node'
+
+
+error: postinstall script from "better-suicaodex" exited with 1
