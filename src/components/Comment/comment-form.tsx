@@ -17,19 +17,29 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, getPlainTextLength } from "@/lib/utils";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiMarkdown } from "@icons-pack/react-simple-icons";
+import { TiptapEditor } from "./editor";
+import { MinimalTiptapEditor } from "../minimal-tiptap";
 
 const FormSchema = z.object({
+  // comment: z
+  //   .string()
+  //   .min(3, {
+  //     message: "Bình luận phải dài ít nhất 3 ký tự!",
+  //   })
+  //   .max(2000, {
+  //     message: "Bình luận không được dài hơn 2000 ký tự!",
+  //   }),
   comment: z
     .string()
-    .min(3, {
+    .refine((val) => getPlainTextLength(val) >= 3, {
       message: "Bình luận phải dài ít nhất 3 ký tự!",
     })
-    .max(2000, {
+    .refine((val) => getPlainTextLength(val) <= 2000, {
       message: "Bình luận không được dài hơn 2000 ký tự!",
     }),
 });
@@ -77,11 +87,11 @@ export default function CommentForm({
       } = {
         content: data.comment,
         title: title,
-      }
+      };
       if (chapterNumber) {
         body.chapterNumber = chapterNumber;
       }
-      
+
       const response = await fetch(endpoint, {
         method: "POST",
         body: JSON.stringify(body),
@@ -126,27 +136,47 @@ export default function CommentForm({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea
+                {/* <Textarea
                   placeholder="Viết bình luận..."
                   className="resize-none w-full min-h-28"
                   disabled={loading}
                   maxLength={2000}
                   {...field}
+                /> */}
+                {/* <TiptapEditor
+                  value={field.value}
+                  onChange={(val) => {
+                    console.log(val);
+                    field.onChange(val);
+                  }}
+                /> */}
+                <MinimalTiptapEditor
+                  // value={value}
+                  onChange={(val) => {
+                    field.onChange(val);
+                  }}
+                  className="w-full"
+                  editorContentClassName="p-5"
+                  output="html"
+                  placeholder="Viết bình luận..."
+                  autofocus={false}
+                  editable={true}
+                  editorClassName="focus:outline-hidden"
                 />
               </FormControl>
               <FormDescription className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground flex items-center">
-                  <SiMarkdown className="mr-1" />
-                  <Link
-                    href="https://www.markdownguide.org/basic-syntax/"
-                    className="text-primary underline mr-1"
-                    target="_blank"
-                  >
-                    Markdown
-                  </Link>
-                  được hỗ trợ!
-                </span>
-                {!!field.value && !!field.value.length && (
+                {/* <span className="text-sm text-muted-foreground flex items-center">
+                    <SiMarkdown className="mr-1" />
+                    <Link
+                      href="https://www.markdownguide.org/basic-syntax/"
+                      className="text-primary underline mr-1"
+                      target="_blank"
+                    >
+                      Markdown
+                    </Link>
+                    được hỗ trợ!
+                  </span> */}
+                {/* {!!field.value && !!field.value.length && (
                   <span
                     className={cn(
                       "text-xs italic text-muted-foreground pr-1",
@@ -155,7 +185,7 @@ export default function CommentForm({
                   >
                     {field.value.length}/2000
                   </span>
-                )}
+                )} */}
               </FormDescription>
               <FormMessage />
             </FormItem>

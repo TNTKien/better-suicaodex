@@ -4,6 +4,8 @@ import CommentList from "./comment-list";
 import CommentForm from "./comment-form";
 import { useRef } from "react";
 import { useCommentCount } from "@/hooks/use-comment-count";
+import { NewEditor } from "./text-editor";
+import { RichTextEditor } from "../rich-text-editor";
 
 interface CommentSectionProps {
   id: string;
@@ -36,6 +38,11 @@ export default function CommentSection({
 
   return (
     <div className="mt-4 flex flex-col gap-4">
+      <RichTextEditor
+        onChange={(val) =>{
+          console.log(val);
+        }}
+      />
       <CommentForm
         id={id}
         title={title}

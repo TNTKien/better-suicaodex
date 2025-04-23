@@ -4,6 +4,7 @@ import { serializeComment } from "@/lib/suicaodex/serializers";
 import { auth } from "@/auth";
 import removeMarkdown from "remove-markdown";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
+import { getPlainTextFromHTML } from "@/lib/utils";
 
 interface RouteParams {
   params: Promise<{
@@ -72,7 +73,8 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   }
 
   const { content, title, chapterNumber } = await req.json();
-  const plainContent = removeMarkdown(content || "");
+  // const plainContent = removeMarkdown(content || "");
+  const plainContent = getPlainTextFromHTML(content || "");
 
   if (!id || !plainContent || !title || !chapterNumber) {
     return NextResponse.json(

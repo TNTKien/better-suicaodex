@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNowStrict } from "date-fns";
 import { vi as locale } from "date-fns/locale";
+import * as cheerio from "cheerio";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,6 +26,29 @@ const formatDistanceLocale = {
   overXYears: "{{count}} năm",
   almostXYears: "{{count}} năm",
 };
+
+export function getPlainTextLength(html: string): number {
+  const temp = document.createElement("div");
+  temp.innerHTML = html;
+
+  // Lấy text thuần và loại bỏ xuống dòng, tab
+  const rawText = temp.textContent || temp.innerText || "";
+  const cleaned = rawText.replace(/[\n\t\r]/g, "");
+
+  return cleaned.length;
+}
+
+
+
+export function getPlainTextFromHTML(html: string): string {
+  if (!html) return "";
+
+  const $ = cheerio.load(html);
+  const text = $.text(); // lấy toàn bộ text trong HTML
+  return text.replace(/\s+/g, " ").trim();
+}
+
+
 
 function formatDistance(token: string, count: number, options?: any): string {
   options = options || {};

@@ -1,0 +1,6 @@
+.tiptap .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  @apply pointer-events-none float-left;
+  height: 0;
+  color: var(--muted-foreground);
+}
