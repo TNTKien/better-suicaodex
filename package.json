@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "postinstall": "bun prisma generate",
+    "postinstall": "npx prisma generate",
     "dev": "next dev --turbopack",
     "build": "npm run build:sw && next build",
     "build:sw": "node workbox-config.js",
