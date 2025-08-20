@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
 import { usePathname } from "next/navigation";
+import { DownloadButton } from "@/features/downloads/DownloadButton";
 
 interface ChapterProps {
   id: string;
@@ -71,6 +72,11 @@ export default function Chapter({ id }: ChapterProps) {
   return (
     <div className={cn()}>
       <ChapterInfo chapter={data} />
+      
+      {/* Download Button */}
+      <div className="px-4 py-2 border-b">
+        <DownloadButton chapterId={id} showProgress={true} />
+      </div>
 
       {!!data.pages && <Reader images={data.pages} chapterData={data} />}
     </div>
