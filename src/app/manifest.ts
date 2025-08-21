@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
- 
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'SuicaoDex',
@@ -21,5 +21,28 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/png',
       },
     ],
+    // Thêm cấu hình offline
+    orientation: 'portrait',
+    categories: ['books', 'entertainment'],
+    lang: 'vi',
+    dir: 'ltr',
+    prefer_related_applications: false,
+    shortcuts: [
+      {
+        name: "Trang chủ",
+        url: "/",
+        description: "Trang chủ SuicaoDex"
+      },
+      {
+        name: "Mới cập nhật",
+        url: "/latest",
+        description: "Truyện mới cập nhật"
+      },
+      {
+        name: "Thư viện",
+        url: "/my-library",
+        description: "Thư viện truyện của bạn"
+      }
+    ]
   }
 }

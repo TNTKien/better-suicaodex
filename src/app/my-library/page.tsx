@@ -6,6 +6,7 @@ import {
   CircleHelp,
   CircleUser,
   CloudOff,
+  Download,
   ListCheck,
   NotebookPen,
 } from "lucide-react";
@@ -19,6 +20,7 @@ import {
 import MyLibrary from "@/components/Pages/MyLibrary";
 import { auth } from "@/auth";
 import SyncLib from "@/components/Library/sync-lib";
+import OfflineChapters from "@/components/Pages/MyLibrary/offline-chapters";
 
 export function generateMetadata(): Metadata {
   return {
@@ -52,6 +54,10 @@ export default async function Page() {
           <TabsTrigger className="w-full flex items-center" value="cloud">
             <CircleUser size={16} className="mr-1" />
             Từ tài khoản
+          </TabsTrigger>
+          <TabsTrigger className="w-full flex items-center" value="offline">
+            <Download size={16} className="mr-1" />
+            Đọc offline
           </TabsTrigger>
         </TabsList>
         <TabsContent value="local">
@@ -105,6 +111,9 @@ export default async function Page() {
               Bạn cần đăng nhập để dùng chức năng này!
             </Alert>
           )}
+        </TabsContent>
+        <TabsContent value="offline">
+          <OfflineChapters />
         </TabsContent>
       </Tabs>
     </>

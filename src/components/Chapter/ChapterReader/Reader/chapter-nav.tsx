@@ -21,14 +21,19 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronsUp,
+  Download,
   File,
   GalleryVertical,
+  Loader2,
   MoveHorizontal,
   MoveVertical,
   PanelTop,
   Repeat,
   Settings,
   Square,
+  Trash2,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -48,11 +53,25 @@ import { Input } from "@/components/ui/input";
 interface ChapterNavProps {
   chapterData: Chapter;
   chapterAggregate: ChapterAggregate[];
+  isOffline?: boolean;
+  offlineAvailable?: boolean;
+  isSaving?: boolean;
+  isDeleting?: boolean;
+  toggleOfflineMode?: () => void;
+  handleSaveOffline?: () => void;
+  handleDeleteOffline?: () => void;
 }
 
 export default function ChapterNav({
   chapterData,
   chapterAggregate,
+  isOffline = false,
+  offlineAvailable = false,
+  isSaving = false,
+  isDeleting = false,
+  toggleOfflineMode = () => {},
+  handleSaveOffline = () => {},
+  handleDeleteOffline = () => {},
 }: ChapterNavProps) {
   const scrollDirection = useScrollDirection();
   const isMobile = useIsMobile();
@@ -422,6 +441,34 @@ export default function ChapterNav({
             </DialogContent>
           </Dialog>
 
+          <Button
+            size="icon"
+            className="shrink-0 [&_svg]:size-5"
+            onClick={toggleOfflineMode}
+          >
+            {isOffline ? <Wifi /> : <WifiOff />}
+          </Button>
+          
+          {offlineAvailable ? (
+            <Button
+              size="icon"
+              className="shrink-0 [&_svg]:size-5"
+              onClick={handleDeleteOffline}
+              disabled={isDeleting}
+            >
+              {isDeleting ? <Loader2 className="animate-spin" /> : <Trash2 />}
+            </Button>
+          ) : (
+            <Button
+              size="icon"
+              className="shrink-0 [&_svg]:size-5"
+              onClick={handleSaveOffline}
+              disabled={isSaving}
+            >
+              {isSaving ? <Loader2 className="animate-spin" /> : <Download />}
+            </Button>
+          )}
+          
           <Button
             size="icon"
             disabled={isAtTop}

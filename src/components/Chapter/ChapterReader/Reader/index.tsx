@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronsUp,
+  Download,
   File,
   GalleryVertical,
   Loader2,
@@ -17,6 +18,9 @@ import {
   Repeat,
   Settings,
   Square,
+  Trash2,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import { ReactElement, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,6 +44,7 @@ import useSWRMutation from "swr/mutation";
 import CommentSection from "@/components/Comment/comment-section";
 import { LazyLoadComponent } from "react-lazy-load-image-component";
 import SinglePage from "./single-page";
+import { useOfflineChapter } from "@/hooks/use-offline-chapter";
 
 interface ReaderProps {
   images: string[];
@@ -55,6 +60,46 @@ export default function Reader({ images, chapterData }: ReaderProps) {
   const [retryCount, setRetryCount] = useState(0);
   const [reachedMaxRetries, setReachedMaxRetries] = useState(false);
   const MAX_RETRIES = 3;
+  
+  // Offline reading state
+  const { 
+    isChapterOffline, 
+    saveChapter, 
+    getOfflineChapter,
+    deleteOfflineChapter,
+    isLoading: isOfflineLoading 
+  } = useOfflineChapter();
+  const [isOffline, setIsOffline] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [offlineAvailable, setOfflineAvailable] = useState(false);
+  const [offlineImages, setOfflineImages] = useState<string[]>([]);
+  
+  // Kiểm tra xem chapter có sẵn offline không
+  useEffect(() => {
+    const checkOfflineStatus = async () => {
+      const available = await isChapterOffline(chapterData.id);
+      setOfflineAvailable(available);
+    };
+    
+    if (!isOfflineLoading) {
+      checkOfflineStatus();
+    }
+  }, [chapterData.id, isChapterOffline, isOfflineLoading]);
+  
+  // Lấy dữ liệu offline nếu đang ở chế độ offline
+  useEffect(() => {
+    const loadOfflineData = async () => {
+      if (isOffline && offlineAvailable) {
+        const offlineData = await getOfflineChapter(chapterData.id);
+        if (offlineData) {
+          setOfflineImages(offlineData.images);
+        }
+      }
+    };
+    
+    loadOfflineData();
+  }, [isOffline, offlineAvailable, chapterData.id, getOfflineChapter]);
 
   const { data, isMutating, error, trigger } = useSWRMutation(
     [
@@ -165,17 +210,124 @@ export default function Reader({ images, chapterData }: ReaderProps) {
     );
   }
 
-  if (!data) return <LongStrip images={images} />;
+  // Xử lý lưu chapter offline
+  const handleSaveOffline = async () => {
+    if (isSaving) return;
+    
+    setIsSaving(true);
+    try {
+      toast.info("Đang tải ảnh...", { duration: 2000 });
+      
+      // Thông báo cho service worker để theo dõi tiến trình
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'CACHE_CHAPTER_IMAGES',
+          chapterId: chapterData.id,
+          images: images
+        });
+      }
+      
+      const success = await saveChapter(chapterData, images);
+      if (success) {
+        setOfflineAvailable(true);
+        toast.success("Đã lưu chapter để đọc offline");
+      } else {
+        toast.error("Không thể lưu chapter");
+      }
+    } catch (error) {
+      console.error("Error saving chapter:", error);
+      toast.error("Lỗi khi lưu chapter: " + (error instanceof Error ? error.message : String(error)));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+  
+  // Xử lý xóa chapter offline
+  const handleDeleteOffline = async () => {
+    if (isDeleting) return;
+    
+    setIsDeleting(true);
+    try {
+      const success = await deleteOfflineChapter(chapterData.id);
+      if (success) {
+        setOfflineAvailable(false);
+        if (isOffline) {
+          setIsOffline(false);
+        }
+        toast.success("Đã xóa chapter khỏi bộ nhớ");
+      } else {
+        toast.error("Không thể xóa chapter");
+      }
+    } catch (error) {
+      console.error("Error deleting chapter:", error);
+      toast.error("Lỗi khi xóa chapter");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+  
+  // Chuyển đổi giữa chế độ online và offline
+  const toggleOfflineMode = () => {
+    if (!offlineAvailable && !isOffline) {
+      toast.error("Chapter này chưa được lưu để đọc offline");
+      return;
+    }
+    setIsOffline(!isOffline);
+    if (!isOffline) {
+      toast.info("Đã chuyển sang chế độ đọc offline");
+    } else {
+      toast.info("Đã chuyển sang chế độ đọc online");
+    }
+  };
+
+  if (!data) {
+    return (
+      <>
+        <LongStrip images={images} />
+        <LoadingNav
+          button={
+            <Button
+              className="w-full md:min-w-48 justify-start"
+              variant="outline"
+            >
+              <Loader2 className="animate-spin" />
+              Đang tải dữ liệu...
+            </Button>
+          }
+          isOffline={isOffline}
+          offlineAvailable={offlineAvailable}
+          isSaving={isSaving}
+          isDeleting={isDeleting}
+          toggleOfflineMode={toggleOfflineMode}
+          handleSaveOffline={handleSaveOffline}
+          handleDeleteOffline={handleDeleteOffline}
+        />
+      </>
+    );
+  }
+  
+  // Hiển thị hình ảnh dựa vào chế độ đọc (online/offline)
+  const displayImages = isOffline && offlineAvailable ? offlineImages : images;
 
   return (
     <>
       {config.reader.type === "single" ? (
-        <SinglePage images={images} />
+        <SinglePage images={displayImages} />
       ) : (
-        <LongStrip images={images} />
+        <LongStrip images={displayImages} />
       )}
-      <ChapterNav chapterData={chapterData} chapterAggregate={data} />
-      {config.reader.type === "long-strip" && (
+      <ChapterNav 
+        chapterData={chapterData} 
+        chapterAggregate={data}
+        isOffline={isOffline}
+        offlineAvailable={offlineAvailable}
+        isSaving={isSaving}
+        isDeleting={isDeleting}
+        toggleOfflineMode={toggleOfflineMode}
+        handleSaveOffline={handleSaveOffline}
+        handleDeleteOffline={handleDeleteOffline}
+      />
+      {config.reader.type === "long-strip" && !isOffline && (
         <LazyLoadComponent>
           <CommentSection
             id={chapterData.id}
@@ -191,9 +343,25 @@ export default function Reader({ images, chapterData }: ReaderProps) {
 
 interface LoadingNavProps {
   button: ReactElement;
+  isOffline?: boolean;
+  offlineAvailable?: boolean;
+  isSaving?: boolean;
+  isDeleting?: boolean;
+  toggleOfflineMode?: () => void;
+  handleSaveOffline?: () => void;
+  handleDeleteOffline?: () => void;
 }
 
-function LoadingNav({ button }: LoadingNavProps) {
+function LoadingNav({ 
+  button, 
+  isOffline = false, 
+  offlineAvailable = false,
+  isSaving = false,
+  isDeleting = false,
+  toggleOfflineMode = () => {},
+  handleSaveOffline = () => {},
+  handleDeleteOffline = () => {}
+}: LoadingNavProps) {
   const scrollDirection = useScrollDirection();
   const { isAtBottom, isAtTop } = useScrollOffset();
   const [config, setConfig] = useConfig();
@@ -228,6 +396,34 @@ function LoadingNav({ button }: LoadingNavProps) {
         >
           <ArrowRight />
         </Button>
+        
+        <Button
+          size="icon"
+          className="shrink-0 [&_svg]:size-5"
+          onClick={toggleOfflineMode}
+        >
+          {isOffline ? <Wifi /> : <WifiOff />}
+        </Button>
+        
+        {offlineAvailable ? (
+          <Button
+            size="icon"
+            className="shrink-0 [&_svg]:size-5"
+            onClick={handleDeleteOffline}
+            disabled={isDeleting}
+          >
+            {isDeleting ? <Loader2 className="animate-spin" /> : <Trash2 />}
+          </Button>
+        ) : (
+          <Button
+            size="icon"
+            className="shrink-0 [&_svg]:size-5"
+            onClick={handleSaveOffline}
+            disabled={isSaving}
+          >
+            {isSaving ? <Loader2 className="animate-spin" /> : <Download />}
+          </Button>
+        )}
 
         <Dialog>
           <DialogTrigger asChild>

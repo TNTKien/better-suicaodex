@@ -12,6 +12,7 @@ import {
 } from "@bprogress/next";
 import { NotificationProvider } from "./notification-provider";
 import { SessionProvider } from "next-auth/react";
+import { ServiceWorkerProvider } from "./service-worker-provider";
 
 export function ThemeProvider({
   children,
@@ -31,7 +32,11 @@ export function ThemeProvider({
             </Progress>
             <TooltipProvider delayDuration={0}>
               <SessionProvider>
-                <NotificationProvider>{children}</NotificationProvider>
+                <NotificationProvider>
+                  <ServiceWorkerProvider>
+                    {children}
+                  </ServiceWorkerProvider>
+                </NotificationProvider>
               </SessionProvider>
             </TooltipProvider>
           </ProgressProvider>
