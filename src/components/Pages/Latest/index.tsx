@@ -18,7 +18,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { LayoutGrid, List, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import Link from "next/link";
 
 interface LatestProps {
   page: number;

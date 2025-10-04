@@ -1,5 +1,4 @@
 "use client";
-import { siteConfig } from "@/config/site";
 import { cn, getCoverImageUrl } from "@/lib/utils";
 import { Expand, Loader2 } from "lucide-react";
 import { FC, useState } from "react";

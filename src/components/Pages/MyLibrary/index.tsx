@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocalLibrary } from "@/hooks/use-local-library";
 import { getMangasByIDs } from "@/lib/mangadex/history";
 import { LibraryType } from "@/types/types";
-import { Loader2, Trash, Undo, Trash2 } from "lucide-react";
+import { Trash, Undo, Trash2 } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
 import {

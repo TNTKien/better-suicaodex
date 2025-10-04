@@ -11,7 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { siteConfig } from "@/config/site";
 import { useConfig } from "@/hooks/use-config";
 import { cn, getCoverImageUrl } from "@/lib/utils";
 import { LibraryType, Manga } from "@/types/types";

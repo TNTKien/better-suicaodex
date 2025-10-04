@@ -14,7 +14,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { cn, getContentLength } from "@/lib/utils";
+import { getContentLength } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";

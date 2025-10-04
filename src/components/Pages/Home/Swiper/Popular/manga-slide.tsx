@@ -1,6 +1,5 @@
 "use client";
 
-import { siteConfig } from "@/config/site";
 import { cn, getCoverImageUrl } from "@/lib/utils";
 import { Artist, Author, Manga } from "@/types/types";
 import remarkGfm from "remark-gfm";

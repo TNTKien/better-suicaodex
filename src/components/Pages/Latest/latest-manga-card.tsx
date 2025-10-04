@@ -9,7 +9,6 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { siteConfig } from "@/config/site";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn, formatTimeToNow, getCoverImageUrl } from "@/lib/utils";
 import { Chapter, Manga } from "@/types/types";

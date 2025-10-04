@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNowStrict } from "date-fns";
-import { vi as locale } from "date-fns/locale";
 import * as cheerio from "cheerio";
 import { defaultSchema } from 'hast-util-sanitize';
 import { siteConfig } from "@/config/site";

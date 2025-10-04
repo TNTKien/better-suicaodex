@@ -6,7 +6,7 @@ import { siteConfig } from "@/config/site";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { GetAuthor } from "@/lib/mangadex/author";
 import { cn } from "@/lib/utils";
-import { Archive, Ban, Bookmark, ExternalLink, Globe } from "lucide-react";
+import { Archive, Bookmark, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";

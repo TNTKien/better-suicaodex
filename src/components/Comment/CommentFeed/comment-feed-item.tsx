@@ -13,7 +13,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { customSchema, formatTimeToNow } from "@/lib/utils";
+import { formatTimeToNow } from "@/lib/utils";
 import { Clock } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 

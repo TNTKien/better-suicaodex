@@ -1,6 +1,6 @@
 "use client";
 
-import { CloudOff, SquareCheck, SquareX } from "lucide-react";
+import { CloudOff } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -8,7 +8,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import React from "react";
 import { ThemeCustomizer } from "../Theme/theme-customizer";
 import { ContentCustomizer } from "../Theme/content-customizer";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";

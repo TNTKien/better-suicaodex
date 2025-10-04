@@ -1,6 +1,5 @@
 import { Chapter, ChapterAggregate, Volume } from "@/types/types";
 import { GroupParser } from "./group";
-import { siteConfig } from "@/config/site";
 import { axiosWithProxyFallback } from "../axios";
 import { getCurrentApiUrl } from "../utils";
 

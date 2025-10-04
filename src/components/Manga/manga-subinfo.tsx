@@ -6,7 +6,6 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { LibraryBig } from "lucide-react";
-import Image from "next/image";
 import { Icons } from "../icons";
 
 interface MangaSubInfoProps {

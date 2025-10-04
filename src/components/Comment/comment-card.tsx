@@ -4,13 +4,13 @@ import { CommentWithUser } from "@/lib/suicaodex/serializers";
 import { Card } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { PencilLine, Reply, ThumbsUp, TriangleAlert } from "lucide-react";
+import { PencilLine, Reply, ThumbsUp } from "lucide-react";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import { useSession } from "next-auth/react";
-import { cn, customSchema } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 interface CommentCardProps {

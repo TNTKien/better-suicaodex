@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
+
 import LatestUpdate from "./LatestUpdate";
 import LeaderBoard from "./LeaderBoard";
 import RecentlyAdded from "./Recently";

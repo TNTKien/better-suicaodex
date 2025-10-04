@@ -4,7 +4,6 @@ import { getCovers } from "@/lib/mangadex/cover";
 import { Expand, Globe, Loader2 } from "lucide-react";
 import useSWR from "swr";
 import { Card, CardContent, CardFooter } from "../ui/card";
-import { siteConfig } from "@/config/site";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { cn, getCoverImageUrl } from "@/lib/utils";
 import { useState } from "react";

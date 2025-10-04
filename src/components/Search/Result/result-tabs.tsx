@@ -2,7 +2,7 @@
 
 import { Manga } from "@/types/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutGrid, List, Loader2, StretchHorizontal } from "lucide-react";
+import { LayoutGrid, List, StretchHorizontal } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import DetailsCard from "./details-card";
 import MangaCompletedCard from "@/components/Pages/Home/Swiper/Completed/manga-completed-card";

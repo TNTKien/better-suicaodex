@@ -1,4 +1,3 @@
-import { siteConfig } from "@/config/site";
 import { cn, getCoverImageUrl } from "@/lib/utils";
 
 interface BannerProps {
