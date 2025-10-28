@@ -12,7 +12,7 @@
 //     const parser = new Parser();
 //     const feed = await parser.parseURL(url);
 //     // console.log("feed", feed.items);
-    
+
 //     return feed.items;
 // }
 
@@ -20,6 +20,6 @@
 //     const parser = new Parser();
 //     const feed = await parser.parseURL(SCD_RSS_URL);
 //     // console.log("items", feed.items);
-    
+
 //     return feed.items;
 // }

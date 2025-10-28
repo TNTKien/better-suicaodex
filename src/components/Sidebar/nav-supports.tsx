@@ -1,44 +1,44 @@
 "use client";
 
-import { SquareArrowOutUpRight, type LucideIcon } from "lucide-react";
+import { type LucideIcon, SquareArrowOutUpRight } from "lucide-react";
 import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
+	SidebarGroup,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuAction,
+	SidebarMenuButton,
+	SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 export function NavSupports({
-  supports,
+	supports,
 }: {
-  supports: {
-    name: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
+	supports: {
+		name: string;
+		url: string;
+		icon: LucideIcon;
+	}[];
 }) {
-  //   const { isMobile } = useSidebar();
+	//   const { isMobile } = useSidebar();
 
-  return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Góp ý/Báo lỗi</SidebarGroupLabel>
-      <SidebarMenu>
-        {supports.map((item) => (
-          <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild tooltip={item.name}>
-              <a href={item.url} target="_blank">
-                <item.icon />
-                <span>{item.name}</span>
-              </a>
-            </SidebarMenuButton>
-            <SidebarMenuAction>
-              <SquareArrowOutUpRight />
-            </SidebarMenuAction>
-          </SidebarMenuItem>
-        ))}
-      </SidebarMenu>
-    </SidebarGroup>
-  );
+	return (
+		<SidebarGroup>
+			<SidebarGroupLabel>Góp ý/Báo lỗi</SidebarGroupLabel>
+			<SidebarMenu>
+				{supports.map((item) => (
+					<SidebarMenuItem key={item.name}>
+						<SidebarMenuButton asChild tooltip={item.name}>
+							<a href={item.url} target="_blank">
+								<item.icon />
+								<span>{item.name}</span>
+							</a>
+						</SidebarMenuButton>
+						<SidebarMenuAction>
+							<SquareArrowOutUpRight />
+						</SidebarMenuAction>
+					</SidebarMenuItem>
+				))}
+			</SidebarMenu>
+		</SidebarGroup>
+	);
 }
