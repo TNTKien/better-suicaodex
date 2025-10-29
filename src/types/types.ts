@@ -8,7 +8,7 @@ export type TagsGroup = {
   group: string;
   name: string;
   tags: Tag[];
-}
+};
 
 export type Author = {
   id: string;
@@ -35,7 +35,7 @@ export type AuthorDetail = {
     weibo: string | null;
     naver: string | null;
     website: string | null;
-  },
+  };
   mangas: string[];
 };
 
@@ -43,6 +43,46 @@ export type Artist = {
   id: string;
   name: string;
 };
+
+export type Language = "vi" | "ar" | "en";
+
+export type Role =
+  | "ROLE_GROUP_LEADER"
+  | "ROLE_GROUP_MEMBER"
+  | "ROLE_POWER_UPLOADER"
+  | "ROLE_USER";
+
+export type Relationships =
+  | {
+      id: string;
+      type: "leader";
+      attributes: {
+        username: string;
+        roles: Role[];
+        version: number;
+      };
+    }[]
+  | {
+      id: string;
+      type: "member";
+      attributes?: {
+        username: string;
+        roles: Role[];
+        version: number;
+      };
+    }[]
+  | [];
+
+export interface OriginalGroup {
+  attributes: Group & {
+    contactEmail: string | null;
+    focusedLanguages: Language[];
+    altNames: [];
+  };
+  id: string;
+  relationships: Relationships;
+  type: "scanlation_group";
+}
 
 export type Group = {
   id: string;
@@ -64,7 +104,7 @@ export type Group = {
 export type GroupStats = {
   repliesCount: number;
   totalUploaded: number;
-}
+};
 
 export type ContentRating = "safe" | "suggestive" | "erotica" | "pornographic";
 export type Status = "ongoing" | "completed" | "cancelled" | "hiatus";
@@ -180,4 +220,9 @@ export type Cover = {
   fileName: string;
 };
 
-export type LibraryType = "none" | "following" | "reading" | "plan" | "completed";
+export type LibraryType =
+  | "none"
+  | "following"
+  | "reading"
+  | "plan"
+  | "completed";

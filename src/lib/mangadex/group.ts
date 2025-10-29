@@ -1,8 +1,8 @@
-import { Group, GroupStats, Manga } from "@/types/types";
+import { Group, GroupStats, Manga, OriginalGroup } from "@/types/types";
 import { axiosWithProxyFallback } from "../axios";
 import { MangaParser } from "./manga";
 
-export function GroupParser(data: any): Group {
+export function GroupParser(data: OriginalGroup): Group {
   const id = data.id;
   const attributes = data.attributes;
 
@@ -19,15 +19,17 @@ export function GroupParser(data: any): Group {
       leader: null,
     };
   }
+
   const name = attributes.name;
   const description = attributes.description;
   const website = attributes.website;
   const discord = attributes.discord;
   const email = attributes.contactEmail;
   const twitter = attributes.twitter;
-  const leader = data.relationships
-    ? data.relationships.find((item: any) => item.type === "leader")
-    : null;
+  const leader =
+    data.relationships?.find(
+      (relationship) => relationship.type === "leader"
+    ) ?? null;
   const language = attributes.focusedLanguages;
 
   const group: Group = {
@@ -62,7 +64,7 @@ export async function getGroupStats(id: string): Promise<GroupStats> {
     const [statsResponse, uploadedResponse] = await Promise.all([
       axiosWithProxyFallback({
         url: `/statistics/group/${id}`,
-        method: "get"
+        method: "get",
       }),
       axiosWithProxyFallback({
         url: `/chapter`,
@@ -71,8 +73,8 @@ export async function getGroupStats(id: string): Promise<GroupStats> {
           limit: 0,
           groups: [id],
           contentRating: ["safe", "suggestive", "erotica", "pornographic"],
-        }
-      })
+        },
+      }),
     ]);
 
     const totalReplied =
@@ -108,7 +110,7 @@ export async function getGroupTitles(
       group: id,
       contentRating: ["safe", "suggestive", "erotica", "pornographic"],
       includes: ["cover_art", "author", "artist"],
-    }
+    },
   });
   const total = data.total > max_total ? max_total : data.total;
 
@@ -144,7 +146,7 @@ export async function searchGroups(
   const data = await axiosWithProxyFallback({
     url: `/group`,
     method: "get",
-    params: params
+    params: params,
   });
   const total = data.total > max_total ? max_total : data.total;
 
