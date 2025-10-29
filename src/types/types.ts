@@ -52,27 +52,27 @@ export type Role =
   | "ROLE_POWER_UPLOADER"
   | "ROLE_USER";
 
-export type Relationships =
-  | {
-      id: string;
-      type: "leader";
-      attributes: {
-        username: string;
-        roles: Role[];
-        version: number;
-      };
-    }[]
-  | {
-      id: string;
-      type: "member";
-      attributes?: {
-        username: string;
-        roles: Role[];
-        version: number;
-      };
-    }[]
-  | [];
+export type LeaderRelationship = {
+  id: string;
+  type: "leader";
+  attributes: {
+    username: string;
+    roles: Role[];
+    version: number;
+  };
+};
 
+export type MemberRelationship = {
+  id: string;
+  type: "member";
+  attributes?: {
+    username: string;
+    roles: Role[];
+    version: number;
+  };
+};
+
+export type Relationships = Array<LeaderRelationship | MemberRelationship>;
 export interface OriginalGroup {
   attributes: Group & {
     contactEmail: string | null;
