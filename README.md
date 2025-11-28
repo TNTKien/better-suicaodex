@@ -25,7 +25,7 @@ Ngoài ra còn cải thiện các chức năng cũ và thêm một số chức n
 - Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
 
 ## Dự kiến
-⬛ Hoàn thiện Thông báo.
+☑️ Hoàn thiện Thông báo.
 
 ✅ Trang thể loại truyện (thể loại hiện tại đang dùng ké tìm kiếm nâng cao)
 
