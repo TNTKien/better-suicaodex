@@ -16,35 +16,6 @@ Tuy vậy, SuicaoDex sẽ luôn:
 
 ## Tiến độ
 ✅ Đã hoàn thành chuyển đổi từ suicaodex cũ sang better-suicaodex.
-
-☑️ Chưa hoàn thiện 100%
-
-❌ Loại bỏ
-
-| Route | URL | suicaodex | better-suicaodex |
-| --- | --- | :---: | :---: |
-| Trang chủ | / | ✅ | ✅ |
-| Tìm kiếm | | ✅ | ✅ |
-| Tìm kiếm nâng cao | /advanced-search | ✅ | ✅ |
-| Manga | /manga/:id | ✅ | ✅ |
-| Chapter | /chapter/:id | ✅ | ✅ |
-| Mới cập nhật | /latest | ✅ | ✅ |
-| Lịch sử đọc | /history | ✅ | ✅ |
-| Nhóm dịch | /groups | ✅ | ✅ |
-| Chi tiết nhóm dịch | /group/:id | ✅ | ✅ |
-| Tài khoản |  | ✅ | ✅ |
-| Thư viện | /my-library | ✅ | ✅ |
-| Thông báo | /notifications | ⬛ | ☑️ |
-| Tác giả | /author | ⬛ | ✅ |
-| Bình luận |  | ✅ | ☑️ |
-| Built-in API | /api/mangadex/ | ✅ | ❌ |
-
-> Bỏ built-in API vì tôi lười 👍
-
-> Tạm bỏ chức năng Bình luận, lý do bên dưới.
-
-> UPDATE: Đã thêm lại Bình luận, nhưng code như cc.
-
 Ngoài ra còn cải thiện các chức năng cũ và thêm một số chức năng mới, sẽ cập nhật sau...
 
 ## Vài lỗi đã biết
