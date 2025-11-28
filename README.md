@@ -54,7 +54,7 @@ Ngoài ra còn cải thiện các chức năng cũ và thêm một số chức n
 - Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
 
 ## Dự kiến
-⬛ Kệ mẹ mấy cái bến dưới, sắp tới tôi sẽ upgrade lên Next 16 và Tailwind v4 (đéo cho mấy thằng máy cổ lỗ sĩ đọc truyện kkk 🐧)
+⬛ Kệ mẹ mấy cái bên dưới, sắp tới tôi sẽ upgrade lên Next 16 và Tailwind v4 (đéo cho mấy thằng máy cổ lỗ sĩ đọc truyện kkk 🐧)
 
 ⬛ Hoàn thiện Thông báo.
 
