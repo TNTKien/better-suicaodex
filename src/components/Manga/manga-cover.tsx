@@ -11,6 +11,7 @@ import {
   DialogClose,
 } from "../ui/dialog";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { Hover3DCard } from "../ui/hover-3d-card";
 
 interface MangaCoverProps extends React.HTMLAttributes<HTMLImageElement> {
   id: string;
@@ -56,7 +57,7 @@ const MangaCover: FC<MangaCoverProps> = ({
               <div className="absolute bg-secondary p-5 rounded-sm">
                 <Loader2 className="animate-spin" size={50} />
               </div>
-              <img
+              {/* <img
                 src={getCoverImageUrl(id, cover, "full")}
                 alt={`Ảnh bìa ${alt}`}
                 className="max-h-full max-w-full object-cover z-20"
@@ -64,6 +65,11 @@ const MangaCover: FC<MangaCoverProps> = ({
                 onError={(e) => {
                   e.currentTarget.src = "/images/xidoco.webp";
                 }}
+              /> */}
+              <Hover3DCard
+                imageSrc={getCoverImageUrl(id, cover, "full")}
+                alt={`Ảnh bìa ${alt}`}
+                className="max-h-full max-w-full object-cover z-20 rounded-none"
               />
             </div>
           </DialogContent>
