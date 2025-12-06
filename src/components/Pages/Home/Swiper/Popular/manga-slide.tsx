@@ -37,13 +37,9 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
 
         <div
           className={cn(
-            "absolute h-[324px] md:h-[400px] w-auto inset-0 pointer-events-none"
-            //"backdrop-blur-[1px]"
+            "absolute h-[324px] md:h-[400px] w-auto inset-0 pointer-events-none",
+            "bg-linear-to-b from-background/25 to-background backdrop-blur-[1px]"
           )}
-          style={{
-            background:
-              "linear-gradient(to bottom, hsl(var(--background) / .25) 0%, hsl(var(--background)) 100%)",
-          }}
         ></div>
       </div>
 

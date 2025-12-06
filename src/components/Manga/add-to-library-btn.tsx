@@ -250,10 +250,10 @@ export default function AddToLibraryBtn({
                   size="icon"
                   variant={
                     value === "none"
-                      ? "outline-solid"
+                      ? "outline"
                       : isNotificationEnabled
                       ? "default"
-                      : "outline-solid"
+                      : "outline"
                   }
                   className="shrink-0 size-10 [&_svg]:size-5"
                   onClick={() => setIsNotificationEnabled((prev) => !prev)}
@@ -309,10 +309,10 @@ export default function AddToLibraryBtn({
                 size="icon"
                 variant={
                   value === "none"
-                    ? "outline-solid"
+                    ? "outline"
                     : isNotificationEnabled
                     ? "default"
-                    : "outline-solid"
+                    : "outline"
                 }
                 className="shrink-0 size-10 [&_svg]:size-5"
                 onClick={() => setIsNotificationEnabled((prev) => !prev)}

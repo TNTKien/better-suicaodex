@@ -195,435 +195,438 @@ interface AsyncMultiSelectProps
   }[];
 }
 
-export const AsyncMultiSelect = (
-  {
-    ref,
-    loadOptions,
-    debounceMs = 300,
-    onValueChange,
-    variant,
-    defaultValue = [],
-    placeholder = "Select options",
-    animation = 0,
-    maxCount = 3,
-    modalPopover = false,
-    asChild = false,
-    className,
-    disableSearch = false,
-    disableFooter = false,
-    isCompact = false,
-    noResultsMessage = "No results found.",
-    loadingMessage = "Loading...",
-    showSelectedValue = false,
-    preloadedOptions = [],
-    ...props
-  }: AsyncMultiSelectProps & {
-    ref: React.RefObject<HTMLButtonElement>;
-  }
-) => {
-  const [selectedValues, setSelectedValues] = 
-    React.useState<string[]>(defaultValue);
-  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-  const [isAnimating, setIsAnimating] = React.useState(false);
-  const [options, setOptions] = React.useState<Array<{
-    label: string;
-    value: string;
-    icon?: React.ComponentType<{ className?: string }>;
-  }>>(preloadedOptions);
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [hasSearched, setHasSearched] = React.useState(preloadedOptions.length > 0);
+export const AsyncMultiSelect = React.forwardRef<
+  HTMLButtonElement,
+  AsyncMultiSelectProps
+>(
+  (
+    {
+      loadOptions,
+      debounceMs = 300,
+      onValueChange,
+      variant,
+      defaultValue = [],
+      placeholder = "Select options",
+      animation = 0,
+      maxCount = 3,
+      modalPopover = false,
+      asChild = false,
+      className,
+      disableSearch = false,
+      disableFooter = false,
+      isCompact = false,
+      noResultsMessage = "No results found.",
+      loadingMessage = "Loading...",
+      showSelectedValue = false,
+      preloadedOptions = [],
+      ...props
+    },
+    ref
+  ) => {
+    const [selectedValues, setSelectedValues] = 
+      React.useState<string[]>(defaultValue);
+    const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+    const [isAnimating, setIsAnimating] = React.useState(false);
+    const [options, setOptions] = React.useState<Array<{
+      label: string;
+      value: string;
+      icon?: React.ComponentType<{ className?: string }>;
+    }>>(preloadedOptions);
+    const [searchQuery, setSearchQuery] = React.useState("");
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [hasSearched, setHasSearched] = React.useState(preloadedOptions.length > 0);
 
-  // Create a ref for selected options to maintain their labels
-  const selectedOptionsRef = React.useRef<Array<{
-    label: string;
-    value: string;
-    icon?: React.ComponentType<{ className?: string }>;
-  }>>(preloadedOptions);
+    // Create a ref for selected options to maintain their labels
+    const selectedOptionsRef = React.useRef<Array<{
+      label: string;
+      value: string;
+      icon?: React.ComponentType<{ className?: string }>;
+    }>>(preloadedOptions);
 
-  // Create a ref for the timeout to handle debouncing
-  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Create a ref for the timeout to handle debouncing
+    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Function to actually perform the search
-  const executeSearch = React.useCallback(async (query: string) => {
-    try {
-      setIsLoading(true);
-      const results = await loadOptions(query);
-      setOptions(results);
-      setHasSearched(true);
-    } catch (error) {
-      console.error("Error loading options:", error);
-      setOptions([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadOptions]);
-
-  // Load initial selected values if needed
-  React.useEffect(() => {
-    const fetchSelectedOptions = async () => {
-      if (defaultValue.length > 0 && preloadedOptions.length === 0) {
-        try {
-          setIsLoading(true);
-          const results = await loadOptions("");
-          const matchingOptions = results.filter(option => 
-            defaultValue.includes(option.value)
-          );
-          
-          if (matchingOptions.length > 0) {
-            selectedOptionsRef.current = matchingOptions;
-            setOptions(matchingOptions);
-            setHasSearched(true);
-          }
-        } catch (error) {
-          console.error("Error loading default options:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      } else if (preloadedOptions.length > 0) {
-        // Use preloaded options if available
-        selectedOptionsRef.current = preloadedOptions;
-        setOptions(preloadedOptions);
+    // Function to actually perform the search
+    const executeSearch = React.useCallback(async (query: string) => {
+      try {
+        setIsLoading(true);
+        const results = await loadOptions(query);
+        setOptions(results);
         setHasSearched(true);
+      } catch (error) {
+        console.error("Error loading options:", error);
+        setOptions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, [loadOptions]);
+
+    // Load initial selected values if needed
+    React.useEffect(() => {
+      const fetchSelectedOptions = async () => {
+        if (defaultValue.length > 0 && preloadedOptions.length === 0) {
+          try {
+            setIsLoading(true);
+            const results = await loadOptions("");
+            const matchingOptions = results.filter(option => 
+              defaultValue.includes(option.value)
+            );
+            
+            if (matchingOptions.length > 0) {
+              selectedOptionsRef.current = matchingOptions;
+              setOptions(matchingOptions);
+              setHasSearched(true);
+            }
+          } catch (error) {
+            console.error("Error loading default options:", error);
+          } finally {
+            setIsLoading(false);
+          }
+        } else if (preloadedOptions.length > 0) {
+          // Use preloaded options if available
+          selectedOptionsRef.current = preloadedOptions;
+          setOptions(preloadedOptions);
+          setHasSearched(true);
+        }
+      };
+      
+      fetchSelectedOptions();
+    }, [defaultValue, loadOptions, preloadedOptions]);
+
+    // Update selected options when options change
+    React.useEffect(() => {
+      const newSelectedOptions = [
+        ...selectedOptionsRef.current,
+        ...options.filter(option => 
+          selectedValues.includes(option.value) && 
+          !selectedOptionsRef.current.some(o => o.value === option.value)
+        )
+      ];
+      selectedOptionsRef.current = newSelectedOptions;
+    }, [options, selectedValues]);
+
+    // Clean up timeout when component unmounts
+    React.useEffect(() => {
+      return () => {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+      };
+    }, []);
+
+    // Automatically trigger a search when the popover opens
+    React.useEffect(() => {
+      if (isPopoverOpen && !hasSearched) {
+        executeSearch(searchQuery);
+      }
+    }, [isPopoverOpen, executeSearch, searchQuery, hasSearched]);
+
+    const handleInputKeyDown = (
+      event: React.KeyboardEvent<HTMLInputElement>
+    ) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        executeSearch(searchQuery);
+      } else if (event.key === "Backspace" && !event.currentTarget.value) {
+        const newSelectedValues = [...selectedValues];
+        newSelectedValues.pop();
+        setSelectedValues(newSelectedValues);
+        onValueChange(newSelectedValues);
       }
     };
-    
-    fetchSelectedOptions();
-  }, [defaultValue, loadOptions, preloadedOptions]);
 
-  // Update selected options when options change
-  React.useEffect(() => {
-    const newSelectedOptions = [
-      ...selectedOptionsRef.current,
-      ...options.filter(option => 
-        selectedValues.includes(option.value) && 
-        !selectedOptionsRef.current.some(o => o.value === option.value)
-      )
-    ];
-    selectedOptionsRef.current = newSelectedOptions;
-  }, [options, selectedValues]);
+    const toggleOption = (option: string) => {
+      const newSelectedValues = selectedValues.includes(option)
+        ? selectedValues.filter((value) => value !== option)
+        : [...selectedValues, option];
+      setSelectedValues(newSelectedValues);
+      onValueChange(newSelectedValues);
+    };
 
-  // Clean up timeout when component unmounts
-  React.useEffect(() => {
-    return () => {
+    const handleClear = () => {
+      setSelectedValues([]);
+      onValueChange([]);
+    };
+
+    const handleTogglePopover = () => {
+      const newIsOpen = !isPopoverOpen;
+      setIsPopoverOpen(newIsOpen);
+      
+      if (newIsOpen && !hasSearched) {
+        executeSearch(searchQuery);
+      }
+    };
+
+    const clearExtraOptions = () => {
+      const newSelectedValues = selectedValues.slice(0, maxCount);
+      setSelectedValues(newSelectedValues);
+      onValueChange(newSelectedValues);
+    };
+
+    // Handle search input change with manual debounce
+    const handleSearchInputChange = (value: string) => {
+      setSearchQuery(value);
+      
+      // Clear any existing timeout
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
+      
+      // Setup a new debounced search
+      timeoutRef.current = setTimeout(() => {
+        executeSearch(value);
+      }, debounceMs);
     };
-  }, []);
 
-  // Automatically trigger a search when the popover opens
-  React.useEffect(() => {
-    if (isPopoverOpen && !hasSearched) {
-      executeSearch(searchQuery);
-    }
-  }, [isPopoverOpen, executeSearch, searchQuery, hasSearched]);
+    // Get all visible options including selected ones that might not be in current search results
+    const allVisibleOptions = React.useMemo(() => {
+      const selectedOptions = selectedOptionsRef.current;
+      const currentOptions = options;
+      
+      // Combine current options with selected options that aren't in the current results
+      const combinedOptions = [...currentOptions];
+      selectedOptions.forEach(selectedOption => {
+        if (!combinedOptions.some(option => option.value === selectedOption.value)) {
+          combinedOptions.push(selectedOption);
+        }
+      });
+      
+      return combinedOptions;
+    }, [options]);
 
-  const handleInputKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      executeSearch(searchQuery);
-    } else if (event.key === "Backspace" && !event.currentTarget.value) {
-      const newSelectedValues = [...selectedValues];
-      newSelectedValues.pop();
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
-    }
-  };
+    // Determine if we should show the search input
+    const shouldShowSearch = !disableSearch;
 
-  const toggleOption = (option: string) => {
-    const newSelectedValues = selectedValues.includes(option)
-      ? selectedValues.filter((value) => value !== option)
-      : [...selectedValues, option];
-    setSelectedValues(newSelectedValues);
-    onValueChange(newSelectedValues);
-  };
-
-  const handleClear = () => {
-    setSelectedValues([]);
-    onValueChange([]);
-  };
-
-  const handleTogglePopover = () => {
-    const newIsOpen = !isPopoverOpen;
-    setIsPopoverOpen(newIsOpen);
-    
-    if (newIsOpen && !hasSearched) {
-      executeSearch(searchQuery);
-    }
-  };
-
-  const clearExtraOptions = () => {
-    const newSelectedValues = selectedValues.slice(0, maxCount);
-    setSelectedValues(newSelectedValues);
-    onValueChange(newSelectedValues);
-  };
-
-  // Handle search input change with manual debounce
-  const handleSearchInputChange = (value: string) => {
-    setSearchQuery(value);
-    
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    // Setup a new debounced search
-    timeoutRef.current = setTimeout(() => {
-      executeSearch(value);
-    }, debounceMs);
-  };
-
-  // Get all visible options including selected ones that might not be in current search results
-  const allVisibleOptions = React.useMemo(() => {
-    const selectedOptions = selectedOptionsRef.current;
-    const currentOptions = options;
-    
-    // Combine current options with selected options that aren't in the current results
-    const combinedOptions = [...currentOptions];
-    selectedOptions.forEach(selectedOption => {
-      if (!combinedOptions.some(option => option.value === selectedOption.value)) {
-        combinedOptions.push(selectedOption);
-      }
-    });
-    
-    return combinedOptions;
-  }, [options]);
-
-  // Determine if we should show the search input
-  const shouldShowSearch = !disableSearch;
-
-  return (
-    <Popover
-      open={isPopoverOpen}
-      onOpenChange={setIsPopoverOpen}
-      modal={modalPopover}
-    >
-      <PopoverTrigger asChild>
-        <Button
-          ref={ref}
-          {...props}
-          onClick={handleTogglePopover}
-          className={cn(
-            "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
-            className
-          )}
-        >
-          {selectedValues.length > 0 ? (
-            <div className="flex justify-between items-center w-full">
-              {isCompact ? (
-                <div className="flex items-center overflow-hidden">
-                  <span className="text-sm truncate mx-3 text-muted-foreground">
-                    {selectedValues
-                      .slice(0, maxCount)
-                      .map((value) => allVisibleOptions.find((o) => o.value === value)?.label)
-                      .join(", ")}
-                    {selectedValues.length > maxCount && `, +${selectedValues.length - maxCount} more`}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex flex-wrap items-center">
-                  {selectedValues.slice(0, maxCount).map((value) => {
-                    const option = allVisibleOptions.find((o) => o.value === value);
-                    const IconComponent = option?.icon;
-                    return (
+    return (
+      <Popover
+        open={isPopoverOpen}
+        onOpenChange={setIsPopoverOpen}
+        modal={modalPopover}
+      >
+        <PopoverTrigger asChild>
+          <Button
+            ref={ref}
+            {...props}
+            onClick={handleTogglePopover}
+            className={cn(
+              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+              className
+            )}
+          >
+            {selectedValues.length > 0 ? (
+              <div className="flex justify-between items-center w-full">
+                {isCompact ? (
+                  <div className="flex items-center overflow-hidden">
+                    <span className="text-sm truncate mx-3 text-muted-foreground">
+                      {selectedValues
+                        .slice(0, maxCount)
+                        .map((value) => allVisibleOptions.find((o) => o.value === value)?.label)
+                        .join(", ")}
+                      {selectedValues.length > maxCount && `, +${selectedValues.length - maxCount} more`}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center">
+                    {selectedValues.slice(0, maxCount).map((value) => {
+                      const option = allVisibleOptions.find((o) => o.value === value);
+                      const IconComponent = option?.icon;
+                      return (
+                        <Badge
+                          key={value}
+                          className={cn(
+                            isAnimating ? "animate-bounce" : "",
+                            multiSelectVariants({ variant })
+                          )}
+                          style={{ animationDuration: `${animation}s` }}
+                        >
+                          {IconComponent && (
+                            <IconComponent className="h-4 w-4 mr-2" />
+                          )}
+                          {option?.label}
+                          <XCircle
+                            className="ml-2 h-4 w-4 cursor-pointer"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              toggleOption(value);
+                            }}
+                          />
+                        </Badge>
+                      );
+                    })}
+                    {selectedValues.length > maxCount && (
                       <Badge
-                        key={value}
                         className={cn(
+                          "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
                           isAnimating ? "animate-bounce" : "",
                           multiSelectVariants({ variant })
                         )}
                         style={{ animationDuration: `${animation}s` }}
                       >
-                        {IconComponent && (
-                          <IconComponent className="h-4 w-4 mr-2" />
-                        )}
-                        {option?.label}
+                        {`+ ${selectedValues.length - maxCount} more`}
                         <XCircle
                           className="ml-2 h-4 w-4 cursor-pointer"
                           onClick={(event) => {
                             event.stopPropagation();
-                            toggleOption(value);
+                            clearExtraOptions();
                           }}
                         />
                       </Badge>
-                    );
-                  })}
-                  {selectedValues.length > maxCount && (
+                    )}
+                  </div>
+                )}
+                <div className="flex items-center justify-between">
+                  <XIcon
+                    className="h-4 mx-2 cursor-pointer text-muted-foreground"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleClear();
+                    }}
+                  />
+                  <Separator
+                    orientation="vertical"
+                    className="flex min-h-6 h-full"
+                  />
+                  <ChevronsUpDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between w-full mx-auto">
+                <span className="text-sm text-muted-foreground mx-3">
+                  {placeholder}
+                </span>
+                <ChevronsUpDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
+              </div>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-auto p-0"
+          align="start"
+          sideOffset={5}
+          onEscapeKeyDown={() => setIsPopoverOpen(false)}
+          style={{ width: "var(--radix-popover-trigger-width)" }}
+        >
+          <Command>
+            {shouldShowSearch && (
+              <CommandInput
+                placeholder="Search..."
+                onKeyDown={handleInputKeyDown}
+                value={searchQuery}
+                onValueChange={handleSearchInputChange}
+                autoComplete="off"
+                className="border-none focus:ring-0"
+              />
+            )}
+            
+            {showSelectedValue && selectedValues.length > 0 && (
+              <div className="flex flex-wrap gap-0.5 p-2 border-t border-b">
+                {selectedValues.map((value) => {
+                  const option = allVisibleOptions.find((o) => o.value === value);
+                  const IconComponent = option?.icon;
+                  return (
                     <Badge
+                      key={value}
                       className={cn(
-                        "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
-                        isAnimating ? "animate-bounce" : "",
+                        "flex items-center",
                         multiSelectVariants({ variant })
                       )}
-                      style={{ animationDuration: `${animation}s` }}
                     >
-                      {`+ ${selectedValues.length - maxCount} more`}
+                      {IconComponent && (
+                        <IconComponent className="h-4 w-4 mr-2" />
+                      )}
+                      {option?.label}
                       <XCircle
                         className="ml-2 h-4 w-4 cursor-pointer"
                         onClick={(event) => {
                           event.stopPropagation();
-                          clearExtraOptions();
+                          toggleOption(value);
                         }}
                       />
                     </Badge>
-                  )}
-                </div>
-              )}
-              <div className="flex items-center justify-between">
-                <XIcon
-                  className="h-4 mx-2 cursor-pointer text-muted-foreground"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleClear();
-                  }}
-                />
-                <Separator
-                  orientation="vertical"
-                  className="flex min-h-6 h-full"
-                />
-                <ChevronsUpDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between w-full mx-auto">
-              <span className="text-sm text-muted-foreground mx-3">
-                {placeholder}
-              </span>
-              <ChevronsUpDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
-            </div>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-auto p-0"
-        align="start"
-        sideOffset={5}
-        onEscapeKeyDown={() => setIsPopoverOpen(false)}
-        style={{ width: "var(--radix-popover-trigger-width)" }}
-      >
-        <Command>
-          {shouldShowSearch && (
-            <CommandInput
-              placeholder="Search..."
-              onKeyDown={handleInputKeyDown}
-              value={searchQuery}
-              onValueChange={handleSearchInputChange}
-              autoComplete="off"
-              className="border-none focus:ring-0"
-            />
-          )}
-          
-          {showSelectedValue && selectedValues.length > 0 && (
-            <div className="flex flex-wrap gap-0.5 p-2 border-t border-b">
-              {selectedValues.map((value) => {
-                const option = allVisibleOptions.find((o) => o.value === value);
-                const IconComponent = option?.icon;
-                return (
-                  <Badge
-                    key={value}
-                    className={cn(
-                      "flex items-center",
-                      multiSelectVariants({ variant })
-                    )}
-                  >
-                    {IconComponent && (
-                      <IconComponent className="h-4 w-4 mr-2" />
-                    )}
-                    {option?.label}
-                    <XCircle
-                      className="ml-2 h-4 w-4 cursor-pointer"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        toggleOption(value);
-                      }}
-                    />
-                  </Badge>
-                );
-              })}
-            </div>
-          )}
-          
-          <CommandList>
-            {isLoading ? (
-              <div className="flex items-center justify-center py-6">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                <span>{loadingMessage}</span>
-              </div>
-            ) : options.length === 0 ? (
-              <CommandEmpty>{noResultsMessage}</CommandEmpty>
-            ) : (
-              <CommandGroup>
-                {options.map((option) => {
-                  const isSelected = selectedValues.includes(option.value);
-                  return (
-                    <CommandItem
-                      key={option.value}
-                      value={option.label}
-                      onSelect={() => toggleOption(option.value)}
-                      className="cursor-pointer"
-                    >
-                      <div
-                        className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                          isSelected
-                            ? "bg-primary text-primary-foreground"
-                            : "opacity-50 [&_svg]:invisible"
-                        )}>
-                        <CheckIcon className="h-4 w-4" />
-                      </div>
-                      {option.icon && (
-                        <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                      )}
-                      <span>{option.label}</span>
-                    </CommandItem>
                   );
                 })}
-              </CommandGroup>
+              </div>
             )}
-            <CommandSeparator />
-            {!disableFooter && (
-              <CommandGroup>
-                <div className="flex items-center justify-between">
-                  {selectedValues.length > 0 && (
-                    <>
-                      <CommandItem
-                        onSelect={handleClear}
-                        className="flex-1 justify-center cursor-pointer"
-                      >
-                        Clear
-                      </CommandItem>
-                      <Separator
-                        orientation="vertical"
-                        className="flex min-h-6 h-full"
-                      />
-                    </>
-                  )}
-                  <CommandItem
-                    onSelect={() => setIsPopoverOpen(false)}
-                    className="flex-1 justify-center cursor-pointer max-w-full"
-                  >
-                    Close
-                  </CommandItem>
+            
+            <CommandList>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <span>{loadingMessage}</span>
                 </div>
-              </CommandGroup>
+              ) : options.length === 0 ? (
+                <CommandEmpty>{noResultsMessage}</CommandEmpty>
+              ) : (
+                <CommandGroup>
+                  {options.map((option) => {
+                    const isSelected = selectedValues.includes(option.value);
+                    return (
+                      <CommandItem
+                        key={option.value}
+                        value={option.label}
+                        onSelect={() => toggleOption(option.value)}
+                        className="cursor-pointer"
+                      >
+                        <div
+                          className={cn(
+                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                            isSelected
+                              ? "bg-primary text-primary-foreground"
+                              : "opacity-50 [&_svg]:invisible"
+                          )}>
+                          <CheckIcon className="h-4 w-4" />
+                        </div>
+                        {option.icon && (
+                          <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                        )}
+                        <span>{option.label}</span>
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              )}
+              <CommandSeparator />
+              {!disableFooter && (
+                <CommandGroup>
+                  <div className="flex items-center justify-between">
+                    {selectedValues.length > 0 && (
+                      <>
+                        <CommandItem
+                          onSelect={handleClear}
+                          className="flex-1 justify-center cursor-pointer"
+                        >
+                          Clear
+                        </CommandItem>
+                        <Separator
+                          orientation="vertical"
+                          className="flex min-h-6 h-full"
+                        />
+                      </>
+                    )}
+                    <CommandItem
+                      onSelect={() => setIsPopoverOpen(false)}
+                      className="flex-1 justify-center cursor-pointer max-w-full"
+                    >
+                      Close
+                    </CommandItem>
+                  </div>
+                </CommandGroup>
+              )}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+        {animation > 0 && selectedValues.length > 0 && (
+          <WandSparkles
+            className={cn(
+              "cursor-pointer my-2 text-foreground bg-background w-3 h-3",
+              isAnimating ? "" : "text-muted-foreground"
             )}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-      {animation > 0 && selectedValues.length > 0 && (
-        <WandSparkles
-          className={cn(
-            "cursor-pointer my-2 text-foreground bg-background w-3 h-3",
-            isAnimating ? "" : "text-muted-foreground"
-          )}
-          onClick={() => setIsAnimating(!isAnimating)}
-        />
-      )}
-    </Popover>
-  );
-};
+            onClick={() => setIsAnimating(!isAnimating)}
+          />
+        )}
+      </Popover>
+    );
+  }
+);
 
 AsyncMultiSelect.displayName = "AsyncMultiSelect";

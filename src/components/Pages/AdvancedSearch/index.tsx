@@ -586,7 +586,7 @@ export default function AdvancedSearch({
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="hasAvailableChapter"
-                      className="w-[14px] h-[14px] [&_svg]:w-[14px] [&_svg]:h-[14px]"
+                      className="size-3.5 [&_svg]:size-3.5"
                       onCheckedChange={() =>
                         setHasAvailableChapter(!hasAvailableChapter)
                       }

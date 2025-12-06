@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  allowedDevOrigins: ["*.suicaodex.com"],
   rewrites: async () => [
     {
       source: "/manga-sitemap.xml",
@@ -54,7 +55,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-
-module.exports = {
-  allowedDevOrigins: ['*.suicaodex.com'],
-}
