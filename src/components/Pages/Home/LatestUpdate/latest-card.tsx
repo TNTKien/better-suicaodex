@@ -73,7 +73,7 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                 </NoPrefetchLink>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <div className="flex items-center justify-self-start space-x-1">
                   <Users size={16} className="shrink-0" />
                   {chapter.group.length === 0 ? (
@@ -87,7 +87,7 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                           asChild
                           key={group.id}
                           variant="ghost"
-                          className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:text-primary break-all"
+                          className="whitespace-normal! font-normal text-start line-clamp-1! text-xs rounded-sm h-4 py-0 px-1 hover:text-primary break-all shrink!"
                           size="sm"
                         >
                           <NoPrefetchLink href={`/group/${group.id}`}>
