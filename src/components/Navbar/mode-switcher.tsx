@@ -6,7 +6,6 @@ import { useTheme } from "next-themes";
 import { META_THEME_COLORS } from "@/config/site";
 import { useMetaColor } from "@/hooks/use-meta-color";
 import { Button } from "../ui/button";
-import { useModeAnimation } from "react-theme-switch-animation";
 
 export function ModeSwitcher() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -21,18 +20,11 @@ export function ModeSwitcher() {
     );
   }, [resolvedTheme, setTheme, setMetaColor]);
 
-  const { ref, toggleSwitchTheme } = useModeAnimation({
-    onDarkModeChange: toggleTheme,
-    duration: 500,
-    isDarkMode: true,
-  });
-
   return (
     <Button
       variant="ghost"
       className="group/toggle h-8 w-8 px-0 bg-muted/50 shadow-sm"
-      onClick={toggleSwitchTheme}
-      ref={ref}
+      onClick={toggleTheme}
     >
       <SunIcon className="hidden [html.dark_&]:block" />
       <MoonIcon className="hidden [html.light_&]:block" />
