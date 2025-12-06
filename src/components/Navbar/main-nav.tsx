@@ -40,7 +40,7 @@ export function MainNav() {
         src={logoSrc || logos.gehenna}
         alt="SuicaoDex's logo"
         className={cn(
-          "h-8 w-auto grayscale contrast-150 dark:invert",
+          "max-h-8 w-auto grayscale contrast-150 dark:invert",
           pathname.includes("/manga") && "md:invert",
           !isAtTop && "invert-0 md:invert-0"
         )}
@@ -53,7 +53,7 @@ export function MainNav() {
         quality={100}
         priority
         className={cn(
-          "h-[22px] w-auto drop-shadow-md dark:invert xs:hidden",
+          "max-h-[22px] w-auto drop-shadow-md dark:invert xs:hidden",
           pathname.includes("/manga") && "md:invert",
           // pathname.includes("/group/") && "md:invert",
           !isAtTop && "filter-none md:filter-none"
@@ -65,7 +65,7 @@ export function MainNav() {
         quality={100}
         priority
         className={cn(
-          "h-[22px] w-auto drop-shadow-md dark:invert hidden xs:flex",
+          "max-h-[22px] w-auto drop-shadow-md dark:invert hidden xs:flex",
           pathname.includes("/manga") && "md:invert",
           // pathname.includes("/group/") && "md:invert",
           !isAtTop && "filter-none md:filter-none"
