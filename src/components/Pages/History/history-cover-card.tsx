@@ -21,12 +21,12 @@ export default function HistoryCoverCard({ chapter }: HistoryCoverCardProps) {
         <CardContent className="relative p-0 rounded-sm">
           <LazyLoadImage
             wrapperClassName={cn(
-              "!block rounded-sm object-cover w-full h-full",
-              !loaded && "aspect-[5/7]"
+              "block! rounded-sm object-cover w-full h-full",
+              !loaded && "aspect-5/7"
             )}
             placeholderSrc="/images/place-doro.webp"
             className={cn(
-              "h-auto w-full rounded-sm block object-cover aspect-[5/7]"
+              "h-auto w-full rounded-sm block object-cover aspect-5/7"
             )}
             src={src}
             alt={`Ảnh bìa ${chapter.manga.title}`}

@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LatestSkeleton() {
   return (
-    <Card className="rounded-sm shadow-sm transition-colors duration-200">
+    <Card className="rounded-sm shadow-xs transition-colors duration-200">
       <CardContent className="flex gap-2 p-1">
         <Skeleton className="w-20 h-28 shrink-0 bg-gray-500 rounded-sm" />
         <div className="flex flex-col justify-evenly w-full pr-1">

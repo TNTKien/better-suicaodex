@@ -48,11 +48,11 @@ const MangaCover: FC<MangaCoverProps> = ({
             <Expand size={50} color="white" />
           </DialogTrigger>
 
-          <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto !rounded-none justify-center">
+          <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto rounded-none! justify-center">
             <DialogTitle className="hidden"></DialogTitle>
             <DialogDescription className="hidden"></DialogDescription>
 
-            <DialogClose className="fixed inset-0 z-0 !block cursor-default" />
+            <DialogClose className="fixed inset-0 z-0 block! cursor-default" />
             <div className="max-w-[90vw] md:max-w-screen max-h-[90vh] lg:max-h-screen flex justify-center items-center relative z-10">
               <div className="absolute bg-secondary p-5 rounded-sm">
                 <Loader2 className="animate-spin" size={50} />
@@ -78,8 +78,8 @@ const MangaCover: FC<MangaCoverProps> = ({
 
       <LazyLoadImage
         wrapperClassName={cn(
-          "!block rounded-sm object-cover",
-          !loaded && "aspect-[5/7]",
+          "block! rounded-sm object-cover",
+          !loaded && "aspect-5/7",
           wrapper
         )}
         placeholderSrc={placeholder}

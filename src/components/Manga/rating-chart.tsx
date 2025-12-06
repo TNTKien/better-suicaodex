@@ -12,10 +12,10 @@ interface RatingStats {
 const chartConfig = {
   count: {
     label: "Lượt vote:",
-    color: "hsl(var(--primary))",
+    color: "var(--primary)",
   },
   label: {
-    color: "hsl(var(--background))",
+    color: "var(--background)",
   },
 } satisfies ChartConfig;
 

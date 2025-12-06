@@ -6,7 +6,7 @@ export default function NormalTag(props: ComponentProps<"div">) {
     <div
       {...props}
       className={cn(
-        "flex items-center gap-1 px-[0.375rem] py-0 bg-accent font-bold rounded-[0.25rem] text-[0.625rem] w-fit",
+        "flex items-center gap-1 px-1.5 py-0 bg-accent font-bold rounded-lg text-[0.625rem] w-fit",
         props.className
       )}
     >

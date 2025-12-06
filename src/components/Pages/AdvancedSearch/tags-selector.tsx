@@ -148,402 +148,399 @@ interface TagsSelectorProps
   isCompact?: boolean;
 }
 
-export const TagsSelector = React.forwardRef<
-  HTMLButtonElement,
-  TagsSelectorProps
->(
-  (
-    {
-      options,
-      onValueChange,
-      defaultIncluded = [],
-      defaultExcluded = [],
-      placeholder = "Select tags",
-      animation = 0,
-      maxCount = 3,
-      modalPopover = false,
-      asChild = false,
-      className,
-      disableSearch = false,
-      disableFooter = false,
-      isCompact = false,
-      ...props
-    },
-    ref
-  ) => {
-    // Store the state of each tag as a map of tag value to TagState
-    const [tagStates, setTagStates] = React.useState<Record<string, TagState>>(
-      () => {
-        const states: Record<string, TagState> = {};
+export const TagsSelector = (
+  {
+    ref,
+    options,
+    onValueChange,
+    defaultIncluded = [],
+    defaultExcluded = [],
+    placeholder = "Select tags",
+    animation = 0,
+    maxCount = 3,
+    modalPopover = false,
+    asChild = false,
+    className,
+    disableSearch = false,
+    disableFooter = false,
+    isCompact = false,
+    ...props
+  }: TagsSelectorProps & {
+    ref: React.RefObject<HTMLButtonElement>;
+  }
+) => {
+  // Store the state of each tag as a map of tag value to TagState
+  const [tagStates, setTagStates] = React.useState<Record<string, TagState>>(
+    () => {
+      const states: Record<string, TagState> = {};
 
-        // Set initial states based on default included and excluded values
-        options.forEach((option) => {
-          if (defaultIncluded.includes(option.value)) {
-            states[option.value] = TagState.INCLUDE;
-          } else if (defaultExcluded.includes(option.value)) {
-            states[option.value] = TagState.EXCLUDE;
-          } else {
-            states[option.value] = TagState.NONE;
-          }
-        });
-
-        return states;
-      }
-    );
-
-    const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-    const [isAnimating, setIsAnimating] = React.useState(false);
-
-    // Calculate included and excluded tags based on tag states
-    const includedTags = React.useMemo(
-      () =>
-        Object.entries(tagStates)
-          .filter(([_, state]) => state === TagState.INCLUDE)
-          .map(([value]) => value),
-      [tagStates]
-    );
-
-    const excludedTags = React.useMemo(
-      () =>
-        Object.entries(tagStates)
-          .filter(([_, state]) => state === TagState.EXCLUDE)
-          .map(([value]) => value),
-      [tagStates]
-    );
-
-    // Calculate all selected tags (both included and excluded)
-    const selectedTags = React.useMemo(
-      () => [...includedTags, ...excludedTags],
-      [includedTags, excludedTags]
-    );
-
-    // Update parent component when selections change
-    React.useEffect(() => {
-      onValueChange(includedTags, excludedTags);
-    }, [includedTags, excludedTags, onValueChange]);
-
-    const handleInputKeyDown = (
-      event: React.KeyboardEvent<HTMLInputElement>
-    ) => {
-      if (event.key === "Enter") {
-        setIsPopoverOpen(true);
-      } else if (event.key === "Backspace" && !event.currentTarget.value) {
-        // Remove the last selected tag (regardless of include/exclude state)
-        if (selectedTags.length > 0) {
-          const lastTag = selectedTags[selectedTags.length - 1];
-          const newTagStates = { ...tagStates };
-          newTagStates[lastTag] = TagState.NONE;
-          setTagStates(newTagStates);
-        }
-      }
-    };
-
-    const cycleTagState = (tagValue: string) => {
-      const currentState = tagStates[tagValue] || TagState.NONE;
-      const newTagStates = { ...tagStates };
-
-      // Cycle through states: NONE -> INCLUDE -> EXCLUDE -> NONE
-      switch (currentState) {
-        case TagState.NONE:
-          newTagStates[tagValue] = TagState.INCLUDE;
-          break;
-        case TagState.INCLUDE:
-          newTagStates[tagValue] = TagState.EXCLUDE;
-          break;
-        case TagState.EXCLUDE:
-          newTagStates[tagValue] = TagState.NONE;
-          break;
-      }
-
-      setTagStates(newTagStates);
-    };
-
-    const getStateIcon = (state: TagState) => {
-      switch (state) {
-        case TagState.INCLUDE:
-          return <Plus className="h-4 w-4" />;
-        case TagState.EXCLUDE:
-          return <Minus className="h-4 w-4" />;
-        default:
-          return null;
-      }
-    };
-
-    const handleClear = () => {
-      const newTagStates: Record<string, TagState> = {};
+      // Set initial states based on default included and excluded values
       options.forEach((option) => {
-        newTagStates[option.value] = TagState.NONE;
+        if (defaultIncluded.includes(option.value)) {
+          states[option.value] = TagState.INCLUDE;
+        } else if (defaultExcluded.includes(option.value)) {
+          states[option.value] = TagState.EXCLUDE;
+        } else {
+          states[option.value] = TagState.NONE;
+        }
       });
-      setTagStates(newTagStates);
-    };
 
-    const handleTogglePopover = () => {
-      setIsPopoverOpen((prev) => !prev);
-    };
+      return states;
+    }
+  );
 
-    // Clear extra options exceeding maxCount
-    const clearExtraOptions = () => {
-      const newTagStates = { ...tagStates };
+  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+  const [isAnimating, setIsAnimating] = React.useState(false);
 
-      // Keep only the first maxCount selected tags
-      let count = 0;
+  // Calculate included and excluded tags based on tag states
+  const includedTags = React.useMemo(
+    () =>
+      Object.entries(tagStates)
+        .filter(([_, state]) => state === TagState.INCLUDE)
+        .map(([value]) => value),
+    [tagStates]
+  );
 
-      for (const [value, state] of Object.entries(newTagStates)) {
-        if (state !== TagState.NONE) {
-          count++;
-          if (count > maxCount) {
-            newTagStates[value] = TagState.NONE;
-          }
+  const excludedTags = React.useMemo(
+    () =>
+      Object.entries(tagStates)
+        .filter(([_, state]) => state === TagState.EXCLUDE)
+        .map(([value]) => value),
+    [tagStates]
+  );
+
+  // Calculate all selected tags (both included and excluded)
+  const selectedTags = React.useMemo(
+    () => [...includedTags, ...excludedTags],
+    [includedTags, excludedTags]
+  );
+
+  // Update parent component when selections change
+  React.useEffect(() => {
+    onValueChange(includedTags, excludedTags);
+  }, [includedTags, excludedTags, onValueChange]);
+
+  const handleInputKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      setIsPopoverOpen(true);
+    } else if (event.key === "Backspace" && !event.currentTarget.value) {
+      // Remove the last selected tag (regardless of include/exclude state)
+      if (selectedTags.length > 0) {
+        const lastTag = selectedTags[selectedTags.length - 1];
+        const newTagStates = { ...tagStates };
+        newTagStates[lastTag] = TagState.NONE;
+        setTagStates(newTagStates);
+      }
+    }
+  };
+
+  const cycleTagState = (tagValue: string) => {
+    const currentState = tagStates[tagValue] || TagState.NONE;
+    const newTagStates = { ...tagStates };
+
+    // Cycle through states: NONE -> INCLUDE -> EXCLUDE -> NONE
+    switch (currentState) {
+      case TagState.NONE:
+        newTagStates[tagValue] = TagState.INCLUDE;
+        break;
+      case TagState.INCLUDE:
+        newTagStates[tagValue] = TagState.EXCLUDE;
+        break;
+      case TagState.EXCLUDE:
+        newTagStates[tagValue] = TagState.NONE;
+        break;
+    }
+
+    setTagStates(newTagStates);
+  };
+
+  const getStateIcon = (state: TagState) => {
+    switch (state) {
+      case TagState.INCLUDE:
+        return <Plus className="h-4 w-4" />;
+      case TagState.EXCLUDE:
+        return <Minus className="h-4 w-4" />;
+      default:
+        return null;
+    }
+  };
+
+  const handleClear = () => {
+    const newTagStates: Record<string, TagState> = {};
+    options.forEach((option) => {
+      newTagStates[option.value] = TagState.NONE;
+    });
+    setTagStates(newTagStates);
+  };
+
+  const handleTogglePopover = () => {
+    setIsPopoverOpen((prev) => !prev);
+  };
+
+  // Clear extra options exceeding maxCount
+  const clearExtraOptions = () => {
+    const newTagStates = { ...tagStates };
+
+    // Keep only the first maxCount selected tags
+    let count = 0;
+
+    for (const [value, state] of Object.entries(newTagStates)) {
+      if (state !== TagState.NONE) {
+        count++;
+        if (count > maxCount) {
+          newTagStates[value] = TagState.NONE;
         }
       }
+    }
 
-      setTagStates(newTagStates);
-    };
+    setTagStates(newTagStates);
+  };
 
-    return (
-      <Popover
-        open={isPopoverOpen}
-        onOpenChange={setIsPopoverOpen}
-        modal={modalPopover}
-      >
-        <PopoverTrigger asChild>
-          <Button
-            ref={ref}
-            {...props}
-            onClick={handleTogglePopover}
-            className={cn(
-              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
-              className
-            )}
-          >
-            {selectedTags.length > 0 ? (
-              <div className="flex justify-between items-center w-full">
-                {isCompact ? (
-                  <div className="flex items-center overflow-hidden">
-                    <span className="text-sm truncate mx-3 text-muted-foreground">
-                      {selectedTags
-                        .slice(0, maxCount)
-                        .map((value) => {
-                          const option = options.find((o) => o.value === value);
-                          const state = tagStates[value];
-                          const statePrefix =
-                            state === TagState.INCLUDE ? "+" : "-";
-                          return `${statePrefix}${option?.label}`;
-                        })
-                        .join(", ")}
-                      {selectedTags.length > maxCount &&
-                        `, +${selectedTags.length - maxCount} more`}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap items-center">
-                    {selectedTags.slice(0, maxCount).map((value) => {
-                      const option = options.find((o) => o.value === value);
-                      const state = tagStates[value];
-                      const IconComponent = option?.icon;
-                      return (
-                        <Badge
-                          key={value}
-                          className={cn(
-                            isAnimating ? "animate-bounce" : "",
-                            tagSelectorVariants({ state })
-                          )}
-                          style={{ animationDuration: `${animation}s` }}
-                        >
-                          {getStateIcon(state)}
-                          {IconComponent && (
-                            <IconComponent className="h-4 w-4 mx-1" />
-                          )}
-                          {option?.label}
-                          <XCircle
-                            className="ml-2 h-4 w-4 cursor-pointer"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              const newTagStates = { ...tagStates };
-                              newTagStates[value] = TagState.NONE;
-                              setTagStates(newTagStates);
-                            }}
-                          />
-                        </Badge>
-                      );
-                    })}
-                    {selectedTags.length > maxCount && (
+  return (
+    <Popover
+      open={isPopoverOpen}
+      onOpenChange={setIsPopoverOpen}
+      modal={modalPopover}
+    >
+      <PopoverTrigger asChild>
+        <Button
+          ref={ref}
+          {...props}
+          onClick={handleTogglePopover}
+          className={cn(
+            "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+            className
+          )}
+        >
+          {selectedTags.length > 0 ? (
+            <div className="flex justify-between items-center w-full">
+              {isCompact ? (
+                <div className="flex items-center overflow-hidden">
+                  <span className="text-sm truncate mx-3 text-muted-foreground">
+                    {selectedTags
+                      .slice(0, maxCount)
+                      .map((value) => {
+                        const option = options.find((o) => o.value === value);
+                        const state = tagStates[value];
+                        const statePrefix =
+                          state === TagState.INCLUDE ? "+" : "-";
+                        return `${statePrefix}${option?.label}`;
+                      })
+                      .join(", ")}
+                    {selectedTags.length > maxCount &&
+                      `, +${selectedTags.length - maxCount} more`}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-wrap items-center">
+                  {selectedTags.slice(0, maxCount).map((value) => {
+                    const option = options.find((o) => o.value === value);
+                    const state = tagStates[value];
+                    const IconComponent = option?.icon;
+                    return (
                       <Badge
+                        key={value}
                         className={cn(
-                          "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
-                          isAnimating ? "animate-bounce" : ""
+                          isAnimating ? "animate-bounce" : "",
+                          tagSelectorVariants({ state })
                         )}
                         style={{ animationDuration: `${animation}s` }}
                       >
-                        {`+ ${selectedTags.length - maxCount} more`}
+                        {getStateIcon(state)}
+                        {IconComponent && (
+                          <IconComponent className="h-4 w-4 mx-1" />
+                        )}
+                        {option?.label}
                         <XCircle
                           className="ml-2 h-4 w-4 cursor-pointer"
                           onClick={(event) => {
                             event.stopPropagation();
-                            clearExtraOptions();
+                            const newTagStates = { ...tagStates };
+                            newTagStates[value] = TagState.NONE;
+                            setTagStates(newTagStates);
                           }}
                         />
                       </Badge>
-                    )}
-                  </div>
-                )}
-                <div className="flex items-center justify-between">
-                  <XIcon
-                    className="h-4 mx-2 cursor-pointer text-muted-foreground"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleClear();
-                    }}
-                  />
-                  <Separator
-                    orientation="vertical"
-                    className="flex min-h-6 h-full"
-                  />
-                  <ChevronsUpDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between w-full mx-auto">
-                <span className="text-sm text-muted-foreground mx-3">
-                  {placeholder}
-                </span>
-                <ChevronsUpDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
-              </div>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-auto p-0"
-          align="start"
-          sideOffset={5}
-          onEscapeKeyDown={() => setIsPopoverOpen(false)}
-          style={{ width: "var(--radix-popover-trigger-width)" }}
-        >
-          <Command>
-            {!disableSearch && (
-              <CommandInput
-                placeholder="Search tags..."
-                onKeyDown={handleInputKeyDown}
-              />
-            )}
-            <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup>
-                {/* <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                  Click to toggle: None → Include → Exclude → None  
-                </div> */}
-                {selectedTags.length > 0 && (
-                    <div className="flex flex-wrap items-center border-b pb-0.5">
-                    {selectedTags.map((value) => {
-                      const option = options.find((o) => o.value === value);
-                      const state = tagStates[value];
-                      const IconComponent = option?.icon;
-                      return (
-                        <Badge
-                          key={value}
-                          className={cn(
-                            isAnimating ? "animate-bounce" : "",
-                            tagSelectorVariants({ state })
-                          )}
-                          style={{ animationDuration: `${animation}s` }}
-                        >
-                          {/* {getStateIcon(state)}
-                          {IconComponent && (
-                            <IconComponent className="h-4 w-4 mx-1" />
-                          )} */}
-                          {option?.label}
-                          <XCircle
-                            className="ml-2 h-4 w-4 cursor-pointer"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              const newTagStates = { ...tagStates };
-                              newTagStates[value] = TagState.NONE;
-                              setTagStates(newTagStates);
-                            }}
-                          />
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                )}
-                
-                {options.map((option) => {
-                  const state = tagStates[option.value] || TagState.NONE;
-                  return (
-                    <CommandItem
-                      key={option.value}
-                      onSelect={() => cycleTagState(option.value)}
-                      className="cursor-pointer"
-                    >
-                      <div className="flex items-center justify-center">
-                        {state === TagState.INCLUDE && (
-                          <Plus className="h-4 w-4 text-primary" />
-                        )}
-                        {state === TagState.EXCLUDE && (
-                          <Minus className="h-4 w-4 text-destructive" />
-                        )}
-                        {state === TagState.NONE && (
-                          <div className="h-4 w-4 opacity-50" />
-                        )}
-                      </div>
-                      {option.icon && (
-                        <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    );
+                  })}
+                  {selectedTags.length > maxCount && (
+                    <Badge
+                      className={cn(
+                        "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
+                        isAnimating ? "animate-bounce" : ""
                       )}
-                      <span
-                        className={cn(
-                          state === TagState.INCLUDE && "text-primary",
-                          state === TagState.EXCLUDE && "text-destructive",
-                          state === TagState.NONE && "text-muted-foreground"
-                        )}
-                      >
-                        {option.label}
-                      </span>
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-              <CommandSeparator />
-              {!disableFooter && (
-                <CommandGroup>
-                  <div className="flex items-center justify-between">
-                    {selectedTags.length > 0 && (
-                      <>
-                        <CommandItem
-                          onSelect={handleClear}
-                          className="flex-1 justify-center cursor-pointer"
-                        >
-                          Clear
-                        </CommandItem>
-                        <Separator
-                          orientation="vertical"
-                          className="flex min-h-6 h-full"
-                        />
-                      </>
-                    )}
-                    <CommandItem
-                      onSelect={() => setIsPopoverOpen(false)}
-                      className="flex-1 justify-center cursor-pointer max-w-full"
+                      style={{ animationDuration: `${animation}s` }}
                     >
-                      Close
-                    </CommandItem>
-                  </div>
-                </CommandGroup>
+                      {`+ ${selectedTags.length - maxCount} more`}
+                      <XCircle
+                        className="ml-2 h-4 w-4 cursor-pointer"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          clearExtraOptions();
+                        }}
+                      />
+                    </Badge>
+                  )}
+                </div>
               )}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-        {animation > 0 && selectedTags.length > 0 && (
-          <WandSparkles
-            className={cn(
-              "cursor-pointer my-2 text-foreground bg-background w-3 h-3",
-              isAnimating ? "" : "text-muted-foreground"
+              <div className="flex items-center justify-between">
+                <XIcon
+                  className="h-4 mx-2 cursor-pointer text-muted-foreground"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleClear();
+                  }}
+                />
+                <Separator
+                  orientation="vertical"
+                  className="flex min-h-6 h-full"
+                />
+                <ChevronsUpDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between w-full mx-auto">
+              <span className="text-sm text-muted-foreground mx-3">
+                {placeholder}
+              </span>
+              <ChevronsUpDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
+            </div>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-auto p-0"
+        align="start"
+        sideOffset={5}
+        onEscapeKeyDown={() => setIsPopoverOpen(false)}
+        style={{ width: "var(--radix-popover-trigger-width)" }}
+      >
+        <Command>
+          {!disableSearch && (
+            <CommandInput
+              placeholder="Search tags..."
+              onKeyDown={handleInputKeyDown}
+            />
+          )}
+          <CommandList>
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandGroup>
+              {/* <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                Click to toggle: None → Include → Exclude → None  
+              </div> */}
+              {selectedTags.length > 0 && (
+                  <div className="flex flex-wrap items-center border-b pb-0.5">
+                  {selectedTags.map((value) => {
+                    const option = options.find((o) => o.value === value);
+                    const state = tagStates[value];
+                    const IconComponent = option?.icon;
+                    return (
+                      <Badge
+                        key={value}
+                        className={cn(
+                          isAnimating ? "animate-bounce" : "",
+                          tagSelectorVariants({ state })
+                        )}
+                        style={{ animationDuration: `${animation}s` }}
+                      >
+                        {/* {getStateIcon(state)}
+                        {IconComponent && (
+                          <IconComponent className="h-4 w-4 mx-1" />
+                        )} */}
+                        {option?.label}
+                        <XCircle
+                          className="ml-2 h-4 w-4 cursor-pointer"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            const newTagStates = { ...tagStates };
+                            newTagStates[value] = TagState.NONE;
+                            setTagStates(newTagStates);
+                          }}
+                        />
+                      </Badge>
+                    );
+                  })}
+                </div>
+              )}
+              
+              {options.map((option) => {
+                const state = tagStates[option.value] || TagState.NONE;
+                return (
+                  <CommandItem
+                    key={option.value}
+                    onSelect={() => cycleTagState(option.value)}
+                    className="cursor-pointer"
+                  >
+                    <div className="flex items-center justify-center">
+                      {state === TagState.INCLUDE && (
+                        <Plus className="h-4 w-4 text-primary" />
+                      )}
+                      {state === TagState.EXCLUDE && (
+                        <Minus className="h-4 w-4 text-destructive" />
+                      )}
+                      {state === TagState.NONE && (
+                        <div className="h-4 w-4 opacity-50" />
+                      )}
+                    </div>
+                    {option.icon && (
+                      <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    )}
+                    <span
+                      className={cn(
+                        state === TagState.INCLUDE && "text-primary",
+                        state === TagState.EXCLUDE && "text-destructive",
+                        state === TagState.NONE && "text-muted-foreground"
+                      )}
+                    >
+                      {option.label}
+                    </span>
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+            <CommandSeparator />
+            {!disableFooter && (
+              <CommandGroup>
+                <div className="flex items-center justify-between">
+                  {selectedTags.length > 0 && (
+                    <>
+                      <CommandItem
+                        onSelect={handleClear}
+                        className="flex-1 justify-center cursor-pointer"
+                      >
+                        Clear
+                      </CommandItem>
+                      <Separator
+                        orientation="vertical"
+                        className="flex min-h-6 h-full"
+                      />
+                    </>
+                  )}
+                  <CommandItem
+                    onSelect={() => setIsPopoverOpen(false)}
+                    className="flex-1 justify-center cursor-pointer max-w-full"
+                  >
+                    Close
+                  </CommandItem>
+                </div>
+              </CommandGroup>
             )}
-            onClick={() => setIsAnimating(!isAnimating)}
-          />
-        )}
-      </Popover>
-    );
-  }
-);
+          </CommandList>
+        </Command>
+      </PopoverContent>
+      {animation > 0 && selectedTags.length > 0 && (
+        <WandSparkles
+          className={cn(
+            "cursor-pointer my-2 text-foreground bg-background w-3 h-3",
+            isAnimating ? "" : "text-muted-foreground"
+          )}
+          onClick={() => setIsAnimating(!isAnimating)}
+        />
+      )}
+    </Popover>
+  );
+};
 
 TagsSelector.displayName = "TagsSelector";

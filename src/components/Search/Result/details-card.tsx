@@ -16,7 +16,7 @@ interface DetailsCardProps {
 export default function DetailsCard({ manga }: DetailsCardProps) {
   const slug = generateSlug(manga.title);
   return (
-    <Card className="rounded-sm shadow-sm transition-colors duration-200 w-full">
+    <Card className="rounded-sm shadow-xs transition-colors duration-200 w-full">
       <CardContent className="flex gap-2 p-1">
         <NoPrefetchLink href={`/manga/${manga.id}/${slug}`}>
           <MangaCover
@@ -25,7 +25,7 @@ export default function DetailsCard({ manga }: DetailsCardProps) {
             alt={manga.title}
             placeholder="/images/place-doro.webp"
             wrapper="w-20 h-auto border"
-            className="!w-20 !h-28 !object-cover"
+            className="w-20! h-28! object-cover!"
             quality="256"
             //isExpandable
           />

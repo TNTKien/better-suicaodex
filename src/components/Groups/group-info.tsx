@@ -44,10 +44,10 @@ export default function GroupInfo({ id }: GroupInfoProps) {
 
   if (isLoading)
     return (
-      <div className="absolute h-[12.5rem] md:h-[16rem] z-[-2] w-auto left-0 right-0 top-0 block bg-gray-300 ease-in-out">
+      <div className="absolute h-50 md:h-64 z-[-2] w-auto left-0 right-0 top-0 block bg-gray-300 ease-in-out">
         <div
           className={cn(
-            "absolute h-[12.5rem] md:h-[16rem] w-full",
+            "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
             "bg-no-repeat bg-cover bg-center-25"
           )}
@@ -55,9 +55,9 @@ export default function GroupInfo({ id }: GroupInfoProps) {
         ></div>
         <div
           className={cn(
-            "absolute h-[12.5rem] md:h-[16rem] w-auto inset-0 pointer-events-none",
-            // "backdrop-blur-none md:backdrop-blur-sm",
-            "bg-gradient-to-r from-black/25 to-transparent"
+            "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none",
+            // "backdrop-blur-none md:backdrop-blur-xs",
+            "bg-linear-to-r from-black/25 to-transparent"
           )}
         ></div>
       </div>
@@ -67,10 +67,10 @@ export default function GroupInfo({ id }: GroupInfoProps) {
   // console.log(data);
   return (
     <>
-      <div className="absolute h-[12.5rem] md:h-[16rem] z-[-2] w-auto left-0 right-0 top-0 block">
+      <div className="absolute h-50 md:h-64 z-[-2] w-auto left-0 right-0 top-0 block">
         <div
           className={cn(
-            "absolute h-[12.5rem] md:h-[16rem] w-full",
+            "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
             "bg-no-repeat bg-cover bg-center-25"
           )}
@@ -78,16 +78,16 @@ export default function GroupInfo({ id }: GroupInfoProps) {
         ></div>
         <div
           className={cn(
-            "absolute h-[12.5rem] md:h-[16rem] w-auto inset-0 pointer-events-none",
-            // "backdrop-blur-none md:backdrop-blur-sm",
-            "bg-gradient-to-r from-black/25 to-transparent"
+            "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none",
+            // "backdrop-blur-none md:backdrop-blur-xs",
+            "bg-linear-to-r from-black/25 to-transparent"
           )}
         ></div>
 
         {/* <div
           className={cn(
             "md:hidden",
-            "absolute h-[12.5rem] md:h-[16rem] w-auto inset-0 pointer-events-none backdrop-blur-[2px]"
+            "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none backdrop-blur-[2px]"
           )}
           style={{
             background:

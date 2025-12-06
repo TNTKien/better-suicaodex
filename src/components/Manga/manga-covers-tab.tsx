@@ -73,7 +73,7 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
   return (
     <>
       <MultiSelect
-        className="w-full mt-2 shadow-sm"
+        className="w-full mt-2 shadow-xs"
         placeholder="Mặc định"
         disableFooter
         disableSearch
@@ -94,11 +94,11 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
                 <Expand size={45} color="white" />
               </DialogTrigger>
 
-              <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto !rounded-none justify-center">
+              <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto rounded-none! justify-center">
                 <DialogTitle className="hidden"></DialogTitle>
                 <DialogDescription className="hidden"></DialogDescription>
 
-                <DialogClose className="fixed inset-0 z-0 !block cursor-default" />
+                <DialogClose className="fixed inset-0 z-0 block! cursor-default" />
                 <div className="max-w-[90vw] md:max-w-screen max-h-[90vh] lg:max-h-screen flex justify-center items-center relative z-10">
                   <div className="absolute bg-secondary p-5 rounded-sm">
                     <Loader2 className="animate-spin" size={50} />
@@ -119,12 +119,12 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
             <CardContent className="p-0  w-full">
               <LazyLoadImage
                 wrapperClassName={cn(
-                  "!block rounded-sm object-cover w-full",
-                  !loaded && "aspect-[5/7]"
+                  "block! rounded-sm object-cover w-full",
+                  !loaded && "aspect-5/7"
                 )}
                 placeholderSrc="/images/place-doro.webp"
                 className={cn(
-                  "w-full rounded-sm block object-cover aspect-[5/7]"
+                  "w-full rounded-sm block object-cover aspect-5/7"
                 )}
                 src={getCoverImageUrl(id, cover.fileName, "512")}
                 alt={`Ảnh bìa tập ${cover.volume}`}
@@ -135,8 +135,8 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
                 //visibleByDefault
               />
             </CardContent>
-            <CardFooter className="absolute bottom-0 p-2 bg-gradient-to-t from-black w-full rounded-b-sm dark:rounded-b-none max-h-full items-end">
-              <p className="text-base font-semibold line-clamp-1 break-all hover:line-clamp-none text-white drop-shadow-sm">
+            <CardFooter className="absolute bottom-0 p-2 bg-linear-to-t from-black w-full rounded-b-sm dark:rounded-b-none max-h-full items-end">
+              <p className="text-base font-semibold line-clamp-1 break-all hover:line-clamp-none text-white drop-shadow-xs">
                 {!!cover.volume ? `Volume ${cover.volume}` : "No Volume"}
               </p>
             </CardFooter>

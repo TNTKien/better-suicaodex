@@ -73,12 +73,12 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
         </div>
         <LazyLoadImage
           wrapperClassName={cn(
-            "!block rounded-sm object-cover w-full h-full",
-            !loaded && "aspect-[5/7]"
+            "block! rounded-sm object-cover w-full h-full",
+            !loaded && "aspect-5/7"
           )}
           placeholderSrc="/images/place-doro.webp"
           className={cn(
-            "h-auto w-full rounded-sm block object-cover aspect-[5/7]"
+            "h-auto w-full rounded-sm block object-cover aspect-5/7"
           )}
           src={src}
           alt={`Ảnh bìa ${manga.title}`}
@@ -91,7 +91,7 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
 
       <CardFooter className="py-2 px-0 w-full">
         <NoPrefetchLink href={`/manga/${manga.id}/${generateSlug(manga.title)}`}>
-          <p className="text-base font-semibold line-clamp-2 drop-shadow-sm">
+          <p className="text-base font-semibold line-clamp-2 drop-shadow-xs">
             {manga.title}
           </p>
         </NoPrefetchLink>

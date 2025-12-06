@@ -187,10 +187,10 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
             </div>
           ) : (
             <div className="flex flex-col">
-              <div className="flex flex-col justify-between h-[13.5rem] pb-[0.5rem]">
+              <div className="flex flex-col justify-between h-54 pb-2">
                 <div className="flex flex-col">
                   <p
-                    className="drop-shadow-md font-black md:text-white break-words leading-[1.15]"
+                    className="drop-shadow-md font-black md:text-white wrap-break-word leading-[1.15]"
                     style={{
                       fontSize: `clamp(2.25rem, ${
                         manga.title.length <= 20

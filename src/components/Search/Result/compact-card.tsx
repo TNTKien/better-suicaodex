@@ -13,7 +13,7 @@ interface CompactCardProps {
 
 export default function CompactCard({ manga }: CompactCardProps) {
   return (
-    <Card className="rounded-md shadow-sm hover:bg-accent transition-colors duration-200">
+    <Card className="rounded-md shadow-xs hover:bg-accent transition-colors duration-200">
       <CardContent className="flex gap-2 p-2">
         <MangaCover
           id={manga.id}
@@ -21,7 +21,7 @@ export default function CompactCard({ manga }: CompactCardProps) {
           alt={manga.title}
           placeholder="/images/place-doro.webp"
           wrapper="w-14 h-auto border"
-          className="!w-14 !h-20 !object-cover"
+          className="w-14! h-20! object-cover!"
           quality="256"
         />
         <div className="flex flex-col justify-evenly w-full">

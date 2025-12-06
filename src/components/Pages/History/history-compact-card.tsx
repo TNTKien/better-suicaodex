@@ -18,7 +18,7 @@ export default function HistoryCompactCard({
   const title = ChapterTitle(chapter);
   const router = useRouter();
   return (
-    <Card className="rounded-sm shadow-sm transition-colors duration-200 w-full">
+    <Card className="rounded-sm shadow-xs transition-colors duration-200 w-full">
       <CardHeader className="px-2 py-1 border-b font-bold line-clamp-2 md:line-clamp-1 break-all">
         <NoPrefetchLink href={`/manga/${chapter.manga.id}`}>{chapter.manga.title}</NoPrefetchLink>
       </CardHeader>
@@ -39,7 +39,7 @@ export default function HistoryCompactCard({
             <div className="flex items-center justify-self-start">
               <Users size={15} className="shrink-0" />
               {chapter.group.length === 0 ? (
-                <span className="line-clamp-1 font-normal text-xs px-[0.25rem]">
+                <span className="line-clamp-1 font-normal text-xs px-1">
                   No Group
                 </span>
               ) : (
@@ -48,7 +48,7 @@ export default function HistoryCompactCard({
                     <Button
                       key={group.id}
                       variant="ghost"
-                      className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-[0.25rem] hover:underline hover:text-primary break-all"
+                      className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:underline hover:text-primary break-all"
                       size="sm"
                       onClick={(e: React.MouseEvent) => {
                         e.preventDefault();

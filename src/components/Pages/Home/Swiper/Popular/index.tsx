@@ -36,7 +36,7 @@ export default function PopularSwiper() {
         <h1 className="text-2xl font-black uppercase">Tiêu điểm</h1>
       </div>
 
-      <div className="absolute !p-0 !m-0 top-0 left-0 w-full">
+      <div className="absolute p-0! m-0! top-0 left-0 w-full">
         <div>
           <Swiper
             className="h-[335px] md:h-[410px] lg:h-[430px]"
@@ -52,7 +52,7 @@ export default function PopularSwiper() {
             ))}
             <div
               className={cn(
-                "absolute flex gap-2 w-full bottom-0 md:-bottom-[1.5px] lg:-bottom-1 left-0 z-[3] justify-between md:justify-end items-center",
+                "absolute flex gap-2 w-full bottom-0 md:-bottom-[1.5px] lg:-bottom-1 left-0 z-3 justify-between md:justify-end items-center",
                 "px-4 md:pr-[calc(32px+var(--sidebar-width-icon))] lg:pr-[calc(48px+var(--sidebar-width-icon))]"
               )}
             >

@@ -145,7 +145,7 @@ function Customizer() {
                   >
                     <span
                       className={cn(
-                        "flex size-5 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-[--theme-primary]"
+                        "flex size-5 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-(--theme-primary)"
                       )}
                     >
                       {isActive && <Check className="h-4 w-4 text-white" />}
@@ -227,7 +227,7 @@ function Customizer() {
 //     --destructive-foreground: <%- colors.light["destructive-foreground"] %>;
 //     --border: <%- colors.light["border"] %>;
 //     --input: <%- colors.light["input"] %>;
-//     --ring: <%- colors.light["ring"] %>;
+//     --ring: <%- colors.light["ring-3"] %>;
 //     --radius: <%- radius %>rem;
 //     --chart-1: <%- colors.light["chart-1"] %>;
 //     --chart-2: <%- colors.light["chart-2"] %>;
@@ -255,7 +255,7 @@ function Customizer() {
 //     --destructive-foreground: <%- colors.dark["destructive-foreground"] %>;
 //     --border: <%- colors.dark["border"] %>;
 //     --input: <%- colors.dark["input"] %>;
-//     --ring: <%- colors.dark["ring"] %>;
+//     --ring: <%- colors.dark["ring-3"] %>;
 //     --chart-1: <%- colors.dark["chart-1"] %>;
 //     --chart-2: <%- colors.dark["chart-2"] %>;
 //     --chart-3: <%- colors.dark["chart-3"] %>;

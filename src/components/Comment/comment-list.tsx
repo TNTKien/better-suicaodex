@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 import CommentCard from "./comment-card";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import {
   Pagination,
@@ -25,7 +25,15 @@ interface CommentListProps {
 }
 
 // Use forwardRef to allow parent components to access the mutate function
-const CommentList = forwardRef(({ id, type }: CommentListProps, ref) => {
+const CommentList = (
+  {
+    ref,
+    id,
+    type
+  }: CommentListProps & {
+    ref: React.RefObject<unknown>;
+  }
+) => {
   const [page, setPage] = useState(1);
   const offset = (page - 1) * LIMIT; // Calculate offset based on page number
   const { data, mutate, isLoading, error } = useSWR(
@@ -79,11 +87,10 @@ const CommentList = forwardRef(({ id, type }: CommentListProps, ref) => {
   };
 
   return (
-    <div className="space-y-4 mt-4">
+    (<div className="space-y-4 mt-4">
       {data.comments.map((comment: any) => (
         <CommentCard key={comment.id} comment={comment} />
       ))}
-
       {totalPages > 1 && (
         <Pagination className="mt-4">
           <PaginationContent>
@@ -95,7 +102,7 @@ const CommentList = forwardRef(({ id, type }: CommentListProps, ref) => {
 
             {totalPages <= 7 ? (
               // Show all pages if total is 7 or less
-              Array.from({ length: totalPages }, (_, i) => (
+              (Array.from({ length: totalPages }, (_, i) => (
                 <PaginationItem key={i + 1}>
                   <PaginationLink
                     className="w-8 h-8"
@@ -105,10 +112,10 @@ const CommentList = forwardRef(({ id, type }: CommentListProps, ref) => {
                     {i + 1}
                   </PaginationLink>
                 </PaginationItem>
-              ))
+              )))
             ) : page <= 4 ? (
               // Near start: show 1, 2, 3, 4, 5, ..., lastPage
-              <>
+              (<>
                 {[1, 2, 3, 4, 5].map((num) => (
                   <PaginationItem key={num}>
                     <PaginationLink
@@ -129,10 +136,10 @@ const CommentList = forwardRef(({ id, type }: CommentListProps, ref) => {
                     {totalPages}
                   </PaginationLink>
                 </PaginationItem>
-              </>
+              </>)
             ) : page >= totalPages - 3 ? (
               // Near end: show 1, ..., lastPage-4, lastPage-3, lastPage-2, lastPage-1, lastPage
-              <>
+              (<>
                 <PaginationItem>
                   <PaginationLink
                     className="w-8 h-8"
@@ -159,10 +166,10 @@ const CommentList = forwardRef(({ id, type }: CommentListProps, ref) => {
                     </PaginationLink>
                   </PaginationItem>
                 ))}
-              </>
+              </>)
             ) : (
               // Middle: show 1, ..., page-1, page, page+1, ..., lastPage
-              <>
+              (<>
                 <PaginationItem>
                   <PaginationLink
                     className="w-8 h-8"
@@ -192,7 +199,7 @@ const CommentList = forwardRef(({ id, type }: CommentListProps, ref) => {
                     {totalPages}
                   </PaginationLink>
                 </PaginationItem>
-              </>
+              </>)
             )}
 
             <PaginationNext
@@ -203,9 +210,9 @@ const CommentList = forwardRef(({ id, type }: CommentListProps, ref) => {
           </PaginationContent>
         </Pagination>
       )}
-    </div>
+    </div>)
   );
-});
+};
 
 // Add a display name for the component
 CommentList.displayName = "CommentList";

@@ -24,7 +24,7 @@ export const MangaStatsComponent: FC<MangaStatsProps> = ({ stats, size }) => {
   const isMobile = useIsMobile();
   //TODO: fetch
   return (
-    <div className="flex flex-wrap gap-2 !lowercase">
+    <div className="flex flex-wrap gap-2 lowercase!">
       {isMobile ? (
         <Popover>
           <PopoverTrigger asChild>

@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 export default function MangaDetailsSkeleton() {
   return (
     <>
-      <div className="absolute h-[17.5rem] z-[-2] w-auto left-0 right-0 top-0 hidden md:block">
+      <div className="absolute h-70 z-[-2] w-auto left-0 right-0 top-0 hidden md:block">
         <div
           className={cn(
-            "absolute h-[17.5rem] w-full",
+            "absolute h-70 w-full",
             "transition-[width] duration-150 ease-in-out",
             "bg-no-repeat bg-cover bg-center-25 bg-gray-800/50"
           )}

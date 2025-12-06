@@ -47,7 +47,7 @@ export default function CommentFeedItem({
 
       <ScrollArea className="h-20">
         <ReactMarkdown
-          className="prose prose-img:my-1 prose-img:!max-w-[150px] flex-1 flex-col gap-2 dark:prose-invert text-sm"
+          className="prose prose-img:my-1 prose-img:max-w-[150px]! flex-1 flex-col gap-2 dark:prose-invert text-sm"
           remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
           rehypePlugins={[rehypeRaw, [rehypeSanitize]]}
           components={{
