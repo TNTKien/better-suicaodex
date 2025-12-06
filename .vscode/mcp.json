@@ -1,0 +1,26 @@
+{
+  "servers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    }
+    // "shadcn": {
+    //   "command": "npx",
+    //   "args": [
+    //     "shadcn@latest",
+    //     "mcp"
+    //   ]
+    // },
+    // "kibo-ui": {
+    //   "command": "npx",
+    //   "args": [
+    //     "-y",
+    //     "mcp-remote",
+    //     "https://www.kibo-ui.com/api/mcp/mcp"
+    //   ]
+    // }
+  }
+}
