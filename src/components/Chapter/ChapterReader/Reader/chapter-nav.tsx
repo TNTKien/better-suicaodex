@@ -175,14 +175,14 @@ export default function ChapterNav({
             onValueChange={(id) => router.push(`/chapter/${id}`)}
           >
             <SelectTrigger
-              className="focus:ring-0 min-w-min md:min-w-48 [&_svg]:size-5 [&[data-state=open]>svg]:rotate-180 bg-secondary"
+              className="focus:ring-0 min-w-min md:min-w-48 [&_svg]:size-5 [&[data-state=open]>svg]:rotate-180 bg-secondary shadow-xs"
               // disabled={!chapterData.chapter}
             >
               <SelectValue placeholder={ChapterTitle(chapterData)} />
             </SelectTrigger>
             <SelectContent
               sideOffset={isMobile ? 10 : 7}
-              //className={cn("bg-secondary", `theme-${config.theme}`)}
+              className={cn("max-h-[350px]", `theme-${config.theme}`)}
             >
               {chapterAggregate.map((vol) => (
                 <SelectGroup key={vol.vol}>
@@ -240,7 +240,7 @@ export default function ChapterNav({
                       variant="outline"
                       className={cn(
                         config.reader.type === "single" &&
-                          "border-2 border-primary"
+                          "border-2 border-primary!"
                       )}
                       onClick={() => {
                         setConfig({
@@ -267,7 +267,7 @@ export default function ChapterNav({
                       variant="outline"
                       className={cn(
                         config.reader.type === "long-strip" &&
-                          "border-2 border-primary"
+                          "border-2 border-primary!"
                       )}
                       onClick={() =>
                         setConfig({
@@ -338,7 +338,7 @@ export default function ChapterNav({
                       variant="outline"
                       className={cn(
                         config.reader.imageFit === "height" &&
-                          "border-2 border-primary"
+                          "border-2 border-primary!"
                       )}
                       onClick={() =>
                         setConfig({
@@ -358,7 +358,7 @@ export default function ChapterNav({
                       variant="outline"
                       className={cn(
                         config.reader.imageFit === "width" &&
-                          "border-2 border-primary"
+                          "border-2 border-primary!"
                       )}
                       onClick={() =>
                         setConfig({
@@ -382,7 +382,7 @@ export default function ChapterNav({
                     <Button
                       variant="outline"
                       className={cn(
-                        !config.reader.header && "border-2 border-primary"
+                        !config.reader.header && "border-2 border-primary!"
                       )}
                       onClick={() =>
                         setConfig({
@@ -401,7 +401,7 @@ export default function ChapterNav({
                     <Button
                       variant="outline"
                       className={cn(
-                        !!config.reader.header && "border-2 border-primary"
+                        !!config.reader.header && "border-2 border-primary!"
                       )}
                       onClick={() =>
                         setConfig({

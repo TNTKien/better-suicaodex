@@ -183,7 +183,7 @@ const SingleCard = ({ chapter, hideIcons = false }: SingleCardProps) => {
             <Button
               size="sm"
               variant="ghost"
-              className="rounded-sm gap-0.5 h-6 px-1"
+              className="rounded-sm gap-0.5 h-6 px-1!"
             >
               <MessageSquare />
             </Button>
@@ -202,7 +202,7 @@ const SingleCard = ({ chapter, hideIcons = false }: SingleCardProps) => {
                   <Button
                     key={group.id}
                     variant="ghost"
-                    className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:underline hover:text-primary break-all"
+                    className="whitespace-normal! text-xs  font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:underline hover:text-primary break-all! shrink!"
                     size="sm"
                     onClick={(e: React.MouseEvent) => {
                       e.preventDefault();

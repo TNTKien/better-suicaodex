@@ -48,7 +48,7 @@ export default function HistoryCompactCard({
                     <Button
                       key={group.id}
                       variant="ghost"
-                      className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:underline hover:text-primary break-all"
+                      className="whitespace-normal! text-xs font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:underline hover:text-primary break-all! shrink!"
                       size="sm"
                       onClick={(e: React.MouseEvent) => {
                         e.preventDefault();
@@ -64,7 +64,7 @@ export default function HistoryCompactCard({
             </div>
             <div className="flex items-center space-x-1 w-full max-w-max justify-end pr-1">
               <time
-                className="text-xs font-light"
+                className="text-xs font-light line-clamp-1 break-all"
                 dateTime={new Date(chapter.updatedAt).toDateString()}
               >
                 {formatTimeToNow(new Date(chapter.updatedAt))}

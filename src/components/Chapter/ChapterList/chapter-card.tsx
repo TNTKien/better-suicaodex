@@ -153,7 +153,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
         </div>
         <div className="flex items-center space-x-1 w-full max-w-max justify-end pr-1">
           <time
-            className="text-xs font-light"
+            className="text-xs font-light line-clamp-1 break-all"
             dateTime={new Date(chapter.updatedAt).toDateString()}
           >
             {formatTimeToNow(new Date(chapter.updatedAt))}

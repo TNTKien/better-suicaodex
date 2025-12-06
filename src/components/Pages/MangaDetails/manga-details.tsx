@@ -446,7 +446,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
               <TabsContent value="chapter" className="mt-0">
                 <Button
                   variant="ghost"
-                  className="px-0! hover:bg-transparent! text-base [&_svg]:size-5 whitespace-normal"
+                  className="px-0! hover:bg-transparent! text-base [&_svg]:size-5 whitespace-normal!"
                   size="lg"
                   onClick={() => setShowHiddenChapters(!showHiddenChapters)}
                 >
@@ -455,7 +455,9 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                   ) : (
                     <Square strokeWidth={3} />
                   )}
-                  Hiển thị các chương ẩn (nếu có)
+                  <span className="break-all! line-clamp-1">
+                    Hiển thị các chương ẩn (nếu có)
+                  </span>
                 </Button>
 
                 <ChapterList
