@@ -19,17 +19,17 @@ export default function MangaImage({ src, alt, onLoaded, isPreloaded = false }: 
   return (
     <LazyLoadImage
       wrapperClassName={cn(
-        "!block mx-auto h-auto w-auto object-contain",
-        !loaded && "aspect-[5/7]",
+        "block! mx-auto h-auto w-auto object-contain",
+        !loaded && "aspect-5/7",
         config.reader.imageFit === "height"
-          ? "!max-h-screen "
+          ? "max-h-screen! "
           : "max-w-full min-w-0"
       )}
       placeholderSrc={"/images/place-doro.webp"}
       className={cn(
         "h-auto mx-auto w-auto object-contain",
         config.reader.imageFit === "height"
-          ? "!max-h-screen "
+          ? "max-h-screen! "
           : "max-w-full min-w-0"
       )}
       onLoad={() => {

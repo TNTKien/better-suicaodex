@@ -46,7 +46,7 @@ export default function LatestUpdate() {
 
         <Button asChild size="icon" variant="ghost" className="[&_svg]:size-6">
           <Link href={`/latest`}>
-            <ArrowRight />
+            <ArrowRight className="size-6" />
           </Link>
         </Button>
       </div>

@@ -46,22 +46,26 @@ export default function Notifications({ page }: NotificationsProps) {
     <>
       <div className="w-full flex flex-wrap gap-2 justify-end">
         <Button
-          className="w-full md:w-auto"
+          className="w-full md:w-auto whitespace-normal! break-all! shrink! line-clamp-1 flex"
           size="sm"
           onClick={clearAllLocalNotifications}
           variant="secondary"
         >
           <BellOff />
-          Hủy nhận thông báo tất cả
+          <span className="break-all line-clamp-1">
+            Hủy nhận thông báo tất cả
+          </span>
         </Button>
         <Button
-          className="w-full md:w-auto"
+          className="w-full md:w-auto whitespace-normal! break-all! shrink! line-clamp-1 flex"
           size="sm"
           onClick={markAllAsRead}
           variant="secondary"
         >
           <CheckCheck />
-          Đánh dấu tất cả là đã đọc
+          <span className="break-all line-clamp-1">
+            Đánh dấu tất cả là đã đọc
+          </span>
         </Button>
       </div>
 

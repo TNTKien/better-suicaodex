@@ -154,7 +154,7 @@ const MangaDescription = ({
         >
           <Button
             size="sm"
-            className="rounded-t-none h-4 px-1"
+            className="rounded-t-none h-4 px-1! text-xs"
             onClick={handleExpand}
             variant={state.expanded ? "secondary" : "default"}
           >

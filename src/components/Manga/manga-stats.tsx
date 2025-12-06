@@ -24,11 +24,11 @@ export const MangaStatsComponent: FC<MangaStatsProps> = ({ stats, size }) => {
   const isMobile = useIsMobile();
   //TODO: fetch
   return (
-    <div className="flex flex-wrap gap-2 !lowercase">
+    <div className="flex flex-wrap gap-2 lowercase!">
       {isMobile ? (
         <Popover>
           <PopoverTrigger asChild>
-            <span className="flex items-center gap-1 text-sm cursor-pointer text-[hsl(var(--primary))] drop-shadow-md">
+            <span className="flex items-center gap-1 text-sm cursor-pointer text-primary drop-shadow-md">
               <Star size={16} />
               <span>{stats.rating.bayesian.toFixed(2)}</span>
             </span>
@@ -44,7 +44,7 @@ export const MangaStatsComponent: FC<MangaStatsProps> = ({ stats, size }) => {
           <HoverCardTrigger asChild>
             <span
               className={cn(
-                "flex items-center gap-1 cursor-pointer text-[hsl(var(--primary))] drop-shadow-md",
+                "flex items-center gap-1 cursor-pointer text-primary drop-shadow-md",
                 size === "sm" ? "text-sm" : "text-base"
               )}
             >

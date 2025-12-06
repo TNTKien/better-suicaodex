@@ -205,12 +205,12 @@ export default function AddToLibraryBtn({
           <div className="flex flex-row gap-4">
             <LazyLoadImage
               wrapperClassName={cn(
-                "!block rounded-sm object-cover max-w-[250px] w-full h-auto",
-                !loaded && "aspect-[5/7]"
+                "block! rounded-sm object-cover max-w-[250px] w-full h-auto",
+                !loaded && "aspect-5/7"
               )}
               placeholderSrc="/images/place-doro.webp"
               className={cn(
-                "h-auto w-full rounded-sm block object-cover shadow-md drop-shadow-md aspect-[5/7]"
+                "h-auto w-full rounded-sm block object-cover shadow-md drop-shadow-md aspect-5/7"
               )}
               src={src}
               alt={`Ảnh bìa ${manga.title}`}
@@ -339,7 +339,7 @@ export default function AddToLibraryBtn({
           </div>
         </div>
 
-        <DialogFooter className="justify-end flex flex-col-reverse sm:flex-row gap-2 !space-x-0">
+        <DialogFooter className="justify-end flex flex-col-reverse sm:flex-row gap-2 space-x-0!">
           <DialogClose asChild>
             <Button
               variant="secondary"

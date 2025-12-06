@@ -37,7 +37,7 @@ export function MainNav() {
       className="mr-4 flex items-center gap-0.5 justify-start lg:mr-6"
     >
       <Image
-        src={logoSrc || logos.gehenna}
+        src={logos.gehenna}
         alt="SuicaoDex's logo"
         className={cn(
           "max-h-8 w-auto grayscale contrast-150 dark:invert",

@@ -127,7 +127,7 @@ export default function Reader({ images, chapterData }: ReaderProps) {
         <LoadingNav
           button={
             <Button
-              className="w-full md:min-w-48 justify-start"
+              className="w-full md:min-w-48 justify-start whitespace-normal! break-all! shrink!"
               variant="outline"
             >
               <Loader2 className="animate-spin" />
@@ -249,7 +249,7 @@ function LoadingNav({ button }: LoadingNavProps) {
                     variant="outline"
                     className={cn(
                       config.reader.type === "single" &&
-                        "border-2 border-primary"
+                        "border-2 border-primary!"
                     )}
                     onClick={() => {
                       setConfig({
@@ -271,7 +271,7 @@ function LoadingNav({ button }: LoadingNavProps) {
                     variant="outline"
                     className={cn(
                       config.reader.type === "long-strip" &&
-                        "border-2 border-primary"
+                        "border-2 border-primary!"
                     )}
                     onClick={() =>
                       setConfig({
@@ -342,7 +342,7 @@ function LoadingNav({ button }: LoadingNavProps) {
                     variant="outline"
                     className={cn(
                       config.reader.imageFit === "height" &&
-                        "border-2 border-primary"
+                        "border-2 border-primary!"
                     )}
                     onClick={() =>
                       setConfig({
@@ -362,7 +362,7 @@ function LoadingNav({ button }: LoadingNavProps) {
                     variant="outline"
                     className={cn(
                       config.reader.imageFit === "width" &&
-                        "border-2 border-primary"
+                        "border-2 border-primary!"
                     )}
                     onClick={() =>
                       setConfig({
@@ -386,7 +386,7 @@ function LoadingNav({ button }: LoadingNavProps) {
                   <Button
                     variant="outline"
                     className={cn(
-                      !config.reader.header && "border-2 border-primary"
+                      !config.reader.header && "border-2 border-primary!"
                     )}
                     onClick={() =>
                       setConfig({
@@ -405,7 +405,7 @@ function LoadingNav({ button }: LoadingNavProps) {
                   <Button
                     variant="outline"
                     className={cn(
-                      !!config.reader.header && "border-2 border-primary"
+                      !!config.reader.header && "border-2 border-primary!"
                     )}
                     onClick={() =>
                       setConfig({

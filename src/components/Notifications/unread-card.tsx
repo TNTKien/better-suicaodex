@@ -21,7 +21,7 @@ export default function UnreadCard({ chapter }: UnreadCardProps) {
   const router = useRouter();
   const { markAsRead } = useLocalNotification();
   return (
-    <Card className="rounded-sm shadow-sm transition-colors duration-200 w-full">
+    <Card className="rounded-sm shadow-xs transition-colors duration-200 w-full">
       <CardContent className="flex gap-1.5 p-1 md:p-1.5">
         <NoPrefetchLink href={`/manga/${chapter.manga.id}`}>
           <MangaCover
@@ -30,7 +30,7 @@ export default function UnreadCard({ chapter }: UnreadCardProps) {
             alt={chapter.manga.title || ""}
             placeholder="/images/place-doro.webp"
             wrapper="w-20 h-auto border"
-            className="!w-20 !h-[75px] md:!h-[77.5px] !object-cover"
+            className="w-20! h-[75px]! md:h-[77.5px]! object-cover!"
             quality="256"
             // quality={isMobile ? "256" : "512"}
           />
@@ -46,11 +46,11 @@ export default function UnreadCard({ chapter }: UnreadCardProps) {
             <Button
               size="sm"
               variant="ghost"
-              className="h-6 px-2 md:px-3"
+              className="h-6 px-2! md:px-3! whitespace-normal!  flex shrink! text-xs"
               onClick={() => markAsRead(chapter.id)}
             >
               <Check />
-              Đánh dấu đã đọc
+              <span className="break-all! line-clamp-1">Đã đọc</span>
             </Button>
           </div>
 
@@ -71,7 +71,7 @@ export default function UnreadCard({ chapter }: UnreadCardProps) {
                 <div className="flex items-center justify-self-start">
                   <Users size={15} className="shrink-0" />
                   {chapter.group.length === 0 ? (
-                    <span className="line-clamp-1 font-normal text-xs px-[0.25rem]">
+                    <span className="line-clamp-1 font-normal text-xs px-1">
                       No Group
                     </span>
                   ) : (
@@ -80,7 +80,7 @@ export default function UnreadCard({ chapter }: UnreadCardProps) {
                         <Button
                           key={group.id}
                           variant="ghost"
-                          className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-[0.25rem] hover:underline hover:text-primary break-all"
+                          className="whitespace-normal! text-xs font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:underline hover:text-primary break-all! shrink!"
                           size="sm"
                           onClick={(e: React.MouseEvent) => {
                             e.preventDefault();
@@ -96,7 +96,7 @@ export default function UnreadCard({ chapter }: UnreadCardProps) {
                 </div>
                 <div className="flex items-center space-x-1 w-full max-w-max justify-end pr-1">
                   <time
-                    className="text-xs font-light"
+                    className="text-xs font-light line-clamp-1 break-all"
                     dateTime={new Date(chapter.updatedAt).toDateString()}
                   >
                     {formatTimeToNow(new Date(chapter.updatedAt))}

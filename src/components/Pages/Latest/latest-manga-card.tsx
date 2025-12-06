@@ -49,12 +49,12 @@ export default function LatestMangaCard({
           <CardContent className="relative p-0 rounded-sm">
             <LazyLoadImage
               wrapperClassName={cn(
-                "!block rounded-sm object-cover w-full h-full",
-                !loaded && "aspect-[5/7]"
+                "block! rounded-sm object-cover w-full h-full",
+                !loaded && "aspect-5/7"
               )}
               placeholderSrc="/images/place-doro.webp"
               className={cn(
-                "h-auto w-full rounded-sm block object-cover aspect-[5/7]"
+                "h-auto w-full rounded-sm block object-cover aspect-5/7"
               )}
               src={src}
               alt={`Ảnh bìa ${manga.title}`}
@@ -74,7 +74,7 @@ export default function LatestMangaCard({
   }
 
   return (
-    <Card className="rounded-sm shadow-sm transition-colors duration-200">
+    <Card className="rounded-sm shadow-xs transition-colors duration-200">
       <CardHeader className="p-1 md:hidden">
         <NoPrefetchLink
           href={`/manga/${manga.id}/${generateSlug(manga.title || "")}`}
@@ -91,7 +91,7 @@ export default function LatestMangaCard({
             alt={manga.title || ""}
             placeholder="/images/place-doro.webp"
             wrapper="w-20 md:w-[140px] h-auto border"
-            className="!w-20 !h-28 md:!w-[140px] md:!h-[200px] !object-cover"
+            className="w-20! h-28! md:w-[140px]! md:h-[200px]! object-cover!"
             quality="256"
             // quality={isMobile ? "256" : "512"}
           />
@@ -125,7 +125,7 @@ export default function LatestMangaCard({
         <CardFooter className="w-full pt-0 pb-1.5 justify-center">
           <Button
             size="sm"
-            className="h-4 px-1 bg-transparent shadow-none hover:bg-transparent text-primary"
+            className="h-4 px-1! text-xs bg-transparent shadow-none hover:bg-transparent text-primary"
             onClick={() => setExpanded((prev) => !prev)}
           >
             {expanded ? (
@@ -164,7 +164,7 @@ const SingleCard = ({ chapter, hideIcons = false }: SingleCardProps) => {
       target={chapter.externalUrl ? "_blank" : "_self"}
       className="w-full"
     >
-      <Card className="w-full flex flex-col justify-between rounded-[0.125rem] px-1.5 py-1.5 shadow-none relative min-h-14 hover:bg-accent border-none">
+      <Card className="w-full flex flex-col justify-between rounded-xs px-1.5 py-1.5 shadow-none relative min-h-14 hover:bg-accent border-none">
         <div className="flex justify-between">
           <div className="flex items-center space-x-1">
             {chapter.language === "vi" && <VN className="size-4 shrink-0" />}
@@ -183,7 +183,7 @@ const SingleCard = ({ chapter, hideIcons = false }: SingleCardProps) => {
             <Button
               size="sm"
               variant="ghost"
-              className="rounded-sm gap-0.5 h-6 px-1"
+              className="rounded-sm gap-0.5 h-6 px-1!"
             >
               <MessageSquare />
             </Button>
@@ -193,7 +193,7 @@ const SingleCard = ({ chapter, hideIcons = false }: SingleCardProps) => {
           <div className="flex items-center justify-self-start">
             <Users size={16} className="shrink-0" />
             {chapter.group.length === 0 ? (
-              <span className="line-clamp-1 font-normal text-xs px-[0.25rem]">
+              <span className="line-clamp-1 font-normal text-xs px-1">
                 No Group
               </span>
             ) : (
@@ -202,7 +202,7 @@ const SingleCard = ({ chapter, hideIcons = false }: SingleCardProps) => {
                   <Button
                     key={group.id}
                     variant="ghost"
-                    className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-[0.25rem] hover:underline hover:text-primary break-all"
+                    className="whitespace-normal! text-xs  font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:underline hover:text-primary break-all! shrink!"
                     size="sm"
                     onClick={(e: React.MouseEvent) => {
                       e.preventDefault();

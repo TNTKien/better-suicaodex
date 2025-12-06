@@ -23,7 +23,7 @@ export default function GroupCards({ groups }: GroupCardsProps) {
         <Button
           asChild
           key={group.id}
-          className="rounded-sm justify-start hover:bg-primary/20 px-4"
+          className="rounded-sm justify-start hover:bg-primary/20 px-4! whitespace-normal! break-all! shrink!"
           variant="secondary"
           size="lg"
         >

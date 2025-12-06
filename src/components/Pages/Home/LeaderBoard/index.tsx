@@ -87,7 +87,7 @@ export default function LeaderBoard() {
         >
           <Button
             size="sm"
-            className="h-4 px-1 rounded-sm"
+            className="h-4 px-1! text-xs rounded-sm"
             onClick={toggleExpanded}
             variant={expanded ? "secondary" : "default"}
           >

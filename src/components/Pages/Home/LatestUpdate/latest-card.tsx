@@ -15,7 +15,7 @@ interface LatestCardProps {
 
 export default function LatestCard({ chapter }: LatestCardProps) {
   return (
-    <Card className="rounded-sm shadow-sm transition-colors duration-200">
+    <Card className="rounded-sm shadow-xs transition-colors duration-200">
       <CardContent className="flex gap-2 p-1">
         {!!chapter.manga.title && !!chapter.manga.cover && (
           <>
@@ -30,7 +30,7 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                 alt={chapter.manga.title}
                 placeholder="/images/place-doro.webp"
                 wrapper="w-20 h-auto border"
-                className="!w-20 !h-28 !object-cover"
+                className="w-20! h-28! object-cover!"
                 quality="256"
                 //isExpandable
               />
@@ -48,11 +48,11 @@ export default function LatestCard({ chapter }: LatestCardProps) {
 
               <div className="flex items-center space-x-1">
                 {chapter.language === "vi" && (
-                  <VN className="inline-block select-none flex-shrink-0 !h-5 !w-5" />
+                  <VN className="inline-block select-none shrink-0 h-5! w-5!" />
                 )}
 
                 {chapter.language === "en" && (
-                  <GB className="inline-block select-none flex-shrink-0 !h-5 !w-5" />
+                  <GB className="inline-block select-none shrink-0 h-5! w-5!" />
                 )}
                 {chapter.externalUrl && <ExternalLink size={16} />}
                 <NoPrefetchLink
@@ -73,11 +73,11 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                 </NoPrefetchLink>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <div className="flex items-center justify-self-start space-x-1">
                   <Users size={16} className="shrink-0" />
                   {chapter.group.length === 0 ? (
-                    <span className="line-clamp-1 font-normal text-xs px-[0.25rem]">
+                    <span className="line-clamp-1 font-normal text-xs px-1">
                       No Group
                     </span>
                   ) : (
@@ -87,7 +87,7 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                           asChild
                           key={group.id}
                           variant="ghost"
-                          className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-[0.25rem] hover:text-primary break-all"
+                          className="whitespace-normal! font-normal text-start line-clamp-1! text-xs rounded-sm h-4 py-0 px-1 hover:text-primary break-all shrink!"
                           size="sm"
                         >
                           <NoPrefetchLink href={`/group/${group.id}`}>

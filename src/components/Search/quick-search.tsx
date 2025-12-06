@@ -174,10 +174,10 @@ export default function QuickSearch() {
               autoComplete="off"
               placeholder="Tìm kiếm..."
               className={cn(
-                "bg-muted/50 hover:bg-accent focus:bg-background border-none h-8 shadow-sm",
+                "bg-muted/50! hover:bg-accent! focus:bg-background! border-none h-8 shadow-xs",
                 "transition-all sm:pr-12 md:w-40 lg:w-56 xl:w-64",
                 "placeholder:text-current",
-                expanded && "!shadow-md bg-background md:!w-full lg:!w-2/3"
+                expanded && "shadow-md! bg-background md:w-full! lg:w-2/3!"
               )}
               value={searchTerm}
               onChange={handleInputChange}
@@ -190,7 +190,7 @@ export default function QuickSearch() {
                 <div
                   className={cn(
                     "hidden lg:flex flex-row gap-1",
-                    expanded && "!hidden"
+                    expanded && "hidden!"
                   )}
                 >
                   <Badge
@@ -284,14 +284,14 @@ export default function QuickSearch() {
 
       {/* overlay */}
       {expanded && (
-        <div className="fixed inset-0 bg-black/30 dark:bg-white/30 h-lvh z-[5]" />
+        <div className="fixed inset-0 bg-black/30 dark:bg-white/30 h-lvh z-5" />
       )}
 
       <Dialog>
         <DialogTrigger asChild>
           <Button
             variant="ghost"
-            className="h-8 w-8 bg-muted/50 px-0 inline-flex shadow-sm md:hidden"
+            className="h-8 w-8 bg-muted/50 px-0 inline-flex shadow-xs md:hidden"
           >
             <Search />
             <span className="sr-only">Tìm kiếm</span>
@@ -314,7 +314,7 @@ export default function QuickSearch() {
               <Input
                 autoComplete="off"
                 placeholder="Tìm kiếm..."
-                className={cn("bg-secondary border-none h-8 shadow-sm")}
+                className={cn("bg-secondary border-none h-8 shadow-xs")}
                 value={searchTerm}
                 onChange={handleInputChange}
                 onKeyDown={handleMobileKeyDown}

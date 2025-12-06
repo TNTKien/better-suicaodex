@@ -59,7 +59,7 @@ export function ThemeCustomizer() {
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="z-40 w-[340px] rounded-[12px] bg-white p-6 dark:bg-zinc-950 mr-2"
+            className="z-40 w-[340px] rounded-xl bg-white p-6 dark:bg-zinc-950 mr-2"
           >
             <Customizer />
           </PopoverContent>
@@ -133,7 +133,7 @@ function Customizer() {
                     }}
                     className={cn(
                       "justify-start",
-                      isActive && "border-2 border-primary"
+                      isActive && "border-2 border-primary!"
                     )}
                     style={
                       {
@@ -145,7 +145,7 @@ function Customizer() {
                   >
                     <span
                       className={cn(
-                        "flex size-5 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-[--theme-primary]"
+                        "flex size-5 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-(--theme-primary)"
                       )}
                     >
                       {isActive && <Check className="h-4 w-4 text-white" />}
@@ -168,7 +168,7 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("light")}
-                  className={cn(unResolvedTheme === "light" && "border-2 border-primary")}
+                  className={cn(unResolvedTheme === "light" && "border-2 border-primary!")}
                 >
                   <Sun />
                   Sáng
@@ -177,7 +177,7 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("dark")}
-                  className={cn(unResolvedTheme === "dark" && "border-2 border-primary")}
+                  className={cn(unResolvedTheme === "dark" && "border-2 border-primary!")}
                 >
                   <Moon />
                   Tối
@@ -186,7 +186,7 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("system")}
-                  className={cn(unResolvedTheme === "system" && "border-2 border-primary")}
+                  className={cn(unResolvedTheme === "system" && "border-2 border-primary!")}
                 >
                   <MonitorCog />
                   Hệ thống
@@ -227,7 +227,7 @@ function Customizer() {
 //     --destructive-foreground: <%- colors.light["destructive-foreground"] %>;
 //     --border: <%- colors.light["border"] %>;
 //     --input: <%- colors.light["input"] %>;
-//     --ring: <%- colors.light["ring"] %>;
+//     --ring: <%- colors.light["ring-3"] %>;
 //     --radius: <%- radius %>rem;
 //     --chart-1: <%- colors.light["chart-1"] %>;
 //     --chart-2: <%- colors.light["chart-2"] %>;
@@ -255,7 +255,7 @@ function Customizer() {
 //     --destructive-foreground: <%- colors.dark["destructive-foreground"] %>;
 //     --border: <%- colors.dark["border"] %>;
 //     --input: <%- colors.dark["input"] %>;
-//     --ring: <%- colors.dark["ring"] %>;
+//     --ring: <%- colors.dark["ring-3"] %>;
 //     --chart-1: <%- colors.dark["chart-1"] %>;
 //     --chart-2: <%- colors.dark["chart-2"] %>;
 //     --chart-3: <%- colors.dark["chart-3"] %>;

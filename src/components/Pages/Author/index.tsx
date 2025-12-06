@@ -44,20 +44,20 @@ export default function Author({ id }: AuthorProps) {
 
   if (isLoading)
     return (
-      <div className="absolute h-[12.5rem] md:h-[16rem] z-[-2] w-auto left-0 right-0 top-0 block bg-gray-300 ease-in-out">
+      <div className="absolute h-50 md:h-64 z-[-2] w-auto left-0 right-0 top-0 block bg-gray-300 ease-in-out">
         <div
           className={cn(
-            "absolute h-[12.5rem] md:h-[16rem] w-full",
+            "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-center-25"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
           )}
           // style={{ backgroundImage: `url('/images/frieren.webp')` }}
         ></div>
         <div
           className={cn(
-            "absolute h-[12.5rem] md:h-[16rem] w-auto inset-0 pointer-events-none",
-            // "backdrop-blur-none md:backdrop-blur-sm",
-            "bg-gradient-to-r from-black/25 to-transparent"
+            "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none",
+            // "backdrop-blur-none md:backdrop-blur-xs",
+            "bg-linear-to-r from-black/25 to-transparent"
           )}
         ></div>
       </div>
@@ -85,20 +85,20 @@ export default function Author({ id }: AuthorProps) {
   };
   return (
     <>
-      <div className="absolute h-[12.5rem] md:h-[16rem] z-[-2] w-auto left-0 right-0 top-0 block">
+      <div className="absolute h-50 md:h-64 z-[-2] w-auto left-0 right-0 top-0 block">
         <div
           className={cn(
-            "absolute h-[12.5rem] md:h-[16rem] w-full",
+            "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-center-25"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
           )}
           style={{ backgroundImage: `url('/images/frieren.webp')` }}
         ></div>
         <div
           className={cn(
-            "absolute h-[12.5rem] md:h-[16rem] w-auto inset-0 pointer-events-none",
-            // "backdrop-blur-none md:backdrop-blur-sm",
-            "bg-gradient-to-r from-black/25 to-transparent"
+            "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none",
+            // "backdrop-blur-none md:backdrop-blur-xs",
+            "bg-linear-to-r from-black/25 to-transparent"
           )}
         ></div>
       </div>
@@ -110,7 +110,7 @@ export default function Author({ id }: AuthorProps) {
             alt={data.name}
             width={isMobile ? 120 : 200}
             height={isMobile ? 120 : 200}
-            className="rounded-full border-4 border-primary object-cover shrink-0 w-[120px] h-[120px] md:w-[200px] md:h-[200px]"
+            className="rounded border-4 border-primary object-cover shrink-0 w-[120px] h-[120px] md:w-[200px] md:h-[200px]"
             unoptimized
           />
           <div className="flex flex-row md:flex-col gap-2 w-full overflow-auto scrollbar-hidden">

@@ -29,7 +29,7 @@ export function ThemeProvider({
               shallowRouting
             >
               <Progress>
-                <Bar className="!bg-primary" />
+                <Bar className="bg-primary!" />
               </Progress>
               <TooltipProvider delayDuration={0}>
                 <SessionProvider>

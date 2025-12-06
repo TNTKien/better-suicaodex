@@ -12,7 +12,7 @@ export default function Gacha() {
   return (
     <div className="flex flex-col space-y-5 py-3">
       {/* Header Section */}
-      <div className="relative shadow-md overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 py-6 px-4">
+      <div className="relative shadow-md overflow-hidden rounded-xl bg-linear-to-r from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 py-6 px-4">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
 
         <div className="relative z-10 text-center max-w-3xl mx-auto">
@@ -23,7 +23,7 @@ export default function Gacha() {
           </div>
 
           <h1 className="text-3xl md:text-5xl font-extrabold">
-            <span className="bg-gradient-to-tr from-primary to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-tr from-primary to-purple-600 bg-clip-text text-transparent">
               99% người chơi dừng lại trước khi thắng lớn.
             </span>
           </h1>
@@ -35,8 +35,8 @@ export default function Gacha() {
           </div> */}
         </div>
 
-        <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-indigo-500/30 to-purple-500/30 rounded-full blur-xl"></div>
-        <div className="absolute -top-6 -left-6 w-24 h-24 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-full blur-xl"></div>
+        <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-linear-to-br from-indigo-500/30 to-purple-500/30 rounded-full blur-xl"></div>
+        <div className="absolute -top-6 -left-6 w-24 h-24 bg-linear-to-br from-purple-500/30 to-pink-500/30 rounded-full blur-xl"></div>
       </div>
 
       {/* Cards Container */}
@@ -44,9 +44,9 @@ export default function Gacha() {
         {/* Pokemon TCG Pocket Card */}
         <Link
           href="/gacha/pkm-tcgp"
-          className="group relative bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-yellow-200 dark:border-yellow-800"
+          className="group relative bg-linear-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-yellow-200 dark:border-yellow-800"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
 
           <div className="h-64 w-full flex items-center justify-center p-6 overflow-hidden bg-white/30 dark:bg-black/30">
             <Image
@@ -73,9 +73,9 @@ export default function Gacha() {
         {/* Honkai Star Rail Card */}
         <Link
           href="/gacha/hsr"
-          className="group relative bg-gradient-to-br from-blue-50 to-purple-100 dark:from-blue-950 dark:to-purple-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-blue-200 dark:border-blue-800"
+          className="group relative bg-linear-to-br from-blue-50 to-purple-100 dark:from-blue-950 dark:to-purple-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-blue-200 dark:border-blue-800"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
 
           <div className="h-64 w-full flex items-center justify-center p-6 overflow-hidden bg-white/30 dark:bg-black/30">
             <Image
@@ -102,9 +102,9 @@ export default function Gacha() {
         {/* Blue Archive Card */}
         <Link
           href="/gacha/blue-archive"
-          className="group relative bg-gradient-to-br from-sky-50 to-indigo-100 dark:from-sky-950 dark:to-indigo-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-sky-200 dark:border-sky-800"
+          className="group relative bg-linear-to-br from-sky-50 to-indigo-100 dark:from-sky-950 dark:to-indigo-900 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-sky-200 dark:border-sky-800"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
 
           <div className="h-64 w-full flex items-center justify-center p-6 overflow-hidden bg-white/30 dark:bg-black/30">
             <Image

@@ -109,7 +109,7 @@ export default function MyLibrary({ category }: MyLibraryProps) {
             <div className="flex items-center w-full overflow-hidden">
               <div
                 className={cn(
-                  "flex-grow transition-transform duration-300 ease-in-out group-hover:translate-x-[-60px]",
+                  "grow transition-transform duration-300 ease-in-out group-hover:translate-x-[-60px]",
                   pendingDeleteId === manga.id &&
                     "translate-x-[-60px] grayscale opacity-60"
                 )}

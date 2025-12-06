@@ -30,20 +30,16 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
         <div
           className={cn(
             "absolute h-[324px] md:h-[400px] w-full",
-            "bg-no-repeat bg-cover bg-center-25"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
           )}
           style={{ backgroundImage: `url('${bannerSrc}')` }}
         ></div>
 
         <div
           className={cn(
-            "absolute h-[324px] md:h-[400px] w-auto inset-0 pointer-events-none"
-            //"backdrop-blur-[1px]"
+            "absolute h-[324px] md:h-[400px] w-auto inset-0 pointer-events-none",
+            "bg-linear-to-b from-background/25 to-background backdrop-blur-[1px]"
           )}
-          style={{
-            background:
-              "linear-gradient(to bottom, hsl(var(--background) / .25) 0%, hsl(var(--background)) 100%)",
-          }}
         ></div>
       </div>
 
@@ -61,7 +57,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
             cover={manga.cover}
             alt={manga.title}
             placeholder="/images/place-doro.webp"
-            className="shadow-md drop-shadow-md aspect-[7/10] !object-cover"
+            className="shadow-md drop-shadow-md aspect-7/10 object-cover!"
             wrapper="w-[130px] md:w-[200px] lg:w-[215px] h-auto"
             preload={true}
           />
@@ -76,7 +72,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
           }}
         >
           <NoPrefetchLink href={`/manga/${manga.id}/${slug}`}>
-            <p className="drop-shadow-md font-black text-xl line-clamp-5 sm:line-clamp-2 lg:text-4xl overflow-hidden lg:!leading-[2.75rem]">
+            <p className="drop-shadow-md font-black text-xl line-clamp-5 sm:line-clamp-2 lg:text-4xl overflow-hidden lg:leading-11!">
               {manga.title}
             </p>
           </NoPrefetchLink>

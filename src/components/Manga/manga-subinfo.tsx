@@ -15,62 +15,68 @@ interface MangaSubInfoProps {
 export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
   return (
     <div className="flex flex-wrap gap-4">
-      <div className="flex flex-col gap-2">
-        <Label className="text-base font-bold">Tác giả</Label>
-        <div className="flex flex-wrap gap-2">
-          {manga.author.map((a) => (
-            <Button
-              asChild
-              className="rounded-sm hover:bg-primary/25"
-              key={a.id}
-              variant="secondary"
-              size="sm"
-            >
-              <Link href={`/author/${a.id}`} prefetch={false}>
-                {a.name}
-              </Link>
-            </Button>
-          ))}
+      {manga.author.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <Label className="text-base font-bold">Tác giả</Label>
+          <div className="flex flex-wrap gap-2">
+            {manga.author.map((a) => (
+              <Button
+                asChild
+                className="rounded-sm hover:bg-primary/25"
+                key={a.id}
+                variant="secondary"
+                size="sm"
+              >
+                <Link href={`/author/${a.id}`} prefetch={false}>
+                  {a.name}
+                </Link>
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="flex flex-col gap-2">
-        <Label className="text-base font-bold">Họa sĩ</Label>
-        <div className="flex flex-wrap gap-2">
-          {manga.artist.map((a) => (
-            <Button
-              asChild
-              className="rounded-sm hover:bg-primary/25"
-              key={a.id}
-              variant="secondary"
-              size="sm"
-            >
-              <Link href={`/author/${a.id}`} prefetch={false}>
-                {a.name}
-              </Link>
-            </Button>
-          ))}
+      {manga.artist.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <Label className="text-base font-bold">Họa sĩ</Label>
+          <div className="flex flex-wrap gap-2">
+            {manga.artist.map((a) => (
+              <Button
+                asChild
+                className="rounded-sm hover:bg-primary/25"
+                key={a.id}
+                variant="secondary"
+                size="sm"
+              >
+                <Link href={`/author/${a.id}`} prefetch={false}>
+                  {a.name}
+                </Link>
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="flex flex-col gap-2">
-        <Label className="text-base font-bold">Thể loại</Label>
-        <div className="flex flex-wrap gap-2">
-          {manga.tags.map((tag) => (
-            <Button
-              asChild
-              className="rounded-sm hover:bg-primary/25"
-              key={tag.id}
-              variant="secondary"
-              size="sm"
-            >
-              <Link href={`/advanced-search?include=${tag.id}`}>
-                {tag.name}
-              </Link>
-            </Button>
-          ))}
+      {manga.tags.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <Label className="text-base font-bold">Thể loại</Label>
+          <div className="flex flex-wrap gap-2">
+            {manga.tags.map((tag) => (
+              <Button
+                asChild
+                className="rounded-sm hover:bg-primary/25"
+                key={tag.id}
+                variant="secondary"
+                size="sm"
+              >
+                <Link href={`/advanced-search?include=${tag.id}`}>
+                  {tag.name}
+                </Link>
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="flex flex-col gap-2">
         <Label className="text-base font-bold">Nguồn</Label>

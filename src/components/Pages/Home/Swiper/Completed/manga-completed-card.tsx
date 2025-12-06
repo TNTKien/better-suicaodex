@@ -21,7 +21,7 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
   return (
     <Card className="relative rounded-sm shadow-none transition-colors duration-200 w-full h-full border-none bg-background">
       <CardContent className="relative p-0 rounded-sm">
-        <div className="z-10 flex rounded-sm opacity-0 hover:opacity-100 transition-opacity absolute inset-0 bg-black bg-opacity-75">
+        <div className="z-10 flex rounded-sm opacity-0 hover:opacity-100 transition-opacity absolute inset-0 bg-black/75">
           <div className="p-2.5 grid grid-cols-1 gap-2 justify-between">
             <ReactMarkdown
               className="text-sm text-white overflow-auto"
@@ -73,12 +73,12 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
         </div>
         <LazyLoadImage
           wrapperClassName={cn(
-            "!block rounded-sm object-cover w-full h-full",
-            !loaded && "aspect-[5/7]"
+            "block! rounded-sm object-cover w-full h-full",
+            !loaded && "aspect-5/7"
           )}
           placeholderSrc="/images/place-doro.webp"
           className={cn(
-            "h-auto w-full rounded-sm block object-cover aspect-[5/7]"
+            "h-auto w-full rounded-sm block object-cover aspect-5/7"
           )}
           src={src}
           alt={`Ảnh bìa ${manga.title}`}
@@ -91,7 +91,7 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
 
       <CardFooter className="py-2 px-0 w-full">
         <NoPrefetchLink href={`/manga/${manga.id}/${generateSlug(manga.title)}`}>
-          <p className="text-base font-semibold line-clamp-2 drop-shadow-sm">
+          <p className="text-base font-semibold line-clamp-2 drop-shadow-xs">
             {manga.title}
           </p>
         </NoPrefetchLink>

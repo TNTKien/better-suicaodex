@@ -37,7 +37,7 @@ export const ChapterCard = ({ chapters, finalChapter }: ChapterCardProps) => {
     return (
       <Accordion type="multiple" className="w-full" defaultValue={["chapter"]}>
         <AccordionItem value="chapter" className="border-none">
-          <AccordionTrigger className="px-4 py-2 bg-card hover:bg-accent rounded-[0.125rem] border shadow-sm [&[data-state=open]>svg]:rotate-90 transition-all">
+          <AccordionTrigger className="px-4 py-2 bg-card hover:bg-accent rounded-xs border shadow-xs [&[data-state=open]>svg]:rotate-90 transition-all">
             <div className="flex items-center gap-2">
               <p className="font-semibold text-sm md:text-base line-clamp-1">
                 {chapters.chapter ? `Chapter ${chapters.chapter}` : "Oneshot"}
@@ -67,7 +67,7 @@ export const ChapterCard = ({ chapters, finalChapter }: ChapterCardProps) => {
                   <SingleCard
                     chapter={chapter}
                     finalChapter={finalChapter}
-                    className="shadow-sm"
+                    className="shadow-xs"
                   />
                 </div>
               ))}
@@ -88,7 +88,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
     <Card
       aria-disabled={isUnavailable}
       className={cn(
-        "flex flex-col justify-between rounded-[0.125rem] px-1.5 py-1.5 shadow-sm relative min-h-14 hover:bg-accent",
+        "flex flex-col justify-between rounded-xs px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent",
         isUnavailable && "opacity-90 cursor-not-allowed text-muted-foreground",
         className && className
       )}
@@ -96,11 +96,11 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
       <div className="flex justify-between">
         <div className="flex items-center space-x-1">
           {chapter.language === "vi" && (
-            <VN className="inline-block select-none flex-shrink-0 !h-5 !w-5" />
+            <VN className="inline-block select-none shrink-0 h-5! w-5!" />
           )}
 
           {chapter.language === "en" && (
-            <GB className="inline-block select-none flex-shrink-0 !h-5 !w-5" />
+            <GB className="inline-block select-none shrink-0 h-5! w-5!" />
           )}
           {chapter.externalUrl && <ExternalLink size={16} />}
           <p className="font-semibold text-sm md:text-base line-clamp-1 break-all">
@@ -110,7 +110,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
               : "Oneshot"}
           </p>
           {finalChapter && finalChapter === chapter.chapter && (
-            <Badge className="flex items-center gap-1 px-1 py-0 font-bold rounded-[0.25rem] text-[0.625rem] max-h-4">
+            <Badge className="flex items-center gap-1 px-1 py-0 font-bold rounded-lg text-[0.625rem] max-h-4">
               END
             </Badge>
           )}
@@ -119,16 +119,16 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
         <Button
           size="sm"
           variant="ghost"
-          className="rounded-sm gap-0.5 h-6 px-1"
+          className="rounded-sm gap-0.5 h-6 px-1!"
         >
-          <MessageSquare />
+          <MessageSquare className="size-4!"/>
         </Button>
       </div>
       <div className="flex justify-between">
         <div className="flex items-center justify-self-start">
           <Users size={16} className="shrink-0" />
           {chapter.group.length === 0 ? (
-            <span className="line-clamp-1 font-normal text-xs px-[0.25rem]">
+            <span className="line-clamp-1 font-normal text-xs px-1">
               No Group
             </span>
           ) : (
@@ -137,7 +137,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
                 <Button
                   key={group.id}
                   variant="ghost"
-                  className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-[0.25rem] hover:underline hover:text-primary break-all"
+                  className="whitespace-normal! shrink! font-normal text-start text-xs line-clamp-1 rounded-sm h-4 py-0! px-1! hover:underline hover:text-primary break-all"
                   size="sm"
                   onClick={(e: React.MouseEvent) => {
                     e.preventDefault();
@@ -153,7 +153,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
         </div>
         <div className="flex items-center space-x-1 w-full max-w-max justify-end pr-1">
           <time
-            className="text-xs font-light"
+            className="text-xs font-light line-clamp-1 break-all"
             dateTime={new Date(chapter.updatedAt).toDateString()}
           >
             {formatTimeToNow(new Date(chapter.updatedAt))}

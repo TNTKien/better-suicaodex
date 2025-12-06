@@ -93,8 +93,8 @@ export default function ErrorPage({
   return (
     <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center p-4 opacity-0 animate-fadeIn">
       <Card className="max-w-2xl w-full shadow-lg overflow-hidden border-2 border-primary/10">
-        <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 pb-8 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.5),transparent)] -z-10"></div>
+        <CardHeader className="bg-linear-to-r from-primary/10 to-secondary/10 pb-8 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-grid-white/10 mask-[linear-gradient(0deg,transparent,rgba(255,255,255,0.5),transparent)] -z-10"></div>
           <div className="mx-auto mb-4 text-6xl font-bold text-primary">
             {statusCode}
           </div>
@@ -117,7 +117,7 @@ export default function ErrorPage({
                 {randomQuote}
               </p>
               {error && (
-                <div className="mt-4 p-3 bg-destructive/10 rounded-md text-sm text-destructive border border-destructive/20 shadow-sm hover:bg-destructive/15 transition-colors">
+                <div className="mt-4 p-3 bg-destructive/10 rounded-md text-sm text-destructive border border-destructive/20 shadow-xs hover:bg-destructive/15 transition-colors">
                   <div className="flex items-center justify-between mb-1">
                     <p className="font-semibold">Chi tiết lỗi:</p>
                     <Button

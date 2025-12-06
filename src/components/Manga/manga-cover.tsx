@@ -44,15 +44,15 @@ const MangaCover: FC<MangaCoverProps> = ({
     <div className="relative">
       {isExpandable && (
         <Dialog>
-          <DialogTrigger className="z-10 flex opacity-0 hover:opacity-100 transition-opacity items-center justify-center absolute inset-0 bg-black bg-opacity-50 rounded-sm cursor-pointer">
+          <DialogTrigger className="z-10 flex opacity-0 hover:opacity-100 transition-opacity items-center justify-center absolute inset-0 bg-black/50 rounded-sm cursor-pointer">
             <Expand size={50} color="white" />
           </DialogTrigger>
 
-          <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto !rounded-none justify-center">
+          <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto rounded-none! justify-center">
             <DialogTitle className="hidden"></DialogTitle>
             <DialogDescription className="hidden"></DialogDescription>
 
-            <DialogClose className="fixed inset-0 z-0 !block cursor-default" />
+            <DialogClose className="fixed inset-0 z-0 block! cursor-default" />
             <div className="max-w-[90vw] md:max-w-screen max-h-[90vh] lg:max-h-screen flex justify-center items-center relative z-10">
               <div className="absolute bg-secondary p-5 rounded-sm">
                 <Loader2 className="animate-spin" size={50} />
@@ -78,8 +78,8 @@ const MangaCover: FC<MangaCoverProps> = ({
 
       <LazyLoadImage
         wrapperClassName={cn(
-          "!block rounded-sm object-cover",
-          !loaded && "aspect-[5/7]",
+          "block! rounded-sm object-cover",
+          !loaded && "aspect-5/7",
           wrapper
         )}
         placeholderSrc={placeholder}

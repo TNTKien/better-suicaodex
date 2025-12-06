@@ -17,7 +17,7 @@ interface SemiCardProps {
 export default function SemiCard({ manga }: SemiCardProps) {
   const slug = generateSlug(manga.title);
   return (
-    <Card className="rounded-sm shadow-sm transition-colors duration-200">
+    <Card className="rounded-sm shadow-xs transition-colors duration-200">
       <CardContent className="flex gap-2 p-1">
         <NoPrefetchLink href={`/manga/${manga.id}/${slug}`}>
           <MangaCover
@@ -26,7 +26,7 @@ export default function SemiCard({ manga }: SemiCardProps) {
             alt={manga.title}
             placeholder="/images/place-doro.webp"
             wrapper="w-[130px] md:w-[150px] h-auto border"
-            className="!w-[130px] md:!w-[150px] !h-[185px] md:!h-[214px] !object-cover"
+            className="w-[130px]! md:w-[150px]! h-[185px]! md:h-[214px]! object-cover!"
             // wrapper="w-[130px] md:w-[150px] h-auto border"
             quality="256"
             //isExpandable
