@@ -174,7 +174,7 @@ export default function QuickSearch() {
               autoComplete="off"
               placeholder="Tìm kiếm..."
               className={cn(
-                "bg-muted/50 hover:bg-accent focus:bg-background border-none h-8 shadow-xs",
+                "bg-muted/50! hover:bg-accent! focus:bg-background! border-none h-8 shadow-xs",
                 "transition-all sm:pr-12 md:w-40 lg:w-56 xl:w-64",
                 "placeholder:text-current",
                 expanded && "shadow-md! bg-background md:w-full! lg:w-2/3!"
