@@ -60,7 +60,7 @@ export function ContentCustomizer() {
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="z-40 w-[340px] rounded-[12px] bg-white p-6 dark:bg-zinc-950 mr-2"
+            className="z-40 w-[340px] rounded-xl bg-white p-6 dark:bg-zinc-950 mr-2"
           >
             <Customizer />
           </PopoverContent>
