@@ -119,9 +119,9 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
         <Button
           size="sm"
           variant="ghost"
-          className="rounded-sm gap-0.5 h-6 px-1"
+          className="rounded-sm gap-0.5 h-6 px-1!"
         >
-          <MessageSquare />
+          <MessageSquare className="size-4!"/>
         </Button>
       </div>
       <div className="flex justify-between">
@@ -137,7 +137,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
                 <Button
                   key={group.id}
                   variant="ghost"
-                  className="whitespace-normal font-normal text-start line-clamp-1 rounded-sm h-4 py-0 px-1 hover:underline hover:text-primary break-all"
+                  className="whitespace-normal! shrink! font-normal text-start text-xs line-clamp-1 rounded-sm h-4 py-0! px-1! hover:underline hover:text-primary break-all"
                   size="sm"
                   onClick={(e: React.MouseEvent) => {
                     e.preventDefault();

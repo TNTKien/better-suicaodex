@@ -6,9 +6,7 @@ interface BannerProps {
 }
 
 export default function Banner({ id, src }: BannerProps) {
-  const coverURL = id
-    ? getCoverImageUrl(id, src, "256")
-    : src;
+  const coverURL = id ? getCoverImageUrl(id, src, "256") : src;
 
   return (
     <>
@@ -44,12 +42,9 @@ export default function Banner({ id, src }: BannerProps) {
         <div
           className={cn(
             "md:hidden",
-            "absolute h-70 w-auto inset-0 pointer-events-none backdrop-blur-[2px]"
+            "absolute h-70 w-auto inset-0 pointer-events-none backdrop-blur-[2px]",
+            "bg-linear-to-b from-background/5 to-background backdrop-blur-[1px]"
           )}
-          style={{
-            background:
-              "linear-gradient(to bottom, hsl(var(--background) / .6) 0%, hsl(var(--background)) 100%)",
-          }}
         ></div>
       </div>
     </>

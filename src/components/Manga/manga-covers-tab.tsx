@@ -90,7 +90,7 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
             className="relative rounded-sm shadow-md drop-shadow-md transition-colors duration-200 w-full  border-none"
           >
             <Dialog>
-              <DialogTrigger className="z-10 flex opacity-0 hover:opacity-100 transition-opacity items-center justify-center absolute inset-0 bg-black bg-opacity-50 rounded-sm cursor-pointer">
+              <DialogTrigger className="z-10 flex opacity-0 hover:opacity-100 transition-opacity items-center justify-center absolute inset-0 bg-black/50 rounded-sm cursor-pointer">
                 <Expand size={45} color="white" />
               </DialogTrigger>
 

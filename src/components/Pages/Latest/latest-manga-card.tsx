@@ -125,7 +125,7 @@ export default function LatestMangaCard({
         <CardFooter className="w-full pt-0 pb-1.5 justify-center">
           <Button
             size="sm"
-            className="h-4 px-1 bg-transparent shadow-none hover:bg-transparent text-primary"
+            className="h-4 px-1! text-xs bg-transparent shadow-none hover:bg-transparent text-primary"
             onClick={() => setExpanded((prev) => !prev)}
           >
             {expanded ? (
