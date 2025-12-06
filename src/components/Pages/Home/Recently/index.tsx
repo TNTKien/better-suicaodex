@@ -50,7 +50,7 @@ export default function RecentlyAdded() {
 
         <Button asChild size="icon" variant="ghost" className="[&_svg]:size-6">
           <Link href={`/recent`}>
-            <ArrowRight />
+            <ArrowRight className="size-6"/>
           </Link>
         </Button>
       </div>
