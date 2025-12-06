@@ -49,7 +49,7 @@ export default function GroupInfo({ id }: GroupInfoProps) {
           className={cn(
             "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-center-25"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
           )}
           // style={{ backgroundImage: `url('/images/frieren.webp')` }}
         ></div>
@@ -72,7 +72,7 @@ export default function GroupInfo({ id }: GroupInfoProps) {
           className={cn(
             "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-center-25"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
           )}
           style={{ backgroundImage: `url('/images/frieren.webp')` }}
         ></div>
@@ -102,7 +102,7 @@ export default function GroupInfo({ id }: GroupInfoProps) {
             alt={data.name}
             width={isMobile ? 120 : 200}
             height={isMobile ? 120 : 200}
-            className="rounded-full border-4 border-primary object-cover shrink-0"
+            className="rounded border-4 border-primary object-cover shrink-0"
             unoptimized
           />
           <div className="flex flex-row md:flex-col gap-2 w-full overflow-auto scrollbar-hidden">
