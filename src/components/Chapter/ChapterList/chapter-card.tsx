@@ -110,7 +110,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
               : "Oneshot"}
           </p>
           {finalChapter && finalChapter === chapter.chapter && (
-            <Badge className="flex items-center gap-1 px-1 py-0 font-bold rounded-lg text-[0.625rem] max-h-4">
+            <Badge className="flex items-center gap-1 px-1 py-0 font-bold rounded text-[0.625rem] max-h-4">
               END
             </Badge>
           )}
