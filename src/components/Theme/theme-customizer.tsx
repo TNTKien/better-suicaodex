@@ -133,7 +133,7 @@ function Customizer() {
                     }}
                     className={cn(
                       "justify-start",
-                      isActive && "border-2 border-primary"
+                      isActive && "border-2 border-primary!"
                     )}
                     style={
                       {
@@ -168,7 +168,7 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("light")}
-                  className={cn(unResolvedTheme === "light" && "border-2 border-primary")}
+                  className={cn(unResolvedTheme === "light" && "border-2 border-primary!")}
                 >
                   <Sun />
                   Sáng
@@ -177,7 +177,7 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("dark")}
-                  className={cn(unResolvedTheme === "dark" && "border-2 border-primary")}
+                  className={cn(unResolvedTheme === "dark" && "border-2 border-primary!")}
                 >
                   <Moon />
                   Tối
@@ -186,7 +186,7 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("system")}
-                  className={cn(unResolvedTheme === "system" && "border-2 border-primary")}
+                  className={cn(unResolvedTheme === "system" && "border-2 border-primary!")}
                 >
                   <MonitorCog />
                   Hệ thống

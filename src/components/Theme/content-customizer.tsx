@@ -126,7 +126,7 @@ function Customizer() {
                   className={cn(
                     "justify-start",
                     JSON.stringify(config.translatedLanguage) ===
-                      JSON.stringify(["vi"]) && "border-2 border-primary"
+                      JSON.stringify(["vi"]) && "border-2 border-primary!"
                   )}
                 >
                   <VN className="h-5 w-5" />
@@ -145,7 +145,7 @@ function Customizer() {
                   className={cn(
                     "justify-start",
                     JSON.stringify(config.translatedLanguage) ===
-                      JSON.stringify(["en"]) && "border-2 border-primary"
+                      JSON.stringify(["en"]) && "border-2 border-primary!"
                   )}
                 >
                   <GB className="h-5 w-5" />
@@ -164,7 +164,7 @@ function Customizer() {
                   className={cn(
                     "justify-start",
                     JSON.stringify(config.translatedLanguage) ===
-                      JSON.stringify(["vi", "en"]) && "border-2 border-primary"
+                      JSON.stringify(["vi", "en"]) && "border-2 border-primary!"
                   )}
                 >
                   <Globe className="w-5 h-5" />
@@ -194,7 +194,7 @@ function Customizer() {
                       r18: true,
                     })
                   }
-                  className={cn(config.r18 && "border-2 border-primary")}
+                  className={cn(config.r18 && "border-2 border-primary!")}
                 >
                   <Eye className="mr-1 -translate-x-1" />
                   Hiện
@@ -208,7 +208,7 @@ function Customizer() {
                       r18: false,
                     })
                   }
-                  className={cn(!config.r18 && "border-2 border-primary")}
+                  className={cn(!config.r18 && "border-2 border-primary!")}
                 >
                   <EyeOff className="mr-1 -translate-x-1" />
                   Ẩn
