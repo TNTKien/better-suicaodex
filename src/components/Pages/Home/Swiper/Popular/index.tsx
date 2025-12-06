@@ -41,7 +41,7 @@ export default function PopularSwiper() {
           <Swiper
             className="h-[335px] md:h-[410px] lg:h-[430px]"
             onSlideChange={(swiper) => setSlideIndex(swiper.realIndex + 1)}
-            // autoplay={true}
+            autoplay={true}
             loop={true}
             modules={[Autoplay, Navigation, Pagination]}
           >

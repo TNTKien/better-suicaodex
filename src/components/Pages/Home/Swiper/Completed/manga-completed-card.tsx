@@ -21,7 +21,7 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
   return (
     <Card className="relative rounded-sm shadow-none transition-colors duration-200 w-full h-full border-none bg-background">
       <CardContent className="relative p-0 rounded-sm">
-        <div className="z-10 flex rounded-sm opacity-0 hover:opacity-100 transition-opacity absolute inset-0 bg-black bg-opacity-75">
+        <div className="z-10 flex rounded-sm opacity-0 hover:opacity-100 transition-opacity absolute inset-0 bg-black/75">
           <div className="p-2.5 grid grid-cols-1 gap-2 justify-between">
             <ReactMarkdown
               className="text-sm text-white overflow-auto"
