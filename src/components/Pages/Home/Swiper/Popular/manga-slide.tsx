@@ -30,7 +30,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
         <div
           className={cn(
             "absolute h-[324px] md:h-[400px] w-full",
-            "bg-no-repeat bg-cover bg-center-25"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
           )}
           style={{ backgroundImage: `url('${bannerSrc}')` }}
         ></div>
