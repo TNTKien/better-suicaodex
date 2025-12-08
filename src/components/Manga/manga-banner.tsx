@@ -27,7 +27,7 @@ export default function Banner({ id, src }: BannerProps) {
           className={cn(
             "absolute h-70 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-position-[center_top_33%] bg-fixed"
+            "bg-no-repeat bg-cover bg-position-[center_top_33%] md:bg-fixed"
           )}
           style={{ backgroundImage: `url('${coverURL}')` }}
         ></div>
@@ -42,8 +42,8 @@ export default function Banner({ id, src }: BannerProps) {
         <div
           className={cn(
             "md:hidden",
-            "absolute h-70 w-auto inset-0 pointer-events-none backdrop-blur-[2px]",
-            "bg-linear-to-b from-background/5 to-background backdrop-blur-[1px]"
+            "absolute h-70 w-auto inset-0 pointer-events-none backdrop-blur-[1px]",
+            "bg-linear-to-b from-background/5 to-background"
           )}
         ></div>
       </div>
