@@ -22,12 +22,12 @@ const inter = Inter({
 // });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://suicaodex.com"),
+  metadataBase: new URL("https://suicaodex.net"),
   title: siteConfig.name,
   description: siteConfig.description,
   openGraph: {
     type: "website",
-    url: "https://suicaodex.com/",
+    url: "https://suicaodex.net/",
     siteName: "SuicaoDex",
     title: siteConfig.name,
     description: siteConfig.description,

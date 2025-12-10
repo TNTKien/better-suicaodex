@@ -27,7 +27,7 @@ import { NavSettings } from "./nav-settings";
 const data = {
   user: {
     name: "Dorothy",
-    email: "doro@suicaodex.com",
+    email: "doro@suicaodex.net",
     image: "/avatars/doro_think.webp",
   },
 

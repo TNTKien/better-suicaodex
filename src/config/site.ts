@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "SuicaoDex",
-  url: "https://suicaodex.com",
-  ogImage: "https://suicaodex.com/og-image.png",
+  url: "https://suicaodex.net",
+  ogImage: "https://suicaodex.net/og-image.png",
   description: "SuicaoDex - Trang web truyện tranh đầu hàng VN",
   links: {
     discord: "https://discord.gg/dongmoe",
@@ -18,7 +18,7 @@ export const siteConfig = {
     seasonalList: "68ab4f4e-6f01-4898-9038-c5eee066be27",
   },
   suicaodex: {
-    domain: "https://suicaodex.com",
+    domain: "https://suicaodex.net",
     dev_domain: "https://dev.suicaodex.com",
     apiURL: "https://api2.suicaodex.com", //pls use your own proxy server; or use built-in proxy, see /lib/axios.ts
   },
