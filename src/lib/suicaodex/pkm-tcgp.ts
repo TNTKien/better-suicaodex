@@ -78,6 +78,16 @@ export type Card = {
   type: string;
 };
 
+export interface TCGPApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data: T | null;
+  error: {
+    code: string;
+    details?: Array<{ field?: string; message: string }>;
+  } | null;
+}
+
 const createAxiosInstance = (baseURL: string): AxiosInstance => {
   return axios.create({
     baseURL,
@@ -91,7 +101,25 @@ export const pkmAxiosInstance = createAxiosInstance(
   siteConfig.suicaodex.pkmURL + "/v4"
 );
 
-export async function fetchExpansions(): Promise<Expansion[]> {
-  const response = await pkmAxiosInstance.get("/expansions");
-  return response.data;
+export async function fetchPacks(): Promise<Pack[]> {
+  const response = await pkmAxiosInstance.get<TCGPApiResponse<Pack[]>>(
+    "/packs"
+  );
+
+  if (!response.data.success) {
+    throw new Error(response.data.message || "Failed to fetch packs");
+  }
+
+  return response.data.data as Pack[];
+}
+
+
+export async function openPack(packname: string): Promise<Card[]> {
+  const response = await pkmAxiosInstance.get<TCGPApiResponse<Card[]>>(
+    `/pull?pack=${encodeURIComponent(packname)}`
+  );
+  if (!response.data.success) {
+    throw new Error(response.data.message || "Failed to open pack");
+  }
+  return response.data.data as Card[];
 }
