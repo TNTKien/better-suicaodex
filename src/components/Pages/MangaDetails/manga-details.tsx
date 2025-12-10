@@ -17,6 +17,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogOverlay,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
@@ -99,6 +100,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
       {/* R18 Warning */}
       {!config.r18 && manga.contentRating === "pornographic" && (
         <AlertDialog defaultOpen>
+          <AlertDialogOverlay className="backdrop-blur-lg" />
           <AlertDialogContent className={`theme-${config.theme}`}>
             <AlertDialogHeader>
               <AlertDialogTitle>
