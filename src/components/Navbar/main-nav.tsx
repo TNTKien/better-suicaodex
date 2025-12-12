@@ -6,30 +6,30 @@ import { cn } from "@/lib/utils";
 // import { useIsMobile } from "@/hooks/use-mobile";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { getLogo, logos } from "../logos";
-import { useState, useEffect } from "react";
+import { logos } from "../logos";
+// import { useState, useEffect } from "react";
 
 export function MainNav() {
   const { isAtTop } = useScrollOffset();
   // const isMobile = useIsMobile();
   const pathname = usePathname();
-  const [logoSrc, setLogoSrc] = useState<any>(null);
+  // const [logoSrc, setLogoSrc] = useState<any>(null);
 
-  useEffect(() => {
-    const logosName = [
-      "gehenna",
-      "redwinter",
-      "shanhaijing",
-      "srt",
-      "trinity",
-      "valkyrie",
-      "abydos",
-      "arius",
-      "millennium",
-    ];
-    const randomLogo = logosName[Math.floor(Math.random() * logosName.length)];
-    setLogoSrc(getLogo(randomLogo));
-  }, []);
+  // useEffect(() => {
+  //   const logosName = [
+  //     "gehenna",
+  //     "redwinter",
+  //     "shanhaijing",
+  //     "srt",
+  //     "trinity",
+  //     "valkyrie",
+  //     "abydos",
+  //     "arius",
+  //     "millennium",
+  //   ];
+  //   const randomLogo = logosName[Math.floor(Math.random() * logosName.length)];
+  //   setLogoSrc(getLogo(randomLogo));
+  // }, []);
 
   return (
     <Link
@@ -41,7 +41,7 @@ export function MainNav() {
         alt="SuicaoDex's logo"
         className={cn(
           "max-h-8 w-auto grayscale contrast-150 dark:invert",
-          pathname.includes("/manga") && "md:invert",
+          pathname.includes("/manga") && "invert",
           !isAtTop && "invert-0 md:invert-0"
         )}
         quality={100}
@@ -54,7 +54,7 @@ export function MainNav() {
         priority
         className={cn(
           "max-h-[22px] w-auto drop-shadow-md dark:invert xs:hidden",
-          pathname.includes("/manga") && "md:invert",
+          pathname.includes("/manga") && "invert",
           // pathname.includes("/group/") && "md:invert",
           !isAtTop && "filter-none md:filter-none"
         )}
@@ -66,7 +66,7 @@ export function MainNav() {
         priority
         className={cn(
           "max-h-[22px] w-auto drop-shadow-md dark:invert hidden xs:flex",
-          pathname.includes("/manga") && "md:invert",
+          pathname.includes("/manga") && "invert",
           // pathname.includes("/group/") && "md:invert",
           !isAtTop && "filter-none md:filter-none"
         )}
