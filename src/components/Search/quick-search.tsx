@@ -299,7 +299,7 @@ export default function QuickSearch() {
         </DialogTrigger>
         <DialogContent
           className={cn(
-            "w-full max-w-full border-none top-0 translate-y-0 px-4 py-2",
+            "w-full max-w-full border-none top-0 translate-y-0 px-4 py-2 rounded-none",
             `theme-${config.theme}`,
             "[&>button]:hidden"
           )}
@@ -321,10 +321,10 @@ export default function QuickSearch() {
                 ref={mobileInputRef}
               />
               {searchTerm.length === 0 ? (
-                <Search className="absolute right-16 transform h-4 w-4" />
+                <Search className="absolute right-6 transform h-4 w-4" />
               ) : (
                 <Button
-                  className="absolute right-16 transform h-4 w-4 bg-primary rounded-sm"
+                  className="absolute right-6 transform h-4 w-4 bg-primary rounded-sm"
                   size="icon"
                   onClick={clearMobileSearch}
                   type="button"
@@ -333,7 +333,7 @@ export default function QuickSearch() {
                 </Button>
               )}
 
-              <DialogClose asChild>
+              {/* <DialogClose asChild>
                 <Button
                   variant="secondary"
                   size="icon"
@@ -341,7 +341,7 @@ export default function QuickSearch() {
                 >
                   <X />
                 </Button>
-              </DialogClose>
+              </DialogClose> */}
             </div>
           </div>
 
