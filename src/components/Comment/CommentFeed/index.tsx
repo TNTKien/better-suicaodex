@@ -2,9 +2,6 @@
 
 import useSWR from "swr";
 import CommentFeedItem from "./comment-feed-item";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -12,11 +9,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import Image from "next/image";
 import DoroLoading from "#/images/doro-loading.gif";
+import { Marquee } from "@/components/ui/marquee";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function CommentFeed() {
-  const isMobile = useIsMobile();
   const {
     data: comments,
     isLoading,
@@ -46,40 +43,21 @@ export default function CommentFeed() {
   if (error || !comments) return null;
 
   return (
-    <div className="grid grid-cols-1 gap-4">
+    <div className="flex flex-col gap-4">
       <div>
         <hr className="w-9 h-1 bg-primary border-none" />
         <h1 className="text-2xl font-black uppercase">Bình luận gần đây</h1>
       </div>
 
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
-        {displayedComments.map((comment: any) => (
-          <CommentFeedItem
-            key={comment.id}
-            comment={comment}
-            type={comment.type}
-          />
+      <Marquee
+        pauseOnHover
+        vertical
+        className="[--duration:55s] px-0 h-[450px] md:h-[650px] overflow-hidden"
+      >
+        {comments.map((cmt: any, index: any) => (
+          <CommentFeedItem key={cmt.id} comment={cmt} type={cmt.type} />
         ))}
-      </div> */}
-      <div className="overflow-hidden">
-        <Swiper
-          slidesPerView={isMobile ? 1 : 3}
-          autoplay={true}
-          loop={true}
-          modules={[Autoplay]}
-          spaceBetween={8}
-        >
-          {comments.map((comment: any, index: any) => (
-            <SwiperSlide key={index} className="pb-1 px-0.5">
-              <CommentFeedItem
-                key={comment.id}
-                comment={comment}
-                type={comment.type}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+      </Marquee>
     </div>
   );
 }

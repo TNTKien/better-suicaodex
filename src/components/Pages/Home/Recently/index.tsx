@@ -50,14 +50,17 @@ export default function RecentlyAdded() {
 
         <Button asChild size="icon" variant="ghost" className="[&_svg]:size-6">
           <Link href={`/recent`}>
-            <ArrowRight className="size-6"/>
+            <ArrowRight className="size-6" />
           </Link>
         </Button>
       </div>
 
       <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
         {data.mangas.map((manga) => (
-          <NoPrefetchLink key={manga.id} href={`/manga/${manga.id}/${generateSlug(manga.title)}`}>
+          <NoPrefetchLink
+            key={manga.id}
+            href={`/manga/${manga.id}/${generateSlug(manga.title)}`}
+          >
             <RecentlyCard manga={manga} />
           </NoPrefetchLink>
         ))}

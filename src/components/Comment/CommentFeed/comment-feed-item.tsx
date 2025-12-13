@@ -45,9 +45,9 @@ export default function CommentFeedItem({
         <span>{comment.title}</span>
       </NoPrefetchLink>
 
-      <ScrollArea className="h-20">
+      {/* <ScrollArea className="h-20"> */}
         <ReactMarkdown
-          className="prose prose-img:my-1 prose-img:max-w-[150px]! flex-1 flex-col gap-2 dark:prose-invert text-sm"
+          className="prose prose-img:my-1 prose-img:max-w-14! flex-1 flex-col gap-2 dark:prose-invert text-sm"
           remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
           rehypePlugins={[rehypeRaw, [rehypeSanitize]]}
           components={{
@@ -80,7 +80,7 @@ export default function CommentFeedItem({
         >
           {comment.content}
         </ReactMarkdown>
-      </ScrollArea>
+      {/* </ScrollArea> */}
 
       <div className="flex items-center justify-between pb-1.5 pt-1">
         <div className="flex items-center gap-2">

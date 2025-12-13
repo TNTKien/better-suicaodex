@@ -1,6 +1,5 @@
 "use client";
 
-
 import LatestUpdate from "./LatestUpdate";
 import LeaderBoard from "./LeaderBoard";
 import RecentlyAdded from "./Recently";
@@ -22,9 +21,7 @@ export default function HomePage() {
       </section>
 
       <section className="mt-9">
-        <LazyLoadComponent>
-          <RecentlyAdded />
-        </LazyLoadComponent>
+        <RecentlyAdded />
       </section>
 
       <section className="mt-9 grid grid-cols-1 gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
@@ -40,16 +37,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mt-9">
-        <LazyLoadComponent>
-          <CommentFeed />
-        </LazyLoadComponent>
-      </section>
-
-      <section className="mt-6">
-        <LazyLoadComponent>
-          <CompletedSwiper />
-        </LazyLoadComponent>
+      <section className="mt-9 grid grid-cols-1 gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        <div className="lg:col-span-2 xl:col-span-3 2xl:col-span-4">
+          <LazyLoadComponent>
+            <CompletedSwiper />
+          </LazyLoadComponent>
+        </div>
+        <div className="lg:col-span-2">
+          <LazyLoadComponent>
+            <CommentFeed />
+          </LazyLoadComponent>
+        </div>
       </section>
     </div>
   );
