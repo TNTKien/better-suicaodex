@@ -13,6 +13,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.8.0",
     "@bprogress/next": "^3.2.4",
+    "@elysiajs/eden": "^1.4.5",
     "@hookform/resolvers": "^5.2.2",
     "@icons-pack/react-simple-icons": "^10.2.0",
     "@next/third-parties": "16.0.7",
@@ -63,6 +64,7 @@
     "cmdk": "^1.1.1",
     "country-flag-icons": "^1.5.18",
     "date-fns": "^4.1.0",
+    "elysia": "^1.4.19",
     "embla-carousel-react": "^8.6.0",
     "hast-util-sanitize": "^5.0.2",
     "input-otp": "^1.4.2",
