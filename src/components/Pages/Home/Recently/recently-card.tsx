@@ -8,14 +8,15 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 interface RecentlyCardProps {
   manga: Manga;
+  className?: string;
 }
 
-export default function RecentlyCard({ manga }: RecentlyCardProps) {
+export default function RecentlyCard({ manga, className }: RecentlyCardProps) {
   const src = getCoverImageUrl(manga.id, manga.cover, "512");
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <Card className="relative rounded-sm shadow-md transition-colors duration-200 w-full h-full border-none">
+    <Card className={cn("relative rounded-sm shadow-md transition-colors duration-200 w-full h-full border-none", className)}>
       <CardContent className="p-0">
         <LazyLoadImage
           wrapperClassName={cn(
