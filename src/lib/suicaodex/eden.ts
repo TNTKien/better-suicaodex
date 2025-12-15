@@ -5,4 +5,7 @@ export const eden = treaty<App>(
   typeof window === "undefined"
     ? `http://localhost:${process.env.PORT ?? 3000}`
     : window.location.origin
-).api;
+);
+
+// Exported for easier access to comment endpoints
+export const cmts = eden.api.cmts;
