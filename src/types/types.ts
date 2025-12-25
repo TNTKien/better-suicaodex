@@ -76,6 +76,7 @@ export type Manga = {
   id: string;
   title: string;
   altTitle: string | null;
+  altTitles: string[];
   tags: Tag[];
   cover: string;
   author: Author[];

@@ -67,6 +67,7 @@ export function MangaParser(data: any): Manga {
     title: title,
     language: language,
     altTitle: altTitle,
+    altTitles: altTitles.map((t: any) => Object.values(t)[0] as string),
     tags: TagsParser(data.attributes.tags),
     cover: coverArt ? coverArt.attributes.fileName : null,
     author: author,
