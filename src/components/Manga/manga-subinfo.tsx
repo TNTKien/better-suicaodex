@@ -7,6 +7,7 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { LibraryBig } from "lucide-react";
 import { Icons } from "../icons";
+import { Separator } from "../ui/separator";
 
 interface MangaSubInfoProps {
   manga: Manga;
@@ -73,6 +74,23 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
                   {tag.name}
                 </Link>
               </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {manga.altTitles.length > 0 && (
+        <div className="flex flex-col gap-2 w-full">
+          <Label className="text-base font-bold">Tên khác</Label>
+          <div className="-mt-2 flex flex-col w-full">
+            {manga.altTitles.map((name, index) => (
+              <div className="flex flex-col" key={index}>
+                <span className="text-sm py-2 wrap-break-word">{name}</span>
+
+                {index !== manga.altTitles.length - 1 && (
+                  <Separator className="w-full" />
+                )}
+              </div>
             ))}
           </div>
         </div>
