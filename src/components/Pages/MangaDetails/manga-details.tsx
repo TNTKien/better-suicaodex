@@ -32,7 +32,6 @@ import { siteConfig } from "@/config/site";
 import { useConfig } from "@/hooks/use-config";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { fetchMangaDetail } from "@/lib/mangadex/manga";
-import { cn } from "@/lib/utils";
 import { Artist, Author, Manga } from "@/types/types";
 import {
   Archive,
@@ -46,10 +45,10 @@ import {
   Sprout,
   Square,
   SquareCheckBig,
-  Terminal,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import MangaDetailsSkeleton from "./manga-details-skeleton";
 import { toast } from "sonner";
 import AddToLibraryBtn from "@/components/Manga/add-to-library-btn";
@@ -57,7 +56,6 @@ import MangaCoversTab from "@/components/Manga/manga-covers-tab";
 import MangaSubInfo from "@/components/Manga/manga-subinfo";
 import CommentSection from "@/components/Comment/comment-section";
 import { useCommentCount } from "@/hooks/use-comment-count";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import MangaRecommendations from "@/components/Manga/manga-recomendations";
 
 interface MangaDetailsProps {
@@ -68,32 +66,26 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
   const isMobile = useIsMobile();
   const [config, setConfig] = useConfig();
 
-  const [manga, setManga] = useState<Manga>();
-  const [loading, setLoading] = useState(true);
-  const [statusCode, setStatusCode] = useState<number>(200);
-
   const { count: cmtCount } = useCommentCount(id);
 
   const [showHiddenChapters, setShowHiddenChapters] = useState(false);
 
-  //TODO: useSWR
-  useEffect(() => {
-    const fetchData = async () => {
-      const { manga, status } = await getMangaData(id);
-      if (status === 200 && manga) {
-        setManga(manga);
-      } else {
-        setStatusCode(status);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  const { data, error, isLoading } = useSWR(
+    `/manga/${id}`,
+    () => getMangaData(id),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
-  if (loading) return <MangaDetailsSkeleton />;
-  if (statusCode === 404) return <MangaNotFound />;
-  if (statusCode === 503) return <MangaMaintain />;
-  if (statusCode !== 200 || !manga) return <div>Lỗi mất rồi 😭</div>;
+  if (isLoading) return <MangaDetailsSkeleton />;
+  if (error?.status === 404 || data?.status === 404) return <MangaNotFound />;
+  if (error?.status === 503 || data?.status === 503) return <MangaMaintain />;
+  if (!data || data.status !== 200 || !data.manga)
+    return <div>Lỗi mất rồi 😭</div>;
+
+  const manga = data.manga;
 
   return (
     <>
