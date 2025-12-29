@@ -44,6 +44,7 @@ import {
   Share2,
   Sprout,
   Square,
+  SquareArrowOutUpRightIcon,
   SquareCheckBig,
 } from "lucide-react";
 import Link from "next/link";
@@ -57,6 +58,15 @@ import MangaSubInfo from "@/components/Manga/manga-subinfo";
 import CommentSection from "@/components/Comment/comment-section";
 import { useCommentCount } from "@/hooks/use-comment-count";
 import MangaRecommendations from "@/components/Manga/manga-recomendations";
+import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import { WarpBackground } from "@/components/ui/warp-background";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 interface MangaDetailsProps {
   id: string;
@@ -304,6 +314,41 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
             </div>
           )}
         </div>
+
+        {/* Mato Seihei Banner */}
+        {manga.id === siteConfig.mangadexAPI.matoSeiheiID &&
+          config.translatedLanguage.includes("vi") && (
+            <WarpBackground className="p-10 md:p-20">
+              <Card className="rounded-sm bg-card/60 border-0 shadow-none">
+                <CardContent className="flex flex-col gap-2 p-4">
+                  <CardTitle className="text-2xl flex flex-col md:flex-row items-center gap-2">
+                    <span className="text-center md:text-left">
+                      Đọc Mato Seihei cập nhật mới nhất
+                    </span>
+                    <RainbowButton
+                      className="uppercase w-full md:w-auto"
+                      asChild
+                    >
+                      <NoPrefetchLink
+                        href={siteConfig.suicaodex.mato_domain}
+                        target="_blank"
+                      >
+                        <SquareArrowOutUpRightIcon />
+                        tại đây
+                      </NoPrefetchLink>
+                    </RainbowButton>
+                  </CardTitle>
+                  <CardDescription>
+                    Tôi biết cái này nhìn đần vcl nhưng phải làm thế cho nó đập
+                    vào mắt các ông được 🤡
+                    <br />
+                    Vì lý do bản quyền, tôi không thể đăng truyện này MangaDex được
+                    nữa, bởi thế nên mới mọc thêm cái nút bên trên.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </WarpBackground>
+          )}
 
         {isMobile && (
           <>
