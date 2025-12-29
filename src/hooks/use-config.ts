@@ -7,7 +7,7 @@ type Config = {
   theme: BaseColor["name"];
   radius: number;
   packageManager: "npm" | "yarn" | "pnpm" | "bun";
-  translatedLanguage: ["vi"] | ["en"] | ["vi", "en"];
+  translatedLanguage: ("vi" | "en")[];
   r18: boolean;
   reader: {
     type: "single" | "long-strip";
