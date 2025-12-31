@@ -70,7 +70,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
                 variant="secondary"
                 size="sm"
               >
-                <Link href={`/advanced-search?include=${tag.id}`}>
+                <Link href={`/tag/${tag.id}`} prefetch={false}>
                   {tag.name}
                 </Link>
               </Button>
