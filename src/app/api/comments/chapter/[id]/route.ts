@@ -19,6 +19,21 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });
   }
 
+  const headers = new Headers();
+
+  try {
+    const identifier = req.headers.get("x-forwarded-for") || "anonymous";
+    await limiter.check(headers, 50, identifier); // 50 req/min
+  } catch (err) {
+    if (err instanceof RateLimitError) {
+      return new NextResponse(JSON.stringify({ error: err.message }), {
+        status: err.statusCode,
+        headers,
+      });
+    }
+    throw err;
+  }
+
   const url = new URL(req.url);
   const limit = parseInt(url.searchParams.get("limit") || "10", 10);
   const offset = parseInt(url.searchParams.get("offset") || "0", 10);
