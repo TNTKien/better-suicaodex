@@ -21,13 +21,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
           <Label className="text-base font-bold">Tác giả</Label>
           <div className="flex flex-wrap gap-2">
             {manga.author.map((a) => (
-              <Button
-                asChild
-                className="rounded-sm hover:bg-primary/25"
-                key={a.id}
-                variant="secondary"
-                size="sm"
-              >
+              <Button asChild key={a.id} variant="secondary" size="sm">
                 <Link href={`/author/${a.id}`} prefetch={false}>
                   {a.name}
                 </Link>
@@ -42,13 +36,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
           <Label className="text-base font-bold">Họa sĩ</Label>
           <div className="flex flex-wrap gap-2">
             {manga.artist.map((a) => (
-              <Button
-                asChild
-                className="rounded-sm hover:bg-primary/25"
-                key={a.id}
-                variant="secondary"
-                size="sm"
-              >
+              <Button asChild key={a.id} variant="secondary" size="sm">
                 <Link href={`/author/${a.id}`} prefetch={false}>
                   {a.name}
                 </Link>
@@ -63,13 +51,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
           <Label className="text-base font-bold">Thể loại</Label>
           <div className="flex flex-wrap gap-2">
             {manga.tags.map((tag) => (
-              <Button
-                asChild
-                className="rounded-sm hover:bg-primary/25"
-                key={tag.id}
-                variant="secondary"
-                size="sm"
-              >
+              <Button asChild key={tag.id} variant="secondary" size="sm">
                 <Link href={`/tag/${tag.id}`} prefetch={false}>
                   {tag.name}
                 </Link>
@@ -99,12 +81,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
       <div className="flex flex-col gap-2">
         <Label className="text-base font-bold">Nguồn</Label>
         <div className="flex flex-wrap gap-2">
-          <Button
-            asChild
-            className="rounded-sm hover:bg-primary/25"
-            variant="secondary"
-            size="sm"
-          >
+          <Button asChild variant="secondary" size="sm">
             <Link
               href={`${siteConfig.mangadexAPI.webURL}/title/${manga.id}`}
               target="_blank"
@@ -115,12 +92,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
           </Button>
 
           {!!manga.raw && (
-            <Button
-              asChild
-              className="rounded-sm hover:bg-primary/25"
-              variant="secondary"
-              size="sm"
-            >
+            <Button asChild variant="secondary" size="sm">
               <Link href={manga.raw} target="_blank">
                 <LibraryBig />
                 Raw

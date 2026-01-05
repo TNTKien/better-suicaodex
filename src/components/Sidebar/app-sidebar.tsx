@@ -14,7 +14,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import { NavMain } from "./nav-main";
@@ -135,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="h-12 items-center justify-center">
         <NavUser  />
       </SidebarHeader>
-      <SidebarSeparator />
+      {/* <SidebarSeparator /> */}
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavSettings />

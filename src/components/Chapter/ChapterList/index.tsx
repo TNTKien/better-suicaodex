@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/pagination";
 import useSWR from "swr";
 import { Loader2 } from "lucide-react";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 
 interface ChapterListProps {
   mangaID: string;
@@ -61,16 +62,16 @@ export const ChapterList = ({
 
   if (error)
     return (
-      <div className="flex justify-center items-center w-full h-16 bg-secondary rounded-sm mt-4">
-        <p className="font-semibold">Có lỗi xảy ra, vui lòng thử lại sau!</p>
-      </div>
+      <Alert className="rounded-sm justify-center text-center mt-4">
+        <AlertTitle className="font-semibold">Có lỗi xảy ra, vui lòng thử lại sau!</AlertTitle>
+      </Alert>
     );
 
   if (data?.total === 0)
     return (
-      <div className="flex justify-center items-center w-full h-16 bg-secondary rounded-sm mt-4">
-        <p className="font-semibold">Truyện này chưa có chương nào!</p>
-      </div>
+      <Alert className="rounded-sm justify-center text-center mt-4">
+        <AlertTitle className="font-semibold">Truyện này chưa có chương nào!</AlertTitle>
+      </Alert>
     );
 
   return (

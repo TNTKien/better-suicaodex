@@ -7,12 +7,11 @@ import {
   Album,
   BookmarkCheck,
   ListCheck,
-  Loader2,
   NotebookPen,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Alert, AlertDescription } from "../ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import DetailsCard from "../Search/Result/details-card";
 import Image from "next/image";
 import DoroLoading from "#/images/doro-loading.gif";
@@ -154,10 +153,10 @@ interface LibraryTabContentProps {
 function LibraryTabContent({ mangas }: LibraryTabContentProps) {
   if (mangas.length === 0) {
     return (
-      <Alert className="rounded-sm bg-secondary">
-        <AlertDescription className="flex justify-center">
+      <Alert className="rounded-sm justify-center text-center">
+        <AlertTitle>
           Chưa có truyện nào!
-        </AlertDescription>
+        </AlertTitle>
       </Alert>
     );
   }

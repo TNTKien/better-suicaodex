@@ -1,10 +1,11 @@
 import { BaseColor } from "@/config/base-colors";
+import { PresetTheme } from "@/config/preset-themes";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
 type Config = {
   style: "new-york";
-  theme: BaseColor["name"];
+  theme: BaseColor["name"] | PresetTheme["name"];
   radius: number;
   packageManager: "npm" | "yarn" | "pnpm" | "bun";
   translatedLanguage: ("vi" | "en")[];
