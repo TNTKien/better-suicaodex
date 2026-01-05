@@ -342,7 +342,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                     Tôi biết cái này nhìn đần vcl nhưng phải làm thế cho nó đập
                     vào mắt các ông được 🤡
                     <br />
-                    Vì lý do bản quyền, tôi không thể đăng truyện này MangaDex được
+                    Vì lý do bản quyền, tôi không thể đăng truyện này lên MangaDex được
                     nữa, bởi thế nên mới mọc thêm cái nút bên trên.
                   </CardDescription>
                 </CardContent>
