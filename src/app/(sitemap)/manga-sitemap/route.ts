@@ -5,7 +5,7 @@ export async function GET(req: Request) {
   const count = await getTotalMangas();
 
   const context = Array.from(Array(Math.ceil(count / 100)).keys()).map(
-    (_, index) => `${process.env.NEXTAUTH_URL}/manga-sitemap-${index}.xml`
+    (_, index) => `${process.env.SITEMAP_URL}/manga-sitemap-${index}.xml`
   );
 
   const siteMap = await (
