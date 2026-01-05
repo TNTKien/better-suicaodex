@@ -21,11 +21,11 @@ export function ThemeWrapper({
         "w-full",
         className
       )}
-      style={
-        {
-          "--radius": `${defaultTheme ? 0.5 : config.radius}rem`,
-        } as React.CSSProperties
-      }
+      // style={
+      //   {
+      //     "--radius": `${defaultTheme ? 0.5 : config.radius}rem`,
+      //   } as React.CSSProperties
+      // }
     >
       {children}
     </div>

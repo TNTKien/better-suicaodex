@@ -14,11 +14,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useConfig } from "@/hooks/use-config";
 import { CircleHelp, Minus, Plus } from "lucide-react";
 
 export default function AdvancedSearchGuide() {
-  const [config] = useConfig();
   return (
     <Dialog>
       <DialogTrigger asChild>

@@ -19,6 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { ThemeCustomizer } from "../Theme/theme-customizer";
+import NoPrefetchLink from "../Custom/no-prefetch-link";
 
 export function NavMain({
   items,
@@ -74,9 +75,9 @@ export function NavMain({
                         <ThemeCustomizer />
                       ) : (
                         <SidebarMenuSubButton asChild>
-                          <a href={subItem.url}>
+                          <NoPrefetchLink href={subItem.url}>
                             <span>{subItem.title}</span>
-                          </a>
+                          </NoPrefetchLink>
                         </SidebarMenuSubButton>
                       )}
                     </SidebarMenuSubItem>

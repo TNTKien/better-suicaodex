@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { Alert, AlertDescription } from "../ui/alert";
+import { Alert, AlertTitle } from "../ui/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -62,10 +62,8 @@ export default function CommentForm({
 
   if (!session?.user?.id)
     return (
-      <Alert className="rounded-sm bg-secondary">
-        <AlertDescription className="flex justify-center">
-          Bạn cần đăng nhập để bình luận!
-        </AlertDescription>
+      <Alert className="rounded-sm justify-center text-center">
+        <AlertTitle>Bạn cần đăng nhập để bình luận!</AlertTitle>
       </Alert>
     );
 

@@ -195,13 +195,13 @@ export default function QuickSearch() {
                 >
                   <Badge
                     variant="default"
-                    className="px-1 py-0 bg-primary/10 hover:bg-primary/10 text-secondary-foreground rounded-sm"
+                    className="px-1 py-0 bg-primary/40 hover:bg-primary/40 rounded-sm"
                   >
                     Ctrl
                   </Badge>
                   <Badge
                     variant="default"
-                    className="px-1 py-0 bg-primary/10 hover:bg-primary/10 text-secondary-foreground rounded-sm"
+                    className="px-1 py-0 bg-primary/40 hover:bg-primary/40 rounded-sm"
                   >
                     K
                   </Badge>
@@ -299,7 +299,7 @@ export default function QuickSearch() {
         </DialogTrigger>
         <DialogContent
           className={cn(
-            "w-full max-w-full border-none top-0 translate-y-0 px-4 py-2 rounded-none",
+            "w-full max-w-full! border-none top-0 translate-y-0 px-4 py-2 rounded-none",
             `theme-${config.theme}`,
             "[&>button]:hidden"
           )}
@@ -346,7 +346,7 @@ export default function QuickSearch() {
           </div>
 
           <DialogFooter>
-            <div>
+            <div className="w-full">
               {searchTerm.length === 0 ? (
                 <div className="text-gray-500">
                   Nhập từ khoá đi mới tìm được chứ...

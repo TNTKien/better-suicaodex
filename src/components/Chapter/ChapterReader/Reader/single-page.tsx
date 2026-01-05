@@ -1,6 +1,5 @@
 "use client";
 
-import { useConfig } from "@/hooks/use-config";
 import MangaImage from "./manga-image";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
