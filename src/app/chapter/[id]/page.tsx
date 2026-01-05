@@ -9,6 +9,8 @@ interface PageProps {
   }>;
 }
 
+//TODO: slug
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
