@@ -13,7 +13,7 @@ export async function GET(
   const siteMap = await (
     await getServerSideSitemap(
       res.mangas.map((manga) => ({
-        loc: `${process.env.NEXTAUTH_URL}/manga/${manga.id}/${generateSlug(
+        loc: `${process.env.SITEMAP_URL}/manga/${manga.id}/${generateSlug(
           manga.title
         )}`,
         lastmod: new Date().toISOString(),
