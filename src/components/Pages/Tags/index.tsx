@@ -36,7 +36,7 @@ export default function TagsPage() {
   }
 
   const groupedTags = groupTags(data);
-//   console.log(groupedTags);
+  //   console.log(groupedTags);
 
   return (
     <div className="space-y-4">
@@ -45,13 +45,7 @@ export default function TagsPage() {
           <Label className="font-bold text-lg">{group.name}</Label>
           <div className="flex flex-wrap gap-2">
             {group.tags.map((tag) => (
-              <Button
-                asChild
-                key={tag.id}
-                variant="secondary"
-                className="hover:bg-primary/20"
-                size="sm"
-              >
+              <Button asChild key={tag.id} variant="secondary" size="sm">
                 <NoPrefetchLink href={`/tag/${tag.id}`}>
                   {tag.name}
                 </NoPrefetchLink>

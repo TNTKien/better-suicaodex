@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import {
   Album,
   BookmarkCheck,
@@ -101,8 +101,8 @@ export default async function Page() {
           {!!session ? (
             <SyncLib session={session} />
           ) : (
-            <Alert className="rounded-sm bg-secondary justify-center text-center">
-              Bạn cần đăng nhập để dùng chức năng này!
+            <Alert className="rounded-sm justify-center text-center">
+              <AlertTitle>Bạn cần đăng nhập để dùng chức năng này!</AlertTitle>
             </Alert>
           )}
         </TabsContent>

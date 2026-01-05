@@ -13,7 +13,7 @@ interface TopFollowedCardProps {
 
 export default function TopFollowedCard({ manga }: TopFollowedCardProps) {
   return (
-    <Card className="rounded-sm shadow-none transition-colors duration-200 border-none dark:bg-background">
+    <Card className="rounded-sm shadow-none transition-colors duration-200 border-none bg-transparent dark:bg-background">
       <CardContent className="flex gap-3 p-1">
         <NoPrefetchLink
           href={`/manga/${manga.id}/${generateSlug(manga.title)}`}

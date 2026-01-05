@@ -1,7 +1,7 @@
 "use client";
 
 import DetailsCard from "@/components/Search/Result/details-card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useLocalLibrary } from "@/hooks/use-local-library";
 import { getMangasByIDs } from "@/lib/mangadex/history";
 import { LibraryType } from "@/types/types";
@@ -93,10 +93,10 @@ export default function MyLibrary({ category }: MyLibraryProps) {
 
   if (!data || data.length === 0) {
     return (
-      <Alert className="rounded-sm bg-secondary">
-        <AlertDescription className="flex justify-center">
+      <Alert className="rounded-sm justify-center text-center">
+        <AlertTitle>
           Chưa có truyện nào!
-        </AlertDescription>
+        </AlertTitle>
       </Alert>
     );
   }
@@ -118,7 +118,7 @@ export default function MyLibrary({ category }: MyLibraryProps) {
               </div>
 
               {pendingDeleteId === manga.id ? (
-                <div className="absolute right-0 top-1/2 transform -translate-y-1/2 flex flex-col gap-1 h-full">
+                <div className="absolute right-0 top-1/2 transform -translate-y-1/2 grid grid-rows-2 gap-1 h-full">
                   <Button
                     variant="outline"
                     onClick={handleUndoClick}

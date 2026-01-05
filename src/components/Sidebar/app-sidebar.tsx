@@ -135,7 +135,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="h-12 items-center justify-center">
         <NavUser  />
       </SidebarHeader>
-      <SidebarSeparator />
+      {/* <SidebarSeparator /> */}
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavSettings />
