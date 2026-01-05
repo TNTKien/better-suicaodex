@@ -1,11 +1,5 @@
 // "use client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { CommentWithUser } from "@/lib/suicaodex/serializers";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
@@ -15,7 +9,6 @@ import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatTimeToNow } from "@/lib/utils";
 import { Clock } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CommentFeedItemProps {
   comment: CommentWithUser & {
@@ -46,40 +39,40 @@ export default function CommentFeedItem({
       </NoPrefetchLink>
 
       {/* <ScrollArea className="h-20"> */}
-        <ReactMarkdown
-          className="prose prose-img:my-1 prose-img:max-w-14! flex-1 flex-col gap-2 dark:prose-invert text-sm"
-          remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-          rehypePlugins={[rehypeRaw, [rehypeSanitize]]}
-          components={{
-            a: ({ href, children }) => (
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                {children}
-              </a>
-            ),
-            table: ({ children }) => (
-              <table className="table-auto border-collapse border border-secondary rounded-md w-fit">
-                {children}
-              </table>
-            ),
-            thead: ({ children }) => (
-              <thead className="border-b border-secondary">{children}</thead>
-            ),
-            tr: ({ children }) => (
-              <tr className="even:bg-secondary">{children}</tr>
-            ),
-            th: ({ children }) => (
-              <th className="px-2 py-1 text-left">{children}</th>
-            ),
-            td: ({ children }) => <td className="px-2 py-1">{children}</td>,
-          }}
-        >
-          {comment.content}
-        </ReactMarkdown>
+      <ReactMarkdown
+        className="prose prose-img:my-1 prose-img:max-w-14! flex-1 flex-col gap-2 dark:prose-invert text-sm"
+        remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+        rehypePlugins={[rehypeRaw, [rehypeSanitize]]}
+        components={{
+          a: ({ href, children }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              {children}
+            </a>
+          ),
+          table: ({ children }) => (
+            <table className="table-auto border-collapse border border-secondary rounded-md w-fit">
+              {children}
+            </table>
+          ),
+          thead: ({ children }) => (
+            <thead className="border-b border-secondary">{children}</thead>
+          ),
+          tr: ({ children }) => (
+            <tr className="even:bg-secondary">{children}</tr>
+          ),
+          th: ({ children }) => (
+            <th className="px-2 py-1 text-left">{children}</th>
+          ),
+          td: ({ children }) => <td className="px-2 py-1">{children}</td>,
+        }}
+      >
+        {comment.content}
+      </ReactMarkdown>
       {/* </ScrollArea> */}
 
       <div className="flex items-center justify-between pb-1.5 pt-1">

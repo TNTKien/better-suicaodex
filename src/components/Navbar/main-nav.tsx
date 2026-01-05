@@ -3,33 +3,13 @@
 import Link from "next/link";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 import { cn } from "@/lib/utils";
-// import { useIsMobile } from "@/hooks/use-mobile";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { logos } from "../logos";
-// import { useState, useEffect } from "react";
 
 export function MainNav() {
   const { isAtTop } = useScrollOffset();
-  // const isMobile = useIsMobile();
   const pathname = usePathname();
-  // const [logoSrc, setLogoSrc] = useState<any>(null);
-
-  // useEffect(() => {
-  //   const logosName = [
-  //     "gehenna",
-  //     "redwinter",
-  //     "shanhaijing",
-  //     "srt",
-  //     "trinity",
-  //     "valkyrie",
-  //     "abydos",
-  //     "arius",
-  //     "millennium",
-  //   ];
-  //   const randomLogo = logosName[Math.floor(Math.random() * logosName.length)];
-  //   setLogoSrc(getLogo(randomLogo));
-  // }, []);
 
   return (
     <Link

@@ -14,7 +14,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import { NavMain } from "./nav-main";

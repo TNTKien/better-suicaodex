@@ -7,8 +7,6 @@ import {
   Moon,
   Palette,
   Repeat,
-  Square,
-  SquareCheckBigIcon,
   Sun,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -107,7 +105,7 @@ function Customizer() {
             Tuỳ chỉnh giao diện
           </div>
           <div className="text-xs text-muted-foreground">
-            Cứ chọn màu bạn thích nha!
+            Chọn màu bạn thích
           </div>
         </div>
         <Button
@@ -177,7 +175,7 @@ function Customizer() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="font-semibold">Test</Label>
+          <Label className="font-semibold">Preset</Label>
           <div className="grid grid-cols-3 gap-2">
             {presetThemes.map((theme) => {
               const isActive = config.theme === theme.name;

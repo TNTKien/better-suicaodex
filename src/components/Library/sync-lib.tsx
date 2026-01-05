@@ -7,7 +7,6 @@ import {
   Album,
   BookmarkCheck,
   ListCheck,
-  Loader2,
   NotebookPen,
 } from "lucide-react";
 import { useEffect, useState } from "react";
