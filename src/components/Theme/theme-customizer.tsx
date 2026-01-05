@@ -1,7 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Check, MonitorCog, Moon, Palette, Repeat, Sun } from "lucide-react";
+import {
+  Check,
+  MonitorCog,
+  Moon,
+  Palette,
+  Repeat,
+  Square,
+  SquareCheckBigIcon,
+  Sun,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
@@ -20,6 +29,7 @@ import { Label } from "../ui/label";
 import { Skeleton } from "../ui/skeleton";
 import { baseColors } from "@/config/base-colors";
 import { SidebarMenuButton } from "../ui/sidebar";
+import { presetThemes } from "@/config/preset-themes";
 
 export function ThemeCustomizer() {
   // const [config, setConfig] = useConfig();
@@ -50,7 +60,11 @@ export function ThemeCustomizer() {
       <div className="hidden items-center md:flex grow">
         <Popover>
           <PopoverTrigger asChild>
-            <SidebarMenuButton asChild tooltip="Giao diện" className="cursor-pointer">
+            <SidebarMenuButton
+              asChild
+              tooltip="Giao diện"
+              className="cursor-pointer"
+            >
               <div>
                 <Palette />
                 <span>Giao diện</span>
@@ -59,7 +73,7 @@ export function ThemeCustomizer() {
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="z-40 w-[340px] rounded-xl bg-white p-6 dark:bg-zinc-950 mr-2"
+            className="z-40 w-[380px] rounded-xl bg-white p-6 dark:bg-zinc-950 mr-2"
           >
             <Customizer />
           </PopoverContent>
@@ -71,7 +85,11 @@ export function ThemeCustomizer() {
 
 function Customizer() {
   const [mounted, setMounted] = React.useState(false);
-  const { setTheme: setMode, resolvedTheme: mode, theme: unResolvedTheme } = useTheme();
+  const {
+    setTheme: setMode,
+    resolvedTheme: mode,
+    theme: unResolvedTheme,
+  } = useTheme();
   const [config, setConfig] = useConfig();
 
   React.useEffect(() => {
@@ -114,8 +132,7 @@ function Customizer() {
           <div className="grid grid-cols-3 gap-2">
             {baseColors
               .filter(
-                (theme) =>
-                  !["stone", "gray", "neutral"].includes(theme.name)
+                (theme) => !["stone", "gray", "neutral"].includes(theme.name)
               )
               .map((theme) => {
                 const isActive = config.theme === theme.name;
@@ -145,10 +162,10 @@ function Customizer() {
                   >
                     <span
                       className={cn(
-                        "flex size-5 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-(--theme-primary)"
+                        "flex size-4 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-(--theme-primary)"
                       )}
                     >
-                      {isActive && <Check className="h-4 w-4 text-white" />}
+                      {isActive && <Check className="size-3 text-white" />}
                     </span>
                     {theme.label}
                   </Button>
@@ -156,6 +173,50 @@ function Customizer() {
                   <Skeleton className="h-8 w-full" key={theme.name} />
                 );
               })}
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="font-semibold">Test</Label>
+          <div className="grid grid-cols-3 gap-2">
+            {presetThemes.map((theme) => {
+              const isActive = config.theme === theme.name;
+              return mounted ? (
+                <Button
+                  key={theme.name}
+                  variant={"outline"}
+                  size="sm"
+                  onClick={() => {
+                    setConfig({
+                      ...config,
+                      theme: theme.name,
+                    });
+                  }}
+                  className={cn(
+                    "justify-start",
+                    isActive && "border-2 border-primary!"
+                  )}
+                  style={
+                    {
+                      "--theme-primary": `hsl(${
+                        theme?.activeColor[mode === "dark" ? "dark" : "light"]
+                      })`,
+                    } as React.CSSProperties
+                  }
+                >
+                  <span
+                    className={cn(
+                      "flex size-4 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-(--theme-primary)"
+                    )}
+                  >
+                    {isActive && <Check className="size-3 text-white" />}
+                  </span>
+                  {theme.label}
+                </Button>
+              ) : (
+                <Skeleton className="h-8 w-full" key={theme.name} />
+              );
+            })}
           </div>
         </div>
 
@@ -168,7 +229,9 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("light")}
-                  className={cn(unResolvedTheme === "light" && "border-2 border-primary!")}
+                  className={cn(
+                    unResolvedTheme === "light" && "border-2 border-primary!"
+                  )}
                 >
                   <Sun />
                   Sáng
@@ -177,7 +240,9 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("dark")}
-                  className={cn(unResolvedTheme === "dark" && "border-2 border-primary!")}
+                  className={cn(
+                    unResolvedTheme === "dark" && "border-2 border-primary!"
+                  )}
                 >
                   <Moon />
                   Tối
@@ -186,7 +251,9 @@ function Customizer() {
                   variant={"outline"}
                   size="sm"
                   onClick={() => setMode("system")}
-                  className={cn(unResolvedTheme === "system" && "border-2 border-primary!")}
+                  className={cn(
+                    unResolvedTheme === "system" && "border-2 border-primary!"
+                  )}
                 >
                   <MonitorCog />
                   Hệ thống
