@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, getCoverImageUrl } from "@/lib/utils";
+import { cn, generateSlug, getCoverImageUrl } from "@/lib/utils";
 import { Artist, Author, Manga } from "@/types/types";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
@@ -8,7 +8,6 @@ import Tags from "@/components/Manga/Tags";
 import MangaCover from "@/components/Manga/manga-cover";
 import { useIsMobile } from "@/hooks/use-mobile";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
-import slugify from "slugify";
 
 interface MangaSlideProps {
   manga: Manga;
@@ -17,11 +16,7 @@ interface MangaSlideProps {
 export default function MangaSlide({ manga }: MangaSlideProps) {
   const isMobile = useIsMobile();
   const bannerSrc = getCoverImageUrl(manga.id, manga.cover, "full");
-  const slug = slugify(manga.title, {
-    lower: true,
-    locale: "vi",
-    remove: /[*+~.,()'"!:@\[\]]/g,
-  });
+  const slug = generateSlug(manga.title);
 
   return (
     <>
