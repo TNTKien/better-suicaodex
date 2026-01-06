@@ -194,7 +194,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
               <div className="flex flex-col justify-between h-54 pb-2">
                 <div className="flex flex-col">
                   <p
-                    className="drop-shadow-md font-black md:text-white wrap-break-word leading-[1.15]"
+                    className="drop-shadow-md font-black wrap-break-word leading-[1.15]"
                     style={{
                       fontSize: `clamp(2.25rem, ${
                         manga.title.length <= 20
@@ -213,7 +213,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                   </p>
                   {!!manga.altTitle && (
                     <span
-                      className="drop-shadow-md text-lg md:text-white line-clamp-1"
+                      className="drop-shadow-md text-lg line-clamp-1"
                       title={manga.altTitle}
                     >
                       {manga.altTitle}
@@ -221,7 +221,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                   )}
                 </div>
 
-                <p className="text-sm md:text-white line-clamp-1 max-w-[80%]">
+                <p className="text-sm line-clamp-1 max-w-[80%]">
                   {[
                     ...new Set([
                       ...manga.author.map((a: Author) => a.name),

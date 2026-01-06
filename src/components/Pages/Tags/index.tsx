@@ -8,6 +8,7 @@ import DoroLoading from "#/images/doro-loading.gif";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import { generateSlug } from "@/lib/utils";
 
 export default function TagsPage() {
   const { data, error, isLoading } = useSWR(
@@ -46,7 +47,7 @@ export default function TagsPage() {
           <div className="flex flex-wrap gap-2">
             {group.tags.map((tag) => (
               <Button asChild key={tag.id} variant="secondary" size="sm">
-                <NoPrefetchLink href={`/tag/${tag.id}`}>
+                <NoPrefetchLink href={`/tag/${tag.id}/${generateSlug(tag.name)}`}>
                   {tag.name}
                 </NoPrefetchLink>
               </Button>

@@ -8,6 +8,7 @@ import { siteConfig } from "@/config/site";
 import { LibraryBig } from "lucide-react";
 import { Icons } from "../icons";
 import { Separator } from "../ui/separator";
+import { generateSlug } from "@/lib/utils";
 
 interface MangaSubInfoProps {
   manga: Manga;
@@ -22,7 +23,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
           <div className="flex flex-wrap gap-2">
             {manga.author.map((a) => (
               <Button asChild key={a.id} variant="secondary" size="sm">
-                <Link href={`/author/${a.id}`} prefetch={false}>
+                <Link href={`/author/${a.id}/${generateSlug(a.name)}`} prefetch={false}>
                   {a.name}
                 </Link>
               </Button>
@@ -37,7 +38,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
           <div className="flex flex-wrap gap-2">
             {manga.artist.map((a) => (
               <Button asChild key={a.id} variant="secondary" size="sm">
-                <Link href={`/author/${a.id}`} prefetch={false}>
+                <Link href={`/author/${a.id}/${generateSlug(a.name)}`} prefetch={false}>
                   {a.name}
                 </Link>
               </Button>
@@ -52,7 +53,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
           <div className="flex flex-wrap gap-2">
             {manga.tags.map((tag) => (
               <Button asChild key={tag.id} variant="secondary" size="sm">
-                <Link href={`/tag/${tag.id}`} prefetch={false}>
+                <Link href={`/tag/${tag.id}/${generateSlug(tag.name)}`} prefetch={false}>
                   {tag.name}
                 </Link>
               </Button>

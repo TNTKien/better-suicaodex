@@ -40,7 +40,7 @@ export default function ChapterInfo({ chapter }: ChapterInfoProps) {
           chapter.group.map((group) => (
             <Link
               key={group.id}
-              href={`/group/${group.id}`}
+              href={`/group/${group.id}/${generateSlug(group.name)}`}
               className="hover:bg-secondary hover:text-primary rounded-sm px-1 line-clamp-1"
             >
               {group.name}

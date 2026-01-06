@@ -90,7 +90,7 @@ export default function LatestCard({ chapter }: LatestCardProps) {
                           className="whitespace-normal! font-normal text-start line-clamp-1! text-xs rounded-sm h-4 py-0 px-1 hover:text-primary break-all shrink!"
                           size="sm"
                         >
-                          <NoPrefetchLink href={`/group/${group.id}`}>
+                          <NoPrefetchLink href={`/group/${group.id}/${generateSlug(group.name)}`}>
                             {group.name}
                           </NoPrefetchLink>
                         </Button>
