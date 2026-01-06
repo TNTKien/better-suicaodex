@@ -35,7 +35,7 @@ export default function Banner({ id, src }: BannerProps) {
           className={cn(
             "absolute h-70 w-auto inset-0 pointer-events-none",
             "backdrop-blur-none md:backdrop-blur-xs",
-            "bg-linear-to-r from-black/65 to-transparent"
+            "bg-linear-to-r from-background/65 to-transparent"
           )}
         ></div>
 

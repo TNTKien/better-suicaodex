@@ -9,8 +9,6 @@ export function generateMetadata(): Metadata {
   };
 }
 
-//TODO: slug
-
 export default function Page() {
   return (
     <>
