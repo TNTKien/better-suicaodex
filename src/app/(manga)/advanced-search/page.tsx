@@ -66,11 +66,12 @@ export default async function Page({ searchParams }: pageProps) {
 const getSearchParams = async ({ searchParams }: pageProps) => {
   const params = await searchParams;
 
-  const page = params["page"] ? parseInt(params["page"]) : 1;
+  let page = params["page"] ? parseInt(params["page"]) : 1;
   let limit = params["limit"] ? parseInt(params["limit"]) : 30;
   
   //Non-feed limit query param may not be >100
   if (limit > 100) limit = 100;
+  if (page < 1) page = 1;
 
   const author = params["author"] || "";
   const q = params["q"] || "";
