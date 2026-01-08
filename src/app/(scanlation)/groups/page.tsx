@@ -34,8 +34,10 @@ export default async function Page({ searchParams }: pageProps) {
 const getSearchParams = async ({ searchParams }: pageProps) => {
   const params = await searchParams;
 
-  const page = params["page"] ? parseInt(params["page"]) : 1;
+   let page = params["page"] ? parseInt(params["page"]) : 1;
   const q = params["q"] || "";
+
+  if (page < 1) page = 1;
 
   return { page, q };
 };

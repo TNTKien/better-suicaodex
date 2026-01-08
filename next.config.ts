@@ -26,6 +26,13 @@ const nextConfig: NextConfig = {
         pathname: "/covers/**",
         search: "",
       },
+      {
+        protocol: "https",
+        hostname: "cataas.com",
+        port: "",
+        pathname: "/**",
+        search: "",
+      },
     ],
   },
   allowedDevOrigins: ["*.suicaodex.com"],

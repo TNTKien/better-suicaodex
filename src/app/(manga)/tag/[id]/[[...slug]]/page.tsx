@@ -69,6 +69,7 @@ const getSearchParams = async (
   searchParams: Promise<{ [key: string]: string | undefined }>
 ) => {
   const params = await searchParams;
-  const page = params["page"] ? parseInt(params["page"]) : 1;
+  let page = params["page"] ? parseInt(params["page"]) : 1;
+  if (page < 1) page = 1;
   return { page };
 };

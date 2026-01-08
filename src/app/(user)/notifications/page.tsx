@@ -23,7 +23,7 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page({ searchParams }: pageProps) {
-    const { page } = await getSearchParams({ searchParams });
+  const { page } = await getSearchParams({ searchParams });
   const tabValues = [
     {
       value: "noti",
@@ -57,7 +57,7 @@ export default async function Page({ searchParams }: pageProps) {
           ))}
         </TabsList>
         <TabsContent value="noti">
-        <Accordion
+          <Accordion
             type="single"
             collapsible
             className="bg-secondary rounded-md px-2 mb-2"
@@ -72,8 +72,9 @@ export default async function Page({ searchParams }: pageProps) {
                 Thông báo truyện mới sẽ được lưu trên thiết bị của bạn; nếu bạn
                 xóa dữ liệu trình duyệt, thông báo cũng sẽ bị xóa theo.
                 <br />
-                Chính vì hạn chế trên, đôi khi sẽ không có thông báo dù truyện có chương mới
-                (sẽ khắc phục khi nhóm chức năng tài khoản được triển khai, chắc thế 🐧)
+                Chính vì hạn chế trên, đôi khi sẽ không có thông báo dù truyện
+                có chương mới (sẽ khắc phục khi nhóm chức năng tài khoản được
+                triển khai, chắc thế 🐧)
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -91,7 +92,8 @@ export default async function Page({ searchParams }: pageProps) {
 
 const getSearchParams = async ({ searchParams }: pageProps) => {
   const params = await searchParams;
-  const page = params["page"] ? parseInt(params["page"]) : 1;
+  let page = params["page"] ? parseInt(params["page"]) : 1;
+  if (page < 1) page = 1;
 
   return { page };
 };
