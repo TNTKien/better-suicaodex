@@ -2,7 +2,6 @@
 
 import { getCatsList, getCatCount, type Cat } from "@/lib/cat";
 import useSWR from "swr";
-import { useRouter } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -16,6 +15,7 @@ import { CatCard } from "./cat-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BugIcon, FolderXIcon } from "lucide-react";
+import { useRouter } from "@bprogress/next";
 
 interface MeoPageProps {
   page: number;
