@@ -326,7 +326,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                       Đọc Mato Seihei cập nhật mới nhất
                     </span>
                     <RainbowButton
-                      className="uppercase w-full md:w-auto"
+                      className="uppercase w-full md:w-auto text-white dark:text-black"
                       asChild
                     >
                       <NoPrefetchLink
@@ -338,12 +338,13 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                       </NoPrefetchLink>
                     </RainbowButton>
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-justify md:text-left">
                     Tôi biết cái này nhìn đần vcl nhưng phải làm thế cho nó đập
                     vào mắt các ông được 🤡
                     <br />
-                    Vì lý do bản quyền, tôi không thể đăng truyện này lên MangaDex được
-                    nữa, bởi thế nên mới mọc thêm cái nút bên trên.
+                    Vì lý do bản quyền, tôi không thể đăng truyện này lên
+                    MangaDex được nữa, bởi thế nên mới mọc thêm cái nút bên
+                    trên.
                   </CardDescription>
                 </CardContent>
               </Card>
