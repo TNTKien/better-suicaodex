@@ -8,6 +8,8 @@
     "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start -p 3636",
+    "upgrade": "next upgrade",
+    "analyze": "next experimental-analyze",
     "lint": "eslint ."
   },
   "dependencies": {
