@@ -45,7 +45,8 @@ const nextConfig: NextConfig = {
       source: "/manga-sitemap-:page.xml",
       destination: "/manga-sitemap/:page",
     },
-  ]
+  ],
+  cacheComponents: true,
 };
 
 export default nextConfig;

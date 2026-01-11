@@ -11,6 +11,7 @@ import { META_THEME_COLORS, siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ImageProxyInitializer } from "@/components/image-proxy-initializer";
+import { Suspense } from "react";
 
 const inter = Inter({
   preload: true,
@@ -79,24 +80,29 @@ export default function RootLayout({
           enableSystem
         >
           <ImageProxyInitializer />
-          <SidebarProvider defaultOpen={false}>
-            <div className="border-grid flex flex-1 flex-col">
-              <SiteHeader />
-              <main className="py-4 mx-4 md:mx-8 lg:mx-12">{children}</main>
-              <Toaster
-                richColors
-                position="top-right"
-                closeButton
-                offset={{
-                  top: "55px",
-                  right: "65px",
-                }}
-              />
-            </div>
+          {/* CACHE COMPONENTS: Wrap the entire interactive UI in Suspense */}
+          {/* This prevents provider components (SidebarProvider, NotificationProvider, ThemeWrapper) */}
+          {/* and their client hooks from blocking route prerendering */}
+          <Suspense fallback={<div className="h-screen w-screen" />}>
+            <SidebarProvider defaultOpen={false}>
+              <div className="border-grid flex flex-1 flex-col">
+                <SiteHeader />
+                <main className="py-4 mx-4 md:mx-8 lg:mx-12">{children}</main>
+                <Toaster
+                  richColors
+                  position="top-right"
+                  closeButton
+                  offset={{
+                    top: "55px",
+                    right: "65px",
+                  }}
+                />
+              </div>
 
-            <AppSidebar side="right" />
-          </SidebarProvider>
-          <ThemeSwitcher />
+              <AppSidebar side="right" />
+            </SidebarProvider>
+            <ThemeSwitcher />
+          </Suspense>
         </ThemeProvider>
       </body>
       <GoogleAnalytics gaId="G-GHG1HN9493" />
