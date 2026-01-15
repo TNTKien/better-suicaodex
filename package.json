@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "postinstall": "bun prisma generate",
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "bun --bun next dev --turbopack",
+    "build": "bun --bun next build",
     "postbuild": "next-sitemap",
-    "start": "next start -p 3636",
+    "start": "bun --bun next start -p 3636",
     "upgrade": "next upgrade",
     "analyze": "next experimental-analyze",
     "lint": "eslint ."
