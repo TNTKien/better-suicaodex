@@ -2,7 +2,7 @@
 
 import { useConfig } from "@/hooks/use-config";
 import { FirstEnChapter, FirstViChapter } from "@/lib/mangadex/manga";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo, useMemo } from "react";
 import { Button } from "../ui/button";
 import { BookOpen, BookX, Loader2 } from "lucide-react";
 import { Chapter } from "@/types/types";
@@ -13,7 +13,7 @@ interface MangaReadButtonProps {
   id: string;
 }
 
-export default function MangaReadButtons({ id }: MangaReadButtonProps) {
+function MangaReadButtons({ id }: MangaReadButtonProps) {
   const [config] = useConfig();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -22,6 +22,13 @@ export default function MangaReadButtons({ id }: MangaReadButtonProps) {
   const { history } = useReadingHistory();
   const readingHistory = history[id];
 
+  // Use primitive values instead of objects/arrays in dependencies
+  const r18 = config.r18;
+  const translatedLanguageKey = useMemo(
+    () => JSON.stringify(config.translatedLanguage),
+    [config.translatedLanguage]
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       if (!!readingHistory) {
@@ -29,19 +36,15 @@ export default function MangaReadButtons({ id }: MangaReadButtonProps) {
         return;
       }
       try {
-        if (
-          JSON.stringify(config.translatedLanguage) === JSON.stringify(["en"])
-        ) {
-          const res = await FirstEnChapter(id, config.r18);
+        if (translatedLanguageKey === JSON.stringify(["en"])) {
+          const res = await FirstEnChapter(id, r18);
           setChapter(res);
-        } else if (
-          JSON.stringify(config.translatedLanguage) === JSON.stringify(["vi"])
-        ) {
-          const res = await FirstViChapter(id, config.r18);
+        } else if (translatedLanguageKey === JSON.stringify(["vi"])) {
+          const res = await FirstViChapter(id, r18);
           setChapter(res);
         } else {
-          const vi = await FirstViChapter(id, config.r18);
-          const en = await FirstEnChapter(id, config.r18);
+          const vi = await FirstViChapter(id, r18);
+          const en = await FirstEnChapter(id, r18);
           if (!!vi) {
             setChapter(vi);
           } else {
@@ -56,7 +59,7 @@ export default function MangaReadButtons({ id }: MangaReadButtonProps) {
       }
     };
     fetchData();
-  }, [id, config.r18, config.translatedLanguage, readingHistory]);
+  }, [id, r18, translatedLanguageKey, readingHistory]);
 
   if (isLoading) {
     return (
@@ -126,3 +129,5 @@ export default function MangaReadButtons({ id }: MangaReadButtonProps) {
     </Button>
   );
 }
+
+export default memo(MangaReadButtons);
