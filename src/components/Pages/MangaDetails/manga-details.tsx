@@ -180,7 +180,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                 <AuthorArtistNames
                   authors={manga.author}
                   artists={manga.artist}
-                  className="drop-shadow-md text-sm line-clamp-2 break-all"
+                  className="text-sm line-clamp-1 max-w-[80%]"
                 />
               </div>
               {!!manga.stats && (
