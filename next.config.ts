@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: ['lucide-react', 'recharts'],
   },
   images: {
     qualities: [25, 50, 75, 100],
