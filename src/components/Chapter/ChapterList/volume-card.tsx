@@ -14,15 +14,15 @@ interface VolumeCardProps {
 }
 
 const getVolumeRange = (chapters: Volume["chapters"]): string => {
-  if (chapters.length === 0) return "No chapters";
-  
+  if (chapters.length === 0 || chapters.length === 1) return "";
+
   const firstChapter = chapters[0]?.chapter;
   const lastChapter = chapters[chapters.length - 1]?.chapter;
-  
+
   if (!firstChapter && !lastChapter) return "";
   if (!lastChapter) return `Ch. ${firstChapter}`;
   if (!firstChapter) return `Ch. ${lastChapter}`;
-  
+
   return `Ch. ${lastChapter} - ${firstChapter}`;
 };
 
@@ -38,7 +38,11 @@ export const VolumeCard = ({ volume, finalChapter }: VolumeCardProps) => {
             {volumeLabel === "No Volume" ? <ListX /> : <ListTree />}
             {volumeLabel}
           </div>
-          <span className="text-muted-foreground font-medium">{volumeRange}</span>
+          {!!volumeRange && (
+            <span className="text-muted-foreground font-medium">
+              {volumeRange}
+            </span>
+          )}
         </AccordionTrigger>
 
         {volume.chapters.map((chapter) => (
