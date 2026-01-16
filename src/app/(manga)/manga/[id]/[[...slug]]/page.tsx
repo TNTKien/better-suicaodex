@@ -90,7 +90,7 @@ export default async function Page({ params }: PageProps) {
           }}
         ></script>
       )}
-      <MangaDetails id={id} />
+      <MangaDetails id={id} initialData={{ status, manga }} />
     </>
   );
 }

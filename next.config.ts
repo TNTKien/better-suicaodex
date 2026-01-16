@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   images: {
     qualities: [25, 50, 75, 100],
     remotePatterns: [
@@ -45,7 +48,7 @@ const nextConfig: NextConfig = {
       source: "/manga-sitemap-:page.xml",
       destination: "/manga-sitemap/:page",
     },
-  ]
+  ],
 };
 
 export default nextConfig;

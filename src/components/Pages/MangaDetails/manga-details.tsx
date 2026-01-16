@@ -9,6 +9,10 @@ import MangaNotFound from "@/components/Manga/manga-notfound";
 import MangaReadButtons from "@/components/Manga/manga-read-buttons";
 import { MangaStatsComponent } from "@/components/Manga/manga-stats";
 import Tags from "@/components/Manga/Tags";
+import AddToLibraryBtn from "@/components/Manga/add-to-library-btn";
+import MangaSubInfo from "@/components/Manga/manga-subinfo";
+import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import { WarpBackground } from "@/components/ui/warp-background";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +35,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { siteConfig } from "@/config/site";
 import { useConfig } from "@/hooks/use-config";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { fetchMangaDetail } from "@/lib/mangadex/manga";
 import { Artist, Author, Manga } from "@/types/types";
 import {
   Archive,
@@ -48,18 +51,9 @@ import {
   SquareCheckBig,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import useSWR from "swr";
-import MangaDetailsSkeleton from "./manga-details-skeleton";
-import { toast } from "sonner";
-import AddToLibraryBtn from "@/components/Manga/add-to-library-btn";
-import MangaCoversTab from "@/components/Manga/manga-covers-tab";
-import MangaSubInfo from "@/components/Manga/manga-subinfo";
-import CommentSection from "@/components/Comment/comment-section";
+import { useState, useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { useCommentCount } from "@/hooks/use-comment-count";
-import MangaRecommendations from "@/components/Manga/manga-recomendations";
-import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
-import { WarpBackground } from "@/components/ui/warp-background";
 import {
   Card,
   CardContent,
@@ -67,35 +61,42 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { toast } from "sonner";
 
 interface MangaDetailsProps {
   id: string;
+  initialData: { status: number; manga: Manga | null };
 }
 
-export default function MangaDetails({ id }: MangaDetailsProps) {
+// Lazy load tab content components
+const LazyCommentSection = dynamic(() => import("@/components/Comment/comment-section"), {
+  loading: () => <div className="flex justify-center py-8"><span>Đang tải...</span></div>,
+});
+
+const LazyMangaCoversTab = dynamic(() => import("@/components/Manga/manga-covers-tab"), {
+  loading: () => <div className="flex justify-center py-8"><span>Đang tải...</span></div>,
+});
+
+const LazyMangaRecommendations = dynamic(() => import("@/components/Manga/manga-recomendations"), {
+  loading: () => <div className="flex justify-center py-8"><span>Đang tải...</span></div>,
+});
+
+export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
   const isMobile = useIsMobile();
   const [config, setConfig] = useConfig();
 
   const { count: cmtCount } = useCommentCount(id);
 
   const [showHiddenChapters, setShowHiddenChapters] = useState(false);
+  const [activeTab, setActiveTab] = useState("chapter");
 
-  const { data, error, isLoading } = useSWR(
-    `/manga/${id}`,
-    () => getMangaData(id),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
-
-  if (isLoading) return <MangaDetailsSkeleton />;
-  if (error?.status === 404 || data?.status === 404) return <MangaNotFound />;
-  if (error?.status === 503 || data?.status === 503) return <MangaMaintain />;
-  if (!data || data.status !== 200 || !data.manga)
+  // Use server-side data directly
+  if (initialData.status === 404) return <MangaNotFound />;
+  if (initialData.status === 503) return <MangaMaintain />;
+  if (!initialData.manga || initialData.status !== 200)
     return <div>Lỗi mất rồi 😭</div>;
 
-  const manga = data.manga;
+  const manga = initialData.manga;
 
   return (
     <>
@@ -176,14 +177,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                     {manga.altTitle}
                   </h2>
                 )}
-                <p className="drop-shadow-md text-sm line-clamp-1 break-all">
-                  {[
-                    ...new Set([
-                      ...manga.author.map((a: Author) => a.name),
-                      ...manga.artist.map((a: Artist) => a.name),
-                    ]),
-                  ].join(", ")}
-                </p>
+                <AuthorArtistNames authors={manga.author} artists={manga.artist} />
               </div>
               {!!manga.stats && (
                 <MangaStatsComponent stats={manga.stats} size="sm" />
@@ -221,14 +215,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                   )}
                 </div>
 
-                <p className="text-sm line-clamp-1 max-w-[80%]">
-                  {[
-                    ...new Set([
-                      ...manga.author.map((a: Author) => a.name),
-                      ...manga.artist.map((a: Artist) => a.name),
-                    ]),
-                  ].join(", ")}
-                </p>
+                <AuthorArtistNames authors={manga.author} artists={manga.artist} className="text-sm line-clamp-1 max-w-[80%]" />
               </div>
 
               <div className="pt-[0.85rem] flex flex-col gap-4">
@@ -237,19 +224,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
 
                   <MangaReadButtons id={id} />
 
-                  <Button
-                    size="icon"
-                    className="rounded-sm h-10 w-10"
-                    variant="secondary"
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `${siteConfig.suicaodex.domain}/manga/${id}`
-                      );
-                      return toast.success("Đã sao chép link truyện!");
-                    }}
-                  >
-                    <Share2 />
-                  </Button>
+                  <ShareButton id={id} />
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -364,18 +339,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
             <div className="flex flex-wrap gap-2 w-full">
               <AddToLibraryBtn isMobile={isMobile} manga={manga} />
 
-              <Button
-                size="icon"
-                className="rounded-sm grow-0"
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${siteConfig.suicaodex.domain}/manga/${id}`
-                  );
-                  return toast.success("Đã sao chép link truyện!");
-                }}
-              >
-                <Share2 />
-              </Button>
+              <ShareButton id={id} isMobile />
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -444,7 +408,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
           </div>
 
           <div className="w-full">
-            <Tabs defaultValue="chapter">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
               <div className="relative overflow-x-auto h-12">
                 <TabsList className="absolute rounded-sm">
                   <TabsTrigger
@@ -484,46 +448,52 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
               </div>
 
               <TabsContent value="chapter" className="mt-0">
-                <Button
-                  variant="ghost"
-                  className="px-0! hover:bg-transparent! text-base [&_svg]:size-5 whitespace-normal!"
-                  size="lg"
-                  onClick={() => setShowHiddenChapters(!showHiddenChapters)}
-                >
-                  {showHiddenChapters ? (
-                    <SquareCheckBig className="text-primary" strokeWidth={3} />
-                  ) : (
-                    <Square strokeWidth={3} />
-                  )}
-                  <span className="break-all! line-clamp-1">
-                    Hiển thị các chương ẩn (nếu có)
-                  </span>
-                </Button>
+                {activeTab === "chapter" && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      className="px-0! hover:bg-transparent! text-base [&_svg]:size-5 whitespace-normal!"
+                      size="lg"
+                      onClick={() => setShowHiddenChapters(!showHiddenChapters)}
+                    >
+                      {showHiddenChapters ? (
+                        <SquareCheckBig className="text-primary" strokeWidth={3} />
+                      ) : (
+                        <Square strokeWidth={3} />
+                      )}
+                      <span className="break-all! line-clamp-1">
+                        Hiển thị các chương ẩn (nếu có)
+                      </span>
+                    </Button>
 
-                <ChapterList
-                  language={config.translatedLanguage}
-                  limit={100}
-                  mangaID={manga.id}
-                  finalChapter={manga.finalChapter}
-                  r18={config.r18}
-                  showUnavailable={showHiddenChapters}
-                />
+                    <ChapterList
+                      language={config.translatedLanguage}
+                      limit={100}
+                      mangaID={manga.id}
+                      finalChapter={manga.finalChapter}
+                      r18={config.r18}
+                      showUnavailable={showHiddenChapters}
+                    />
+                  </>
+                )}
               </TabsContent>
 
               <TabsContent value="comment" className="mt-0">
-                <CommentSection
-                  id={manga.id}
-                  type="manga"
-                  title={manga.title}
-                />
+                {activeTab === "comment" && (
+                  <LazyCommentSection
+                    id={manga.id}
+                    type="manga"
+                    title={manga.title}
+                  />
+                )}
               </TabsContent>
 
               <TabsContent value="art" className="mt-0">
-                <MangaCoversTab id={manga.id} />
+                {activeTab === "art" && <LazyMangaCoversTab id={manga.id} />}
               </TabsContent>
 
               <TabsContent value="recommendation" className="mt-0">
-                <MangaRecommendations id={manga.id} />
+                {activeTab === "recommendation" && <LazyMangaRecommendations id={manga.id} />}
               </TabsContent>
             </Tabs>
           </div>
@@ -533,13 +503,37 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
   );
 }
 
-async function getMangaData(
-  id: string
-): Promise<{ status: number; manga: Manga | null }> {
-  try {
-    const mangaData = await fetchMangaDetail(id);
-    return { status: 200, manga: mangaData };
-  } catch (error: any) {
-    return { status: error.status || 500, manga: null };
-  }
-}
+// Memoized component for author/artist names
+const AuthorArtistNames = ({ authors, artists, className = "drop-shadow-md text-sm line-clamp-1 break-all" }: { authors: Author[], artists: Artist[], className?: string }) => {
+  const names = useMemo(() => {
+    return [
+      ...new Set([
+        ...authors.map((a: Author) => a.name),
+        ...artists.map((a: Artist) => a.name),
+      ]),
+    ].join(", ");
+  }, [authors, artists]);
+  
+  return <p className={className}>{names}</p>;
+};
+
+// Memoized share button component
+const ShareButton = ({ id, isMobile = false }: { id: string, isMobile?: boolean }) => {
+  const handleShare = useCallback(() => {
+    navigator.clipboard.writeText(
+      `${siteConfig.suicaodex.domain}/manga/${id}`
+    );
+    toast.success("Đã sao chép link truyện!");
+  }, [id]);
+  
+  return (
+    <Button
+      size="icon"
+      className={isMobile ? "rounded-sm grow-0" : "rounded-sm h-10 w-10"}
+      variant={isMobile ? "default" : "secondary"}
+      onClick={handleShare}
+    >
+      <Share2 />
+    </Button>
+  );
+};
