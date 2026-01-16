@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts'],
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
   images: {
     qualities: [25, 50, 75, 100],
     remotePatterns: [
