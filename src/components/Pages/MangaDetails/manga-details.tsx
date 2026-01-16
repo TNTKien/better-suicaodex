@@ -48,7 +48,7 @@ import {
   SquareCheckBig,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import MangaDetailsSkeleton from "./manga-details-skeleton";
 import { toast } from "sonner";
@@ -176,14 +176,12 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                     {manga.altTitle}
                   </h2>
                 )}
-                <p className="drop-shadow-md text-sm line-clamp-1 break-all">
-                  {[
-                    ...new Set([
-                      ...manga.author.map((a: Author) => a.name),
-                      ...manga.artist.map((a: Artist) => a.name),
-                    ]),
-                  ].join(", ")}
-                </p>
+                
+                <AuthorArtistNames
+                  authors={manga.author}
+                  artists={manga.artist}
+                  className="drop-shadow-md text-sm line-clamp-2 break-all"
+                />
               </div>
               {!!manga.stats && (
                 <MangaStatsComponent stats={manga.stats} size="sm" />
@@ -221,14 +219,10 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                   )}
                 </div>
 
-                <p className="text-sm line-clamp-1 max-w-[80%]">
-                  {[
-                    ...new Set([
-                      ...manga.author.map((a: Author) => a.name),
-                      ...manga.artist.map((a: Artist) => a.name),
-                    ]),
-                  ].join(", ")}
-                </p>
+                <AuthorArtistNames
+                  authors={manga.author}
+                  artists={manga.artist}
+                />
               </div>
 
               <div className="pt-[0.85rem] flex flex-col gap-4">
@@ -237,19 +231,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
 
                   <MangaReadButtons id={id} />
 
-                  <Button
-                    size="icon"
-                    className="rounded-sm h-10 w-10"
-                    variant="secondary"
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `${siteConfig.suicaodex.domain}/manga/${id}`
-                      );
-                      return toast.success("Đã sao chép link truyện!");
-                    }}
-                  >
-                    <Share2 />
-                  </Button>
+                  <ShareButton id={id} isMobile={isMobile} />
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -364,18 +346,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
             <div className="flex flex-wrap gap-2 w-full">
               <AddToLibraryBtn isMobile={isMobile} manga={manga} />
 
-              <Button
-                size="icon"
-                className="rounded-sm grow-0"
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${siteConfig.suicaodex.domain}/manga/${id}`
-                  );
-                  return toast.success("Đã sao chép link truyện!");
-                }}
-              >
-                <Share2 />
-              </Button>
+              <ShareButton id={id} isMobile={isMobile} />
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -543,3 +514,50 @@ async function getMangaData(
     return { status: error.status || 500, manga: null };
   }
 }
+
+// Memoized component for author/artist names
+const AuthorArtistNames = ({
+  authors,
+  artists,
+  className = "drop-shadow-md text-sm line-clamp-1 break-all",
+}: {
+  authors: Author[];
+  artists: Artist[];
+  className?: string;
+}) => {
+  const names = useMemo(() => {
+    return [
+      ...new Set([
+        ...authors.map((a: Author) => a.name),
+        ...artists.map((a: Artist) => a.name),
+      ]),
+    ].join(", ");
+  }, [authors, artists]);
+
+  return <p className={className}>{names}</p>;
+};
+
+// Memoized share button component
+const ShareButton = ({
+  id,
+  isMobile = false,
+}: {
+  id: string;
+  isMobile?: boolean;
+}) => {
+  const handleShare = useCallback(() => {
+    navigator.clipboard.writeText(`${siteConfig.suicaodex.domain}/manga/${id}`);
+    toast.success("Đã sao chép link truyện!");
+  }, [id]);
+
+  return (
+    <Button
+      size="icon"
+      className={isMobile ? "rounded-sm grow-0" : "rounded-sm h-10 w-10"}
+      variant={isMobile ? "default" : "secondary"}
+      onClick={handleShare}
+    >
+      <Share2 />
+    </Button>
+  );
+};
