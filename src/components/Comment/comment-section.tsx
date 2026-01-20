@@ -1,7 +1,6 @@
 "use client";
 
 import CommentList from "./comment-list";
-// import CommentForm from "./comment-form"; // Old richtext editor form
 import CommentFormSimple from "./comment-form-simple"; // New simple form with stickers
 import { useRef } from "react";
 import { useCommentCount } from "@/hooks/use-comment-count";
