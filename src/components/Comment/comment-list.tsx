@@ -4,6 +4,8 @@ import useSWR from "swr";
 import CommentCard from "./comment-card";
 import { useImperativeHandle, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Card, CardContent } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
 import {
   Pagination,
   PaginationContent,
@@ -13,8 +15,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Image from "next/image";
-import DoroLoading from "#/images/doro-loading.gif";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const LIMIT = 10; // Limit for pagination
@@ -25,20 +25,18 @@ interface CommentListProps {
 }
 
 // Use forwardRef to allow parent components to access the mutate function
-const CommentList = (
-  {
-    ref,
-    id,
-    type
-  }: CommentListProps & {
-    ref: React.RefObject<unknown>;
-  }
-) => {
+const CommentList = ({
+  ref,
+  id,
+  type,
+}: CommentListProps & {
+  ref: React.RefObject<unknown>;
+}) => {
   const [page, setPage] = useState(1);
   const offset = (page - 1) * LIMIT; // Calculate offset based on page number
   const { data, mutate, isLoading, error } = useSWR(
     `/api/comments/${type}/${id}?offset=${offset}&limit=${LIMIT}`,
-    fetcher
+    fetcher,
   );
 
   // Expose the mutate function to the parent component
@@ -48,17 +46,25 @@ const CommentList = (
 
   if (isLoading || !data)
     return (
-      <Alert className="rounded-sm border-none">
-        <AlertDescription className="flex justify-center">
-          <Image
-            src={DoroLoading}
-            alt="Loading..."
-            unoptimized
-            priority
-            className="w-20 h-auto"
-          />
-        </AlertDescription>
-      </Alert>
+      <div className="space-y-4 px-1">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Card
+            key={i}
+            className="rounded-none shadow-none border-none p-0 bg-transparent"
+          >
+            <CardContent className="p-0!">
+              <div className="flex gap-2">
+                <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     );
   if (data.comments.length === 0)
     return (
@@ -87,10 +93,19 @@ const CommentList = (
   };
 
   return (
-    (<div className="space-y-4 mt-4">
-      {data.comments.map((comment: any) => (
-        <CommentCard key={comment.id} comment={comment} />
-      ))}
+    <div className="space-y-4 mt-4">
+      <div className="space-y-4 px-1">
+        {data.comments.map((comment: any) => (
+          <Card
+            key={comment.id}
+            className="rounded-none shadow-none border-none p-0 bg-transparent overflow-hidden"
+          >
+            <CardContent className="p-0!">
+              <CommentCard comment={comment} />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
       {totalPages > 1 && (
         <Pagination className="mt-4">
           <PaginationContent>
@@ -102,7 +117,7 @@ const CommentList = (
 
             {totalPages <= 7 ? (
               // Show all pages if total is 7 or less
-              (Array.from({ length: totalPages }, (_, i) => (
+              Array.from({ length: totalPages }, (_, i) => (
                 <PaginationItem key={i + 1}>
                   <PaginationLink
                     className="w-8 h-8"
@@ -112,10 +127,10 @@ const CommentList = (
                     {i + 1}
                   </PaginationLink>
                 </PaginationItem>
-              )))
+              ))
             ) : page <= 4 ? (
               // Near start: show 1, 2, 3, 4, 5, ..., lastPage
-              (<>
+              <>
                 {[1, 2, 3, 4, 5].map((num) => (
                   <PaginationItem key={num}>
                     <PaginationLink
@@ -136,10 +151,10 @@ const CommentList = (
                     {totalPages}
                   </PaginationLink>
                 </PaginationItem>
-              </>)
+              </>
             ) : page >= totalPages - 3 ? (
               // Near end: show 1, ..., lastPage-4, lastPage-3, lastPage-2, lastPage-1, lastPage
-              (<>
+              <>
                 <PaginationItem>
                   <PaginationLink
                     className="w-8 h-8"
@@ -166,10 +181,10 @@ const CommentList = (
                     </PaginationLink>
                   </PaginationItem>
                 ))}
-              </>)
+              </>
             ) : (
               // Middle: show 1, ..., page-1, page, page+1, ..., lastPage
-              (<>
+              <>
                 <PaginationItem>
                   <PaginationLink
                     className="w-8 h-8"
@@ -199,7 +214,7 @@ const CommentList = (
                     {totalPages}
                   </PaginationLink>
                 </PaginationItem>
-              </>)
+              </>
             )}
 
             <PaginationNext
@@ -210,7 +225,7 @@ const CommentList = (
           </PaginationContent>
         </Pagination>
       )}
-    </div>)
+    </div>
   );
 };
 

@@ -5,7 +5,6 @@ import { Alert, AlertTitle } from "../ui/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,24 +13,20 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { getContentLength } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
-import { RichTextEditor } from "../Tiptap/rich-text-editor";
+import { StickerPicker } from "./sticker-picker";
 
 const FormSchema = z.object({
   comment: z
     .string()
-    .refine((val) => getContentLength(val) >= 1, {
-      message: "Bình luận phải dài ít nhất 1 ký tự!",
-    })
-    .refine((val) => getContentLength(val) <= 2000, {
-      message: "Bình luận không được dài hơn 2000 ký tự!",
-    }),
+    .min(1, { message: "Bình luận phải dài ít nhất 1 ký tự!" })
+    .max(2000, { message: "Bình luận không được dài hơn 2000 ký tự!" }),
 });
 
-interface CommentFormProps {
+interface CommentFormSimpleProps {
   id: string;
   type: "manga" | "chapter";
   title: string;
@@ -39,26 +34,21 @@ interface CommentFormProps {
   onCommentPosted?: () => void;
 }
 
-export default function CommentForm({
+export default function CommentFormSimple({
   id,
   type,
   title,
   chapterNumber,
   onCommentPosted,
-}: CommentFormProps) {
+}: CommentFormSimpleProps) {
   const { data: session } = useSession();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      comment: "",
+    },
   });
   const [loading, setLoading] = useState(false);
-  const [shouldResetEditor, setShouldResetEditor] = useState(false);
-
-  useEffect(() => {
-    if (shouldResetEditor) {
-      const timer = setTimeout(() => setShouldResetEditor(false), 0);
-      return () => clearTimeout(timer);
-    }
-  }, [shouldResetEditor]);
 
   if (!session?.user?.id)
     return (
@@ -103,8 +93,7 @@ export default function CommentForm({
         return;
       }
 
-      // Trigger the editor reset
-      setShouldResetEditor(true);
+      form.reset();
 
       if (onCommentPosted) {
         onCommentPosted();
@@ -117,6 +106,14 @@ export default function CommentForm({
     }
   }
 
+  const insertSticker = (stickerName: string) => {
+    const currentValue = form.getValues("comment");
+    const newValue = currentValue
+      ? `${currentValue} :${stickerName}:`
+      : `:${stickerName}:`;
+    form.setValue("comment", newValue);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
@@ -126,17 +123,18 @@ export default function CommentForm({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <RichTextEditor
-                  placeholder="Viết bình luận..."
-                  className="bg-sidebar p-2 rounded-md border w-full"
-                  maxLength={2000}
-                  value={field.value}
-                  onChange={(val) => {
-                    field.onChange(val);
-                  }}
-                  reset={shouldResetEditor}
-                  disabled={loading}
-                />
+                <div className="relative">
+                  <Textarea
+                    placeholder="Viết bình luận...(hỗ trợ markdown)"
+                    className="bg-sidebar rounded-sm resize-none min-h-[100px]"
+                    maxLength={2000}
+                    disabled={loading}
+                    {...field}
+                  />
+                  <div className="absolute bottom-2 right-2">
+                    <StickerPicker onSelectSticker={insertSticker} />
+                  </div>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

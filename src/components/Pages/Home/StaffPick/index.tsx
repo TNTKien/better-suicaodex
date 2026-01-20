@@ -10,6 +10,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronsDown, ChevronsUp } from "lucide-react";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import StaffPickSkeleton from "./staffpick-skeleton";
 
 export default function StaffPick() {
   const [config] = useConfig();
@@ -53,25 +54,10 @@ export default function StaffPick() {
     {
       refreshInterval: 1000 * 60 * 10,
       revalidateOnFocus: false,
-    }
+    },
   );
 
-  if (isLoading)
-    return (
-      <div className="flex flex-col">
-        <hr className="w-9 h-1 bg-primary border-none" />
-        <h1 className="text-2xl font-black uppercase">Truyện đề cử</h1>
-
-        <div className="mt-4 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
-          {[...Array(8)].map((_, index) => (
-            <Skeleton
-              key={index}
-              className="w-full h-[300px] rounded-sm bg-gray-500"
-            />
-          ))}
-        </div>
-      </div>
-    );
+  if (isLoading) return <StaffPickSkeleton />;
 
   if (error || !data) return null;
 
@@ -86,7 +72,7 @@ export default function StaffPick() {
         ref={contentRef}
         className={cn(
           "mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3",
-          "overflow-hidden transition-all duration-500"
+          "overflow-hidden transition-all duration-500",
         )}
         style={{
           maxHeight: expanded ? fullHeight : "700px",
@@ -97,7 +83,10 @@ export default function StaffPick() {
         }}
       >
         {data.map((manga) => (
-          <NoPrefetchLink key={manga.id} href={`/manga/${manga.id}/${generateSlug(manga.title)}`}>
+          <NoPrefetchLink
+            key={manga.id}
+            href={`/manga/${manga.id}/${generateSlug(manga.title)}`}
+          >
             <RecentlyCard manga={manga} />
           </NoPrefetchLink>
         ))}
