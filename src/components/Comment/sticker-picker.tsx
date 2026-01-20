@@ -18,9 +18,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Smile } from "lucide-react";
-import Image from "next/image";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { stickers, getCategories } from "@/lib/stickers-fn";
+import { stickers, getCategories, getCategoryName } from "@/lib/stickers-fn";
 
 interface StickerPickerProps {
   onSelectSticker: (stickerName: string) => void;
@@ -51,9 +52,9 @@ export function StickerPicker({
             <TabsTrigger
               key={category}
               value={category}
-              className="capitalize text-xs"
+              className="text-xs"
             >
-              {category}
+              {getCategoryName(category)}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -65,15 +66,14 @@ export function StickerPicker({
                   key={sticker.title}
                   type="button"
                   onClick={() => handleSelectSticker(sticker.title)}
-                  className="relative aspect-square rounded-none hover:rounded-lg hover:bg-primary/20 overflow-hidden transition-all"
+                  className="aspect-square rounded-none hover:rounded-lg hover:bg-primary/20 overflow-hidden transition-all"
                   title={sticker.title}
                 >
-                  <Image
+                  <LazyLoadImage
                     src={sticker.url}
                     alt={sticker.title}
-                    fill
-                    className="object-contain"
-                    unoptimized
+                    className="w-full h-full object-contain"
+                    effect="blur"
                   />
                 </button>
               ))}
@@ -91,15 +91,14 @@ export function StickerPicker({
                       key={sticker.title}
                       type="button"
                       onClick={() => handleSelectSticker(sticker.title)}
-                      className="relative aspect-square rounded-none hover:rounded-lg hover:bg-primary/20 overflow-hidden transition-all"
+                      className="aspect-square rounded-none hover:rounded-lg hover:bg-primary/20 overflow-hidden transition-all"
                       title={sticker.title}
                     >
-                      <Image
+                      <LazyLoadImage
                         src={sticker.url}
                         alt={sticker.title}
-                        fill
-                        className="object-contain"
-                        unoptimized
+                        className="w-full h-full object-contain"
+                        effect="blur"
                       />
                     </button>
                   ))}

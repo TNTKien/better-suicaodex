@@ -1,11 +1,26 @@
 // Sticker definitions for comment system
 // Format: :sticker_name: will be replaced with the image
 
+export interface StickerCategory {
+  id: string;
+  name: string;
+}
+
 export interface Sticker {
   title: string;
   url: string;
-  category?: string;
+  category?: StickerCategory["id"];
 }
+
+// Sticker categories with display names
+export const stickerCategories: StickerCategory[] = [
+  { id: "bluearchive", name: "Blue Archive" },
+  { id: "bocchi", name: "Bocchi The Rock" },
+  { id: "doro", name: "Doro" },
+  { id: "michos", name: "HoYoverse" },
+  { id: "princonne", name: "Princess Connect! Re:Dive" },
+  { id: "others", name: "Khác" },
+];
 
 export const stickers: Sticker[] = [
   // Blue Archive
@@ -62,5 +77,10 @@ export function getStickersByCategory(category: string): Sticker[] {
 
 // Get all categories
 export function getCategories(): string[] {
-  return Array.from(new Set(stickers.map((s) => s.category).filter(Boolean))) as string[];
+  return stickerCategories.map((c) => c.id);
+}
+
+// Get category display name
+export function getCategoryName(categoryId: string): string {
+  return stickerCategories.find((c) => c.id === categoryId)?.name || categoryId;
 }

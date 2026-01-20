@@ -94,9 +94,11 @@ export default function CommentCard({
           {text && (
             <div className="bg-muted rounded-2xl px-3 py-2 mt-1 inline-block max-w-full">
               <ReactMarkdown
-                className="prose prose-sm prose-img:my-1 prose-img:max-w-14 dark:prose-invert max-w-full"
+                className="prose prose-sm prose-img:my-1 prose-img:max-w-[120px] dark:prose-invert max-w-full"
                 remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-                rehypePlugins={isLegacyHTML ? [rehypeRaw, [rehypeSanitize]] : undefined}
+                rehypePlugins={
+                  isLegacyHTML ? [rehypeRaw, [rehypeSanitize]] : undefined
+                }
                 components={{
                   a: ({ href, children }) => (
                     <a
@@ -124,9 +126,13 @@ export default function CommentCard({
                   th: ({ children }) => (
                     <th className="px-2 py-1 text-left">{children}</th>
                   ),
-                  td: ({ children }) => <td className="px-2 py-1">{children}</td>,
+                  td: ({ children }) => (
+                    <td className="px-2 py-1">{children}</td>
+                  ),
                   p: ({ children }) => (
-                    <p className="whitespace-pre-wrap wrap-break-word">{children}</p>
+                    <p className="whitespace-pre-wrap wrap-break-word">
+                      {children}
+                    </p>
                   ),
                 }}
               >
@@ -187,29 +193,6 @@ export default function CommentCard({
               </div>
             )}
           </div>
-
-          {/* Placeholder for future replies support */}
-          {/* {comment.replies && comment.replies.length > 0 && (
-            <div className="relative mt-3 space-y-3">
-              
-              <div className="absolute left-[-29px] top-[-9999px] bottom-0 w-[2px] bg-border" />
-              {comment.replies.map((reply: any, index: number) => (
-                <div key={reply.id} className="relative">
-                  
-                  <div className="absolute left-[-28px] top-5 w-[36px] h-[2px] bg-border" />
-                 
-                  {index === comment.replies.length - 1 && (
-                    <div className="absolute left-[-29px] top-[calc(20px+2px)] bottom-0 w-[2px] bg-background" />
-                  )}
-                  <CommentCard
-                    comment={reply}
-                    isReply
-                    isLastReply={index === comment.replies.length - 1}
-                  />
-                </div>
-              ))}
-            </div>
-          )} */}
         </div>
       </div>
     </div>
