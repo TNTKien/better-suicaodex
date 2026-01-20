@@ -125,7 +125,7 @@ export default function CommentFormSimple({
               <FormControl>
                 <div className="relative">
                   <Textarea
-                    placeholder="Viết bình luận... (Hỗ trợ markdown và :sticker:)"
+                    placeholder="Viết bình luận...(hỗ trợ markdown)"
                     className="bg-sidebar rounded-sm resize-none min-h-[100px]"
                     maxLength={2000}
                     disabled={loading}
