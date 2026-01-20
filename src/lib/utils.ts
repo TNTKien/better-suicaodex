@@ -246,10 +246,11 @@ export function formatNumber(num: number): string {
 
 export function generateSlug(title: string): string {
   if (!title) return "";
-  return slugify(title, {
+  // Thay thế dấu / thành - trước
+  const titleWithDash = title.replace(/\//g, "-");
+  return slugify(titleWithDash, {
     lower: true,
     locale: "vi",
     remove: /[*+~.,()'"!?:@\[\]]/g,
   });
-  // return slugger.slug(title);
 }
