@@ -4,6 +4,7 @@ import useSWR from "swr";
 import CommentCard from "./comment-card";
 import { useImperativeHandle, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Card, CardContent } from "../ui/card";
 import {
   Pagination,
   PaginationContent,
@@ -88,9 +89,18 @@ const CommentList = (
 
   return (
     (<div className="space-y-4 mt-4">
-      {data.comments.map((comment: any) => (
-        <CommentCard key={comment.id} comment={comment} />
-      ))}
+      <div className="space-y-4 px-1">
+        {data.comments.map((comment: any) => (
+          <Card
+            key={comment.id}
+            className="rounded-none shadow-none border-none p-0 bg-transparent overflow-hidden"
+          >
+            <CardContent className="!p-0">
+              <CommentCard comment={comment} />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
       {totalPages > 1 && (
         <Pagination className="mt-4">
           <PaginationContent>

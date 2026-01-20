@@ -91,6 +91,42 @@ export function formatTimeToNow(date: Date | number): string {
   });
 }
 
+// Format time in short form: 2s, 5m, 3h, 1d, 2w, 3mo, 1y
+const formatDistanceShort = {
+  lessThanXSeconds: "{{count}}s",
+  xSeconds: "{{count}}s",
+  halfAMinute: "30s",
+  lessThanXMinutes: "{{count}}m",
+  xMinutes: "{{count}}m",
+  aboutXHours: "{{count}}h",
+  xHours: "{{count}}h",
+  xDays: "{{count}}d",
+  aboutXWeeks: "{{count}}w",
+  xWeeks: "{{count}}w",
+  aboutXMonths: "{{count}}mo",
+  xMonths: "{{count}}mo",
+  aboutXYears: "{{count}}y",
+  xYears: "{{count}}y",
+  overXYears: "{{count}}y",
+  almostXYears: "{{count}}y",
+};
+
+function formatDistanceShortFn(token: string, count: number): string {
+  return formatDistanceShort[
+    token as keyof typeof formatDistanceShort
+  ].replace("{{count}}", count.toString());
+}
+
+export function formatShortTime(date: Date | number): string {
+  return formatDistanceToNowStrict(date, {
+    addSuffix: false,
+    locale: {
+      ...locale,
+      formatDistance: formatDistanceShortFn,
+    },
+  });
+}
+
 export function isFacebookUrl(url: string): boolean {
   return /facebook\.com/.test(url);
 }
