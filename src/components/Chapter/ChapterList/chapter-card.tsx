@@ -87,7 +87,7 @@ const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
     <Card
       aria-disabled={isUnavailable}
       className={cn(
-        "flex flex-col justify-between rounded-xs px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent",
+        "flex flex-col justify-between rounded-xs px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent/50",
         isUnavailable && "opacity-90 cursor-not-allowed text-muted-foreground",
         className && className
       )}

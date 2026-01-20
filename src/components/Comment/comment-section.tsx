@@ -1,7 +1,8 @@
 "use client";
 
 import CommentList from "./comment-list";
-import CommentForm from "./comment-form";
+// import CommentForm from "./comment-form"; // Old richtext editor form
+import CommentFormSimple from "./comment-form-simple"; // New simple form with stickers
 import { useRef } from "react";
 import { useCommentCount } from "@/hooks/use-comment-count";
 
@@ -36,7 +37,7 @@ export default function CommentSection({
 
   return (
     <div className="mt-2 grid grid-cols-1 gap-4 w-full">
-      <CommentForm
+      <CommentFormSimple
         id={id}
         title={title}
         type={type}
