@@ -12,6 +12,8 @@ import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
 import { usePathname } from "next/navigation";
+import WeebDexReader from "@/components/Chapter/WeebDex-Reader";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface ChapterProps {
   id: string;
@@ -27,7 +29,7 @@ export default function Chapter({ id }: ChapterProps) {
     {
       refreshInterval: 1000 * 60 * 30,
       revalidateOnFocus: false,
-    }
+    },
   );
 
   useEffect(() => {
@@ -69,10 +71,22 @@ export default function Chapter({ id }: ChapterProps) {
   if (!data) return <div>Not found</div>;
 
   return (
-    <div className={cn()}>
-      <ChapterInfo chapter={data} />
+    <SidebarProvider
+      defaultOpen={true}
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 100)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <WeebDexReader chapter={data}/>
+      <div className="border-grid flex flex-1 flex-col">
+        <SidebarTrigger />
+        {/* <ChapterInfo chapter={data} /> */}
 
-      {!!data.pages && <Reader images={data.pages} chapterData={data} />}
-    </div>
+        {!!data.pages && <Reader images={data.pages} chapterData={data} />}
+      </div>
+    </SidebarProvider>
   );
 }

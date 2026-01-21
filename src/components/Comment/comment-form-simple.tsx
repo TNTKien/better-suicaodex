@@ -140,10 +140,12 @@ export default function CommentFormSimple({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={loading}>
-          {!!loading ? <Loader2 className="animate-spin" /> : <Send />}
-          Gửi bình luận
-        </Button>
+        <div className="w-full flex justify-end">
+          <Button type="submit" disabled={loading}>
+            {!!loading ? <Loader2 className="animate-spin" /> : <Send />}
+            Gửi bình luận
+          </Button>
+        </div>
       </form>
     </Form>
   );
