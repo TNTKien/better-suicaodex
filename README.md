@@ -65,7 +65,7 @@ Ngoài ra còn cải thiện các chức năng cũ và thêm một số chức n
 2. ⬛ Chỉnh sửa/Trả lời
 3. ⬛ Thả like
 4. ✅ Sticker...
-5. ✅ Richtext editor
+5. ~~✅ Richtext editor~~ bỏ đi vì không cần thiết
 
 ~~⬛ Giả lập Gacha (tại sao lại không nhỉ? 🐧)~~ Đã thử làm và quá lười để làm tiếp
 
