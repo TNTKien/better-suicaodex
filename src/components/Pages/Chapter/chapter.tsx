@@ -71,22 +71,11 @@ export default function Chapter({ id }: ChapterProps) {
   if (!data) return <div>Not found</div>;
 
   return (
-    <SidebarProvider
-      defaultOpen={true}
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 100)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <WeebDexReader chapter={data}/>
+    <WeebDexReader chapter={data}>
       <div className="border-grid flex flex-1 flex-col">
         <SidebarTrigger />
-        {/* <ChapterInfo chapter={data} /> */}
-
         {!!data.pages && <Reader images={data.pages} chapterData={data} />}
       </div>
-    </SidebarProvider>
+    </WeebDexReader>
   );
 }
