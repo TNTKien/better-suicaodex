@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Chapter } from "@/types/types";
 import { ChapterTitle } from "../ChapterReader/chapter-info";
-import { formatChapterTitle, generateSlug } from "@/lib/utils";
+import { cn, formatChapterTitle, generateSlug } from "@/lib/utils";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 import {
   Collapsible,
@@ -55,15 +55,15 @@ export default function WeebDexReader({
   children,
 }: WeebDexReaderProps) {
   const {
-    // state,
-    // open,
-    // setOpen,
-    // openMobile,
-    // setOpenMobile,
-    // isMobile,
+    state,
+    open,
+    setOpen,
+    openMobile,
+    setOpenMobile,
+    isMobile,
     toggleSidebar,
   } = useSidebar();
-  // console.log("WeebDexReader render", { isMobile, state, open, openMobile });
+  console.log("WeebDexReader render", { isMobile, state, open, openMobile });
 
   const commentListRef = useRef<{ mutate: () => void } | null>(null);
   const handleCommentPosted = () => {
@@ -181,7 +181,9 @@ export default function WeebDexReader({
           </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent
+          className={cn(state === "collapsed" && !isMobile && "hidden")}
+        >
           <SidebarGroup>
             <SidebarGroupContent>
               <CommentList
@@ -193,7 +195,9 @@ export default function WeebDexReader({
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter>
+        <SidebarFooter
+          className={cn(state === "collapsed" && !isMobile && "hidden")}
+        >
           <CommentFormSimple
             id={chapter.id}
             title={chapter.manga.title || ""}
