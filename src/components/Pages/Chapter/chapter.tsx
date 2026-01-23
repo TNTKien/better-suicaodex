@@ -1,7 +1,6 @@
 "use client";
 
-import ChapterInfo from "@/components/Chapter/ChapterReader/chapter-info";
-import Reader from "@/components/Chapter/ChapterReader/Reader";
+import NewReader from "@/components/Chapter/NewReader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getChapterDetail } from "@/lib/mangadex/chapter";
 import useSWR from "swr";
@@ -9,19 +8,12 @@ import ChapterNotFound from "./chapter-notfound";
 import MangaMaintain from "@/components/Manga/manga-maintain";
 import useReadingHistory from "@/hooks/use-reading-history";
 import { useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { useConfig } from "@/hooks/use-config";
-import { usePathname } from "next/navigation";
-import WeebDexReader from "@/components/Chapter/WeebDex-Reader";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface ChapterProps {
   id: string;
 }
 
 export default function Chapter({ id }: ChapterProps) {
-  const [config] = useConfig();
-  const pathName = usePathname();
   const { addHistory } = useReadingHistory();
   const { data, isLoading, error } = useSWR(
     ["chapter", id],
@@ -47,13 +39,6 @@ export default function Chapter({ id }: ChapterProps) {
     }
   }, [addHistory, data, id]);
 
-  useEffect(() => {
-    if (pathName.includes("/chapter/") && config.reader.type === "single") {
-      document.body.classList.add("page-no-padding");
-      return () => document.body.classList.remove("page-no-padding");
-    }
-  }, [config.reader.type]);
-
   if (isLoading)
     return (
       <div className="grid grid-cols-1 gap-2 pb-2">
@@ -70,12 +55,9 @@ export default function Chapter({ id }: ChapterProps) {
   }
   if (!data) return <div>Not found</div>;
 
+  console.log("Chapter render", { id, data });
+
   return (
-    <WeebDexReader chapter={data}>
-      <div className="border-grid flex flex-1 flex-col">
-        <SidebarTrigger />
-        {!!data.pages && <Reader images={data.pages} chapterData={data} />}
-      </div>
-    </WeebDexReader>
+    <NewReader chapter={data} />
   );
 }

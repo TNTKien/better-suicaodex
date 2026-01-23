@@ -25,6 +25,7 @@ export type ReaderConfig = {
   panelOpen: boolean;
   panelPosition: PanelPosition;
   pageIndicator: boolean;
+  dataSaver: boolean;
   scrollSpeed: number;
   verticalClickNavigation: boolean;
   scrollNavigation: boolean;
@@ -48,6 +49,7 @@ const defaultReaderConfig: ReaderConfig = {
   panelOpen: true,
   panelPosition: "left",
   pageIndicator: true,
+  dataSaver: false,
   scrollSpeed: 40,
   verticalClickNavigation: true,
   scrollNavigation: true,

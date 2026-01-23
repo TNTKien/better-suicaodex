@@ -3,6 +3,16 @@ import { GroupParser } from "./group";
 import { axiosWithProxyFallback } from "../axios";
 import { getCurrentApiUrl, getCurrentImageProxyUrl } from "../utils";
 
+export type ChapterAtHome = {
+  baseUrl?: string;
+  chapter?: {
+    hash?: string;
+    data?: string[];
+    dataSaver?: string[];
+  };
+  images?: string[];
+};
+
 export function ChaptersParser(data: any[]): Chapter[] {
   return data.map((item) => {
     const mangaData = item.relationships.find(
@@ -190,6 +200,15 @@ export async function getChapterDetail(id: string): Promise<Chapter> {
   );
 
   return { ...chapter, manga: manga(), pages };
+}
+
+export async function getChapterAtHome(id: string): Promise<ChapterAtHome> {
+  const data = await axiosWithProxyFallback<ChapterAtHome>({
+    url: `/ch/${id}`,
+    method: "get",
+  });
+
+  return data;
 }
 
 export async function getChapterAggregate(
