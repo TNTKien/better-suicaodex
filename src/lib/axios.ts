@@ -90,7 +90,7 @@ export const axiosWithProxyFallback = async <T = any>(
       console.warn(`[Failed] ${proxy} failed with status: ${status}, trying next...`);
     }
   }
-  console.error("All failed");
+  console.log("All failed");
   throw lastError;
 };
 

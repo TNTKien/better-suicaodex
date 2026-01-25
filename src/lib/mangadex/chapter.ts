@@ -1,7 +1,7 @@
 import { Chapter, ChapterAggregate, Volume } from "@/types/types";
 import { GroupParser } from "./group";
 import { axiosWithProxyFallback } from "../axios";
-import { getCurrentApiUrl, getCurrentImageProxyUrl } from "../utils";
+import { getCurrentImageProxyUrl } from "../utils";
 
 export function ChaptersParser(data: any[]): Chapter[] {
   return data.map((item) => {
@@ -142,15 +142,19 @@ export async function getChapterDetail(id: string): Promise<Chapter> {
   //   },
   // });
 
-  const data = await axiosWithProxyFallback({
-    url: `/chapter/${id}?`,
-    method: "get",
-    params: {
-      includes: ["scanlation_group", "manga"],
-    },
-  });
-
-  const chapter = ChaptersParser([data.data])[0];
+  const [data, atHomeData] = await Promise.all([
+    axiosWithProxyFallback({
+      url: `/chapter/${id}?`,
+      method: "get",
+      params: {
+        includes: ["scanlation_group", "manga"],
+      },
+    }),
+    axiosWithProxyFallback({
+      url: `/ch/${id}`,
+      method: "get",
+    }),
+  ]);
 
   const manga = () => {
     const mangaData = data.data.relationships.find(
@@ -173,13 +177,7 @@ export async function getChapterDetail(id: string): Promise<Chapter> {
     };
   };
 
-  // const { data: atHomeData } = await axiosWithProxyFallback.get(`/ch/${id}`);
-
-  const atHomeData = await axiosWithProxyFallback({
-    url: `/ch/${id}`,
-    method: "get",
-  });
-  // console.log(atHomeData);
+  const chapter = ChaptersParser([data.data])[0];
 
   // Use the current working API URL for images
   // const apiUrl = getCurrentApiUrl();

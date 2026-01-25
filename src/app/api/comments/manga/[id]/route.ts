@@ -35,8 +35,14 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   }
 
   const url = new URL(req.url);
-  const limit = parseInt(url.searchParams.get("limit") || "10", 10);
-  const offset = parseInt(url.searchParams.get("offset") || "0", 10);
+  const limitParam = Number(url.searchParams.get("limit"));
+  const offsetParam = Number(url.searchParams.get("offset"));
+  const limit = Number.isFinite(limitParam)
+    ? Math.min(Math.max(Math.floor(limitParam), 1), 50)
+    : 10;
+  const offset = Number.isFinite(offsetParam)
+    ? Math.max(Math.floor(offsetParam), 0)
+    : 0;
 
   const [totalCount, comments] = await Promise.all([
     prisma.mangaComment.count({

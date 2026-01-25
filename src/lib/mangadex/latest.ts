@@ -8,11 +8,15 @@ export async function getLatestChapters(
   language: ("vi" | "en")[],
   r18: boolean
 ): Promise<Chapter[]> {
+  if (max <= 0) return [];
   const limitPerRequest = 100;
   let offset = 0;
   const mangaMap = new Map<string, Chapter>();
+  const maxIterations = 100;
+  let iterations = 0;
 
-  while (mangaMap.size < max) {
+  while (mangaMap.size < max && iterations < maxIterations) {
+    iterations += 1;
     const remaining = max - mangaMap.size;
     const chaptersData = await axiosWithProxyFallback({
       url: "/chapter",
@@ -30,15 +34,24 @@ export async function getLatestChapters(
         },
       },
     });
-    
-    const chapters = ChaptersParser(chaptersData.data);
-    const mangaIDs = chapters.map((chapter) => chapter.manga?.id);
+
+    const rawChapters = chaptersData.data ?? [];
+    if (rawChapters.length === 0) break;
+
+    const chapters = ChaptersParser(rawChapters);
+    const mangaIDs = chapters
+      .map((chapter) => chapter.manga?.id)
+      .filter((id): id is string => !!id);
+
+    if (mangaIDs.length === 0) break;
 
     //filter out the chapters that have same manga id, only keep the latest one
     let uniqueMangaIDs = Array.from(new Set(mangaIDs));
     if (uniqueMangaIDs.length > remaining) {
       uniqueMangaIDs = uniqueMangaIDs.slice(0, remaining);
     }
+
+    if (uniqueMangaIDs.length === 0) break;
 
     const latestChapters = uniqueMangaIDs
       .map((mangaID) =>
@@ -50,7 +63,7 @@ export async function getLatestChapters(
       url: "/manga",
       method: "get",
       params: {
-        limit: 20,
+        limit: Math.min(100, uniqueMangaIDs.length),
         ids: uniqueMangaIDs,
         includes: ["cover_art", "author", "artist"],
         contentRating: r18
@@ -75,6 +88,8 @@ export async function getLatestChapters(
     });
 
     offset += limitPerRequest;
+
+    if (rawChapters.length < limitPerRequest) break;
   }
   return Array.from(mangaMap.values()).slice(0, max);
 }

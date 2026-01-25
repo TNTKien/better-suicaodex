@@ -229,22 +229,24 @@ export async function getFirstChapter(
       chapter: "asc",
     },
   };
-  const { data: en } = await axiosWithProxyFallback({
-    url: `/manga/${id}/feed`,
-    method: "get",
-    params: {
-      ...params,
-      translatedLanguage: ["en"],
-    },
-  });
-  const { data: vi } = await axiosWithProxyFallback({
-    url: `/manga/${id}/feed`,
-    method: "get",
-    params: {
-      ...params,
-      translatedLanguage: ["vi"],
-    },
-  });
+  const [{ data: en }, { data: vi }] = await Promise.all([
+    axiosWithProxyFallback({
+      url: `/manga/${id}/feed`,
+      method: "get",
+      params: {
+        ...params,
+        translatedLanguage: ["en"],
+      },
+    }),
+    axiosWithProxyFallback({
+      url: `/manga/${id}/feed`,
+      method: "get",
+      params: {
+        ...params,
+        translatedLanguage: ["vi"],
+      },
+    }),
+  ]);
 
   return {
     en: en.data[0]?.id,
@@ -296,6 +298,33 @@ export async function FirstEnChapter(
     },
   });
   return ChaptersParser(data.data)[0];
+}
+
+export async function FirstChapters(
+  id: string, //manga id
+  r18: boolean,
+  translatedLanguage: ("vi" | "en")[]
+): Promise<Chapter[]> {
+  const data = await axiosWithProxyFallback({
+    url: `/chapter`,
+    method: "get",
+    params: {
+      manga: id,
+      // volume: "none",
+      chapter: "1",
+      limit: 100,
+      contentRating: r18
+        ? ["safe", "suggestive", "erotica", "pornographic"]
+        : ["safe", "suggestive", "erotica"],
+      order: {
+        volume: "asc",
+        chapter: "asc",
+      },
+      translatedLanguage: translatedLanguage,
+      includes: ["scanlation_group", "manga"],
+    },
+  });
+  return ChaptersParser(data.data);
 }
 
 export async function SearchManga(
@@ -471,14 +500,19 @@ export async function getStaffPickMangas(r18: boolean): Promise<Manga[]> {
       .map((item: any) => item.id)
   );
 
+  if (StaffPickID.length === 0) return [];
+
+  const limit = Math.min(32, StaffPickID.length);
+  const maxOffset = Math.max(StaffPickID.length - limit, 0);
+
   const data = await axiosWithProxyFallback({
     url: `/manga?`,
     method: "get",
     params: {
-      limit: 32,
+      limit,
       offset:
         selectedList === seasonalList
-          ? Math.floor(Math.random() * (StaffPickID.length - 32))
+          ? Math.floor(Math.random() * (maxOffset + 1))
           : 0,
       includes: ["cover_art", "author", "artist"],
       // hasAvailableChapters: "true",

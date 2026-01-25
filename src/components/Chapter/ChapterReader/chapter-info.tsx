@@ -32,7 +32,7 @@ export default function ChapterInfo({ chapter }: ChapterInfoProps) {
         {chapter.manga.title}
       </Link>
 
-      <div className="flex gap-0.5 items-center">
+      <div className="flex flex-wrap gap-0.5 items-center">
         <Users size={20} className="shrink-0" />
         {chapter.group.length === 0 ? (
           <span className="px-1">No Group</span>
@@ -41,7 +41,8 @@ export default function ChapterInfo({ chapter }: ChapterInfoProps) {
             <Link
               key={group.id}
               href={`/group/${group.id}/${generateSlug(group.name)}`}
-              className="hover:bg-secondary hover:text-primary rounded-sm px-1 line-clamp-1"
+              className="hover:bg-secondary hover:text-primary rounded-sm px-1 line-clamp-1 break-all"
+              prefetch={false}
             >
               {group.name}
             </Link>

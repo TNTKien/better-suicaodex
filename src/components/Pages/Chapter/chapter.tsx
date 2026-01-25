@@ -12,22 +12,27 @@ import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
 import { usePathname } from "next/navigation";
+import { type Chapter } from "@/types/types";
 
 interface ChapterProps {
   id: string;
+  initialData?: Chapter;
 }
 
-export default function Chapter({ id }: ChapterProps) {
+export default function ChapterPage({ id, initialData }: ChapterProps) {
   const [config] = useConfig();
   const pathName = usePathname();
   const { addHistory } = useReadingHistory();
   const { data, isLoading, error } = useSWR(
-    ["chapter", id],
+    [`chapter-${id}`, id],
     ([, id]) => getChapterDetail(id),
     {
+      fallbackData: initialData, // Use server data as initial value
+      revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
       refreshInterval: 1000 * 60 * 30,
       revalidateOnFocus: false,
-    }
+      revalidateOnReconnect: false,
+    },
   );
 
   useEffect(() => {
@@ -52,7 +57,14 @@ export default function Chapter({ id }: ChapterProps) {
     }
   }, [config.reader.type]);
 
-  if (isLoading)
+  if (error) {
+    if (error.status === 404) return <ChapterNotFound />;
+    if (error.status === 503) return <MangaMaintain />;
+    // console.log(error)
+    return <div>Lỗi mất rồi 😭</div>;
+  }
+
+  if (isLoading || !data)
     return (
       <div className="grid grid-cols-1 gap-2 pb-2">
         <Skeleton className="w-1/2 md:w-1/5 h-5 bg-gray-500 rounded-sm" />
@@ -60,13 +72,6 @@ export default function Chapter({ id }: ChapterProps) {
         <Skeleton className="w-1/4 h-5 bg-gray-500 rounded-sm" />
       </div>
     );
-  if (error) {
-    if (error.status === 404) return <ChapterNotFound />;
-    if (error.status === 503) return <MangaMaintain />;
-    // console.log(error)
-    return <div>Lỗi mất rồi 😭</div>;
-  }
-  if (!data) return <div>Not found</div>;
 
   return (
     <div className={cn()}>

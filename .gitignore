@@ -48,3 +48,7 @@ next-env.d.ts
 
 #temp folder
 /temp
+
+# AI config files
+/.cursor
+/.opencode
