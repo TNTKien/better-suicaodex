@@ -109,6 +109,7 @@ export default function ErrorPage({
                 fill
                 className="object-contain drop-shadow-md hover:scale-105 transition-transform duration-300 rounded-md"
                 priority
+                unoptimized
               />
             </div>
             <div className="space-y-4 text-center md:text-left">

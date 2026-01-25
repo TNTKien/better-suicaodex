@@ -70,9 +70,10 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 
 interface MangaDetailsProps {
   id: string;
+  initialData?: Manga;
 }
 
-export default function MangaDetails({ id }: MangaDetailsProps) {
+export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
   const isMobile = useIsMobile();
   const [config, setConfig] = useConfig();
 
@@ -80,22 +81,22 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
 
   const [showHiddenChapters, setShowHiddenChapters] = useState(false);
 
-  const { data, error, isLoading } = useSWR(
-    `/manga/${id}`,
-    () => getMangaData(id),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const {
+    data: manga,
+    error,
+    isLoading,
+  } = useSWR([`manga-${id}`, id], ([, id]) => fetchMangaDetail(id), {
+    fallbackData: initialData, // Use server data as initial value
+    revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
+    refreshInterval: 1000 * 60 * 10,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
-  if (isLoading) return <MangaDetailsSkeleton />;
-  if (error?.status === 404 || data?.status === 404) return <MangaNotFound />;
-  if (error?.status === 503 || data?.status === 503) return <MangaMaintain />;
-  if (!data || data.status !== 200 || !data.manga)
-    return <div>Lỗi mất rồi 😭</div>;
+  if (error?.status === 404) return <MangaNotFound />;
+  if (error?.status === 503) return <MangaMaintain />;
 
-  const manga = data.manga;
+  if (isLoading || !manga) return <MangaDetailsSkeleton />;
 
   return (
     <>
@@ -161,10 +162,10 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                       manga.title.length <= 30
                         ? "7vw"
                         : manga.title.length <= 50
-                        ? "6vw"
-                        : manga.title.length <= 70
-                        ? "5vw"
-                        : "4.5vw"
+                          ? "6vw"
+                          : manga.title.length <= 70
+                            ? "5vw"
+                            : "4.5vw"
                     }, 3rem)`,
                     overflowWrap: "break-word",
                   }}
@@ -176,7 +177,7 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                     {manga.altTitle}
                   </h2>
                 )}
-                
+
                 <AuthorArtistNames
                   authors={manga.author}
                   artists={manga.artist}
@@ -198,12 +199,12 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
                         manga.title.length <= 20
                           ? "5vw"
                           : manga.title.length <= 35
-                          ? "4.2vw"
-                          : manga.title.length <= 50
-                          ? "3.6vw"
-                          : manga.title.length <= 70
-                          ? "3.1vw"
-                          : "2.6vw"
+                            ? "4.2vw"
+                            : manga.title.length <= 50
+                              ? "3.6vw"
+                              : manga.title.length <= 70
+                                ? "3.1vw"
+                                : "2.6vw"
                       }, 5rem)`,
                     }}
                   >
@@ -502,17 +503,6 @@ export default function MangaDetails({ id }: MangaDetailsProps) {
       </div>
     </>
   );
-}
-
-async function getMangaData(
-  id: string
-): Promise<{ status: number; manga: Manga | null }> {
-  try {
-    const mangaData = await fetchMangaDetail(id);
-    return { status: 200, manga: mangaData };
-  } catch (error: any) {
-    return { status: error.status || 500, manga: null };
-  }
 }
 
 // Memoized component for author/artist names
