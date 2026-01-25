@@ -29,17 +29,21 @@ import AuthorTitles from "./author-titles";
 
 interface AuthorProps {
   id: string;
+  initialData?: AuthorDetail;
 }
 
-export default function Author({ id }: AuthorProps) {
+export default function Author({ id, initialData }: AuthorProps) {
   const isMobile = useIsMobile();
   const { data, isLoading, error } = useSWR(
     ["author", id],
     ([, id]) => GetAuthor(id),
     {
+      fallbackData: initialData, // Use server data as initial value
+      revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
       refreshInterval: 1000 * 60 * 10,
       revalidateOnFocus: false,
-    }
+      revalidateOnReconnect: false,
+    },
   );
 
   if (isLoading)
@@ -49,7 +53,7 @@ export default function Author({ id }: AuthorProps) {
           className={cn(
             "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]",
           )}
           // style={{ backgroundImage: `url('/images/frieren.webp')` }}
         ></div>
@@ -57,7 +61,7 @@ export default function Author({ id }: AuthorProps) {
           className={cn(
             "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none",
             // "backdrop-blur-none md:backdrop-blur-xs",
-            "bg-linear-to-r from-black/25 to-transparent"
+            "bg-linear-to-r from-black/25 to-transparent",
           )}
         ></div>
       </div>
@@ -90,7 +94,7 @@ export default function Author({ id }: AuthorProps) {
           className={cn(
             "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]",
           )}
           style={{ backgroundImage: `url('/images/frieren.webp')` }}
         ></div>
@@ -98,7 +102,7 @@ export default function Author({ id }: AuthorProps) {
           className={cn(
             "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none",
             // "backdrop-blur-none md:backdrop-blur-xs",
-            "bg-linear-to-r from-black/25 to-transparent"
+            "bg-linear-to-r from-black/25 to-transparent",
           )}
         ></div>
       </div>

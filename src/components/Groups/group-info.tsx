@@ -18,20 +18,25 @@ import ReactMarkdown from "react-markdown";
 import { SiDiscord, SiFacebook, SiX } from "@icons-pack/react-simple-icons";
 import { CN, GB, JP, KR, VN } from "country-flag-icons/react/3x2";
 import GroupTitles from "./GroupTitles";
+import { Group } from "@/types/types";
 
 interface GroupInfoProps {
   id: string;
+  initialData?: Group;
 }
 
-export default function GroupInfo({ id }: GroupInfoProps) {
+export default function GroupInfo({ id, initialData }: GroupInfoProps) {
   const isMobile = useIsMobile();
   const { data, isLoading, error } = useSWR(
     ["group", id],
     ([, id]) => getGroup(id),
     {
+      fallbackData: initialData, // Use server data as initial value
+      revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
       refreshInterval: 1000 * 60 * 10,
       revalidateOnFocus: false,
-    }
+      revalidateOnReconnect: false,
+    },
   );
 
   const displayLanguage = [
@@ -49,7 +54,7 @@ export default function GroupInfo({ id }: GroupInfoProps) {
           className={cn(
             "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]",
           )}
           // style={{ backgroundImage: `url('/images/frieren.webp')` }}
         ></div>
@@ -57,7 +62,7 @@ export default function GroupInfo({ id }: GroupInfoProps) {
           className={cn(
             "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none",
             // "backdrop-blur-none md:backdrop-blur-xs",
-            "bg-linear-to-r from-black/25 to-transparent"
+            "bg-linear-to-r from-black/25 to-transparent",
           )}
         ></div>
       </div>
@@ -72,7 +77,7 @@ export default function GroupInfo({ id }: GroupInfoProps) {
           className={cn(
             "absolute h-50 md:h-64 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]",
           )}
           style={{ backgroundImage: `url('/images/frieren.webp')` }}
         ></div>
@@ -80,7 +85,7 @@ export default function GroupInfo({ id }: GroupInfoProps) {
           className={cn(
             "absolute h-50 md:h-64 w-auto inset-0 pointer-events-none",
             // "backdrop-blur-none md:backdrop-blur-xs",
-            "bg-linear-to-r from-black/25 to-transparent"
+            "bg-linear-to-r from-black/25 to-transparent",
           )}
         ></div>
 
@@ -105,39 +110,15 @@ export default function GroupInfo({ id }: GroupInfoProps) {
             className="rounded border-4 border-primary object-cover shrink-0"
             unoptimized
           />
-          <div className="flex flex-row md:flex-col gap-2 w-full overflow-auto scrollbar-hidden">
-            <Button
-              className="w-full"
-              // size={isMobile ? "lg" : "default"}
-              onClick={() => toast.info("Chức năng đang phát triển!")}
+          <Button asChild className="flex-1 md:flex-initial md:w-full">
+            <Link
+              href={`${siteConfig.mangadexAPI.webURL}/group/${id}`}
+              target="_blank"
             >
-              <Bookmark />
-              Theo dõi
-            </Button>
-
-            <Button
-              asChild
-              size={isMobile ? "icon" : "default"}
-              className={cn(isMobile && "shrink-0")}
-            >
-              <Link
-                href={`${siteConfig.mangadexAPI.webURL}/group/${id}`}
-                target="_blank"
-              >
-                <Archive />
-                {!isMobile && "MangaDex"}
-              </Link>
-            </Button>
-            <Button
-              size={isMobile ? "icon" : "default"}
-              className={cn(isMobile && "shrink-0")}
-              variant="secondary"
-              onClick={() => toast.info("Chức năng đang phát triển!")}
-            >
-              <Ban />
-              {!isMobile && "Chặn"}
-            </Button>
-          </div>
+              <Archive />
+              MangaDex
+            </Link>
+          </Button>
         </div>
 
         <div className="md:mt-[120px] flex flex-col gap-2 w-full">
@@ -294,18 +275,18 @@ export default function GroupInfo({ id }: GroupInfoProps) {
                     {(() => {
                       // Filter known languages
                       const knownLangs = data.language.filter((lang) =>
-                        displayLanguage.some((l) => l.iso === lang)
+                        displayLanguage.some((l) => l.iso === lang),
                       );
 
                       // Filter unknown languages
                       const unknownLangs = data.language.filter(
-                        (lang) => !displayLanguage.some((l) => l.iso === lang)
+                        (lang) => !displayLanguage.some((l) => l.iso === lang),
                       );
 
                       // Create buttons for known languages
                       const knownButtons = knownLangs.map((lang) => {
                         const langInfo = displayLanguage.find(
-                          (l) => l.iso === lang
+                          (l) => l.iso === lang,
                         );
                         const LangIcon = langInfo?.icon;
                         return (

@@ -2,6 +2,7 @@ import GroupInfo from "@/components/Groups/group-info";
 import { siteConfig } from "@/config/site";
 import { getGroup } from "@/lib/mangadex/group";
 import { Metadata } from "next";
+import { cache } from "react";
 
 interface PageProps {
   params: Promise<{
@@ -9,12 +10,16 @@ interface PageProps {
   }>;
 }
 
+const getCachedGroupData = cache(async (id: string) => {
+  return await getGroup(id);
+});
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
   try {
-    const group = await getGroup(id);
+    const group = await getCachedGroupData(id);
     return {
       title: `${group.name} - SuicaoDex`,
       description: group.description
@@ -32,11 +37,17 @@ export async function generateMetadata({
       },
     };
   } catch (error) {
-    return { title: "Lỗi mất rồi 😭" };
+    return { title: "SuicaoDex" };
   }
 }
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
-  return <GroupInfo id={id} />;
+  try {
+    const initialData = await getCachedGroupData(id);
+    return <GroupInfo id={id} initialData={initialData} />;
+  } catch (error) {
+    console.log("Error loading group", error);
+    return <GroupInfo id={id} />;
+  }
 }
