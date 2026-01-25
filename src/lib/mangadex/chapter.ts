@@ -192,8 +192,8 @@ export async function getChapterDetail(id: string): Promise<Chapter> {
 
 export async function getChapterAggregate(
   mangaID: string,
-  language: string,
-  groups: string[]
+  language: string[],
+  groups?: string[]
 ): Promise<ChapterAggregate[]> {
   // const data = await axiosWithProxyFallback.get(`/manga/${mangaID}/aggregate?`, {
   //   params: {
@@ -205,7 +205,7 @@ export async function getChapterAggregate(
     url: `/manga/${mangaID}/aggregate?`,
     method: "get",
     params: {
-      translatedLanguage: [language],
+      translatedLanguage: language,
       groups: groups,
     },
   });

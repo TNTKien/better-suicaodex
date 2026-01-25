@@ -310,8 +310,8 @@ export async function FirstChapters(
     method: "get",
     params: {
       manga: id,
-      // volume: "none",
-      chapter: "1",
+      volume: "none",
+      chapter: "none",
       limit: 100,
       contentRating: r18
         ? ["safe", "suggestive", "erotica", "pornographic"]
