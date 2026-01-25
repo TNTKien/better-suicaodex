@@ -88,7 +88,7 @@ export function RatingChart({ stats }: RatingStats) {
           dataKey="count"
           fill="var(--color-count)"
           radius={5}
-          background={{ fill: "hsl(var(--primary) / .15)", radius: 5 }}
+          background={{ fill: "var(--primary)", radius: 5, opacity: 0.15 }}
         />
       </BarChart>
     </ChartContainer>
