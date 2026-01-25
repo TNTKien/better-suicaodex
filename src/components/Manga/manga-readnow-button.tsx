@@ -2,6 +2,7 @@
 
 import { useConfig } from "@/hooks/use-config";
 import { FirstChapters } from "@/lib/mangadex/manga";
+import { getChapterAggregate } from "@/lib/mangadex/chapter";
 import { useState, memo } from "react";
 import { Button } from "../ui/button";
 import { BookOpen, BookX, Loader2 } from "lucide-react";
@@ -42,7 +43,27 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
       ? [`chapters-${id}`, config.translatedLanguage, config.r18]
       : null,
     async () => {
-      const result = await FirstChapters(id, config.r18, config.translatedLanguage);
+      // First get the chapter aggregate to find the oldest volume and chapter
+      const aggregate = await getChapterAggregate(id, config.translatedLanguage);
+      
+      if (!aggregate || aggregate.length === 0) {
+        return [];
+      }
+
+      // Get the oldest volume (last in the sorted array)
+      const oldestVolume = aggregate[aggregate.length - 1];
+      
+      // Get the oldest chapter in that volume (last in the sorted array)
+      const oldestChapter = oldestVolume.chapters[oldestVolume.chapters.length - 1];
+      
+      // Fetch chapters with the specific volume and chapter
+      const result = await FirstChapters(
+        id,
+        config.r18,
+        config.translatedLanguage,
+        oldestVolume.vol,
+        oldestChapter.chapter
+      );
       return result;
     },
     {

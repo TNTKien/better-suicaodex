@@ -303,15 +303,17 @@ export async function FirstEnChapter(
 export async function FirstChapters(
   id: string, //manga id
   r18: boolean,
-  translatedLanguage: ("vi" | "en")[]
+  translatedLanguage: ("vi" | "en")[],
+  volume?: string,
+  chapter?: string
 ): Promise<Chapter[]> {
   const data = await axiosWithProxyFallback({
     url: `/chapter`,
     method: "get",
     params: {
       manga: id,
-      volume: "none",
-      chapter: "none",
+      volume: volume || "none",
+      chapter: chapter || "none",
       limit: 100,
       contentRating: r18
         ? ["safe", "suggestive", "erotica", "pornographic"]
