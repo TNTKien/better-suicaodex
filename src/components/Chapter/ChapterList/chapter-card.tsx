@@ -79,7 +79,7 @@ export const ChapterCard = ({ chapters, finalChapter }: ChapterCardProps) => {
   return <SingleCard chapter={chapters.group[0]} finalChapter={finalChapter} />;
 };
 
-const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
+export const SingleCard = ({ chapter, finalChapter, className }: SingleCardProps) => {
   const router = useRouter();
   const isUnavailable = Boolean((chapter as any).isUnavailable);
 

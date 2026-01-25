@@ -6,7 +6,6 @@ import MangaCover from "@/components/Manga/manga-cover";
 import MangaDescription from "@/components/Manga/manga-description";
 import MangaMaintain from "@/components/Manga/manga-maintain";
 import MangaNotFound from "@/components/Manga/manga-notfound";
-import MangaReadButtons from "@/components/Manga/manga-read-buttons";
 import { MangaStatsComponent } from "@/components/Manga/manga-stats";
 import Tags from "@/components/Manga/Tags";
 import {
@@ -67,6 +66,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { MangaReadNowButton } from "@/components/Manga/manga-readnow-button";
 
 interface MangaDetailsProps {
   id: string;
@@ -101,7 +101,7 @@ export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
   return (
     <>
       {/* R18 Warning */}
-      {!config.r18 && manga.contentRating === "pornographic" && (
+      {(!config.r18 && manga.contentRating === "pornographic") && (
         <AlertDialog defaultOpen>
           <AlertDialogOverlay className="backdrop-blur-lg" />
           <AlertDialogContent className={`theme-${config.theme}`}>
@@ -230,7 +230,7 @@ export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
                 <div className="flex flex-wrap gap-2">
                   <AddToLibraryBtn isMobile={isMobile} manga={manga} />
 
-                  <MangaReadButtons id={id} />
+                  <MangaReadNowButton id={id} language={manga.language} />
 
                   <ShareButton id={id} isMobile={isMobile} />
 
@@ -396,7 +396,7 @@ export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <MangaReadButtons id={id} />
+              <MangaReadNowButton id={id} language={manga.language} />
             </div>
           </>
         )}

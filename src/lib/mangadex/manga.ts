@@ -300,6 +300,33 @@ export async function FirstEnChapter(
   return ChaptersParser(data.data)[0];
 }
 
+export async function FirstChapters(
+  id: string, //manga id
+  r18: boolean,
+  translatedLanguage: ("vi" | "en")[]
+): Promise<Chapter[]> {
+  const data = await axiosWithProxyFallback({
+    url: `/chapter`,
+    method: "get",
+    params: {
+      manga: id,
+      // volume: "none",
+      chapter: "1",
+      limit: 100,
+      contentRating: r18
+        ? ["safe", "suggestive", "erotica", "pornographic"]
+        : ["safe", "suggestive", "erotica"],
+      order: {
+        volume: "asc",
+        chapter: "asc",
+      },
+      translatedLanguage: translatedLanguage,
+      includes: ["scanlation_group", "manga"],
+    },
+  });
+  return ChaptersParser(data.data);
+}
+
 export async function SearchManga(
   query: string,
   r18: boolean
