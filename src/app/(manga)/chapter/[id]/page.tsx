@@ -1,7 +1,8 @@
-import Chapter from "@/components/Pages/Chapter/chapter";
+import ChapterPage from "@/components/Pages/Chapter/chapter";
 import { siteConfig } from "@/config/site";
 import { getChapterDetail } from "@/lib/mangadex/chapter";
 import { Metadata } from "next";
+import { cache } from "react";
 
 interface PageProps {
   params: Promise<{
@@ -11,13 +12,17 @@ interface PageProps {
 
 //TODO: slug
 
+const getCachedChapterData = cache(async (id: string) => {
+  return await getChapterDetail(id);
+});
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
 
   try {
-    const res = await getChapterDetail(id);
+    const res = await getCachedChapterData(id);
 
     const chapterInx = res.chapter ? `Ch. ${res.chapter}` : "Oneshot";
     const title = [res.manga?.title, chapterInx, res.title, "SuicaoDex"]
@@ -35,23 +40,19 @@ export async function generateMetadata({
       },
     };
   } catch (error: any) {
-    if (error.status === 404) {
-      return {
-        title: "Truyện không tồn tại",
-      };
-    } else if (error.status === 503) {
-      return {
-        title: "Đang bảo trì...",
-      };
-    } else {
-      return {
-        title: "Lỗi mất rồi :(",
-      };
-    }
+    return {
+      title: "SuicaoDex",
+    };
   }
 }
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
-  return <Chapter id={id} />;
+  try {
+    const initialData = await getCachedChapterData(id);
+    return <ChapterPage id={id} initialData={initialData} />;
+  } catch (error) {
+    console.log("Error loading chapter", error);
+    return <ChapterPage id={id} />;
+  }
 }
