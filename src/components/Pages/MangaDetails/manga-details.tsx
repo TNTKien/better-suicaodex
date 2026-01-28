@@ -101,7 +101,7 @@ export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
   return (
     <>
       {/* R18 Warning */}
-      {(!config.r18 && manga.contentRating === "pornographic") && (
+      {!config.r18 && manga.contentRating === "pornographic" && (
         <AlertDialog defaultOpen>
           <AlertDialogOverlay className="backdrop-blur-lg" />
           <AlertDialogContent className={`theme-${config.theme}`}>
@@ -152,150 +152,146 @@ export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
             />
           </div>
 
-          {isMobile ? (
-            <div className="flex flex-col gap-2 justify-between">
-              <div className="flex flex-col gap-1.5">
+          <div className="flex md:hidden flex-col gap-2 justify-between">
+            <div className="flex flex-col gap-1.5">
+              <p
+                className="drop-shadow-md font-black leading-[1.15]"
+                style={{
+                  fontSize: `clamp(0.875rem, ${
+                    manga.title.length <= 30
+                      ? "7vw"
+                      : manga.title.length <= 50
+                        ? "6vw"
+                        : manga.title.length <= 70
+                          ? "5vw"
+                          : "4.5vw"
+                  }, 3rem)`,
+                  overflowWrap: "break-word",
+                }}
+              >
+                {manga.title}
+              </p>
+              {!!manga.altTitle && (
+                <h2 className="drop-shadow-md text-base leading-5 line-clamp-2">
+                  {manga.altTitle}
+                </h2>
+              )}
+
+              <AuthorArtistNames
+                authors={manga.author}
+                artists={manga.artist}
+                className="text-sm line-clamp-1 max-w-[80%]"
+              />
+            </div>
+            {!!manga.stats && (
+              <MangaStatsComponent stats={manga.stats} size="sm" />
+            )}
+          </div>
+
+          <div className="hidden md:flex flex-col">
+            <div className="flex flex-col justify-between h-54 pb-2">
+              <div className="flex flex-col">
                 <p
-                  className="drop-shadow-md font-black leading-[1.15]"
+                  className="drop-shadow-md font-black wrap-break-word leading-[1.15]"
                   style={{
-                    fontSize: `clamp(0.875rem, ${
-                      manga.title.length <= 30
-                        ? "7vw"
-                        : manga.title.length <= 50
-                          ? "6vw"
-                          : manga.title.length <= 70
-                            ? "5vw"
-                            : "4.5vw"
-                    }, 3rem)`,
-                    overflowWrap: "break-word",
+                    fontSize: `clamp(2.25rem, ${
+                      manga.title.length <= 20
+                        ? "5vw"
+                        : manga.title.length <= 35
+                          ? "4.2vw"
+                          : manga.title.length <= 50
+                            ? "3.6vw"
+                            : manga.title.length <= 70
+                              ? "3.1vw"
+                              : "2.6vw"
+                    }, 5rem)`,
                   }}
                 >
                   {manga.title}
                 </p>
                 {!!manga.altTitle && (
-                  <h2 className="drop-shadow-md text-base leading-5 line-clamp-2">
+                  <span
+                    className="drop-shadow-md text-lg line-clamp-1"
+                    title={manga.altTitle}
+                  >
                     {manga.altTitle}
-                  </h2>
+                  </span>
                 )}
+              </div>
 
-                <AuthorArtistNames
-                  authors={manga.author}
-                  artists={manga.artist}
-                  className="text-sm line-clamp-1 max-w-[80%]"
+              <AuthorArtistNames
+                authors={manga.author}
+                artists={manga.artist}
+              />
+            </div>
+
+            <div className="pt-[0.85rem] flex flex-col gap-4">
+              <div className="flex flex-wrap gap-2">
+                <AddToLibraryBtn manga={manga} />
+
+                <MangaReadNowButton id={id} language={manga.language} />
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      className="rounded-sm h-10 w-10"
+                      variant="secondary"
+                      size="icon"
+                    >
+                      <Ellipsis />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className={`theme-${config.theme}`}>
+                    <DropdownMenuItem>
+                      <Link
+                        href={`${siteConfig.mangadexAPI.webURL}/title/${manga.id}`}
+                        target="_blank"
+                        className="flex items-center gap-2"
+                      >
+                        <Archive size={18} />
+                        MangaDex
+                      </Link>
+                    </DropdownMenuItem>
+                    {!!manga.raw && (
+                      <DropdownMenuItem>
+                        <Link
+                          href={manga.raw}
+                          target="_blank"
+                          className="flex items-center gap-2"
+                        >
+                          <LibraryBig size={18} />
+                          Raw
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+
+                    <DropdownMenuItem>
+                      <Link
+                        href={`${siteConfig.links.facebook}`}
+                        target="_blank"
+                        className="flex items-center gap-2"
+                      >
+                        <Bug size={18} />
+                        Báo lỗi
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              <div className="flex flex-wrap gap-1">
+                <Tags
+                  tags={manga.tags}
+                  contentRating={manga.contentRating}
+                  status={manga.status}
                 />
               </div>
+
               {!!manga.stats && (
-                <MangaStatsComponent stats={manga.stats} size="sm" />
+                <MangaStatsComponent stats={manga.stats} size="lg" />
               )}
             </div>
-          ) : (
-            <div className="flex flex-col">
-              <div className="flex flex-col justify-between h-54 pb-2">
-                <div className="flex flex-col">
-                  <p
-                    className="drop-shadow-md font-black wrap-break-word leading-[1.15]"
-                    style={{
-                      fontSize: `clamp(2.25rem, ${
-                        manga.title.length <= 20
-                          ? "5vw"
-                          : manga.title.length <= 35
-                            ? "4.2vw"
-                            : manga.title.length <= 50
-                              ? "3.6vw"
-                              : manga.title.length <= 70
-                                ? "3.1vw"
-                                : "2.6vw"
-                      }, 5rem)`,
-                    }}
-                  >
-                    {manga.title}
-                  </p>
-                  {!!manga.altTitle && (
-                    <span
-                      className="drop-shadow-md text-lg line-clamp-1"
-                      title={manga.altTitle}
-                    >
-                      {manga.altTitle}
-                    </span>
-                  )}
-                </div>
-
-                <AuthorArtistNames
-                  authors={manga.author}
-                  artists={manga.artist}
-                />
-              </div>
-
-              <div className="pt-[0.85rem] flex flex-col gap-4">
-                <div className="flex flex-wrap gap-2">
-                  <AddToLibraryBtn isMobile={isMobile} manga={manga} />
-
-                  <MangaReadNowButton id={id} language={manga.language} />
-
-                  <ShareButton id={id} isMobile={isMobile} />
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        className="rounded-sm h-10 w-10"
-                        variant="secondary"
-                        size="icon"
-                      >
-                        <Ellipsis />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className={`theme-${config.theme}`}>
-                      <DropdownMenuItem>
-                        <Link
-                          href={`${siteConfig.mangadexAPI.webURL}/title/${manga.id}`}
-                          target="_blank"
-                          className="flex items-center gap-2"
-                        >
-                          <Archive size={18} />
-                          MangaDex
-                        </Link>
-                      </DropdownMenuItem>
-                      {!!manga.raw && (
-                        <DropdownMenuItem>
-                          <Link
-                            href={manga.raw}
-                            target="_blank"
-                            className="flex items-center gap-2"
-                          >
-                            <LibraryBig size={18} />
-                            Raw
-                          </Link>
-                        </DropdownMenuItem>
-                      )}
-
-                      <DropdownMenuItem>
-                        <Link
-                          href={`${siteConfig.links.facebook}`}
-                          target="_blank"
-                          className="flex items-center gap-2"
-                        >
-                          <Bug size={18} />
-                          Báo lỗi
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                <div className="flex flex-wrap gap-1">
-                  <Tags
-                    tags={manga.tags}
-                    contentRating={manga.contentRating}
-                    status={manga.status}
-                  />
-                </div>
-
-                {!!manga.stats && (
-                  <MangaStatsComponent stats={manga.stats} size="lg" />
-                )}
-              </div>
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Mato Seihei Banner */}
@@ -334,79 +330,73 @@ export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
             </WarpBackground>
           )}
 
-        {isMobile && (
-          <>
-            <div className="flex flex-wrap gap-1">
-              <Tags
-                tags={manga.tags}
-                contentRating={manga.contentRating}
-                status={manga.status}
-              />
-            </div>
+        <div className="flex md:hidden flex-wrap gap-1">
+          <Tags
+            tags={manga.tags}
+            contentRating={manga.contentRating}
+            status={manga.status}
+          />
+        </div>
 
-            <div className="flex flex-wrap gap-2 w-full">
-              <AddToLibraryBtn isMobile={isMobile} manga={manga} />
+        <div className="flex md:hidden flex-wrap gap-2 w-full">
+          <AddToLibraryBtn manga={manga} />
 
-              <ShareButton id={id} isMobile={isMobile} />
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    className="rounded-sm grow-0"
-                    variant="secondary"
-                    size="icon"
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                className="rounded-sm grow-0"
+                variant="secondary"
+                size="icon"
+              >
+                <Ellipsis />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className={`theme-${config.theme}`}>
+              <DropdownMenuItem>
+                <Link
+                  href={`${siteConfig.mangadexAPI.webURL}/title/${manga.id}`}
+                  target="_blank"
+                  className="flex items-center gap-2"
+                >
+                  <Archive size={18} />
+                  MangaDex
+                </Link>
+              </DropdownMenuItem>
+              {!!manga.raw && (
+                <DropdownMenuItem>
+                  <Link
+                    href={manga.raw}
+                    target="_blank"
+                    className="flex items-center gap-2"
                   >
-                    <Ellipsis />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className={`theme-${config.theme}`}>
-                  <DropdownMenuItem>
-                    <Link
-                      href={`${siteConfig.mangadexAPI.webURL}/title/${manga.id}`}
-                      target="_blank"
-                      className="flex items-center gap-2"
-                    >
-                      <Archive size={18} />
-                      MangaDex
-                    </Link>
-                  </DropdownMenuItem>
-                  {!!manga.raw && (
-                    <DropdownMenuItem>
-                      <Link
-                        href={manga.raw}
-                        target="_blank"
-                        className="flex items-center gap-2"
-                      >
-                        <LibraryBig size={18} />
-                        Raw
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
+                    <LibraryBig size={18} />
+                    Raw
+                  </Link>
+                </DropdownMenuItem>
+              )}
 
-                  <DropdownMenuItem>
-                    <Link
-                      href={`${siteConfig.links.facebook}`}
-                      target="_blank"
-                      className="flex items-center gap-2"
-                    >
-                      <Bug size={18} />
-                      Báo lỗi
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <DropdownMenuItem>
+                <Link
+                  href={`${siteConfig.links.facebook}`}
+                  target="_blank"
+                  className="flex items-center gap-2"
+                >
+                  <Bug size={18} />
+                  Báo lỗi
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-              <MangaReadNowButton id={id} language={manga.language} />
-            </div>
-          </>
-        )}
+          <MangaReadNowButton id={id} language={manga.language} />
+        </div>
 
         <MangaDescription
           content={manga.description.content}
           language={
             manga.description.content ? manga.description.language : "vi"
           }
-          maxHeight={isMobile ? 78 : 234}
+          maxHeight={160}
           manga={manga}
         />
 
@@ -525,29 +515,4 @@ const AuthorArtistNames = ({
   }, [authors, artists]);
 
   return <p className={className}>{names}</p>;
-};
-
-// Memoized share button component
-const ShareButton = ({
-  id,
-  isMobile = false,
-}: {
-  id: string;
-  isMobile?: boolean;
-}) => {
-  const handleShare = useCallback(() => {
-    navigator.clipboard.writeText(`${siteConfig.suicaodex.domain}/manga/${id}`);
-    toast.success("Đã sao chép link truyện!");
-  }, [id]);
-
-  return (
-    <Button
-      size="icon"
-      className={isMobile ? "rounded-sm grow-0" : "rounded-sm h-10 w-10"}
-      variant={isMobile ? "default" : "secondary"}
-      onClick={handleShare}
-    >
-      <Share2 />
-    </Button>
-  );
 };

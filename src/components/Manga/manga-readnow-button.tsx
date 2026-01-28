@@ -7,7 +7,6 @@ import { useState, memo } from "react";
 import { Button } from "../ui/button";
 import { BookOpen, BookX, Loader2 } from "lucide-react";
 import useReadingHistory from "@/hooks/use-reading-history";
-import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import {
   Dialog,
@@ -18,6 +17,7 @@ import {
 } from "../ui/dialog";
 import { SingleCard } from "../Chapter/ChapterList/chapter-card";
 import NoPrefetchLink from "../Custom/no-prefetch-link";
+import { useRouter } from "next/navigation";
 
 interface MangaReadNowButtonProps {
   id: string; //mangaid
@@ -33,36 +33,33 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
   const { history } = useReadingHistory();
   const readingHistory = history[id];
 
-  // Check if manga language matches config language
-  const hasMatchingLanguage = language.length > 0 && 
-    config.translatedLanguage.some(lang => language.includes(lang));
+  const hasMatchingLanguage =
+    language.length > 0 &&
+    config.translatedLanguage.some((lang) => language.includes(lang));
 
-  // Fetch chapters using SWR
   const { data: chapters, isLoading } = useSWR(
     shouldFetch && !readingHistory && hasMatchingLanguage
       ? [`chapters-${id}`, config.translatedLanguage, config.r18]
       : null,
     async () => {
-      // First get the chapter aggregate to find the oldest volume and chapter
-      const aggregate = await getChapterAggregate(id, config.translatedLanguage);
-      
+      const aggregate = await getChapterAggregate(
+        id,
+        config.translatedLanguage,
+      );
       if (!aggregate || aggregate.length === 0) {
         return [];
       }
 
-      // Get the oldest volume (last in the sorted array)
       const oldestVolume = aggregate[aggregate.length - 1];
-      
-      // Get the oldest chapter in that volume (last in the sorted array)
-      const oldestChapter = oldestVolume.chapters[oldestVolume.chapters.length - 1];
-      
-      // Fetch chapters with the specific volume and chapter
+      const oldestChapter =
+        oldestVolume.chapters[oldestVolume.chapters.length - 1];
+
       const result = await FirstChapters(
         id,
         config.r18,
         config.translatedLanguage,
         oldestVolume.vol,
-        oldestChapter.chapter
+        oldestChapter.chapter,
       );
       return result;
     },
@@ -73,10 +70,8 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
         if (!data || data.length === 0) return;
 
         if (data.length === 1) {
-          // Only one chapter available, navigate directly
           router.push(`/chapter/${data[0].id}`);
         } else {
-          // Multiple chapters available, show dialog
           setShowDialog(true);
         }
       },
@@ -84,7 +79,6 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
   );
 
   const handleReadNow = () => {
-    // If data is already available
     if (chapters && chapters.length > 0) {
       if (chapters.length === 1) {
         router.push(`/chapter/${chapters[0].id}`);
@@ -92,12 +86,10 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
         setShowDialog(true);
       }
     } else {
-      // Otherwise, trigger fetch
       setShouldFetch(true);
     }
   };
 
-  // If there's reading history
   if (readingHistory) {
     const label = readingHistory.chapter
       ? `Đọc tiếp Ch. ${readingHistory.chapter}`
@@ -116,7 +108,6 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
     );
   }
 
-  // If no matching language or manga language is empty, show disabled BookX button
   if (!hasMatchingLanguage) {
     return (
       <Button
@@ -124,13 +115,12 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
         disabled
         className="rounded-sm md:h-10 grow md:grow-0"
       >
-        <BookX />
+        <BookOpen />
         Đọc ngay
       </Button>
     );
   }
 
-  // If no chapters available after fetch, BookX btn
   if (chapters && chapters.length === 0) {
     return (
       <Button

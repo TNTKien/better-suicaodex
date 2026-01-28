@@ -43,14 +43,10 @@ import { useSession } from "next-auth/react";
 import { updateMangaCategory } from "@/lib/suicaodex/db";
 
 interface AddToLibraryBtnProps {
-  isMobile: boolean;
   manga: Manga;
 }
 
-export default function AddToLibraryBtn({
-  isMobile,
-  manga,
-}: AddToLibraryBtnProps) {
+export default function AddToLibraryBtn({ manga }: AddToLibraryBtnProps) {
   const { data: session } = useSession();
   const [config] = useConfig();
   const [loaded, setLoaded] = useState(false);
@@ -73,7 +69,7 @@ export default function AddToLibraryBtn({
   } = useLocalNotification();
 
   const [value, setValue] = useState<LibraryType | "none">(
-    getLocalCategoryOfId(manga.id) || "none"
+    getLocalCategoryOfId(manga.id) || "none",
   );
   // Cập nhật giá trị mặc định của dropdown dựa trên danh mục hiện tại của truyện
   useEffect(() => {
@@ -123,7 +119,7 @@ export default function AddToLibraryBtn({
 
   const handleLocalNotificationToggle = (
     v: LibraryType | "none",
-    n: boolean
+    n: boolean,
   ) => {
     if (v === "none" || !n) {
       return removeFromLocalNotification(manga.id);
@@ -139,7 +135,7 @@ export default function AddToLibraryBtn({
 
     addToLocalCategory(manga.id, v);
     return toast.success(
-      `Đã thêm truyện vào: ${options.find((opt) => opt.value === v)?.label}!`
+      `Đã thêm truyện vào: ${options.find((opt) => opt.value === v)?.label}!`,
     );
   };
 
@@ -154,7 +150,7 @@ export default function AddToLibraryBtn({
         session.user.id,
         manga.id,
         v.toUpperCase() as any,
-        manga.latestChapter || "none"
+        manga.latestChapter || "none",
       );
       if (res.status === 200 || res.status === 201) {
         toast.success(res.message);
@@ -180,20 +176,17 @@ export default function AddToLibraryBtn({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          size={isMobile ? "icon" : "lg"}
-          className={cn("rounded-sm", isMobile && "grow-0")}
-        >
+        <Button className="rounded-sm size-9 md:h-10 md:w-auto md:px-6 md:has-[>svg]:px-4">
           {options.find((opt) => opt.value === value)?.icon}
-          {!isMobile && (
-            <span>{options.find((opt) => opt.value === value)?.btnLabel}</span>
-          )}
+          <span className="hidden md:block">
+            {options.find((opt) => opt.value === value)?.btnLabel}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent
         className={cn(
           "sm:max-w-[800px] sm:max-h-[calc(100vh-3rem)] overflow-auto",
-          `theme-${config.theme}`
+          `theme-${config.theme}`,
         )}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
@@ -206,11 +199,11 @@ export default function AddToLibraryBtn({
             <LazyLoadImage
               wrapperClassName={cn(
                 "block! rounded-sm object-cover max-w-[250px] w-full h-auto",
-                !loaded && "aspect-5/7"
+                !loaded && "aspect-5/7",
               )}
               placeholderSrc="/images/place-doro.webp"
               className={cn(
-                "h-auto w-full rounded-sm block object-cover shadow-md drop-shadow-md aspect-5/7"
+                "h-auto w-full rounded-sm block object-cover shadow-md drop-shadow-md aspect-5/7",
               )}
               src={src}
               alt={`Ảnh bìa ${manga.title}`}
@@ -252,8 +245,8 @@ export default function AddToLibraryBtn({
                     value === "none"
                       ? "outline"
                       : isNotificationEnabled
-                      ? "default"
-                      : "outline"
+                        ? "default"
+                        : "outline"
                   }
                   className="shrink-0 size-10 [&_svg]:size-5"
                   onClick={() => setIsNotificationEnabled((prev) => !prev)}
@@ -311,8 +304,8 @@ export default function AddToLibraryBtn({
                   value === "none"
                     ? "outline"
                     : isNotificationEnabled
-                    ? "default"
-                    : "outline"
+                      ? "default"
+                      : "outline"
                 }
                 className="shrink-0 size-10 [&_svg]:size-5"
                 onClick={() => setIsNotificationEnabled((prev) => !prev)}
