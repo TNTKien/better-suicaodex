@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts'],
+    webpackMemoryOptimizations: true,
   },
   images: {
     qualities: [25, 50, 75, 100],
