@@ -8,6 +8,9 @@ import { validate as isValidUUID } from "uuid";
 import { cache } from "react";
 import { generateSlug } from "@/lib/utils";
 
+// Revalidate the page every day
+export const revalidate = 60 * 60 * 1 * 24; // 24 hours
+
 interface PageProps {
   params: Promise<{
     id: string;
