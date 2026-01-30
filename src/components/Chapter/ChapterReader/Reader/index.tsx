@@ -166,7 +166,6 @@ export default function Reader({ images, chapterData }: ReaderProps) {
   }
 
   if (!data) return <LongStrip images={images} />;
-  console.log("Chapter aggregate data:", data);
 
   return (
     <>

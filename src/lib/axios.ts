@@ -17,7 +17,7 @@ import { setCurrentApiUrl, getCurrentImageProxyUrl, setCurrentImageProxyUrl } fr
 
 const proxyGroup1 = [
   "https://api2.suicaodex.com",
-  "https://api.suicaodex.com",
+  // "https://api.suicaodex.com",
 ];
 
 const proxyGroup2 = [
@@ -31,7 +31,7 @@ const proxyList = [
   "https://pr.memaydex.online",
   "https://api2.suicaodex.com",
   "https://proxy.bltx.workers.dev",
-  "https://api.suicaodex.com",
+  // "https://api.suicaodex.com",
   "https://clf.suicaodex.com",
 ];
 
