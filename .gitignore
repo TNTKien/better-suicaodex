@@ -52,3 +52,6 @@ next-env.d.ts
 # AI config files
 /.cursor
 /.opencode
+/.agents
+/.codex
+opencode.json
