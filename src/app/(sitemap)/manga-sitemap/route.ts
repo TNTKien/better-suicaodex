@@ -1,8 +1,6 @@
 import { getTotalMangas } from "@/lib/mangadex/manga";
 import { getServerSideSitemapIndex } from "next-sitemap";
 
-export const revalidate = 3600; // Revalidate every hour
-
 export async function GET(req: Request) {
   const count = await getTotalMangas();
 

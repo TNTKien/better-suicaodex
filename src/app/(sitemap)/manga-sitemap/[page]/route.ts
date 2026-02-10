@@ -2,18 +2,6 @@ import { getRecentlyMangas, getTotalMangas } from "@/lib/mangadex/manga";
 import { generateSlug } from "@/lib/utils";
 import { getServerSideSitemap } from "next-sitemap";
 
-export const revalidate = 3600; // Revalidate every hour
-export const dynamicParams = true; // Allow dynamic params beyond generateStaticParams
-
-export async function generateStaticParams() {
-  const count = await getTotalMangas();
-  const totalPages = Math.ceil(count / 100);
-  
-  return Array.from({ length: totalPages }, (_, i) => ({
-    page: i.toString(),
-  }));
-}
-
 export async function GET(
   req: Request,
   context: { params: Promise<{ page: string }> }
