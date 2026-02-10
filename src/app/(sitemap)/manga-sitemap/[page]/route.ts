@@ -1,4 +1,4 @@
-import { getRecentlyMangas, getTotalMangas } from "@/lib/mangadex/manga";
+import { getRecentlyMangas } from "@/lib/mangadex/manga";
 import { generateSlug } from "@/lib/utils";
 import { getServerSideSitemap } from "next-sitemap";
 
