@@ -73,7 +73,6 @@ export function usePreloadImages({
   }, [visibilityThreshold, visibleImages]);
 
   useEffect(() => {
-    console.log("🔥 Effect Triggered! Dependency changed.");
     if (visibleImages.size === 0) return;
 
     const maxVisibleIndex = Math.max(...Array.from(visibleImages));
