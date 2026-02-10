@@ -14,13 +14,21 @@ export function usePreloadImages({
   visibilityThreshold = 0.1,
 }: UsePreloadImagesOptions) {
   const [visibleImages, setVisibleImages] = useState<Set<number>>(new Set());
+  // đọc state mới nhất mà không cần reset Observer
+  const visibleImagesRef = useRef<Set<number>>(new Set());
+
   const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
     new Set(),
   );
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const imageRefs = useRef<Map<number, HTMLElement>>(new Map());
   const attemptedImagesRef = useRef<Set<string>>(new Set());
+
+  // Sync State -> Ref (Luôn giữ ref mới nhất)
+  useEffect(() => {
+    visibleImagesRef.current = visibleImages;
+  }, [visibleImages]);
 
   const preloadImage = useCallback((src: string) => {
     // chỉ check Ref
@@ -31,8 +39,14 @@ export function usePreloadImages({
     const img = new Image();
     img.src = src;
     img.onload = () => {
-      setPreloadedImages((prev) => new Set([...prev, src]));
+      // Dùng functional update để tránh dependency
+      setPreloadedImages((prev) => {
+        const next = new Set(prev); // Tạo ra một Set mới tinh ở địa chỉ mới (0x456)
+        next.add(src);
+        return next; // Trả về 0x456 state mới -> re-render
+      });
     };
+
     img.onerror = () => {
       console.warn(`Failed to preload image: ${src}`);
       attemptedImagesRef.current.delete(src);
@@ -41,23 +55,36 @@ export function usePreloadImages({
 
   // Setup Intersection Observer
   useEffect(() => {
+    // Check support SSR
+    if (typeof window === "undefined" || !window.IntersectionObserver) return;
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        const newVisibleImages = new Set(visibleImages);
+        const currentVisible = new Set(visibleImagesRef.current);
+        let hasChanges = false;
 
         entries.forEach((entry) => {
           const index = parseInt(
-            entry.target.getAttribute("data-image-index") || "0",
+            entry.target.getAttribute("data-image-index") || "-1",
           );
+          if (index === -1) return;
 
           if (entry.isIntersecting) {
-            newVisibleImages.add(index);
+            if (!currentVisible.has(index)) {
+              currentVisible.add(index);
+              hasChanges = true;
+            }
           } else {
-            newVisibleImages.delete(index);
+            if (currentVisible.has(index)) {
+              currentVisible.delete(index);
+              hasChanges = true;
+            }
           }
         });
 
-        setVisibleImages(newVisibleImages);
+        if (hasChanges) {
+          setVisibleImages(currentVisible);
+        }
       },
       {
         threshold: visibilityThreshold,
@@ -65,19 +92,19 @@ export function usePreloadImages({
       },
     );
 
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, [visibilityThreshold, visibleImages]);
+    return () => observerRef.current?.disconnect();
+  }, [visibilityThreshold]);
 
   useEffect(() => {
     if (visibleImages.size === 0) return;
 
-    const maxVisibleIndex = Math.max(...Array.from(visibleImages));
-    const imagesToPreload: string[] = [];
+    // tìm max thủ công nhanh hơn do không tạo ra một mảng khác
+    let maxVisibleIndex = -1;
+    for (const index of visibleImages) {
+      if (index > maxVisibleIndex) maxVisibleIndex = index;
+    }
 
+    const imagesToPreload: string[] = [];
     for (let i = 1; i <= preloadCount; i++) {
       const nextIndex = maxVisibleIndex + i;
       if (nextIndex < images.length) {
@@ -88,33 +115,30 @@ export function usePreloadImages({
     imagesToPreload.forEach(preloadImage);
   }, [visibleImages, images, preloadCount, preloadImage]);
 
-  const registerImageElement = (index: number, element: HTMLElement | null) => {
-    if (!element || !observerRef.current) return;
+  const registerImageElement = useCallback(
+    (index: number, element: HTMLElement | null) => {
+      if (!element || !observerRef.current) return;
 
-    // Unobserve previous element if exists
-    const previousElement = imageRefs.current.get(index);
-    if (previousElement) {
-      observerRef.current.unobserve(previousElement);
-    }
-
-    // Set data attribute and observe new element
-    element.setAttribute("data-image-index", index.toString());
-    imageRefs.current.set(index, element);
-    observerRef.current.observe(element);
-  };
-
-  const markImageAsLoaded = (index: number) => {
-    setLoadedImages((prev) => new Set([...prev, index]));
-  };
-
-  const isImageLoaded = (index: number) => {
-    return loadedImages.has(index);
-  };
+      // Gán data attribute để Observer đọc lại được index
+      element.setAttribute("data-image-index", index.toString());
+      observerRef.current.observe(element);
+    },
+    [],
+  );
 
   return {
     registerImageElement,
-    markImageAsLoaded,
-    isImageLoaded,
+    markImageAsLoaded: useCallback((index: number) => {
+      setLoadedImages((prev) => {
+        const next = new Set(prev);
+        next.add(index);
+        return next;
+      });
+    }, []),
+    isImageLoaded: useCallback(
+      (index: number) => loadedImages.has(index),
+      [loadedImages],
+    ),
     preloadedImages,
     visibleImages,
   };
