@@ -85,7 +85,6 @@ export const axiosWithProxyFallback = async <T = any>(
       // TODO: fix any
       // eslint-disable-next-line
       const responseData = response.data as any;
-      console.log("responseData: ", responseData);
       // eslint-disable-next-line
       responseData.__proxy_url = proxy;
 
