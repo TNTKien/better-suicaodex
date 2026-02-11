@@ -38,7 +38,7 @@ export const presetThemes = [
       light: "0 0% 20%",
       dark: "0 0% 80%",
     },
-  }, 
+  },
   {
     name: "vs-code",
     label: "VS Code",
@@ -46,7 +46,7 @@ export const presetThemes = [
       light: "201 90% 55%",
       dark: "201 90% 55%",
     },
-  }
+  },
 ] as const;
 
 export type PresetTheme = (typeof presetThemes)[number];
