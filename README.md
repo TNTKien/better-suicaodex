@@ -14,51 +14,17 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Tôn trọng nguồn dịch.
 - Thân thiện với độc giả Việt Nam (cụ thể là tôi).
 
-## Tiến độ
-✅ Đã hoàn thành chuyển đổi từ suicaodex cũ sang better-suicaodex.
-
-☑️ Chưa hoàn thiện 100%
-
-❌ Loại bỏ
-
-| Route | URL | suicaodex | better-suicaodex |
-| --- | --- | :---: | :---: |
-| Trang chủ | / | ✅ | ✅ |
-| Tìm kiếm | | ✅ | ✅ |
-| Tìm kiếm nâng cao | /advanced-search | ✅ | ✅ |
-| Manga | /manga/:id | ✅ | ✅ |
-| Chapter | /chapter/:id | ✅ | ✅ |
-| Mới cập nhật | /latest | ✅ | ✅ |
-| Lịch sử đọc | /history | ✅ | ✅ |
-| Nhóm dịch | /groups | ✅ | ✅ |
-| Chi tiết nhóm dịch | /group/:id | ✅ | ✅ |
-| Tài khoản |  | ✅ | ✅ |
-| Thư viện | /my-library | ✅ | ✅ |
-| Thông báo | /notifications | ⬛ | ☑️ |
-| Tác giả | /author | ⬛ | ✅ |
-| Bình luận |  | ✅ | ☑️ |
-| Built-in API | /api/mangadex/ | ✅ | ❌ |
-
-> Bỏ built-in API vì tôi lười 👍
-
-> Tạm bỏ chức năng Bình luận, lý do bên dưới.
-
-> UPDATE: Đã thêm lại Bình luận, nhưng code như cc.
-
-Ngoài ra còn cải thiện các chức năng cũ và thêm một số chức năng mới, sẽ cập nhật sau...
-
 ## Vài lỗi đã biết
-- ~~Mất từ khóa khi nhấn enter trên thanh tìm kiếm nhanh~~
 - Thứ tự truyện trong lịch sử đọc đang sắp xếp theo mốc thời gian của chính chương truyện, không phải theo thời điểm đọc truyện
 - Thông báo bị đần, ngoài ra chưa có chỗ để xem danh sách các truyện đã đăng ký nhận thông báo
 - Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
 
 ## Dự kiến
-✅ ~~Kệ mẹ mấy cái bên dưới, sắp tới tôi sẽ upgrade lên Next 16 và Tailwind v4 (đéo cho mấy thằng máy cổ lỗ sĩ đọc truyện kkk 🐧)~~ Done!
+⬛ Làm lại reader
+
+⬛ Fix layout trang chủ
 
 ⬛ Hoàn thiện Thông báo.
-
-✅ Trang thể loại truyện (thể loại hiện tại đang dùng ké tìm kiếm nâng cao)
 
 ☑️ Hoàn thiện bình luận:
 1. ✅ Thêm bình luận từng chương.
