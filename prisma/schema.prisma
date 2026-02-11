@@ -1,144 +1,38 @@
+generator client {
+  provider = "prisma-client"
+  output     = "./generated"
+  engineType = "client"
+}
+
 datasource db {
   provider = "mysql"
-  url      = env("MYSQL_DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
- 
-generator client {
-  provider = "prisma-client-js"
-}
- 
+
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  username      String?         @unique
-  email         String          @unique
+  username      String?   @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
+
   accounts      Account[]
   sessions      Session[]
 
-  library       Library?        @relation("UserLibrary")
+  library       Library?
 
-  notifications Notify[]     @relation("toUser")
+  notifications Notify[]  @relation("toUser")
 
-  mangaComments  MangaComment[]
+  mangaComments   MangaComment[]
   chapterComments ChapterComment[]
 
-  // Optional for WebAuthn support
-  //Authenticator Authenticator[]
- 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model MangaComment {
-  id        String   @id @default(cuid())
-  title     String   @db.Text @default("")
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isEdited  Boolean  @default(false)
-  reactions  Int      @default(0)
-
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-
-  manga     Manga    @relation(fields: [mangaId], references: [mangadexId])
-  mangaId   String
-
-  @@index([userId])
-  @@index([mangaId])
-} 
-
-model ChapterComment {
-  id        String   @id @default(cuid())
-  title     String   @db.Text @default("")
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isEdited  Boolean  @default(false)
-  reactions  Int      @default(0)
-
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-
-  chapter  Chapter  @relation(fields: [chapterId], references: [mangadexId])
-  chapterId String
-  chapterNumber String @default("Oneshot")
-
-  @@index([userId])
-  @@index([chapterId])
-}
-
-
-
-model Library {
-  id      String  @id @default(cuid())
-  userId  String  @unique
-  user    User    @relation("UserLibrary", fields: [userId], references: [id], onDelete: Cascade)
-  mangas  LibraryManga[] // Liên kết n-n với bảng Manga qua bảng trung gian
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-}
-
-model Manga {
-  mangadexId       String       @id // Dùng mangadexId làm ID chính
-  latestChapterId  String
-
-  libraries        LibraryManga[] // Liên kết n-n qua bảng trung gian
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  comments       MangaComment[]
-
-  @@index([mangadexId])
-}
-
-model Chapter {
-  mangadexId       String   @id // Dùng mangadexId làm ID chính
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  comments       ChapterComment[]
-
-  @@index([mangadexId])
-}
-
-model LibraryManga {
-  id        String   @id @default(cuid()) // ID duy nhất cho bảng trung gian
-  libraryId String 
-  mangaId   String 
-  category  Category // Loại manga trong thư viện
-
-  library   Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade)
-  manga     Manga    @relation(fields: [mangaId], references: [mangadexId], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([libraryId(length: 100), mangaId(length: 100)])
-  @@index([libraryId(length: 100), category])
-}
-model Notify {
-  id        Int        @id @default(autoincrement())
-  toUserId  String
-  content   String
-  isRead    Boolean    @default(false)
-  createdAt DateTime   @default(now())
-
-  toUser User @relation("toUser", fields: [toUserId], references: [id])
-
-  @@index([toUserId])
 }
 
 model Account {
   id                       String  @id @default(cuid())
-  userId                   String  @unique
+  userId                   String
   type                     String
   provider                 String
   providerAccountId        String
@@ -150,13 +44,81 @@ model Account {
   id_token                 String? @db.Text
   session_state            String?
   refresh_token_expires_in Int?
-  user                     User?   @relation(fields: [userId], references: [id])
- 
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@unique([provider, providerAccountId])
   @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Library {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mangas LibraryManga[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Manga {
+  mangadexId      String @id
+  latestChapterId String?
+
+  libraries LibraryManga[]
+  comments  MangaComment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([mangadexId])
+}
+
+model LibraryManga {
+  id        String   @id @default(cuid())
+  libraryId String
+  mangaId   String
+  category  Category
+
+  library Library @relation(fields: [libraryId], references: [id], onDelete: Cascade, map: "fk_library_manga_library_cascade")
+  manga   Manga   @relation(fields: [mangaId], references: [mangadexId], onDelete: Cascade, map: "fk_library_manga_manga_cascade")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Đảm bảo 1 manga chỉ xuất hiện 1 lần trong 1 thư viện
+  @@unique([libraryId, mangaId], map: "uq_library_manga_composite")
+  // Lọc theo Category + Sắp xếp mới nhất
+  // Giúp query: "Lấy list Đang Đọc của user X, xếp theo ngày update" chạy O(1)
+  @@index([libraryId, category, updatedAt(sort: Desc)], map: "idx_library_category_time")
 }
 
 enum Category {
@@ -164,31 +126,82 @@ enum Category {
   READING
   PLAN
   COMPLETED
+  DROPPED
+  RE_READING
 }
- 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
- 
+
+model MangaComment {
+  id        String   @id @default(cuid())
+  title     String   @default("") @db.VarChar(255)
+  content   String   @db.Text
+  isEdited  Boolean  @default(false)
+  reactions Int      @default(0)
+
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  mangaId String
+  manga   Manga  @relation(fields: [mangaId], references: [mangadexId], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@index([userId])
+  // Lấy Comment của Manga X + Sắp xếp mới nhất
+  @@index([mangaId, createdAt(sort: Desc)])
 }
 
+model Chapter {
+  mangadexId String   @id
 
- 
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
- 
-  @@unique([identifier, token])
+  comments   ChapterComment[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([mangadexId])
 }
- 
+
+model ChapterComment {
+  id            String   @id @default(cuid())
+  title         String   @default("") @db.VarChar(255)
+  content       String   @db.Text
+  isEdited      Boolean  @default(false)
+  reactions     Int      @default(0)
+  chapterNumber String   @default("Oneshot")
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [mangadexId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  // Tương tự MangaComment, lấy comment chapter nhanh hơn
+  @@index([chapterId, createdAt(sort: Desc)])
+}
+
+model Notify {
+  id        Int      @id @default(autoincrement())
+  toUserId  String
+  content   String   @db.Text
+  isRead    Boolean  @default(false)
+
+  toUser    User     @relation("toUser", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  // Đếm số thông báo chưa đọc (Count Unread)
+  // Query: SELECT count(*) WHERE toUserId = ? AND isRead = false
+  @@index([toUserId, isRead])
+
+  // load list thông báo theo thời gian:
+  @@index([toUserId, createdAt(sort: Desc)])
+}
+
 // Optional for WebAuthn support
 // model Authenticator {
 //   credentialID         String  @unique
@@ -199,11 +212,11 @@ model VerificationToken {
 //   credentialDeviceType String
 //   credentialBackedUp   Boolean
 //   transports           String?
- 
+
 //   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
 //   @@id([userId, credentialID])
 // }nDelete: Cascade)
- 
+
 //   @@id([userId, credentialID])
 // }
