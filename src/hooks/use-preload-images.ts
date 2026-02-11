@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UsePreloadImagesOptions {
   images: string[];
@@ -11,67 +11,99 @@ interface UsePreloadImagesOptions {
 export function usePreloadImages({
   images,
   preloadCount = 5,
-  visibilityThreshold = 0.1
+  visibilityThreshold = 0.1,
 }: UsePreloadImagesOptions) {
   const [visibleImages, setVisibleImages] = useState<Set<number>>(new Set());
-  const [preloadedImages, setPreloadedImages] = useState<Set<string>>(new Set());
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  // đọc state mới nhất mà không cần reset Observer
+  const visibleImagesRef = useRef<Set<number>>(new Set());
+  // Map lưu vết các element đang được observe
   const imageRefs = useRef<Map<number, HTMLElement>>(new Map());
+
+  const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
+    new Set(),
+  );
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
   const attemptedImagesRef = useRef<Set<string>>(new Set());
 
-  const preloadImage = (src: string) => {
-    if (preloadedImages.has(src) || attemptedImagesRef.current.has(src)) return;
+  // Sync State -> Ref (Luôn giữ ref mới nhất)
+  useEffect(() => {
+    visibleImagesRef.current = visibleImages;
+  }, [visibleImages]);
+
+  const preloadImage = useCallback((src: string) => {
+    // chỉ check Ref
+    if (attemptedImagesRef.current.has(src)) return;
 
     attemptedImagesRef.current.add(src);
 
     const img = new Image();
     img.src = src;
     img.onload = () => {
-      setPreloadedImages(prev => new Set([...prev, src]));
+      // Functional update; create a new Set to trigger re-render
+      setPreloadedImages((prev) => {
+        const next = new Set(prev);
+        next.add(src);
+        return next;
+      });
     };
+
     img.onerror = () => {
       console.warn(`Failed to preload image: ${src}`);
+      attemptedImagesRef.current.delete(src);
     };
-  };
+  }, []);
 
   // Setup Intersection Observer
   useEffect(() => {
+    // Check support SSR
+    if (typeof window === "undefined" || !window.IntersectionObserver) return;
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        const newVisibleImages = new Set(visibleImages);
-        
+        const currentVisible = new Set(visibleImagesRef.current);
+        let hasChanges = false;
+
         entries.forEach((entry) => {
-          const index = parseInt(entry.target.getAttribute('data-image-index') || '0');
-          
+          const index = parseInt(
+            entry.target.getAttribute("data-image-index") || "-1",
+          );
+          if (index === -1) return;
+
           if (entry.isIntersecting) {
-            newVisibleImages.add(index);
+            if (!currentVisible.has(index)) {
+              currentVisible.add(index);
+              hasChanges = true;
+            }
           } else {
-            newVisibleImages.delete(index);
+            if (currentVisible.has(index)) {
+              currentVisible.delete(index);
+              hasChanges = true;
+            }
           }
         });
-        
-        setVisibleImages(newVisibleImages);
+
+        if (hasChanges) {
+          setVisibleImages(currentVisible);
+        }
       },
       {
         threshold: visibilityThreshold,
-        rootMargin: '100px 0px 400px 0px' 
-      }
+        rootMargin: "100px 0px 400px 0px",
+      },
     );
 
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
+    return () => observerRef.current?.disconnect();
   }, [visibilityThreshold]);
 
   useEffect(() => {
     if (visibleImages.size === 0) return;
 
-    const maxVisibleIndex = Math.max(...Array.from(visibleImages));
-    const imagesToPreload: string[] = [];
+    // tìm index lớn nhất đang hiển thị
+    const maxVisibleIndex = Math.max(...visibleImages);
 
+    const imagesToPreload: string[] = [];
     for (let i = 1; i <= preloadCount; i++) {
       const nextIndex = maxVisibleIndex + i;
       if (nextIndex < images.length) {
@@ -82,34 +114,45 @@ export function usePreloadImages({
     imagesToPreload.forEach(preloadImage);
   }, [visibleImages, images, preloadCount]);
 
-  const registerImageElement = (index: number, element: HTMLElement | null) => {
-    if (!element || !observerRef.current) return;
+  const registerImageElement = useCallback(
+    (index: number, element: HTMLElement | null) => {
+      const observer = observerRef.current;
+      if (!observer) return;
 
-    // Unobserve previous element if exists
-    const previousElement = imageRefs.current.get(index);
-    if (previousElement) {
-      observerRef.current.unobserve(previousElement);
-    }
+      if (element) {
+        // cleanup cái cũ
+        const prevEl = imageRefs.current.get(index);
+        if (prevEl) observer.unobserve(prevEl);
 
-    // Set data attribute and observe new element
-    element.setAttribute('data-image-index', index.toString());
-    imageRefs.current.set(index, element);
-    observerRef.current.observe(element);
-  };
-
-  const markImageAsLoaded = (index: number) => {
-    setLoadedImages(prev => new Set([...prev, index]));
-  };
-
-  const isImageLoaded = (index: number) => {
-    return loadedImages.has(index);
-  };
+        imageRefs.current.set(index, element);
+        element.setAttribute("data-image-index", index.toString());
+        observer.observe(element);
+      } else {
+        // React gọi với null thì lấy elements cũ ra xoá
+        const prevEl = imageRefs.current.get(index);
+        if (prevEl) {
+          observer.unobserve(prevEl);
+          imageRefs.current.delete(index);
+        }
+      }
+    },
+    [],
+  );
 
   return {
     registerImageElement,
-    markImageAsLoaded,
-    isImageLoaded,
+    markImageAsLoaded: useCallback((index: number) => {
+      setLoadedImages((prev) => {
+        const next = new Set(prev);
+        next.add(index);
+        return next;
+      });
+    }, []),
+    isImageLoaded: useCallback(
+      (index: number) => loadedImages.has(index),
+      [loadedImages],
+    ),
     preloadedImages,
-    visibleImages
+    visibleImages,
   };
 }
