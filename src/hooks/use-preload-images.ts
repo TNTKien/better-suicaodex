@@ -57,17 +57,16 @@ export function usePreloadImages({
 
   // Setup Intersection Observer
   useEffect(() => {
-    // Check support SSR
     if (typeof window === "undefined" || !window.IntersectionObserver) return;
 
-    observerRef.current = new IntersectionObserver(
+    const newObserver = new IntersectionObserver(
       (entries) => {
         const currentVisible = new Set(visibleImagesRef.current);
         let hasChanges = false;
 
         entries.forEach((entry) => {
           const index = parseInt(
-            entry.target.getAttribute("data-image-index") || "-1",
+            entry.target.getAttribute("data-image-index") ?? "-1",
           );
           if (index === -1) return;
 
@@ -94,7 +93,14 @@ export function usePreloadImages({
       },
     );
 
-    return () => observerRef.current?.disconnect();
+    observerRef.current = newObserver;
+
+    // Re-observe tất cả các node đang sống
+    imageRefs.current.forEach((element) => {
+      newObserver.observe(element);
+    });
+
+    return () => newObserver.disconnect();
   }, [visibilityThreshold]);
 
   useEffect(() => {
@@ -112,7 +118,7 @@ export function usePreloadImages({
     }
 
     imagesToPreload.forEach(preloadImage);
-  }, [visibleImages, images, preloadCount]);
+  }, [visibleImages, images, preloadCount, preloadImage]);
 
   const registerImageElement = useCallback(
     (index: number, element: HTMLElement | null) => {
