@@ -1,11 +1,11 @@
 "use client";
 
-import ErrorPage from "@/components/error-page";
 import useSWR from "swr";
 import MangaDetailsSkeleton from "./manga-details-skeleton";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { getRandomManga } from "@/lib/mangadex/random";
+import ErrorPage from "@/components/error-page";
 
 export default function RandomManga() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function RandomManga() {
     {
       refreshInterval: 1000 * 60 * 10,
       revalidateOnFocus: false,
-    }
+    },
   );
 
   useEffect(() => {

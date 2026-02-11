@@ -1,87 +1,127 @@
 import { axiosWithProxyFallback } from "../axios";
-import { TagsParser } from "./tag";
-import { AuthorParser } from "./author";
-import { ArtistParser } from "./artist";
-import { Chapter, Manga, MangasStats, MangaStats } from "@/types/types";
+import {
+  Artist,
+  Author,
+  Chapter,
+  Manga,
+  MangasStats,
+  MangaStats,
+  Tag,
+} from "@/types/types";
 import { ChaptersParser } from "./chapter";
 import { siteConfig } from "@/config/site";
+import { MangaDexApiResponse } from "@/types/mangadex-api";
+import {
+  AuthorAttributes,
+  CoverArtAttributes,
+  MangaData,
+  MangaTag,
+  Relationship,
+} from "@/types/manga";
 
-export function MangaParser(data: any): Manga {
-  // const titleVi = data.attributes.altTitles.find((item: any) => item.vi)?.vi;
-  // let title = titleVi
-  //   ? titleVi
-  //   : data.attributes.title[Object.keys(data.attributes.title)[0]];
+function getPreferredTitle(
+  titles: Record<string, string>,
+  altTitles: Record<string, string>[],
+) {
+  const allTitles: Record<string, string> = { ...titles };
+  altTitles.forEach((t) => {
+    const key = Object.keys(t)[0];
+    allTitles[key] = t[key];
+  });
 
-  // if (!title) {
-  //   title = data.attributes.altTitles.find((item: any) => item.en)?.en;
-  // }
+  const vi = allTitles.vi;
+  const en = allTitles.en;
+  const jaRo = allTitles["ja-ro"]; // Romaji
+  const ja = allTitles.ja;
+  const original = Object.values(titles)[0]; // Title gốc (key bất kỳ)
 
-  // const altTitle =
-  //   data.attributes.title.en ||
-  //   data.attributes.altTitles.find((item: any) => item.en)?.en ||
-  //   data.attributes.altTitles.find((item: any) => item.ja)?.ja ||
-  //   null;
+  // Ưu tiên: Tiếng Việt > Tiếng Anh > Romaji > Gốc
+  const mainTitle = vi || en || jaRo || original || "Untitled";
 
-  const altTitles = data.attributes.altTitles;
-  const titles = data.attributes.title;
+  // Nếu main là Vi -> Alt là En hoặc Romaji
+  // Nếu main là En -> Alt là Romaji hoặc Ja
+  let subTitle: string | null = null;
 
-  const enTitles = [
-    ...(titles.en ? [titles.en] : []),
-    ...altTitles.filter((t: any) => t.en).map((t: any) => t.en!),
-  ];
-  const viTitle = altTitles.find((t: any) => t.vi)?.vi || undefined;
-  const jaTitle = altTitles.find((t: any) => t.ja)?.ja || undefined;
-  const originalTitle = titles[Object.keys(titles)[0]];
+  if (mainTitle === vi) subTitle = en || jaRo || ja;
+  else if (mainTitle === en) subTitle = jaRo || ja;
+  else if (mainTitle === jaRo) subTitle = ja;
 
-  const title = viTitle || originalTitle || enTitles[0] || jaTitle;
-  let altTitle: string | null = null;
-  if (title == viTitle) {
-    altTitle = enTitles[0] || jaTitle || null;
-  } else if (title == enTitles[0]) {
-    altTitle = enTitles[1] || jaTitle || null;
-  } else if (title == jaTitle) {
-    altTitle = null;
-  }
+  return { mainTitle, subTitle };
+}
 
-  const language = data.attributes.availableTranslatedLanguages;
-  const description: { language: "vi" | "en"; content: string } = data
-    .attributes.description.vi
-    ? {
-        language: "vi",
-        content: data.attributes.description.vi,
-      }
-    : {
-        language: "en",
-        content: data.attributes.description.en,
-      };
+// Helper: Parse Author/Artist từ Relationships
+function getCreators(
+  relationships: Relationship[],
+  type: "author" | "artist",
+): Author[] | Artist[] {
+  return relationships
+    .filter((r) => r.type === type)
+    .map((r) => ({
+      id: r.id,
+      name: (r.attributes as AuthorAttributes).name,
+    }));
+}
 
-  const coverArt = data.relationships.find(
-    (item: any) => item.type === "cover_art"
-  );
-  const author = AuthorParser(data.relationships);
-  const artist = ArtistParser(data.relationships);
-  const contentRating = data.attributes.contentRating;
-  const status = data.attributes.status;
+// Helper: Parse Tags
+function getTags(rawTags: MangaTag[]): Tag[] {
+  return rawTags.map((tag) => ({
+    id: tag.id,
+    name: tag.attributes.name.en || "Unknown",
+    group: tag.attributes.group,
+  }));
+}
+
+export function MangaParser(data: MangaData): Manga {
+  const attr = data.attributes;
+  const rels = data.relationships;
+
+  // Xử lý Title
+  const { mainTitle, subTitle } = getPreferredTitle(attr.title, attr.altTitles);
+
+  // Xử lý Description (Ưu tiên Vi -> En -> Fallback)
+  const descContent =
+    attr.description.vi ||
+    attr.description.en ||
+    Object.values(attr.description)[0] ||
+    "";
+
+  // Xác định language của description
+  const descLang: "vi" | "en" = attr.description.vi ? "vi" : "en";
+
+  // Xử lý Cover Art
+  const coverRel = rels.find((r) => r.type === "cover_art");
+  const coverFileName = coverRel?.attributes
+    ? (coverRel.attributes as CoverArtAttributes).fileName
+    : null;
+
   return {
     id: data.id,
-    title: title,
-    language: language,
-    altTitle: altTitle,
-    altTitles: altTitles.map((t: any) => Object.values(t)[0] as string),
-    tags: TagsParser(data.attributes.tags),
-    cover: coverArt ? coverArt.attributes.fileName : null,
-    author: author,
-    artist: artist,
-    description: description,
-    contentRating: contentRating,
-    status: status,
-    raw:
-      data.attributes.links && data.attributes.links.raw
-        ? data.attributes.links.raw
-        : null,
-    finalChapter: data.attributes.lastChapter
-      ? data.attributes.lastChapter
-      : null,
+    title: mainTitle,
+    altTitle: subTitle,
+    // Flat map lấy tất cả value của altTitles
+    altTitles: attr.altTitles.map((t) => Object.values(t)[0]),
+
+    language: attr.availableTranslatedLanguages,
+
+    description: {
+      language: descLang,
+      content: descContent,
+    },
+
+    tags: getTags(attr.tags),
+    author: getCreators(rels, "author"),
+    artist: getCreators(rels, "artist"),
+
+    cover: coverFileName,
+
+    contentRating: attr.contentRating,
+    status: attr.status,
+
+    raw: attr.links?.raw ?? undefined,
+
+    finalChapter: attr.lastChapter ?? undefined,
+
+    latestChapter: attr.latestUploadedChapter ?? undefined,
   };
 }
 
@@ -89,7 +129,7 @@ export function MangaStatsParser(data: any, id: string): MangaStats {
   const distribution = data.statistics[id].rating.distribution;
 
   // Find the max value in the distribution
-  const max = Math.max(...(Object.values(distribution) as number[]));
+  const max = Math.max(...Object.values(distribution));
 
   return {
     rating: {
@@ -117,7 +157,7 @@ export function MangaStatsParser(data: any, id: string): MangaStats {
 
 export async function fetchMangaDetail(id: string): Promise<Manga> {
   const [mangaResponse, stats] = await Promise.all([
-    axiosWithProxyFallback({
+    axiosWithProxyFallback<MangaDexApiResponse>({
       url: `/manga/${id}?`,
       method: "get",
       params: {
@@ -126,6 +166,10 @@ export async function fetchMangaDetail(id: string): Promise<Manga> {
     }),
     getMangaStats(id),
   ]);
+
+  if (mangaResponse.result !== "ok") {
+    throw new Error("Failed to fetch manga detail from MangaDex");
+  }
 
   const manga = MangaParser(mangaResponse.data);
   manga.stats = stats;
@@ -214,7 +258,7 @@ export function MangasStatsParser(data: any, id: string): MangasStats {
 
 export async function getFirstChapter(
   id: string,
-  r18: boolean
+  r18: boolean,
 ): Promise<{
   en: string;
   vi: string;
@@ -256,7 +300,7 @@ export async function getFirstChapter(
 
 export async function FirstViChapter(
   id: string,
-  r18: boolean
+  r18: boolean,
 ): Promise<Chapter> {
   const data = await axiosWithProxyFallback({
     url: `/manga/${id}/feed`,
@@ -279,7 +323,7 @@ export async function FirstViChapter(
 
 export async function FirstEnChapter(
   id: string,
-  r18: boolean
+  r18: boolean,
 ): Promise<Chapter> {
   const data = await axiosWithProxyFallback({
     url: `/manga/${id}/feed`,
@@ -305,7 +349,7 @@ export async function FirstChapters(
   r18: boolean,
   translatedLanguage: ("vi" | "en")[],
   volume?: string,
-  chapter?: string
+  chapter?: string,
 ): Promise<Chapter[]> {
   const data = await axiosWithProxyFallback({
     url: `/chapter`,
@@ -331,7 +375,7 @@ export async function FirstChapters(
 
 export async function SearchManga(
   query: string,
-  r18: boolean
+  r18: boolean,
 ): Promise<Manga[]> {
   const data = await axiosWithProxyFallback({
     url: "/manga?",
@@ -361,7 +405,7 @@ export async function SearchManga(
 
 export async function getPopularMangas(
   language: ("vi" | "en")[],
-  r18: boolean
+  r18: boolean,
 ): Promise<Manga[]> {
   const data = await axiosWithProxyFallback({
     url: `/manga?`,
@@ -390,7 +434,7 @@ export async function getRecentlyMangas(
   limit: number,
   language: ("vi" | "en")[],
   r18: boolean,
-  offset?: number
+  offset?: number,
 ): Promise<{
   mangas: Manga[];
   total: number;
@@ -426,7 +470,7 @@ export async function getRecentlyMangas(
 
 export async function getTopFollowedMangas(
   language: ("vi" | "en")[],
-  r18: boolean
+  r18: boolean,
 ): Promise<Manga[]> {
   const params: any = {
     limit: 10,
@@ -458,7 +502,7 @@ export async function getTopFollowedMangas(
 
 export async function getTopRatedMangas(
   language: ("vi" | "en")[],
-  r18: boolean
+  r18: boolean,
 ): Promise<Manga[]> {
   const data = await axiosWithProxyFallback({
     url: `/manga?`,
@@ -499,7 +543,7 @@ export async function getStaffPickMangas(r18: boolean): Promise<Manga[]> {
   }).then((res) =>
     res.data.relationships
       .filter((item: any) => item.type === "manga")
-      .map((item: any) => item.id)
+      .map((item: any) => item.id),
   );
 
   if (StaffPickID.length === 0) return [];
@@ -543,7 +587,7 @@ export async function getStaffPickMangas(r18: boolean): Promise<Manga[]> {
 
 export async function getCompletedMangas(
   language: ("vi" | "en")[],
-  r18: boolean
+  r18: boolean,
 ): Promise<Manga[]> {
   const data = await axiosWithProxyFallback({
     url: `/manga?`,
@@ -565,7 +609,7 @@ export async function getCompletedMangas(
 
 export async function getRecommendedMangas(
   id: string,
-  r18: boolean
+  r18: boolean,
 ): Promise<Manga[]> {
   const rcmData = await axiosWithProxyFallback({
     url: `/manga/${id}/recommendation`,

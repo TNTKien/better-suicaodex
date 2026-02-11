@@ -19,6 +19,7 @@ import { GB, JP, VN } from "country-flag-icons/react/3x2";
 import { MultiSelect } from "../ui/multi-select";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Cover } from "@/types/types";
+import Image from "next/image";
 
 interface MangaCoversTabProps {
   id: string;
@@ -32,7 +33,7 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
     {
       refreshInterval: 1000 * 60 * 30,
       revalidateOnFocus: false,
-    }
+    },
   );
   const [loaded, setLoaded] = useState(false);
   const [selectedLocale, setSelectedLocale] = useState(["ja", "vi"]);
@@ -103,7 +104,7 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
                   <div className="absolute bg-secondary p-5 rounded-sm">
                     <Loader2 className="animate-spin" size={50} />
                   </div>
-                  <img
+                  <Image
                     src={getCoverImageUrl(id, cover.fileName, "full")}
                     alt={`Ảnh bìa ${cover.volume}`}
                     className="max-h-full max-w-full object-cover z-20"
@@ -111,6 +112,8 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
                     onError={(e) => {
                       e.currentTarget.src = "/images/xidoco.webp";
                     }}
+                    width={500}
+                    height={500}
                   />
                 </div>
               </DialogContent>
@@ -120,11 +123,11 @@ export default function MangaCoversTab({ id }: MangaCoversTabProps) {
               <LazyLoadImage
                 wrapperClassName={cn(
                   "block! rounded-sm object-cover w-full",
-                  !loaded && "aspect-5/7"
+                  !loaded && "aspect-5/7",
                 )}
                 placeholderSrc="/images/place-doro.webp"
                 className={cn(
-                  "w-full rounded-sm block object-cover aspect-5/7"
+                  "w-full rounded-sm block object-cover aspect-5/7",
                 )}
                 src={getCoverImageUrl(id, cover.fileName, "512")}
                 alt={`Ảnh bìa tập ${cover.volume}`}

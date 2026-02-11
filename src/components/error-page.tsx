@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -45,7 +45,6 @@ export default function ErrorPage({
 }: ErrorPageProps) {
   const router = useRouter();
   const [isRetrying, setIsRetrying] = useState(false);
-  const [randomQuote, setRandomQuote] = useState("");
   const [hasCopied, setHasCopied] = useState(false);
   const quotes = [
     "Trang này đã biến mất như anime season 2 mà bạn đang chờ đợi...",
@@ -67,10 +66,11 @@ export default function ErrorPage({
     "Omae wa mou shindeiru... và cả trang bạn đang tìm kiếm cũng vậy",
     "Đừng lo, đây chỉ là một filler arc, trang bạn cần sẽ xuất hiện ở season sau",
   ];
-  useEffect(() => {
+
+  const [randomQuote] = useState(() => {
     const randomIndex = Math.floor(Math.random() * quotes.length);
-    setRandomQuote(quotes[randomIndex]);
-  }, []);
+    return quotes[randomIndex];
+  });
 
   const handleRetry = () => {
     setIsRetrying(true);
@@ -82,14 +82,15 @@ export default function ErrorPage({
     setTimeout(() => setIsRetrying(false), 1000);
   };
 
-  const handleCopyError = () => {
+  const handleCopyError = async () => {
     if (error) {
-      navigator.clipboard.writeText(error.message);
+      await navigator.clipboard.writeText(error.message);
       setHasCopied(true);
       toast.success("Đã sao chép chi tiết lỗi vào clipboard");
       setTimeout(() => setHasCopied(false), 2000);
     }
   };
+
   return (
     <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center p-4 opacity-0 animate-fadeIn">
       <Card className="max-w-2xl w-full shadow-lg overflow-hidden border-2 border-primary/10">
@@ -125,7 +126,7 @@ export default function ErrorPage({
                       variant="ghost"
                       size="icon"
                       className="h-6 w-6 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                      onClick={handleCopyError}
+                      onClick={void handleCopyError}
                     >
                       {hasCopied ? (
                         <Check className="h-3.5 w-3.5 text-green-500" />

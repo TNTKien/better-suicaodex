@@ -11,7 +11,7 @@ export default function MangaDetailsSkeleton() {
           className={cn(
             "absolute h-70 w-full",
             "transition-[width] duration-150 ease-in-out",
-            "bg-no-repeat bg-cover bg-center-25 bg-gray-800/50"
+            "bg-no-repeat bg-cover bg-center-25 bg-gray-800/50",
           )}
         ></div>
       </div>

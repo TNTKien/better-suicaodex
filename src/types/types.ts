@@ -78,7 +78,7 @@ export interface Manga {
   altTitle: string | null;
   altTitles: string[];
   tags: Tag[];
-  cover: string;
+  cover: string | null;
   author: Author[];
   artist: Artist[];
   language: string[];

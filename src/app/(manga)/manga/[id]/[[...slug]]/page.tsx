@@ -39,7 +39,7 @@ export async function generateMetadata({
     return {
       title: `${manga.title} - SuicaoDex`,
       description,
-      keywords: [`Manga`, manga.title, "SuicaoDex", manga.altTitle || ""],
+      keywords: [`Manga`, manga.title, "SuicaoDex", manga.altTitle ?? ""],
       openGraph: {
         title: `${manga.title} - SuicaoDex`,
         url: path,
@@ -61,7 +61,7 @@ export async function generateMetadata({
         images: [`${siteConfig.mangadexAPI.ogURL}/manga/${manga.id}`],
       },
     };
-  } catch (error) {
+  } catch {
     return { title: "Suicaodex" };
   }
 }
@@ -72,25 +72,26 @@ export default async function Page({ params }: PageProps) {
     return <MangaNotFound />;
   }
 
+  let manga: Awaited<ReturnType<typeof getCachedMangaData>> | undefined;
   try {
-    const manga = await getCachedMangaData(id);
-    return (
-      <>
-        {!!manga && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(generateJsonLd(manga)),
-            }}
-          ></script>
-        )}
-        <MangaDetails id={id} initialData={manga}/>
-      </>
-    );
+    manga = await getCachedMangaData(id);
   } catch (error: any) {
     console.log("Error loading manga", error);
-    return <MangaDetails id={id} />
   }
+
+  return (
+    <>
+      {!!manga && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateJsonLd(manga)),
+          }}
+        ></script>
+      )}
+      <MangaDetails id={id} initialData={manga} />
+    </>
+  );
 }
 
 function generateJsonLd(

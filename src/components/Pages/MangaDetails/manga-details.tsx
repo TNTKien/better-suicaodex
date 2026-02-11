@@ -40,17 +40,15 @@ import {
   LibraryBig,
   List,
   MessageSquare,
-  Share2,
   Sprout,
   Square,
   SquareArrowOutUpRightIcon,
   SquareCheckBig,
 } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import useSWR from "swr";
 import MangaDetailsSkeleton from "./manga-details-skeleton";
-import { toast } from "sonner";
 import AddToLibraryBtn from "@/components/Manga/add-to-library-btn";
 import MangaCoversTab from "@/components/Manga/manga-covers-tab";
 import MangaSubInfo from "@/components/Manga/manga-subinfo";
@@ -85,18 +83,19 @@ export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
     data: manga,
     error,
     isLoading,
-  } = useSWR([`manga-${id}`, id], ([, id]) => fetchMangaDetail(id), {
+  } = useSWR(id, fetchMangaDetail, {
     fallbackData: initialData, // Use server data as initial value
     revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
     refreshInterval: 1000 * 60 * 10,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
+    keepPreviousData: true,
   });
 
   if (error?.status === 404) return <MangaNotFound />;
   if (error?.status === 503) return <MangaMaintain />;
 
-  if (isLoading || !manga) return <MangaDetailsSkeleton />;
+  if (!manga || error) return <MangaDetailsSkeleton />;
 
   return (
     <>
