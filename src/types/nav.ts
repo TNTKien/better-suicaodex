@@ -1,7 +1,5 @@
 import { Icons } from "@/components/icons";
 
-/* eslint-disable  @typescript-eslint/no-empty-object-type */
-
 export interface NavItem {
   title: string;
   href?: string;
@@ -15,6 +13,6 @@ export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[];
 }
 
-export interface MainNavItem extends NavItem {}
+export type MainNavItem = NavItem;
 
-export interface SidebarNavItem extends NavItemWithChildren {}
+export type SidebarNavItem = NavItemWithChildren;
