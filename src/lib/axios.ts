@@ -11,9 +11,12 @@
 
 // export default axiosInstance;
 
-// axios.ts
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import { setCurrentApiUrl, getCurrentImageProxyUrl, setCurrentImageProxyUrl } from "./utils";
+import {
+  setCurrentApiUrl,
+  getCurrentImageProxyUrl,
+  setCurrentImageProxyUrl,
+} from "./utils";
 
 const proxyGroup1 = [
   "https://api2.suicaodex.com",
@@ -55,7 +58,7 @@ const createAxiosInstance = (baseURL: string): AxiosInstance => {
 
 // Hàm fallback proxy
 export const axiosWithProxyFallback = async <T = any>(
-  config: AxiosRequestConfig
+  config: AxiosRequestConfig,
 ): Promise<T> => {
   let lastError;
 
@@ -75,19 +78,30 @@ export const axiosWithProxyFallback = async <T = any>(
       // Cập nhật proxy thành công
       lastSuccessfulProxyIndex = index;
       lastProxySuccessTime = Date.now();
-      console.info(`[API Success] Using: ${proxy} | Status: ${response.status}`);
+      console.info(
+        `[API Success] Using: ${proxy} | Status: ${response.status}`,
+      );
 
+      // TODO: fix any
+      // eslint-disable-next-line
       const responseData = response.data as any;
+      console.log("responseData: ", responseData);
+      // eslint-disable-next-line
       responseData.__proxy_url = proxy;
 
       // Set API URL
       setCurrentApiUrl(proxy);
 
+      // eslint-disable-next-line
       return responseData;
     } catch (error: any) {
-      const status = error.response?.status || "No Response";
+      // eslint-disable-next-line
+      const status = error.response?.status ?? "No Response";
+      // eslint-disable-next-line
       lastError = error;
-      console.warn(`[Failed] ${proxy} failed with status: ${status}, trying next...`);
+      console.warn(
+        `[Failed] ${proxy} failed with status: ${status}, trying next...`,
+      );
     }
   }
   console.log("All failed");
@@ -114,7 +128,7 @@ export const initImageProxy = async (): Promise<void> => {
 
       setCurrentImageProxyUrl(proxy);
       return;
-    } catch (error) {
+    } catch {
       console.warn(`[Image Init] ${proxy} failed, trying next...`);
     }
   }
@@ -131,4 +145,3 @@ export const refreshImageProxy = async (): Promise<string> => {
 
 // const data = await axiosWithProxyFallback({ url: "/author?name=abc", method: "get" });
 // axiosInstance.get() nếu muốn luôn dùng PR1
-

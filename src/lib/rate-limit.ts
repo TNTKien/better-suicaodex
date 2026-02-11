@@ -1,4 +1,4 @@
-import { LRUCache } from 'lru-cache';
+import { LRUCache } from "lru-cache";
 
 export class RateLimitError extends Error {
   statusCode = 429;
@@ -7,14 +7,14 @@ export class RateLimitError extends Error {
     super(message);
 
     this.statusCode = options?.statusCode ?? 429;
-    this.name = 'Limiter';
+    this.name = "Limiter";
   }
 }
 
-type Options = {
+interface Options {
   uniqueTokenPerInterval?: number;
   interval?: number;
-};
+}
 
 export const rateLimit = (options?: Options) => {
   const tokenCache = new LRUCache({
@@ -31,14 +31,14 @@ export const rateLimit = (options?: Options) => {
         const currentUsage = tokenCount;
         const isRateLimited = currentUsage > limit;
 
-        headers.set('X-RateLimit-Limit', `${limit}`);
+        headers.set("X-RateLimit-Limit", `${limit}`);
         headers.set(
-          'X-RateLimit-Remaining',
-          `${isRateLimited ? 0 : limit - currentUsage}`
+          "X-RateLimit-Remaining",
+          `${isRateLimited ? 0 : limit - currentUsage}`,
         );
 
         return isRateLimited
-          ? reject(new RateLimitError('Too many request'))
+          ? reject(new RateLimitError("Too many request"))
           : resolve();
       }),
   };

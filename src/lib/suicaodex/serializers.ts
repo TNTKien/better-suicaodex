@@ -16,7 +16,7 @@ export type CommentWithUser = MangaCommentWithUser | ChapterCommentWithUser;
 export function serializeComment(comment: CommentWithUser) {
   const baseComment = {
     id: comment.id,
-    title: comment.title || "", 
+    title: comment.title || "",
     content: comment.content,
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt,
@@ -26,18 +26,18 @@ export function serializeComment(comment: CommentWithUser) {
   };
 
   // Determine if it's a manga comment or chapter comment
-  if ('mangaId' in comment) {
+  if ("mangaId" in comment) {
     return {
       ...baseComment,
       mangaId: comment.mangaId,
-      type: 'manga' as const,
+      type: "manga" as const,
     };
-  } else if ('chapterId' in comment) {
+  } else if ("chapterId" in comment) {
     return {
       ...baseComment,
       chapterId: comment.chapterId,
       chapterNumber: comment.chapterNumber,
-      type: 'chapter' as const,
+      type: "chapter" as const,
     };
   }
 

@@ -1,13 +1,25 @@
+import z from "zod";
+
 export const CATAAS_BASE = "https://cataas.com";
 
-export interface Cat {
-  id: string;
-  tags: string[];
-  created_at: string;
-  url?: string;
-  mimetype: string;
-  createdAt?: string;
-}
+// export interface Cat {
+//   id: string;
+//   tags: string[];
+//   created_at: string;
+//   url?: string;
+//   mimetype: string;
+//   createdAt?: string;
+// }
+
+export const CatSchema = z.object({
+  id: z.string(),
+  tags: z.array(z.string()),
+  url: z.string().optional(),
+  mimetype: z.enum(["image/jpeg", "image/png"]),
+  createdAt: z.iso.datetime(),
+});
+
+export type Cat = z.infer<typeof CatSchema>;
 
 /**
  * Get a list of cats with pagination
@@ -15,18 +27,15 @@ export interface Cat {
  * @param limit - Number of cats to fetch (max 100)
  * @returns Array of cat objects
  */
-export async function getCatsList(
-  skip: number = 0,
-  limit: number = 10
-): Promise<Cat[]> {
+export async function getCatsList(skip = 0, limit = 10): Promise<Cat[]> {
   try {
     const response = await fetch(
-      `${CATAAS_BASE}/api/cats?skip=${skip}&limit=${limit}`
+      `${CATAAS_BASE}/api/cats?skip=${skip}&limit=${limit}`,
     );
     if (!response.ok) {
       throw new Error("Failed to fetch cats");
     }
-    const data = await response.json();
+    const data = (await response.json()) as Cat;
     return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error("Error fetching cats:", error);
@@ -48,12 +57,12 @@ export async function getRandomCat(options?: {
     params.append("json", "true");
     if (options?.width) params.append("width", options.width.toString());
     if (options?.height) params.append("height", options.height.toString());
-    
+
     const response = await fetch(`${CATAAS_BASE}/cat?${params.toString()}`);
     if (!response.ok) {
       throw new Error("Failed to fetch cat");
     }
-    const data = await response.json();
+    const data = (await response.json()) as Cat;
     return data;
   } catch (error) {
     console.error("Error fetching cat:", error);
@@ -71,8 +80,8 @@ export async function getCatCount(): Promise<number> {
     if (!response.ok) {
       throw new Error("Failed to fetch cat count");
     }
-    const data = await response.json();
-    return typeof data === "object" && data.count ? data.count : 0;
+    const data = (await response.json()) as { count: string };
+    return typeof data === "object" && data.count ? Number(data.count) : 0;
   } catch (error) {
     console.error("Error fetching cat count:", error);
     return 0;
@@ -90,14 +99,14 @@ export function getCatImageUrl(
   options?: {
     width?: number;
     height?: number;
-  }
+  },
 ): string {
-  let url = `${CATAAS_BASE}/cat/${catId}`;
-  
+  const url = `${CATAAS_BASE}/cat/${catId}`;
+
   const params = new URLSearchParams();
   if (options?.width) params.append("width", options.width.toString());
   if (options?.height) params.append("height", options.height.toString());
-  
+
   const queryString = params.toString();
   return queryString ? `${url}?${queryString}` : url;
 }
