@@ -39,21 +39,21 @@ const configSchema = z.object({
   // Auth
   AUTH_SECRET: z.string(),
 
-  AUTH_DISCORD_ID: z.string(),
-  AUTH_DISCORD_SECRET: z.string(),
+  AUTH_DISCORD_ID: z.string().default(""),
+  AUTH_DISCORD_SECRET: z.string().default(""),
 
-  AUTH_GOOGLE_ID: z.string(),
-  AUTH_GOOGLE_SECRET: z.string(),
+  AUTH_GOOGLE_ID: z.string().default(""),
+  AUTH_GOOGLE_SECRET: z.string().default(""),
 
-  AUTH_GITHUB_ID: z.string(),
-  AUTH_GITHUB_SECRET: z.string(),
+  AUTH_GITHUB_ID: z.string().default(""),
+  AUTH_GITHUB_SECRET: z.string().default(""),
 
-  AUTH_FACEBOOK_ID: z.string(),
-  AUTH_FACEBOOK_SECRET: z.string(),
+  AUTH_FACEBOOK_ID: z.string().default(""),
+  AUTH_FACEBOOK_SECRET: z.string().default(""),
 
   // --- Database ---
-  MONGO_URI: z.string(),
-  POSTGRE_DATABASE_URL: z.string(),
+  MONGO_URI: z.string().default(""),
+  POSTGRE_DATABASE_URL: z.string().default(""),
   MYSQL_DATABASE_URL: z
     .string()
     .default("mysql://root@localhost:3306/bettersuicao"),
@@ -61,12 +61,12 @@ const configSchema = z.object({
   MYSQL_DATABASE_PASSWORD: z.string().default(""),
   MYSQL_DATABASE_NAME: z.string().default("bettersuicao"),
   MYSQL_DATABASE_HOST: z.string().default("localhost"),
-  MYSQL_DATABASE_PORT: z.number().default(3306),
-  SHADOW_DATABASE_URL: z.string(),
+  MYSQL_DATABASE_PORT: z.coerce.number().default(3306),
+  SHADOW_DATABASE_URL: z.string().default(""),
 
-  NEXT_PUBLIC_BASE_URL: z.string(),
-  NEXT_PUBLIC_PROXY_URL: z.string(),
-  NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: z.string(),
+  NEXT_PUBLIC_BASE_URL: z.string().default(""),
+  NEXT_PUBLIC_PROXY_URL: z.string().default(""),
+  NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: z.string().default(""),
 });
 
 const configServer = configSchema.safeParse(process.env);
