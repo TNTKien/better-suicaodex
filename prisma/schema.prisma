@@ -1,13 +1,13 @@
+generator client {
+  provider = "prisma-client"
+  output     = "./generated"
+  engineType = "client"
+}
+
 datasource db {
   provider = "mysql"
-  url      = env("MYSQL_DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
- 
-generator client {
-  provider = "prisma-client-js"
-}
- 
+
 model User {
   id            String          @id @default(cuid())
   name          String?
@@ -27,7 +27,7 @@ model User {
 
   // Optional for WebAuthn support
   //Authenticator Authenticator[]
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -49,7 +49,7 @@ model MangaComment {
 
   @@index([userId])
   @@index([mangaId])
-} 
+}
 
 model ChapterComment {
   id        String   @id @default(cuid())
@@ -70,8 +70,6 @@ model ChapterComment {
   @@index([userId])
   @@index([chapterId])
 }
-
-
 
 model Library {
   id      String  @id @default(cuid())
@@ -111,8 +109,8 @@ model Chapter {
 
 model LibraryManga {
   id        String   @id @default(cuid()) // ID duy nhất cho bảng trung gian
-  libraryId String 
-  mangaId   String 
+  libraryId String
+  mangaId   String
   category  Category // Loại manga trong thư viện
 
   library   Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade)
@@ -151,10 +149,10 @@ model Account {
   session_state            String?
   refresh_token_expires_in Int?
   user                     User?   @relation(fields: [userId], references: [id])
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@unique([provider, providerAccountId])
   @@index([userId])
 }
@@ -165,30 +163,28 @@ enum Category {
   PLAN
   COMPLETED
 }
- 
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id])
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@index([userId])
 }
 
-
- 
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@unique([identifier, token])
 }
- 
+
 // Optional for WebAuthn support
 // model Authenticator {
 //   credentialID         String  @unique
@@ -199,11 +195,11 @@ model VerificationToken {
 //   credentialDeviceType String
 //   credentialBackedUp   Boolean
 //   transports           String?
- 
+
 //   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
 //   @@id([userId, credentialID])
 // }nDelete: Cascade)
- 
+
 //   @@id([userId, credentialID])
 // }

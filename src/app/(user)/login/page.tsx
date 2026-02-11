@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { LoginForm } from "@/components/login-form";
 import { WarpBackground } from "@/components/ui/warp-background";
 import { Metadata } from "next";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 
 export function generateMetadata(): Metadata {
@@ -11,14 +12,13 @@ export function generateMetadata(): Metadata {
 }
 
 interface pageProps {
-  searchParams: Promise<{
-    [key: string]: string | undefined;
-  }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }
 
 export default async function LoginPage({ searchParams }: pageProps) {
   const session = await auth();
   const { callback } = await getSearchParams({ searchParams });
+
   if (session) {
     redirect(callback);
   }
@@ -34,10 +34,13 @@ export default async function LoginPage({ searchParams }: pageProps) {
           </div>
         </div>
         <div className="bg-muted relative hidden lg:block">
-          <img
+          <Image
             src="/images/doro_think.webp"
             alt="Image"
             className="absolute inset-0 h-full w-full object-cover"
+            priority
+            width={500}
+            height={500}
           />
         </div>
       </div>
@@ -47,7 +50,7 @@ export default async function LoginPage({ searchParams }: pageProps) {
 
 const getSearchParams = async ({ searchParams }: pageProps) => {
   const params = await searchParams;
-  const callback = params["callback"] || "/";
+  const callback = params.callback ?? "/";
 
   return {
     callback,
