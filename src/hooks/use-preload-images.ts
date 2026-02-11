@@ -16,6 +16,8 @@ export function usePreloadImages({
   const [visibleImages, setVisibleImages] = useState<Set<number>>(new Set());
   // đọc state mới nhất mà không cần reset Observer
   const visibleImagesRef = useRef<Set<number>>(new Set());
+  // Map lưu vết các element đang được observe
+  const imageRefs = useRef<Map<number, HTMLElement>>(new Map());
 
   const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
     new Set(),
@@ -98,11 +100,8 @@ export function usePreloadImages({
   useEffect(() => {
     if (visibleImages.size === 0) return;
 
-    // tìm max thủ công nhanh hơn do không tạo ra một mảng khác
-    let maxVisibleIndex = -1;
-    for (const index of visibleImages) {
-      if (index > maxVisibleIndex) maxVisibleIndex = index;
-    }
+    // tìm index lớn nhất đang hiển thị
+    const maxVisibleIndex = Math.max(...visibleImages);
 
     const imagesToPreload: string[] = [];
     for (let i = 1; i <= preloadCount; i++) {
@@ -113,15 +112,29 @@ export function usePreloadImages({
     }
 
     imagesToPreload.forEach(preloadImage);
-  }, [visibleImages, images, preloadCount, preloadImage]);
+  }, [visibleImages, images, preloadCount]);
 
   const registerImageElement = useCallback(
     (index: number, element: HTMLElement | null) => {
-      if (!element || !observerRef.current) return;
+      const observer = observerRef.current;
+      if (!observer) return;
 
-      // Gán data attribute để Observer đọc lại được index
-      element.setAttribute("data-image-index", index.toString());
-      observerRef.current.observe(element);
+      if (element) {
+        // cleanup cái cũ
+        const prevEl = imageRefs.current.get(index);
+        if (prevEl) observer.unobserve(prevEl);
+
+        imageRefs.current.set(index, element);
+        element.setAttribute("data-image-index", index.toString());
+        observer.observe(element);
+      } else {
+        // React gọi với null thì lấy elements cũ ra xoá
+        const prevEl = imageRefs.current.get(index);
+        if (prevEl) {
+          observer.unobserve(prevEl);
+          imageRefs.current.delete(index);
+        }
+      }
     },
     [],
   );
