@@ -39,11 +39,11 @@ export function usePreloadImages({
     const img = new Image();
     img.src = src;
     img.onload = () => {
-      // Dùng functional update để tránh dependency
+      // Functional update; create a new Set to trigger re-render
       setPreloadedImages((prev) => {
-        const next = new Set(prev); // Tạo ra một Set mới tinh ở địa chỉ mới (0x456)
+        const next = new Set(prev);
         next.add(src);
-        return next; // Trả về 0x456 state mới -> re-render
+        return next;
       });
     };
 
