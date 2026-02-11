@@ -1,13 +1,14 @@
 import { PrismaClient } from "../../prisma/generated";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import envConfig, { ENVIRONMENT_MODES } from "./env";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 const adapter = new PrismaMariaDb({
-  host: process.env.MYSQL_DATABASE_HOST,
-  user: process.env.MYSQL_DATABASE_USER,
-  password: process.env.MYSQL_DATABASE_PASSWORD,
-  database: process.env.MYSQL_DATABASE_NAME,
+  host: envConfig.MYSQL_DATABASE_HOST,
+  user: envConfig.MYSQL_DATABASE_USER,
+  password: envConfig.MYSQL_DATABASE_PASSWORD,
+  database: envConfig.MYSQL_DATABASE_NAME,
   connectionLimit: 5,
   ssl: {
     rejectUnauthorized: true,
@@ -16,4 +17,5 @@ const adapter = new PrismaMariaDb({
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (envConfig.NODE_ENV === ENVIRONMENT_MODES.DEVELOPMENT)
+  globalForPrisma.prisma = prisma;
