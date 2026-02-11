@@ -9,6 +9,9 @@ const adapter = new PrismaMariaDb({
   password: process.env.MYSQL_DATABASE_PASSWORD,
   database: process.env.MYSQL_DATABASE_NAME,
   connectionLimit: 5,
+  ssl: {
+    rejectUnauthorized: true,
+  },
 });
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });

@@ -9,7 +9,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: env("MYSQL_DATABASE_URL"),
+    url: `mysql://${env("MYSQL_DATABASE_USER")}:${env("MYSQL_DATABASE_PASSWORD")}@${env("MYSQL_DATABASE_HOST")}:${env("MYSQL_DATABASE_PORT")}/${env("MYSQL_DATABASE_NAME")}?sslaccept=strict`,
     // shadowDatabaseUrl: env("SHADOW_DATABASE_URL"),
   },
 });
