@@ -12,8 +12,8 @@ async function checkAuth(userID: string): Promise<boolean> {
 
 export async function getMangaCategory(
   userId: string,
-  mangaId: string
-): Promise<string | "NONE"> {
+  mangaId: string,
+): Promise<string> {
   try {
     // Kiểm tra xác thực
     if (!(await checkAuth(userId))) return "NONE";
@@ -27,7 +27,7 @@ export async function getMangaCategory(
       select: { category: true },
     });
 
-    return result?.category || "NONE";
+    return result?.category ?? "NONE";
   } catch (error) {
     console.error("Error fetching manga category:", error);
     throw new Error("Failed to fetch manga category.");
@@ -38,7 +38,7 @@ export async function updateMangaCategory(
   userId: string,
   mangaId: string,
   category: Category | "NONE",
-  latestChapterId: string
+  latestChapterId: string,
 ): Promise<{ message: string; status: number }> {
   try {
     // Kiểm tra xác thực
@@ -127,13 +127,14 @@ export async function getUserLibrary(userId: string): Promise<{
 
     // Sử dụng reduce để phân loại Manga
     const result = libraryMangas.reduce(
-      (acc: { [key in Category]: string[] }, { mangaId, category }) => {
+      (acc: Record<Category, string[]>, { mangaId, category }) => {
         acc[category].push(mangaId);
         return acc;
       },
-      { FOLLOWING: [], READING: [], PLAN: [], COMPLETED: [] } as {
-        [key in Category]: string[];
-      }
+      { FOLLOWING: [], READING: [], PLAN: [], COMPLETED: [] } as Record<
+        Category,
+        string[]
+      >,
     );
 
     return result;
