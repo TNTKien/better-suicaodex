@@ -19,7 +19,7 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
         <Button
           className="bg-[#5865F2] text-white hover:bg-[#5865F2]/80"
           onClick={() =>
-            signIn("discord", {
+            void signIn("discord", {
               redirectTo: callback,
             })
           }
@@ -30,7 +30,7 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
         <Button
           className="text-white bg-stone-800  hover:bg-stone-800/80"
           onClick={() =>
-            signIn("google", {
+            void signIn("google", {
               redirectTo: callback,
             })
           }
@@ -41,7 +41,7 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
         <Button
           className="bg-slate-700  text-white hover:bg-slate-700/80"
           onClick={() =>
-            signIn("github", {
+            void signIn("github", {
               redirectTo: callback,
             })
           }
