@@ -1,9 +1,8 @@
 "use server";
 
-import type { Category } from "@prisma/client";
-
 import { auth } from "@/auth";
 import { prisma } from "../prisma";
+import { Category } from "../../../prisma/generated/enums";
 
 async function checkAuth(userID: string): Promise<boolean> {
   const session = await auth();
@@ -12,8 +11,8 @@ async function checkAuth(userID: string): Promise<boolean> {
 
 export async function getMangaCategory(
   userId: string,
-  mangaId: string
-): Promise<string | "NONE"> {
+  mangaId: string,
+): Promise<string> {
   try {
     // Kiểm tra xác thực
     if (!(await checkAuth(userId))) return "NONE";
@@ -27,7 +26,7 @@ export async function getMangaCategory(
       select: { category: true },
     });
 
-    return result?.category || "NONE";
+    return result?.category ?? "NONE";
   } catch (error) {
     console.error("Error fetching manga category:", error);
     throw new Error("Failed to fetch manga category.");
@@ -38,7 +37,7 @@ export async function updateMangaCategory(
   userId: string,
   mangaId: string,
   category: Category | "NONE",
-  latestChapterId: string
+  latestChapterId: string,
 ): Promise<{ message: string; status: number }> {
   try {
     // Kiểm tra xác thực
@@ -103,11 +102,20 @@ export async function getUserLibrary(userId: string): Promise<{
   READING: string[];
   PLAN: string[];
   COMPLETED: string[];
+  DROPPED: string[];
+  RE_READING: string[];
 }> {
   try {
     // Kiểm tra xác thực
     if (!(await checkAuth(userId))) {
-      return { FOLLOWING: [], READING: [], PLAN: [], COMPLETED: [] };
+      return {
+        FOLLOWING: [],
+        READING: [],
+        PLAN: [],
+        COMPLETED: [],
+        DROPPED: [],
+        RE_READING: [],
+      };
     }
 
     // Tìm ID thư viện của người dùng
@@ -117,7 +125,14 @@ export async function getUserLibrary(userId: string): Promise<{
     });
 
     if (!library)
-      return { FOLLOWING: [], READING: [], PLAN: [], COMPLETED: [] };
+      return {
+        FOLLOWING: [],
+        READING: [],
+        PLAN: [],
+        COMPLETED: [],
+        DROPPED: [],
+        RE_READING: [],
+      };
 
     // Lấy tất cả Manga trong thư viện và phân loại
     const libraryMangas = await prisma.libraryManga.findMany({
@@ -127,13 +142,18 @@ export async function getUserLibrary(userId: string): Promise<{
 
     // Sử dụng reduce để phân loại Manga
     const result = libraryMangas.reduce(
-      (acc: { [key in Category]: string[] }, { mangaId, category }) => {
+      (acc: Record<Category, string[]>, { mangaId, category }) => {
         acc[category].push(mangaId);
         return acc;
       },
-      { FOLLOWING: [], READING: [], PLAN: [], COMPLETED: [] } as {
-        [key in Category]: string[];
-      }
+      {
+        FOLLOWING: [],
+        READING: [],
+        PLAN: [],
+        COMPLETED: [],
+        DROPPED: [],
+        RE_READING: [],
+      } as Record<Category, string[]>,
     );
 
     return result;
