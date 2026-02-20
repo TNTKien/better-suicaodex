@@ -1,12 +1,9 @@
 import { Chapter } from "@/types/types";
 import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
   HomeIcon,
   MessageSquareTextIcon,
   NotebookTextIcon,
   PanelRightClose,
-  SettingsIcon,
   SwatchBookIcon,
   UsersIcon,
   UserXIcon,
@@ -39,7 +36,6 @@ import { ChapterTitle } from "@/components/Chapter/ChapterReader/chapter-info";
 import CommentList from "@/components/Comment/comment-list";
 import CommentFormSimple from "@/components/Comment/comment-form-simple";
 import { useRef } from "react";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
 import ChapterNav from "./chapter-nav";
 
