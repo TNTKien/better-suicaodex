@@ -7,11 +7,18 @@ export default function ReaderLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SidebarProvider defaultOpen>
-      <AppSidebar side="left" />
-      <div className="border-grid flex flex-1 flex-col">
-        <main className="flex-1">{children}</main>
-      </div>
+    <SidebarProvider
+      defaultOpen
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 100)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      {/* <div className="border-grid flex flex-1 flex-col">{children}</div>
+      <AppSidebar side="right" /> */}
+      {children}
     </SidebarProvider>
   );
 }
