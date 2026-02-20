@@ -44,6 +44,15 @@ const CommentList = ({
     mutate,
   }));
 
+  if (error)
+    return (
+      <Alert className="rounded-sm bg-secondary">
+        <AlertDescription className="flex justify-center">
+          Lỗi mất rồi 😭
+        </AlertDescription>
+      </Alert>
+    );
+
   if (isLoading || !data)
     return (
       <div className="space-y-4 px-1">
@@ -74,15 +83,6 @@ const CommentList = ({
         </AlertTitle>
         <AlertDescription className="flex justify-center text-center">
           Hãy bóc tem em nó ngay thôi! 😍
-        </AlertDescription>
-      </Alert>
-    );
-
-  if (error)
-    return (
-      <Alert className="rounded-sm bg-secondary">
-        <AlertDescription className="flex justify-center">
-          Lỗi mất rồi 😭
         </AlertDescription>
       </Alert>
     );
