@@ -74,7 +74,7 @@ export default function CommentFeedItem({
     <Card className="rounded-sm p-3 h-full bg-transparent shadow-none border-none">
       <NoPrefetchLink
         href={commentLink}
-        className="font-bold line-clamp-1 break-all border-b pb-2 block hover:text-primary"
+        className="font-bold line-clamp-1 wrap-break-word border-b pb-2 block hover:text-primary"
       >
         {!!comment.chapterNumber && <span>{comment.chapterNumber} - </span>}
         <span>{comment.title}</span>

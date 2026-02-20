@@ -1,9 +1,8 @@
 "use server";
 
-import type { Category } from "@prisma/client";
-
 import { auth } from "@/auth";
 import { prisma } from "../prisma";
+import { Category } from "../../../prisma/generated/enums";
 
 async function checkAuth(userID: string): Promise<boolean> {
   const session = await auth();
@@ -103,11 +102,20 @@ export async function getUserLibrary(userId: string): Promise<{
   READING: string[];
   PLAN: string[];
   COMPLETED: string[];
+  DROPPED: string[];
+  RE_READING: string[];
 }> {
   try {
     // Kiểm tra xác thực
     if (!(await checkAuth(userId))) {
-      return { FOLLOWING: [], READING: [], PLAN: [], COMPLETED: [] };
+      return {
+        FOLLOWING: [],
+        READING: [],
+        PLAN: [],
+        COMPLETED: [],
+        DROPPED: [],
+        RE_READING: [],
+      };
     }
 
     // Tìm ID thư viện của người dùng
@@ -117,7 +125,14 @@ export async function getUserLibrary(userId: string): Promise<{
     });
 
     if (!library)
-      return { FOLLOWING: [], READING: [], PLAN: [], COMPLETED: [] };
+      return {
+        FOLLOWING: [],
+        READING: [],
+        PLAN: [],
+        COMPLETED: [],
+        DROPPED: [],
+        RE_READING: [],
+      };
 
     // Lấy tất cả Manga trong thư viện và phân loại
     const libraryMangas = await prisma.libraryManga.findMany({
@@ -131,10 +146,14 @@ export async function getUserLibrary(userId: string): Promise<{
         acc[category].push(mangaId);
         return acc;
       },
-      { FOLLOWING: [], READING: [], PLAN: [], COMPLETED: [] } as Record<
-        Category,
-        string[]
-      >,
+      {
+        FOLLOWING: [],
+        READING: [],
+        PLAN: [],
+        COMPLETED: [],
+        DROPPED: [],
+        RE_READING: [],
+      } as Record<Category, string[]>,
     );
 
     return result;
