@@ -51,17 +51,9 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     }
   }, [addHistory, data, id]);
 
-  useEffect(() => {
-    if (pathName.includes("/chapter/") && config.reader.type === "single") {
-      document.body.classList.add("page-no-padding");
-      return () => document.body.classList.remove("page-no-padding");
-    }
-  }, [config.reader.type]);
-
   if (error) {
     if (error.status === 404) return <ChapterNotFound />;
     if (error.status === 503) return <MangaMaintain />;
-    // console.log(error)
     return <div>Lỗi mất rồi 😭</div>;
   }
 
