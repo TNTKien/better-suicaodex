@@ -32,9 +32,13 @@ import {
   SidebarProvider,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
-import { cn, generateSlug } from "@/lib/utils";
+import { cn, formatChapterTitle, generateSlug } from "@/lib/utils";
 import { ChapterTitle } from "@/components/Chapter/ChapterReader/chapter-info";
 import CommentList from "@/components/Comment/comment-list";
 import CommentFormSimple from "@/components/Comment/comment-form-simple";
@@ -45,28 +49,20 @@ interface ReaderSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
-    const {
-    state,
-    open,
-    setOpen,
-    openMobile,
-    setOpenMobile,
-    isMobile,
-    toggleSidebar,
-  } = useSidebar();
+  const { state, isMobile, toggleSidebar } = useSidebar();
 
   const commentListRef = useRef<{ mutate: () => void } | null>(null);
-    const handleCommentPosted = () => {
-      if (commentListRef.current) {
-        commentListRef.current.mutate();
-      }
-    };
+  const handleCommentPosted = () => {
+    if (commentListRef.current) {
+      commentListRef.current.mutate();
+    }
+  };
 
   return (
     <Sidebar
-      className="mt-12 h-[calc(100vh-var(--header-height))]"
-      variant="inset"
+    //   variant="inset"
       collapsible="icon"
+      {...props}
     >
       <SidebarHeader>
         <SidebarMenu>
@@ -98,7 +94,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
           </Collapsible>
 
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip={ChapterTitle(chapter)}>
+            <SidebarMenuButton tooltip={ChapterTitle(chapter)} className="">
               <SwatchBookIcon />
               <span>{ChapterTitle(chapter)}</span>
             </SidebarMenuButton>
