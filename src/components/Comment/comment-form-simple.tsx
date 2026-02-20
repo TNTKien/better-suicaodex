@@ -140,7 +140,7 @@ export default function CommentFormSimple({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading} className="float-end">
           {!!loading ? <Loader2 className="animate-spin" /> : <Send />}
           Gửi bình luận
         </Button>

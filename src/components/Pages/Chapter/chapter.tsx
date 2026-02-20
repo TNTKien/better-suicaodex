@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
 import { usePathname } from "next/navigation";
 import { type Chapter } from "@/types/types";
+import { ReaderSidebar } from "@/app/(reader)/reader-sidebar";
 
 interface ChapterProps {
   id: string;
@@ -74,10 +75,16 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     );
 
   return (
-    <div className={cn()}>
-      <ChapterInfo chapter={data} />
+    // <div className={cn()}>
+    //   <ChapterInfo chapter={data} />
 
-      {!!data.pages && <Reader images={data.pages} chapterData={data} />}
-    </div>
+    //   {!!data.pages && <Reader images={data.pages} chapterData={data} />}
+    // </div>
+    <>
+      <div className="border-grid flex flex-1 flex-col">
+        {!!data.pages && <Reader images={data.pages} chapterData={data} />}
+      </div>
+      <ReaderSidebar chapter={data} side="right"/>
+    </>
   );
 }
