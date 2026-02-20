@@ -1,16 +1,14 @@
 import { Chapter } from "@/types/types";
 import {
-  Calendar,
-  Home,
-  Inbox,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  HomeIcon,
   MessageSquareTextIcon,
-  MoreHorizontal,
   NotebookTextIcon,
   PanelRightClose,
-  Search,
-  Settings,
+  SettingsIcon,
   SwatchBookIcon,
-  UserIcon,
+  UsersIcon,
   UserXIcon,
 } from "lucide-react";
 
@@ -20,10 +18,8 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -43,6 +39,9 @@ import { ChapterTitle } from "@/components/Chapter/ChapterReader/chapter-info";
 import CommentList from "@/components/Comment/comment-list";
 import CommentFormSimple from "@/components/Comment/comment-form-simple";
 import { useRef } from "react";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { Button } from "@/components/ui/button";
+import ChapterNav from "./chapter-nav";
 
 interface ReaderSidebarProps extends React.ComponentProps<typeof Sidebar> {
   chapter: Chapter;
@@ -60,12 +59,31 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
 
   return (
     <Sidebar
-    //   className="md:w-[calc(var(--spacing)*80)]! lg:w-[calc(var(--spacing)*100)]!"
+      //   className="md:w-[calc(var(--spacing)*80)]! lg:w-[calc(var(--spacing)*100)]!"
       collapsible="icon"
       {...props}
     >
       <SidebarHeader>
         <SidebarMenu>
+          <SidebarMenuItem className="flex gap-2">
+            <Button
+              onClick={toggleSidebar}
+              className="size-8"
+              size="icon"
+              variant="ghost"
+            >
+              <PanelRightClose />
+            </Button>
+
+            <Button className={cn("size-8", state === "expanded" && "-ml-2")} size="icon" variant="outline" asChild>
+              <NoPrefetchLink href="/">
+                <HomeIcon />
+              </NoPrefetchLink>
+            </Button>
+
+            <ChapterNav chapter={chapter} />
+          </SidebarMenuItem>
+
           <Collapsible asChild defaultOpen className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
@@ -114,7 +132,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
                     </>
                   ) : (
                     <>
-                      <UserIcon />
+                      <UsersIcon />
                       <span>Nhóm dịch</span>
                     </>
                   )}
@@ -142,15 +160,6 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
               )}
             </SidebarMenuItem>
           </Collapsible>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={toggleSidebar}>
-              <PanelRightClose />
-            </SidebarMenuButton>
-            <SidebarMenuAction>
-              <MoreHorizontal />
-            </SidebarMenuAction>
-          </SidebarMenuItem>
 
           <SidebarMenuButton tooltip="Bình luận">
             <MessageSquareTextIcon />
