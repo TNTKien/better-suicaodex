@@ -41,6 +41,7 @@ export default async function LoginPage({ searchParams }: pageProps) {
             priority
             width={500}
             height={500}
+            unoptimized
           />
         </div>
       </div>
