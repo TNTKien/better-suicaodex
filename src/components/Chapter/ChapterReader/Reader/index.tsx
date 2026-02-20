@@ -46,14 +46,14 @@ interface ReaderProps {
 
 export default function Reader({ images, chapterData }: ReaderProps) {
   const [config] = useConfig();
-  
+
   const [retryCount, setRetryCount] = useState(0);
   const [reachedMaxRetries, setReachedMaxRetries] = useState(false);
   const MAX_RETRIES = 3;
 
   const { data, isMutating, error, trigger } = useSWRMutation(
     [
-      "aggregate",
+      "chapter-aggregate",
       chapterData.manga.id,
       [chapterData.language],
       chapterData.group.map((group) => group.id),

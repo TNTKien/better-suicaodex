@@ -195,23 +195,23 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
     ? chapterAggregate[currentVolIndex].chapters[currentChapterIndex - 1]?.id
     : chapterAggregate[currentVolIndex - 1]?.chapters.at(-1)?.id;
 
-  const goNextChapter = () => {
-    if (nextChapter) {
-      const toastId = toast.loading("Đang chuyển chương...");
-      setTimeout(() => toast.dismiss(toastId), 1000);
-      return router.push(`/chapter/${nextChapter}`);
-    }
-    return toast.warning("Đây là chương mới nhất rồi nha!");
-  };
+//   const goNextChapter = () => {
+//     if (nextChapter) {
+//       const toastId = toast.loading("Đang chuyển chương...");
+//       setTimeout(() => toast.dismiss(toastId), 1000);
+//       return router.push(`/chapter/${nextChapter}`);
+//     }
+//     return toast.warning("Đây là chương mới nhất rồi nha!");
+//   };
 
-  const goPrevChapter = () => {
-    if (prevChapter) {
-      const toastId = toast.loading("Đang chuyển chương...");
-      setTimeout(() => toast.dismiss(toastId), 1000);
-      return router.push(`/chapter/${prevChapter}`);
-    }
-    return toast.warning("Đây là chương đầu tiên mà!");
-  };
+//   const goPrevChapter = () => {
+//     if (prevChapter) {
+//       const toastId = toast.loading("Đang chuyển chương...");
+//       setTimeout(() => toast.dismiss(toastId), 1000);
+//       return router.push(`/chapter/${prevChapter}`);
+//     }
+//     return toast.warning("Đây là chương đầu tiên mà!");
+//   };
 
   //   useKeyDown("ArrowLeft", goPrevChapter);
   //   useKeyDown("ArrowRight", goNextChapter);
