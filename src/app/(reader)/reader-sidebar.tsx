@@ -29,6 +29,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar-2-reader";
 import {
@@ -59,7 +60,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
 
   return (
     <Sidebar
-      className="md:w-[calc(var(--spacing)*80)]! lg:w-[calc(var(--spacing)*100)]!"
+    //   className="md:w-[calc(var(--spacing)*80)]! lg:w-[calc(var(--spacing)*100)]!"
       collapsible="icon"
       {...props}
     >
@@ -161,7 +162,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
       <SidebarContent
         className={cn(state === "collapsed" && !isMobile && "hidden")}
       >
-        <SidebarGroup>
+        <SidebarGroup className="py-0">
           <SidebarGroupContent>
             <CommentList id={chapter.id} type="chapter" ref={commentListRef} />
           </SidebarGroupContent>
@@ -179,6 +180,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
           chapterNumber={formatChapterTitle(chapter, false)}
         />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }
