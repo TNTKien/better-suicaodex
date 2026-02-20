@@ -42,7 +42,7 @@ import {
 import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
 import { toast } from "sonner";
-import useSWRMutation from "swr/mutation";
+import useSWR from "swr";
 
 interface ChapterNavProps {
   chapter: Chapter;
@@ -237,18 +237,20 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
 
   const {
     data: chapterAggregate,
-    isMutating,
+    isLoading,
+    isValidating,
     error,
-    trigger,
-  } = useSWRMutation(
+    mutate,
+  } = useSWR(
     [
-      "aggregate",
+      `chapter-aggregate-${chapter.id}`,
       chapter.manga.id,
-      [chapter.language],
+      chapter.language,
       chapter.group.map((group) => group.id),
     ],
     ([, mangaId, language, groups]) =>
-      getChapterAggregate(mangaId, language, groups),
+      getChapterAggregate(mangaId, [language], groups),
+    { revalidateOnFocus: false },
   );
 
   // Check if current chapter exists in the aggregate data
@@ -259,10 +261,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
   );
 
   useEffect(() => {
-    if (!chapterAggregate) {
-      trigger();
-      return;
-    }
+    if (isLoading || isValidating || !chapterAggregate) return;
 
     if (!chapterExists && retryCount < MAX_RETRIES) {
       console.log(
@@ -272,7 +271,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
       const delay = Math.min(1000 * Math.pow(2, retryCount), 10000);
       const timer = setTimeout(() => {
         setRetryCount((prev) => prev + 1);
-        trigger();
+        mutate();
       }, delay);
 
       return () => clearTimeout(timer);
@@ -282,7 +281,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
       setReachedMaxRetries(true);
       console.log("Max retries reached. Stopping automatic retries.");
     }
-  }, [chapterAggregate, chapterExists, retryCount, trigger]);
+  }, [chapterAggregate, chapterExists, isLoading, isValidating, retryCount, mutate]);
 
   // Reset retry state when chapter changes
   useEffect(() => {
@@ -293,11 +292,12 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
   const handleManualRetry = () => {
     setRetryCount(0);
     setReachedMaxRetries(false);
-    trigger();
+    mutate();
   };
 
   if (
-    isMutating ||
+    isLoading ||
+    isValidating ||
     (chapterAggregate && !chapterExists && !reachedMaxRetries)
   ) {
     return (
@@ -329,18 +329,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
     );
   }
 
-  if (!chapterAggregate)
-    return (
-      <LoadingNav>
-        <Button
-          className="h-8 flex-1 justify-start whitespace-normal! break-all! shrink!"
-          variant="outline"
-        >
-          <Spinner />
-          Đang tải dữ liệu...
-        </Button>
-      </LoadingNav>
-    );
+  if (!chapterAggregate) return null;
 
   let currentVolIndex = chapterAggregate.findIndex((aggregate) =>
     aggregate.chapters.some((ch) => ch.id === chapter.id),
