@@ -20,6 +20,8 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
 
 ## Dự kiến
+⬛ Chuyển sang Weebdex API
+
 ⬛ Làm lại reader
 
 ⬛ Fix layout trang chủ
