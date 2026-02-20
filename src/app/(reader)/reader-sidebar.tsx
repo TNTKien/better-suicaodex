@@ -29,9 +29,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarProvider,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/sidebar-2-reader";
 import {
   Collapsible,
   CollapsibleContent,
@@ -60,7 +59,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
 
   return (
     <Sidebar
-    //   variant="inset"
+      className="md:w-[calc(var(--spacing)*80)]! lg:w-[calc(var(--spacing)*100)]!"
       collapsible="icon"
       {...props}
     >

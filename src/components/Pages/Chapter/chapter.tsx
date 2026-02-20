@@ -75,11 +75,6 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     );
 
   return (
-    // <div className={cn()}>
-    //   <ChapterInfo chapter={data} />
-
-    //   {!!data.pages && <Reader images={data.pages} chapterData={data} />}
-    // </div>
     <>
       <div className="border-grid flex flex-1 flex-col">
         {!!data.pages && <Reader images={data.pages} chapterData={data} />}

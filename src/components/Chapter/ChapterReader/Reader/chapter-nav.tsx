@@ -117,7 +117,7 @@ export default function ChapterNav({
 
   return (
     <>
-      {config.reader.type === "long-strip" && (
+      {/* {config.reader.type === "long-strip" && (
         <div className="grid grid-cols-1 gap-2 mt-4 mx-auto">
           {!!nextChapter && (
             <Button asChild size="lg" className="[&>svg]:size-5!">
@@ -135,16 +135,8 @@ export default function ChapterNav({
               </Link>
             </Button>
           )}
-
-          {/* {!prevChapter && !nextChapter && (
-          <Button asChild size="lg" className="[&>svg]:size-5!">
-            <Link href="/">
-              <span>Trở về trang chủ</span>
-            </Link>
-          </Button>
-        )} */}
         </div>
-      )}
+      )} */}
 
       <Card
         className={cn(

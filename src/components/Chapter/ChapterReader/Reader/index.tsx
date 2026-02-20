@@ -175,7 +175,7 @@ export default function Reader({ images, chapterData }: ReaderProps) {
         <LongStrip images={images} />
       )}
       <ChapterNav chapterData={chapterData} chapterAggregate={data} />
-      {config.reader.type === "long-strip" && (
+      {/* {config.reader.type === "long-strip" && (
         <LazyLoadComponent>
           <CommentSection
             id={chapterData.id}
@@ -184,7 +184,7 @@ export default function Reader({ images, chapterData }: ReaderProps) {
             chapterNumber={chapterNumber}
           />
         </LazyLoadComponent>
-      )}
+      )} */}
     </>
   );
 }
