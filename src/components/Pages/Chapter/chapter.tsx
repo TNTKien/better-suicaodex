@@ -14,6 +14,7 @@ import { useConfig } from "@/hooks/use-config";
 import { usePathname } from "next/navigation";
 import { type Chapter } from "@/types/types";
 import { ReaderSidebar } from "@/app/(reader)/reader-sidebar";
+import { ReaderHeader } from "@/app/(reader)/reader-header";
 
 interface ChapterProps {
   id: string;
@@ -69,6 +70,7 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
   return (
     <>
       <div className="border-grid flex flex-1 flex-col">
+        <ReaderHeader />
         {!!data.pages && <Reader images={data.pages} chapterData={data} />}
       </div>
       <ReaderSidebar chapter={data} side="right"/>
