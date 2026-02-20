@@ -93,7 +93,7 @@ const CommentList = ({
   };
 
   return (
-    <div className="space-y-4 mt-4">
+    <div className="space-y-4">
       <div className="space-y-4 px-1">
         {data.comments.map((comment: any) => (
           <Card

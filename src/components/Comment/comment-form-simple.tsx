@@ -18,6 +18,8 @@ import { useState } from "react";
 import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { StickerPicker } from "./sticker-picker";
+import { ButtonGroup } from "../ui/button-group";
+import { Spinner } from "../ui/spinner";
 
 const FormSchema = z.object({
   comment: z
@@ -126,13 +128,29 @@ export default function CommentFormSimple({
                 <div className="relative">
                   <Textarea
                     placeholder="Viết bình luận...(hỗ trợ markdown)"
-                    className="bg-sidebar rounded-sm resize-none min-h-[100px]"
+                    className="bg-sidebar rounded-sm resize-none min-h-[115px]"
                     maxLength={2000}
                     disabled={loading}
                     {...field}
                   />
                   <div className="absolute bottom-2 right-2">
-                    <StickerPicker onSelectSticker={insertSticker} />
+                    <ButtonGroup>
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className="text-xs"
+                        size="sm"
+                        variant="outline"
+                      >
+                        {!!loading ? (
+                          <Spinner />
+                        ) : (
+                          <Send />
+                        )}
+                        Gửi bình luận
+                      </Button>
+                      <StickerPicker onSelectSticker={insertSticker} />
+                    </ButtonGroup>
                   </div>
                 </div>
               </FormControl>
@@ -140,10 +158,15 @@ export default function CommentFormSimple({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={loading} className="float-end">
+        {/* <Button
+          type="submit"
+          disabled={loading}
+          className="float-end text-xs"
+          size="sm"
+        >
           {!!loading ? <Loader2 className="animate-spin" /> : <Send />}
           Gửi bình luận
-        </Button>
+        </Button> */}
       </form>
     </Form>
   );

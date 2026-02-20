@@ -8,8 +8,14 @@ export default function ReaderLayout({
   return (
     <SidebarProvider
       defaultOpen
-      className=""
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 95)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
     >
+
       {children}
     </SidebarProvider>
   );
