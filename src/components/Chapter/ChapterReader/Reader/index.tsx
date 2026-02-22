@@ -8,15 +8,8 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronsUp,
-  File,
-  GalleryVertical,
   Loader2,
-  MoveHorizontal,
-  MoveVertical,
-  PanelTop,
-  Repeat,
-  Settings,
-  Square,
+  PanelRightClose,
 } from "lucide-react";
 import { ReactElement, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,19 +18,9 @@ import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 import { useConfig } from "@/hooks/use-config";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
 import useSWRMutation from "swr/mutation";
 import SinglePage from "./single-page";
+import { useSidebar } from "@/components/ui/sidebar-2-reader";
 
 interface ReaderProps {
   images: string[];
@@ -59,7 +42,7 @@ export default function Reader({ images, chapterData }: ReaderProps) {
       chapterData.group.map((group) => group.id),
     ],
     ([, mangaId, language, groups]) =>
-      getChapterAggregate(mangaId, language, groups)
+      getChapterAggregate(mangaId, language, groups),
   );
 
   // Check if current chapter exists in the aggregate data
@@ -67,8 +50,8 @@ export default function Reader({ images, chapterData }: ReaderProps) {
     volume.chapters.some(
       (chapter) =>
         chapter.id === chapterData.id ||
-        chapter.other?.some((id) => id === chapterData.id)
-    )
+        chapter.other?.some((id) => id === chapterData.id),
+    ),
   );
 
   // Retry with exponential backoff
@@ -83,7 +66,7 @@ export default function Reader({ images, chapterData }: ReaderProps) {
       console.log(
         `Chapter not found in aggregate data, retry ${
           retryCount + 1
-        }/${MAX_RETRIES}...`
+        }/${MAX_RETRIES}...`,
       );
 
       // Calculate delay with exponential backoff
@@ -181,7 +164,7 @@ interface LoadingNavProps {
 function LoadingNav({ button }: LoadingNavProps) {
   const scrollDirection = useScrollDirection();
   const { isAtBottom, isAtTop } = useScrollOffset();
-  const [config, setConfig] = useConfig();
+  const { state, isMobile, toggleSidebar } = useSidebar();
   return (
     <Card
       className={cn(
@@ -189,10 +172,13 @@ function LoadingNav({ button }: LoadingNavProps) {
         `fixed bottom-0 left-1/2 transform -translate-x-1/2 md:-translate-x-[calc(50%+var(--sidebar-width-icon)/2)] z-10 transition-all duration-300`,
         "mx-auto flex w-full translate-y-0 items-center justify-center rounded-none bg-background border-none",
         "md:rounded-lg md:w-auto md:-translate-y-2",
+        !isMobile &&
+            state === "expanded" &&
+            "md:-translate-x-[calc(50%+var(--sidebar-width)/2)] translate-y-full md:translate-y-full",
         isAtBottom && "translate-y-full md:translate-y-full",
         scrollDirection === "down" &&
           !isAtBottom &&
-          "translate-y-full md:translate-y-full"
+          "translate-y-full md:translate-y-full",
       )}
     >
       <CardContent className="flex gap-2 p-2 md:gap-1.5 md:p-1.5 w-full">
@@ -214,202 +200,13 @@ function LoadingNav({ button }: LoadingNavProps) {
           <ArrowRight />
         </Button>
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button size="icon" className="shrink-0 [&_svg]:size-5">
-              <Settings />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="border-none [&>button]:hidden">
-            <DialogHeader className="hidden">
-              <DialogTitle>Reader Settings</DialogTitle>
-              <DialogDescription>Tuỳ chỉnh linh tinh</DialogDescription>
-            </DialogHeader>
-
-            <div className="grid grid-cols-1 gap-2 transition-all duration-300">
-              <div className="space-y-1.5">
-                <Label className="font-semibold">Kiểu đọc</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      config.reader.type === "single" &&
-                        "border-2 border-primary!"
-                    )}
-                    onClick={() => {
-                      setConfig({
-                        ...config,
-                        reader: {
-                          ...config.reader,
-                          type: "single",
-                        },
-                      });
-
-                      return toast.info("Chức năng đang phát triển!");
-                    }}
-                  >
-                    <File />
-                    <span>Từng trang</span>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      config.reader.type === "long-strip" &&
-                        "border-2 border-primary!"
-                    )}
-                    onClick={() =>
-                      setConfig({
-                        ...config,
-                        reader: {
-                          ...config.reader,
-                          type: "long-strip",
-                        },
-                      })
-                    }
-                  >
-                    <GalleryVertical />
-                    <span>Trượt dọc</span>
-                  </Button>
-                </div>
-              </div>
-
-              {config.reader.type === "long-strip" && (
-                <div className="space-y-1.5">
-                  <Label className="font-semibold">
-                    Khoảng cách giữa các ảnh (px)
-                  </Label>
-                  <div className="flex gap-2">
-                    <Input
-                      type="number"
-                      min={0}
-                      defaultValue={config.reader.imageGap ?? 4}
-                      autoFocus={false}
-                      autoComplete="off"
-                      onChange={(e) => {
-                        if (!e.target.value) return;
-
-                        const gap = parseInt(e.target.value);
-                        setConfig({
-                          ...config,
-                          reader: {
-                            ...config.reader,
-                            imageGap: Number.isNaN(gap) ? 4 : gap,
-                          },
-                        });
-                      }}
-                    />
-
-                    <Button
-                      variant="outline"
-                      className="shrink-0"
-                      size="icon"
-                      onClick={() => {
-                        setConfig({
-                          ...config,
-                          reader: {
-                            ...config.reader,
-                            imageGap: 4,
-                          },
-                        });
-                      }}
-                    >
-                      <Repeat />
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-1.5">
-                <Label className="font-semibold">Ảnh truyện</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      config.reader.imageFit === "height" &&
-                        "border-2 border-primary!"
-                    )}
-                    onClick={() =>
-                      setConfig({
-                        ...config,
-                        reader: {
-                          ...config.reader,
-                          imageFit: "height",
-                        },
-                      })
-                    }
-                  >
-                    <MoveVertical />
-                    <span>Vừa chiều dọc</span>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      config.reader.imageFit === "width" &&
-                        "border-2 border-primary!"
-                    )}
-                    onClick={() =>
-                      setConfig({
-                        ...config,
-                        reader: {
-                          ...config.reader,
-                          imageFit: "width",
-                        },
-                      })
-                    }
-                  >
-                    <MoveHorizontal />
-                    <span>Vừa chiều ngang</span>
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="font-semibold">Thanh Header</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      !config.reader.header && "border-2 border-primary!"
-                    )}
-                    onClick={() =>
-                      setConfig({
-                        ...config,
-                        reader: {
-                          ...config.reader,
-                          header: false,
-                        },
-                      })
-                    }
-                  >
-                    <Square />
-                    <span>Ẩn</span>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      !!config.reader.header && "border-2 border-primary!"
-                    )}
-                    onClick={() =>
-                      setConfig({
-                        ...config,
-                        reader: {
-                          ...config.reader,
-                          header: true,
-                        },
-                      })
-                    }
-                  >
-                    <PanelTop />
-                    <span>Hiện</span>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button
+          size="icon"
+          className="shrink-0 [&_svg]:size-5"
+          onClick={toggleSidebar}
+        >
+          <PanelRightClose />
+        </Button>
 
         <Button
           size="icon"
