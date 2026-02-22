@@ -6,6 +6,7 @@ import * as cheerio from "cheerio";
 import { defaultSchema } from "hast-util-sanitize";
 import { siteConfig } from "@/config/site";
 import slugify from "slugify";
+import { Chapter } from "@/types/types";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -252,4 +253,19 @@ export function generateSlug(title: string): string {
     locale: "vi",
     remove: /[*+~.,()'"!?:@\[\]]/g,
   });
+}
+
+export function formatChapterTitle(
+  chapter: Chapter,
+  includeTitle: boolean = true,
+): string {
+  if (!chapter.chapter) {
+    return "Oneshot";
+  }
+  if (!includeTitle) {
+    return `Ch. ${chapter.chapter}`;
+  }
+  return chapter.title
+    ? `Ch. ${chapter.chapter} - ${chapter.title}`
+    : `Ch. ${chapter.chapter}`;
 }

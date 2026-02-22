@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import "@/styles/themes.css";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/Sidebar/app-sidebar";
-import { SiteHeader } from "@/components/Navbar/site-header";
 import { ThemeProvider } from "@/components/providers";
 import { ThemeSwitcher } from "@/components/Theme/theme-switcher";
 import { META_THEME_COLORS, siteConfig } from "@/config/site";
@@ -79,23 +76,12 @@ export default function RootLayout({
           enableSystem
         >
           <ImageProxyInitializer />
-          <SidebarProvider defaultOpen={false}>
-            <div className="border-grid flex flex-1 flex-col">
-              <SiteHeader />
-              <main className="flex-1 py-4 mx-4 md:mx-8 lg:mx-12">{children}</main>
-              <Toaster
-                richColors
-                position="top-right"
-                closeButton
-                offset={{
-                  top: "55px",
-                  right: "65px",
-                }}
-              />
-            </div>
-
-            <AppSidebar side="right" />
-          </SidebarProvider>
+          {children}
+          <Toaster
+            richColors
+            position="top-center"
+            closeButton
+          />
           <ThemeSwitcher />
         </ThemeProvider>
       </body>

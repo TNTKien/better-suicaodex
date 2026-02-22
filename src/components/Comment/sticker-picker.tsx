@@ -116,7 +116,7 @@ export function StickerPicker({
         <DrawerTrigger asChild>
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="icon"
             className={buttonClassName || "h-8 w-8"}
           >
@@ -149,7 +149,7 @@ export function StickerPicker({
       <PopoverTrigger asChild>
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           size="icon"
           className={buttonClassName || "h-8 w-8"}
         >

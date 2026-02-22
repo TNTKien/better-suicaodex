@@ -24,7 +24,7 @@ export default function LongStrip({ images }: LongStripProps) {
   return (
     <div
       className={cn(
-        "min-w-0 relative mt-2",
+        "min-w-0 relative",
         allLoaded ? "min-h-0" : "min-h-lvh"
       )}
     >

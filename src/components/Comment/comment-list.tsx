@@ -44,6 +44,15 @@ const CommentList = ({
     mutate,
   }));
 
+  if (error)
+    return (
+      <Alert className="rounded-sm bg-secondary">
+        <AlertDescription className="flex justify-center">
+          Lỗi mất rồi 😭
+        </AlertDescription>
+      </Alert>
+    );
+
   if (isLoading || !data)
     return (
       <div className="space-y-4 px-1">
@@ -78,22 +87,13 @@ const CommentList = ({
       </Alert>
     );
 
-  if (error)
-    return (
-      <Alert className="rounded-sm bg-secondary">
-        <AlertDescription className="flex justify-center">
-          Lỗi mất rồi 😭
-        </AlertDescription>
-      </Alert>
-    );
-
   const totalPages = Math.ceil((data.meta.totalCount || 0) / LIMIT); // Calculate total pages based on total comments and limit
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
 
   return (
-    <div className="space-y-4 mt-4">
+    <div className="space-y-4">
       <div className="space-y-4 px-1">
         {data.comments.map((comment: any) => (
           <Card

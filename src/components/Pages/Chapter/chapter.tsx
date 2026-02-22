@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
 import { usePathname } from "next/navigation";
 import { type Chapter } from "@/types/types";
+import { ReaderSidebar } from "@/app/(reader)/reader-sidebar";
+import { ReaderHeader } from "@/app/(reader)/reader-header";
 
 interface ChapterProps {
   id: string;
@@ -50,17 +52,9 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     }
   }, [addHistory, data, id]);
 
-  useEffect(() => {
-    if (pathName.includes("/chapter/") && config.reader.type === "single") {
-      document.body.classList.add("page-no-padding");
-      return () => document.body.classList.remove("page-no-padding");
-    }
-  }, [config.reader.type]);
-
   if (error) {
     if (error.status === 404) return <ChapterNotFound />;
     if (error.status === 503) return <MangaMaintain />;
-    // console.log(error)
     return <div>Lỗi mất rồi 😭</div>;
   }
 
@@ -74,10 +68,12 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     );
 
   return (
-    <div className={cn()}>
-      <ChapterInfo chapter={data} />
-
-      {!!data.pages && <Reader images={data.pages} chapterData={data} />}
-    </div>
+    <>
+      <div className="border-grid flex flex-1 flex-col">
+        <ReaderHeader />
+        {!!data.pages && <Reader images={data.pages} chapterData={data} />}
+      </div>
+      <ReaderSidebar chapter={data} side="right"/>
+    </>
   );
 }
