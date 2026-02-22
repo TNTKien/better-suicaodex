@@ -228,7 +228,7 @@ function ReaderSettingsDialog() {
   );
 }
 
-export default function ChapterNav({ chapter }: ChapterNavProps) {
+export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
   const [config] = useConfig();
   const router = useRouter();
 

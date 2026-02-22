@@ -37,7 +37,7 @@ import CommentList from "@/components/Comment/comment-list";
 import CommentFormSimple from "@/components/Comment/comment-form-simple";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import ChapterNav from "./chapter-nav";
+import ChapterNavSidebar from "./chapter-nav-sidebar";
 
 interface ReaderSidebarProps extends React.ComponentProps<typeof Sidebar> {
   chapter: Chapter;
@@ -62,22 +62,29 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="flex gap-2">
-            <Button
-              onClick={toggleSidebar}
-              className="size-8"
-              size="icon"
-              variant="ghost"
-            >
-              <PanelRightClose />
-            </Button>
+            <SidebarMenuButton asChild tooltip="Đóng/mở sidebar">
+              <Button
+                onClick={toggleSidebar}
+                className="size-8"
+                size="icon"
+                variant="ghost"
+              >
+                <PanelRightClose />
+              </Button>
+            </SidebarMenuButton>
 
-            <Button className={cn("size-8", state === "expanded" && "-ml-2")} size="icon" variant="outline" asChild>
+            <Button
+              className={cn("size-8", state === "expanded" && "-ml-2")}
+              size="icon"
+              variant="outline"
+              asChild
+            >
               <NoPrefetchLink href="/">
                 <HomeIcon />
               </NoPrefetchLink>
             </Button>
 
-            <ChapterNav chapter={chapter} />
+            <ChapterNavSidebar chapter={chapter} />
           </SidebarMenuItem>
 
           <Collapsible asChild defaultOpen className="group/collapsible">
@@ -108,9 +115,14 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
           </Collapsible>
 
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip={ChapterTitle(chapter)} className="">
+            <SidebarMenuButton
+              tooltip={ChapterTitle(chapter)}
+              className="h-auto"
+            >
               <SwatchBookIcon />
-              <span>{ChapterTitle(chapter)}</span>
+              <span className="whitespace-normal!">
+                {ChapterTitle(chapter)}
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
