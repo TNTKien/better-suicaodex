@@ -36,9 +36,11 @@ export const stickers: Sticker[] = [
   
   // Doro
   { title: "doro-cinema", url: "/images/stickers/doro/doro-cinema.webp", category: "doro" },
+  { title: "doro-dance", url: "/images/stickers/doro/doro-dance.webp", category: "doro" },
   { title: "doro-fire", url: "/images/stickers/doro/doro-fire.gif", category: "doro" },
   { title: "doro-hard", url: "/images/stickers/doro/doro-hard.gif", category: "doro" },
   { title: "doro-origin", url: "/images/stickers/doro/doro-origin.webp", category: "doro" },
+  { title: "doro-shock", url: "/images/stickers/doro/doro-shock.webp", category: "doro" },
   { title: "doro-think", url: "/images/stickers/doro/doro-think.gif", category: "doro" },
   
   // Michos (Hoyo games)
