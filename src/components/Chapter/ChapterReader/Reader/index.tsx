@@ -53,7 +53,7 @@ export default function Reader({ images, chapterData }: ReaderProps) {
 
   const { data, isMutating, error, trigger } = useSWRMutation(
     [
-      "chapter-aggregate",
+      `chapter-aggregate-${chapterData.id}`,
       chapterData.manga.id,
       [chapterData.language],
       chapterData.group.map((group) => group.id),
