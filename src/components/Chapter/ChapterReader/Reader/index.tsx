@@ -8,7 +8,6 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronsUp,
-  Loader2,
   PanelRightClose,
 } from "lucide-react";
 import { ReactElement, useEffect, useState } from "react";
@@ -21,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import useSWRMutation from "swr/mutation";
 import SinglePage from "./single-page";
 import { useSidebar } from "@/components/ui/sidebar-2-reader";
+import { Spinner } from "@/components/ui/spinner";
 
 interface ReaderProps {
   images: string[];
@@ -108,7 +108,7 @@ export default function Reader({ images, chapterData }: ReaderProps) {
               className="w-full md:min-w-48 justify-start whitespace-normal! break-all! shrink!"
               variant="outline"
             >
-              <Loader2 className="animate-spin" />
+              <Spinner />
               {retryCount > 0
                 ? `Đang tải dữ liệu (${retryCount}/${MAX_RETRIES})`
                 : "Đang tải dữ liệu..."}
@@ -173,8 +173,8 @@ function LoadingNav({ button }: LoadingNavProps) {
         "mx-auto flex w-full translate-y-0 items-center justify-center rounded-none bg-background border-none",
         "md:rounded-lg md:w-auto md:-translate-y-2",
         !isMobile &&
-            state === "expanded" &&
-            "md:-translate-x-[calc(50%+var(--sidebar-width)/2)] translate-y-full md:translate-y-full",
+          state === "expanded" &&
+          "md:-translate-x-[calc(50%+var(--sidebar-width)/2)] translate-y-full md:translate-y-full",
         isAtBottom && "translate-y-full md:translate-y-full",
         scrollDirection === "down" &&
           !isAtBottom &&
