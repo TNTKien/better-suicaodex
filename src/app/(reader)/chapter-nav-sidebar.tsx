@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { useConfig } from "@/hooks/use-config";
+import useScrollOffset from "@/hooks/use-scroll-offset";
 import { getChapterAggregate } from "@/lib/mangadex/chapter";
 import { cn, formatChapterTitle } from "@/lib/utils";
 import { Chapter } from "@/types/types";
@@ -30,6 +31,7 @@ import { useRouter } from "@bprogress/next";
 import {
   ArrowLeft,
   ArrowRight,
+  ChevronsUp,
   File,
   GalleryVertical,
   MoveHorizontal,
@@ -231,6 +233,7 @@ function ReaderSettingsDialog() {
 export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
   const [config] = useConfig();
   const router = useRouter();
+  const { isAtBottom, isAtTop } = useScrollOffset();
 
   const [retryCount, setRetryCount] = useState(0);
   const [reachedMaxRetries, setReachedMaxRetries] = useState(false);
@@ -281,7 +284,14 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
       setReachedMaxRetries(true);
       console.log("Max retries reached. Stopping automatic retries.");
     }
-  }, [chapterAggregate, chapterExists, isLoading, isValidating, retryCount, mutate]);
+  }, [
+    chapterAggregate,
+    chapterExists,
+    isLoading,
+    isValidating,
+    retryCount,
+    mutate,
+  ]);
 
   // Reset retry state when chapter changes
   useEffect(() => {
@@ -418,6 +428,15 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
 
       <ButtonGroup>
         <ReaderSettingsDialog />
+        <Button
+          size="icon"
+          disabled={isAtTop}
+          className="size-8"
+          variant="outline"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <ChevronsUp />
+        </Button>
       </ButtonGroup>
     </ButtonGroup>
   );
