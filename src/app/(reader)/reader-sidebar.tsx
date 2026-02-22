@@ -54,11 +54,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
   };
 
   return (
-    <Sidebar
-      //   className="md:w-[calc(var(--spacing)*80)]! lg:w-[calc(var(--spacing)*100)]!"
-      collapsible="icon"
-      {...props}
-    >
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="flex gap-2">

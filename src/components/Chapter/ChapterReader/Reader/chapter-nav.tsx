@@ -25,6 +25,7 @@ import {
   GalleryVertical,
   MoveHorizontal,
   MoveVertical,
+  PanelRightClose,
   PanelTop,
   Repeat,
   Settings,
@@ -44,6 +45,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useConfig } from "@/hooks/use-config";
 import { Input } from "@/components/ui/input";
+import { useSidebar } from "@/components/ui/sidebar-2-reader";
 
 interface ChapterNavProps {
   chapterData: Chapter;
@@ -55,9 +57,9 @@ export default function ChapterNav({
   chapterAggregate,
 }: ChapterNavProps) {
   const scrollDirection = useScrollDirection();
-  const isMobile = useIsMobile();
   const { isAtBottom, isAtTop } = useScrollOffset();
   const [config, setConfig] = useConfig();
+  const { state, isMobile, toggleSidebar } = useSidebar();
 
   let currentVolIndex = chapterAggregate.findIndex((aggregate) =>
     aggregate.chapters.some((chapter) => chapter.id === chapterData.id)
@@ -144,6 +146,7 @@ export default function ChapterNav({
           `fixed bottom-0 left-1/2 transform -translate-x-1/2 md:-translate-x-[calc(50%+var(--sidebar-width-icon)/2)] z-10 transition-all duration-300`,
           "mx-auto flex w-full translate-y-0 items-center justify-center rounded-none bg-background border-none",
           "md:rounded-lg md:w-auto md:-translate-y-2",
+          state === "expanded" && "md:-translate-x-[calc(50%+var(--sidebar-width)/2)]",
           isAtBottom && "translate-y-full md:translate-y-full",
           scrollDirection === "down" &&
             !isAtBottom &&
@@ -212,7 +215,7 @@ export default function ChapterNav({
             </Link>
           </Button>
 
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <Button size="icon" className="shrink-0 [&_svg]:size-5">
                 <Settings />
@@ -412,7 +415,15 @@ export default function ChapterNav({
                 </div>
               </div>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
+
+          <Button
+            size="icon"
+            className="shrink-0 [&_svg]:size-5"
+            onClick={toggleSidebar}
+          >
+            <PanelRightClose />
+          </Button>
 
           <Button
             size="icon"

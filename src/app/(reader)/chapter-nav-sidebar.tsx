@@ -233,7 +233,7 @@ function ReaderSettingsDialog() {
 export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
   const [config] = useConfig();
   const router = useRouter();
-  const { isAtBottom, isAtTop } = useScrollOffset();
+  const { isAtTop } = useScrollOffset();
 
   const [retryCount, setRetryCount] = useState(0);
   const [reachedMaxRetries, setReachedMaxRetries] = useState(false);
