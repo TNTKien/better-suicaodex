@@ -318,8 +318,8 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
         >
           <Spinner />
           {retryCount > 0
-            ? `Đang tải dữ liệu (${retryCount}/${MAX_RETRIES})`
-            : "Đang tải dữ liệu..."}
+            ? `Đang tải (${retryCount}/${MAX_RETRIES})`
+            : "Đang tải..."}
         </Button>
       </LoadingNav>
     );
@@ -447,6 +447,7 @@ interface LoadingNavProps {
 }
 
 function LoadingNav({ children }: LoadingNavProps) {
+  const { isAtTop } = useScrollOffset();
   return (
     <ButtonGroup className="h-8 w-full">
       <ButtonGroup className="h-8 flex-1">
@@ -463,6 +464,15 @@ function LoadingNav({ children }: LoadingNavProps) {
 
       <ButtonGroup>
         <ReaderSettingsDialog />
+        <Button
+          size="icon"
+          disabled={isAtTop}
+          className="size-8"
+          variant="outline"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <ChevronsUp />
+        </Button>
       </ButtonGroup>
     </ButtonGroup>
   );

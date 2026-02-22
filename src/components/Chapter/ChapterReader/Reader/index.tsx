@@ -110,8 +110,8 @@ export default function Reader({ images, chapterData }: ReaderProps) {
             >
               <Spinner />
               {retryCount > 0
-                ? `Đang tải dữ liệu (${retryCount}/${MAX_RETRIES})`
-                : "Đang tải dữ liệu..."}
+                ? `Đang tải (${retryCount}/${MAX_RETRIES})`
+                : "Đang tải..."}
             </Button>
           }
         />
