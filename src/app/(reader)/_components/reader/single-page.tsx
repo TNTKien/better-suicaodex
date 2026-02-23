@@ -1,72 +1,51 @@
 "use client";
 
+import { type PageState } from "@/hooks/use-reader-images";
 import MangaImage from "./manga-image";
-import { useState, useRef, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SinglePageProps {
-  images: string[];
+  pages: PageState[];
+  currentIndex: number;
+  retry: (index: number) => void;
+  /** RTL: click trái = next, click phải = prev */
+  rtl?: boolean;
+  onNavigatePrev: () => void;
+  onNavigateNext: () => void;
 }
 
-export default function SinglePage({ images }: SinglePageProps) {
-  //   const [config] = useConfig();
-  const [currentPage, setCurrentPage] = useState(0);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
+export default function SinglePage({
+  pages,
+  currentIndex,
+  retry,
+  rtl = false,
+  onNavigatePrev,
+  onNavigateNext,
+}: SinglePageProps) {
+  const page = pages[currentIndex];
+  if (!page) return null;
 
-  useEffect(() => {
-    if (imageContainerRef.current) {
-      imageContainerRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [currentPage]);
-
-  const goToNextPage = () => {
-    if (currentPage < images.length - 1) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleClick = (e: React.MouseEvent) => {
-    const container = e.currentTarget;
-    const clickX = e.clientX - container.getBoundingClientRect().left;
-    const containerWidth = container.clientWidth;
-
-    if (clickX > containerWidth / 2) {
-      goToNextPage();
-    } else {
-      goToPreviousPage();
-    }
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const isLeft = e.clientX < rect.left + rect.width / 2;
+    // RTL đảo chiều: trái = tiến, phải = lùi
+    const goForward = rtl ? isLeft : !isLeft;
+    if (goForward) onNavigateNext();
+    else onNavigatePrev();
   };
 
   return (
-    <>
-      <div className="mt-2 text-center">
-        {currentPage + 1}/{images.length}
-      </div>
-      <div className={cn("min-w-0 relative mt-2",
-        isMobile && "py-10"
-      )} ref={imageContainerRef}>
-        <div
-          className="overflow-x-auto flex items-center h-full select-none cursor-pointer"
-          onClick={handleClick}
-        >
-          <MangaImage
-            src={images[currentPage]}
-            alt={`Trang ${currentPage + 1}`}
-            onLoaded={() => {}}
-          />
-        </div>
-      </div>
-    </>
+    <div
+      className="flex-1 flex flex-col items-center justify-center min-h-dvh cursor-pointer select-none"
+      onClick={handleClick}
+    >
+      <span className="absolute top-2 text-xs text-muted-foreground z-10 bg-primary px-1 rounded opacity-25">
+        {currentIndex + 1} / {pages.length}
+      </span>
+      <MangaImage
+        page={page}
+        alt={`Trang ${currentIndex + 1}`}
+        onRetry={() => retry(currentIndex)}
+      />
+    </div>
   );
 }

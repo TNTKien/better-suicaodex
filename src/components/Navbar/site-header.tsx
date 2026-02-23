@@ -6,18 +6,18 @@ import { ModeSwitcher } from "./mode-switcher";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 import QuickSearch from "../Search/quick-search";
 import { usePathname } from "next/navigation";
-import { useConfig } from "@/hooks/use-config";
+import { useReaderStore } from "@/store/reader-store";
 
 export function SiteHeader() {
   const { isAtTop } = useScrollOffset();
   const pathname = usePathname();
-  const [config] = useConfig();
+  const { header: readerHeader } = useReaderStore();
   return (
     <header
       className={cn(
         "top-0 z-50 w-full transform transition-all duration-300",
         !pathname.includes("/chapter") && "sticky",
-        !!pathname.includes("/chapter") && !!config.reader.header && "sticky",
+        !!pathname.includes("/chapter") && !!readerHeader && "sticky",
         "px-4 md:px-8 lg:px-12",
         isAtTop && "bg-transparent",
         !isAtTop &&

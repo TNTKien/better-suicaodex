@@ -1,62 +1,77 @@
 "use client";
 
-import { useConfig } from "@/hooks/use-config";
-import { usePreloadImages } from "@/hooks/use-preload-images";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { type PageState } from "@/hooks/use-reader-images";
+import { useReaderStore } from "@/store/reader-store";
+import { useEffect, useRef } from "react";
 import MangaImage from "./manga-image";
 
 interface LongStripProps {
-  images: string[];
+  pages: PageState[];
+  retry: (index: number) => void;
+  /** Báo về Reader index mỗi khi trang hiển thị thay đổi (dùng để ưu tiên load) */
+  onCurrentIndexChange: (index: number) => void;
 }
 
-export default function LongStrip({ images }: LongStripProps) {
-  const [config] = useConfig();
-  const [loadedCount, setLoadedCount] = useState(0);
-  const allLoaded = loadedCount === images.length;
+export default function LongStrip({ pages, retry, onCurrentIndexChange }: LongStripProps) {
+  const imageGap = useReaderStore((s) => s.imageGap);
+  const itemRefs   = useRef<Map<number, HTMLElement>>(new Map());
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const { registerImageElement, preloadedImages, markImageAsLoaded, isImageLoaded } = usePreloadImages({
-    images,
-    preloadCount: 6,
-    visibilityThreshold: 0.1
-  });
+  // IntersectionObserver - track trang hiện đang hiển thị nhiều nhất
+  useEffect(() => {
+    const visibleRatios = new Map<number, number>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const idx = Number(entry.target.getAttribute("data-page-index"));
+          if (!Number.isNaN(idx)) visibleRatios.set(idx, entry.intersectionRatio);
+        });
+
+        let maxRatio = 0;
+        let mostVisible = 0;
+        visibleRatios.forEach((ratio, idx) => {
+          if (ratio > maxRatio) { maxRatio = ratio; mostVisible = idx; }
+        });
+        if (maxRatio > 0) onCurrentIndexChange(mostVisible);
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] },
+    );
+
+    observerRef.current = observer;
+    itemRefs.current.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const registerRef = (index: number, el: HTMLElement | null) => {
+    const prev = itemRefs.current.get(index);
+    if (prev) observerRef.current?.unobserve(prev);
+    if (el) {
+      el.setAttribute("data-page-index", String(index));
+      itemRefs.current.set(index, el);
+      observerRef.current?.observe(el);
+    } else {
+      itemRefs.current.delete(index);
+    }
+  };
 
   return (
-    <div
-      className={cn(
-        "min-w-0 relative",
-        allLoaded ? "min-h-0" : "min-h-lvh"
-      )}
-    >
-      <div
-        className={cn(
-          "overflow-x-auto flex flex-col items-center h-full select-none bg-transparent justify-center"
-        )}
-        style={{
-          gap: `${config.reader.imageGap}px`,
-        }}
-      >
-        {images.map((image, index) => (
-          <span
-            key={index + 1}
-            className="block overflow-hidden"
-            style={{
-              minHeight: isImageLoaded(index) ? "auto" : "500px",
-            }}
-            ref={(element) => registerImageElement(index, element)}
-          >
-            <MangaImage
-              src={image}
-              alt={`Trang ${index + 1}`}
-              onLoaded={() => {
-                setLoadedCount((prev) => prev + 1);
-                markImageAsLoaded(index);
-              }}
-              isPreloaded={preloadedImages.has(image)}
-            />
-          </span>
-        ))}
-      </div>
+    <div className="flex flex-col items-center w-full" style={{ gap: `${imageGap}px` }}>
+      {pages.map((page, index) => (
+        <div
+          key={index}
+          ref={(el) => registerRef(index, el)}
+          className="w-full flex justify-center"
+          style={{ minHeight: page.isLoaded ? undefined : "500px" }}
+        >
+          <MangaImage
+            page={page}
+            alt={`Trang ${index + 1}`}
+            onRetry={() => retry(index)}
+          />
+        </div>
+      ))}
     </div>
   );
 }

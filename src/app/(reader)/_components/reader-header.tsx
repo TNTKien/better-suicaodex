@@ -2,18 +2,18 @@
 import { MainNav } from "@/components/Navbar/main-nav";
 import { cn } from "@/lib/utils";
 import useScrollOffset from "@/hooks/use-scroll-offset";
-import { useConfig } from "@/hooks/use-config";
+import { useReaderStore } from "@/store/reader-store";
 import QuickSearch from "@/components/Search/quick-search";
 import { ModeSwitcher } from "@/components/Navbar/mode-switcher";
 
 export function ReaderHeader() {
   const { isAtTop } = useScrollOffset();
-  const [config] = useConfig();
+  const { header } = useReaderStore();
   return (
     <header
       className={cn(
         "top-0 z-50 w-full transform transition-all duration-300",
-        config.reader.header ? "sticky" : "hidden",
+        header ? "sticky" : "hidden",
         "px-4 md:px-8 lg:px-12",
         isAtTop
           ? "bg-transparent"

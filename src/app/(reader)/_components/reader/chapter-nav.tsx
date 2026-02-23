@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useKeyDown from "@/hooks/use-keydown";
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 import { cn } from "@/lib/utils";
@@ -24,103 +23,57 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { useConfig } from "@/hooks/use-config";
 import { useSidebar } from "@/components/ui/sidebar-2-reader";
 
 interface ChapterNavProps {
   chapterData: Chapter;
   chapterAggregate: ChapterAggregate[];
+  /** Pre-computed bởi Reader/index - dùng trực tiếp, bỏ qua tính toán nội bộ */
+  prevChapterId?: string;
+  nextChapterId?: string;
 }
 
 export default function ChapterNav({
   chapterData,
   chapterAggregate,
+  prevChapterId: prevChapterIdProp,
+  nextChapterId: nextChapterIdProp,
 }: ChapterNavProps) {
   const scrollDirection = useScrollDirection();
   const { isAtBottom, isAtTop } = useScrollOffset();
   const [config] = useConfig();
   const { state, isMobile, toggleSidebar } = useSidebar();
-
-  let currentVolIndex = chapterAggregate.findIndex((aggregate) =>
-    aggregate.chapters.some((chapter) => chapter.id === chapterData.id),
-  );
-
-  if (currentVolIndex === -1) {
-    currentVolIndex = chapterAggregate.findIndex((aggregate) =>
-      aggregate.chapters.some((chapter) =>
-        chapter.other?.some((id) => id === chapterData.id),
-      ),
-    );
-  }
-
-  // At this point, we should have a valid volume index since
-  // the parent component ensures the chapter exists in the aggregate data
-  // console.log(chapterAggregate);
-  // console.log("vol: ", currentVolIndex);
-  // console.log(chapterAggregate[currentVolIndex]);
-
-  const currentChapterIndex = chapterAggregate[
-    currentVolIndex
-  ].chapters.findIndex((chapter) => chapter.id === chapterData.id);
-
-  const prevChapter = chapterAggregate[currentVolIndex].chapters[
-    currentChapterIndex + 1
-  ]?.id
-    ? chapterAggregate[currentVolIndex].chapters[currentChapterIndex + 1]?.id
-    : chapterAggregate[currentVolIndex + 1]?.chapters[0]?.id;
-
-  const nextChapter = chapterAggregate[currentVolIndex].chapters[
-    currentChapterIndex - 1
-  ]?.id
-    ? chapterAggregate[currentVolIndex].chapters[currentChapterIndex - 1]?.id
-    : chapterAggregate[currentVolIndex - 1]?.chapters.at(-1)?.id;
-
   const router = useRouter();
-  const goNextChapter = () => {
-    if (nextChapter) {
-      const toastId = toast.loading("Đang chuyển chương...");
-      setTimeout(() => toast.dismiss(toastId), 1000);
-      return router.push(`/chapter/${nextChapter}`);
-    }
-    return toast.warning("Đây là chương mới nhất rồi nha!");
-  };
 
-  const goPrevChapter = () => {
-    if (prevChapter) {
-      const toastId = toast.loading("Đang chuyển chương...");
-      setTimeout(() => toast.dismiss(toastId), 1000);
-      return router.push(`/chapter/${prevChapter}`);
-    }
-    return toast.warning("Đây là chương đầu tiên mà!");
-  };
+  // Sử dụng prop nếu có, ngược lại tính toán từ aggregate (backward-compat)
+  let prevChapter = prevChapterIdProp;
+  let nextChapter = nextChapterIdProp;
 
-  useKeyDown("ArrowLeft", goPrevChapter);
-  useKeyDown("ArrowRight", goNextChapter);
+  if (prevChapter === undefined || nextChapter === undefined) {
+    let currentVolIndex = chapterAggregate.findIndex((aggregate) =>
+      aggregate.chapters.some((chapter) => chapter.id === chapterData.id),
+    );
+    if (currentVolIndex === -1) {
+      currentVolIndex = chapterAggregate.findIndex((aggregate) =>
+        aggregate.chapters.some((chapter) =>
+          chapter.other?.some((id) => id === chapterData.id),
+        ),
+      );
+    }
+    const currentChapterIndex = chapterAggregate[currentVolIndex].chapters.findIndex(
+      (chapter) => chapter.id === chapterData.id,
+    );
+    prevChapter ??=
+      chapterAggregate[currentVolIndex].chapters[currentChapterIndex + 1]?.id ??
+      chapterAggregate[currentVolIndex + 1]?.chapters[0]?.id;
+    nextChapter ??=
+      chapterAggregate[currentVolIndex].chapters[currentChapterIndex - 1]?.id ??
+      chapterAggregate[currentVolIndex - 1]?.chapters.at(-1)?.id;
+  }
 
   return (
     <>
-      {/* {config.reader.type === "long-strip" && (
-        <div className="grid grid-cols-1 gap-2 mt-4 mx-auto">
-          {!!nextChapter && (
-            <Button asChild size="lg" className="[&>svg]:size-5!">
-              <Link href={`/chapter/${nextChapter}`}>
-                <span>Chương tiếp theo</span>
-                <ArrowRight />
-              </Link>
-            </Button>
-          )}
-          {!!prevChapter && (
-            <Button asChild size="lg" className="[&>svg]:size-5!">
-              <Link href={`/chapter/${prevChapter}`}>
-                <span>Chương trước</span>
-                <ArrowLeft />
-              </Link>
-            </Button>
-          )}
-        </div>
-      )} */}
-
       <Card
         className={cn(
           "overflow-x-auto",
