@@ -177,7 +177,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
       >
         <SidebarGroup className="py-0">
           <SidebarGroupContent>
-            <CommentList id={chapter.id} type="chapter" ref={commentListRef} />
+            <CommentList id={chapter.id} type="chapter" ref={commentListRef} inSidebar/>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

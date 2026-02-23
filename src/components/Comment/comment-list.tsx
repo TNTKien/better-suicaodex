@@ -15,12 +15,15 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: res.statusText }));
-    throw Object.assign(new Error(error.error || "Có lỗi xảy ra"), { status: res.status });
+    throw Object.assign(new Error(error.error || "Có lỗi xảy ra"), {
+      status: res.status,
+    });
   }
   return res.json();
 };
@@ -29,6 +32,7 @@ const LIMIT = 10; // Limit for pagination
 interface CommentListProps {
   id: string;
   type: "manga" | "chapter";
+  inSidebar?: boolean; // Optional prop to indicate if it's in a sidebar context
 }
 
 // Use forwardRef to allow parent components to access the mutate function
@@ -36,6 +40,7 @@ const CommentList = ({
   ref,
   id,
   type,
+  inSidebar = false,
 }: CommentListProps & {
   ref: React.RefObject<unknown>;
 }) => {
@@ -119,26 +124,33 @@ const CommentList = ({
                   <div className="relative mt-2 space-y-3">
                     {/* Vertical line going up through parent and down through all replies */}
                     <div className="absolute left-4 top-[-9999px] bottom-0 w-0.5 bg-border" />
-                    {comment.replies.map((reply: any, index: number, arr: any[]) => {
-                      const isLast = index === arr.length - 1;
-                      return (
-                        <div key={reply.id} className="relative pl-10">
-                          {/* Horizontal branch to reply avatar */}
-                          <div className="absolute left-4 top-4 h-0.5 w-6 bg-border" />
-                          {/* Cover vertical line below last reply's avatar center */}
-                          {isLast && (
-                            <div className="absolute left-4 top-[17px] bottom-0 w-0.5 bg-background" />
-                          )}
-                          <CommentCard
-                            comment={reply}
-                            type={type}
-                            contentId={id}
-                            isReply={true}
-                            onMutate={mutate}
-                          />
-                        </div>
-                      );
-                    })}
+                    {comment.replies.map(
+                      (reply: any, index: number, arr: any[]) => {
+                        const isLast = index === arr.length - 1;
+                        return (
+                          <div key={reply.id} className="relative pl-10">
+                            {/* Horizontal branch to reply avatar */}
+                            <div className="absolute left-4 top-4 h-0.5 w-6 bg-border" />
+                            {/* Cover vertical line below last reply's avatar center */}
+                            {isLast && (
+                              <div
+                                className={cn(
+                                  "absolute left-4 top-[17px] bottom-0 w-0.5",
+                                  inSidebar ? "bg-sidebar" : "bg-background",
+                                )}
+                              />
+                            )}
+                            <CommentCard
+                              comment={reply}
+                              type={type}
+                              contentId={id}
+                              isReply={true}
+                              onMutate={mutate}
+                            />
+                          </div>
+                        );
+                      },
+                    )}
                   </div>
                 )}
               </div>
