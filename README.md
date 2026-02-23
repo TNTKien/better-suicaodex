@@ -22,7 +22,7 @@ Tuy vậy, SuicaoDex sẽ luôn:
 ## Dự kiến
 ⬛ Chuyển sang Weebdex API
 
-⬛ Làm lại reader
+☑️ Làm lại reader: cơ bản đã xong, cần thử nghiệm thêm để cải thiện UI/UX
 
 ⬛ Fix layout trang chủ
 
@@ -30,7 +30,7 @@ Tuy vậy, SuicaoDex sẽ luôn:
 
 ☑️ Hoàn thiện bình luận:
 1. ✅ Thêm bình luận từng chương.
-2. ⬛ Chỉnh sửa/Trả lời
+2. ✅ Chỉnh sửa/Trả lời
 3. ⬛ Thả like
 4. ✅ Sticker...
 5. ~~✅ Richtext editor~~ bỏ đi vì không cần thiết
