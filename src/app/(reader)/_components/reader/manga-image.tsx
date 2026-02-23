@@ -5,6 +5,7 @@ import { getImageScaleClasses, useReaderStore } from "@/store/reader-store";
 import { cn } from "@/lib/utils";
 import { RotateCcw } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 interface MangaImageProps {
   /** Trạng thái tải của trang này từ useReaderImages */
@@ -26,6 +27,7 @@ export default function MangaImage({ page, alt, onRetry, isDouble }: MangaImageP
         !page.isLoaded && !page.isFailed && "aspect-5/7 min-w-[200px]",
         !isDouble && "mx-auto",
         isDouble && "w-full",
+        page.isFailed && "flex items-center justify-center",
       )}
     >
       {/* Ảnh chính – chỉ hiển thị khi blob đã sẵn sàng */}
@@ -56,13 +58,14 @@ export default function MangaImage({ page, alt, onRetry, isDouble }: MangaImageP
 
       {/* Error + retry */}
       {page.isFailed && (
-        <button
-          className="absolute inset-0 w-full flex flex-col items-center justify-center gap-2 bg-muted/30 text-muted-foreground hover:bg-muted/50 transition-colors rounded"
+        <Button
           onClick={(e) => { e.stopPropagation(); onRetry(); }}
+          variant="outline"
+          size="sm"
         >
-          <RotateCcw className="size-5" />
-          <span className="text-xs font-medium">Tải thất bại – nhấn để thử lại</span>
-        </button>
+          <RotateCcw />
+          Lỗi load ảnh, thử lại
+        </Button>
       )}
     </div>
   );
