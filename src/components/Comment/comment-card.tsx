@@ -352,16 +352,17 @@ export default function CommentCard({
 
             {!!session?.user?.id && !editMode && (
               <div className="flex items-center gap-2">
-                {session?.user?.id === comment.user.id && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-auto py-0 px-1 text-xs font-semibold hover:underline"
-                    onClick={handleEditOpen}
-                  >
-                    Sửa
-                  </Button>
-                )}
+                {session?.user?.id === comment.user.id &&
+                  !comment.isEdited && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-auto py-0 px-1 text-xs font-semibold hover:underline"
+                      onClick={handleEditOpen}
+                    >
+                      Sửa
+                    </Button>
+                  )}
                 {/* Only allow reply on top-level comments (1-level nesting) */}
                 {!isReply && (
                   <Button

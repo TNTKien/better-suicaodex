@@ -65,6 +65,12 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
     if (existing.userId !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+    if (existing.isEdited) {
+      return NextResponse.json(
+        { error: "Comment can only be edited once" },
+        { status: 403 }
+      );
+    }
 
     const updated = await prisma.mangaComment.update({
       where: { id: commentId },
@@ -87,6 +93,12 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
     }
     if (existing.userId !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    if (existing.isEdited) {
+      return NextResponse.json(
+        { error: "Comment can only be edited once" },
+        { status: 403 }
+      );
     }
 
     const updated = await prisma.chapterComment.update({
