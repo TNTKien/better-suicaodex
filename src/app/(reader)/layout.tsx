@@ -1,7 +1,5 @@
 import { SidebarProvider } from "@/components/ui/sidebar-2-reader";
 
-//TODO: fix folder structure
-
 export default function ReaderLayout({
   children,
 }: Readonly<{
