@@ -333,13 +333,12 @@ export default function CommentCard({
               </div>
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="h-auto py-0 px-1 text-xs"
                 onClick={() => setEditMode(false)}
               >
-                <X className="h-3 w-3 mr-1" />
-                Huỷ
+                <X/>
+                Hủy
               </Button>
             </div>
           )}
@@ -380,7 +379,7 @@ export default function CommentCard({
 
           {/* Inline reply form */}
           {replyMode && (
-            <div className="mt-2 space-y-2">
+            <div className="mt-2 space-y-2 px-1">
               <div className="relative">
                 <Textarea
                   ref={replyTextareaRef}
@@ -410,13 +409,12 @@ export default function CommentCard({
               </div>
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="h-auto py-0 px-1 text-xs"
                 onClick={() => setReplyMode(false)}
               >
-                <X className="h-3 w-3 mr-1" />
-                Huỷ
+                <X />
+                Hủy
               </Button>
             </div>
           )}
