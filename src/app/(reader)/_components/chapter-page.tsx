@@ -65,7 +65,7 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     <>
       <div className="border-grid flex flex-1 flex-col">
         <ReaderHeader />
-        {!!data.pages && <Reader images={data.pages} chapterData={data} />}
+        {!!data.pages && <Reader key={data.id} images={data.pages} chapterData={data} />}
       </div>
       <ReaderSidebar chapter={data} side="right"/>
     </>
