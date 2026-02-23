@@ -41,11 +41,19 @@ import {
   BookOpen,
   ChevronsUp,
   File,
+  FileInput,
+  FileOutput,
   GalleryVertical,
+  Image,
+  MoveHorizontal,
+  MoveVertical,
   PanelTop,
   Repeat,
   Settings,
   Square,
+  SquareSplitHorizontal,
+  SquareSplitVertical,
+  Wallpaper,
 } from "lucide-react";
 import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
@@ -60,27 +68,80 @@ const MAX_RETRIES = 3;
 
 function ReaderSettingsDialog() {
   const {
-    mode, setMode,
-    scale, setScale,
-    imageGap, setImageGap,
-    header, setHeader,
-    spreadOffset, setSpreadOffset,
+    mode,
+    setMode,
+    scale,
+    setScale,
+    imageGap,
+    setImageGap,
+    header,
+    setHeader,
+    spreadOffset,
+    setSpreadOffset,
   } = useReaderStore();
 
-  const readingModes: { value: ReaderMode; label: string; icon: React.ReactNode }[] = [
-    { value: "long-strip",  label: READER_MODE_LABELS["long-strip"],  icon: <GalleryVertical className="size-4" /> },
-    { value: "single",     label: READER_MODE_LABELS["single"],      icon: <File className="size-4" /> },
-    { value: "double",     label: READER_MODE_LABELS["double"],      icon: <BookOpen className="size-4" /> },
-    { value: "single-rtl", label: READER_MODE_LABELS["single-rtl"],  icon: <File className="size-4 -scale-x-100" /> },
+  const readingModes: {
+    value: ReaderMode;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      value: "long-strip",
+      label: READER_MODE_LABELS["long-strip"],
+      icon: <GalleryVertical />,
+    },
+    {
+      value: "single",
+      label: READER_MODE_LABELS["single"],
+      icon: <FileInput />,
+    },
+    {
+      value: "double",
+      label: READER_MODE_LABELS["double"],
+      icon: <BookOpen />,
+    },
+    {
+      value: "single-rtl",
+      label: READER_MODE_LABELS["single-rtl"],
+      icon: <FileOutput />,
+    },
   ];
 
-  const imageScales: { value: ImageScale; label: string }[] = [
-    { value: "original",       label: IMAGE_SCALE_LABELS["original"] },
-    { value: "limit-all",      label: IMAGE_SCALE_LABELS["limit-all"] },
-    { value: "limit-width",    label: IMAGE_SCALE_LABELS["limit-width"] },
-    { value: "limit-height",   label: IMAGE_SCALE_LABELS["limit-height"] },
-    { value: "stretch-width",  label: IMAGE_SCALE_LABELS["stretch-width"] },
-    { value: "stretch-height", label: IMAGE_SCALE_LABELS["stretch-height"] },
+  const imageScales: {
+    value: ImageScale;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      value: "original",
+      label: IMAGE_SCALE_LABELS["original"],
+      icon: <Image />,
+    },
+    {
+      value: "limit-all",
+      label: IMAGE_SCALE_LABELS["limit-all"],
+      icon: <Wallpaper />,
+    },
+    {
+      value: "limit-width",
+      label: IMAGE_SCALE_LABELS["limit-width"],
+      icon: <SquareSplitHorizontal />,
+    },
+    {
+      value: "limit-height",
+      label: IMAGE_SCALE_LABELS["limit-height"],
+      icon: <SquareSplitVertical />,
+    },
+    {
+      value: "stretch-width",
+      label: IMAGE_SCALE_LABELS["stretch-width"],
+      icon: <MoveHorizontal />,
+    },
+    {
+      value: "stretch-height",
+      label: IMAGE_SCALE_LABELS["stretch-height"],
+      icon: <MoveVertical />,
+    },
   ];
 
   return (
@@ -90,10 +151,10 @@ function ReaderSettingsDialog() {
           <Settings />
         </Button>
       </DialogTrigger>
-      <DialogContent className="border-none [&>button]:hidden">
-        <DialogHeader className="hidden">
-          <DialogTitle>Reader Settings</DialogTitle>
-          <DialogDescription>Tuỳ chỉnh reader</DialogDescription>
+      <DialogContent className="border-none [&>button]:hidden max-w-full">
+        <DialogHeader>
+          <DialogTitle>Tùy chỉnh Reader (Beta)</DialogTitle>
+          <DialogDescription>Các tùy chỉnh đang trong quá trình thử nghiệm, có thể lỗi hoặc mang lại trải nghiệm không mong muốn</DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-1 gap-3 transition-all duration-300">
@@ -105,7 +166,10 @@ function ReaderSettingsDialog() {
                 <Button
                   key={value}
                   variant="outline"
-                  className={cn("gap-1.5", mode === value && "border-2 border-primary!")}
+                  className={cn(
+                    "gap-1.5",
+                    mode === value && "border-2 border-primary!",
+                  )}
                   onClick={() => setMode(value)}
                 >
                   {icon}
@@ -118,7 +182,9 @@ function ReaderSettingsDialog() {
           {/* Khoảng cách ảnh (chỉ hiện khi long-strip) */}
           {mode === "long-strip" && (
             <div className="space-y-1.5">
-              <Label className="font-semibold">Khoảng cách giữa các ảnh (px)</Label>
+              <Label className="font-semibold">
+                Khoảng cách giữa các ảnh (px)
+              </Label>
               <div className="flex gap-2">
                 <Input
                   type="number"
@@ -132,7 +198,12 @@ function ReaderSettingsDialog() {
                     setImageGap(Number.isNaN(gap) ? 4 : gap);
                   }}
                 />
-                <Button variant="outline" className="shrink-0" size="icon" onClick={() => setImageGap(4)}>
+                <Button
+                  variant="outline"
+                  className="shrink-0"
+                  size="icon"
+                  onClick={() => setImageGap(4)}
+                >
                   <Repeat />
                 </Button>
               </div>
@@ -142,7 +213,7 @@ function ReaderSettingsDialog() {
           {/* Spread offset (chỉ hiện khi double) */}
           {mode === "double" && (
             <div className="space-y-1.5">
-              <Label className="font-semibold">Offset 2 trang (0–3)</Label>
+              <Label className="font-semibold">Offset 2 trang (0-3)</Label>
               <div className="flex gap-2">
                 <Input
                   type="number"
@@ -152,11 +223,19 @@ function ReaderSettingsDialog() {
                   autoFocus={false}
                   autoComplete="off"
                   onChange={(e) => {
-                    const v = Math.min(3, Math.max(0, parseInt(e.target.value) || 0));
+                    const v = Math.min(
+                      3,
+                      Math.max(0, parseInt(e.target.value) || 0),
+                    );
                     setSpreadOffset(v);
                   }}
                 />
-                <Button variant="outline" className="shrink-0" size="icon" onClick={() => setSpreadOffset(0)}>
+                <Button
+                  variant="outline"
+                  className="shrink-0"
+                  size="icon"
+                  onClick={() => setSpreadOffset(0)}
+                >
                   <Repeat />
                 </Button>
               </div>
@@ -167,15 +246,16 @@ function ReaderSettingsDialog() {
           <div className="space-y-1.5">
             <Label className="font-semibold">Ảnh truyện</Label>
             <div className="grid grid-cols-2 gap-2">
-              {imageScales.map(({ value, label }) => (
+              {imageScales.map(({ value, label, icon }) => (
                 <Button
                   key={value}
                   variant="outline"
-                  size="sm"
-                  className={cn("text-xs", scale === value && "border-2 border-primary!")}
+                  // size="sm"
+                  className={cn(scale === value && "border-2 border-primary!")}
                   onClick={() => setScale(value)}
                 >
-                  {label}
+                  {icon}
+                  <span className="truncate">{label}</span>
                 </Button>
               ))}
             </div>
@@ -190,14 +270,16 @@ function ReaderSettingsDialog() {
                 className={cn(!header && "border-2 border-primary!")}
                 onClick={() => setHeader(false)}
               >
-                <Square /><span>Ẩn</span>
+                <Square />
+                <span>Ẩn</span>
               </Button>
               <Button
                 variant="outline"
                 className={cn(!!header && "border-2 border-primary!")}
                 onClick={() => setHeader(true)}
               >
-                <PanelTop /><span>Hiện</span>
+                <PanelTop />
+                <span>Hiện</span>
               </Button>
             </div>
           </div>
