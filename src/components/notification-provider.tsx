@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import { useRouter } from "next/navigation";
 import { fetchLatestChapters } from "@/lib/mangadex/latest";
-import { ChapterTitle } from "./Chapter/ChapterReader/chapter-info";
+import { ChapterTitle } from "./Chapter/chapter-info";
 import { useConfig } from "@/hooks/use-config";
 import { GB, VN } from "country-flag-icons/react/3x2";
 

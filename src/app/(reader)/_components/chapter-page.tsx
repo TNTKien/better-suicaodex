@@ -1,7 +1,6 @@
 "use client";
 
-import ChapterInfo from "@/components/Chapter/ChapterReader/chapter-info";
-import Reader from "@/components/Chapter/ChapterReader/Reader";
+import Reader from "./reader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getChapterDetail } from "@/lib/mangadex/chapter";
 import useSWR from "swr";
@@ -9,12 +8,9 @@ import ChapterNotFound from "./chapter-notfound";
 import MangaMaintain from "@/components/Manga/manga-maintain";
 import useReadingHistory from "@/hooks/use-reading-history";
 import { useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { useConfig } from "@/hooks/use-config";
-import { usePathname } from "next/navigation";
 import { type Chapter } from "@/types/types";
-import { ReaderSidebar } from "@/app/(reader)/reader-sidebar";
-import { ReaderHeader } from "@/app/(reader)/reader-header";
+import { ReaderSidebar } from "./reader-sidebar";
+import { ReaderHeader } from "./reader-header";
 
 interface ChapterProps {
   id: string;
@@ -22,8 +18,6 @@ interface ChapterProps {
 }
 
 export default function ChapterPage({ id, initialData }: ChapterProps) {
-  const [config] = useConfig();
-  const pathName = usePathname();
   const { addHistory } = useReadingHistory();
   const { data, isLoading, error } = useSWR(
     [`chapter-${id}`, id],

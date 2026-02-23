@@ -1,4 +1,4 @@
-import { ChapterTitle } from "@/components/Chapter/ChapterReader/chapter-info";
+import { ChapterTitle } from "@/components/Chapter/chapter-info";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";

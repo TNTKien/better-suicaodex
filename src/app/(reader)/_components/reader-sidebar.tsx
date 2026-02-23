@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/collapsible";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 import { cn, formatChapterTitle, generateSlug } from "@/lib/utils";
-import { ChapterTitle } from "@/components/Chapter/ChapterReader/chapter-info";
+import { ChapterTitle } from "@/components/Chapter/chapter-info";
 import CommentList from "@/components/Comment/comment-list";
 import CommentFormSimple from "@/components/Comment/comment-form-simple";
 import { useRef } from "react";

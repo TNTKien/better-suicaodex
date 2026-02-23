@@ -1,7 +1,7 @@
 "use client";
 
 import { Chapter } from "@/types/types";
-import { ChapterTitle } from "../Chapter/ChapterReader/chapter-info";
+import { ChapterTitle } from "../Chapter/chapter-info";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatTimeToNow } from "@/lib/utils";
