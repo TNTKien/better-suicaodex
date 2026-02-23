@@ -3,7 +3,7 @@
 /**
  * `useReaderImages` – tải ảnh reader qua XHR và quản lý blob URLs.
  *
- * Lấy cảm hứng từ weebdex-reader (Svelte):
+ * From weebdex-reader:
  * - Tối đa MAX_PARALLEL XHR đồng thời
  * - Hàng đợi ưu tiên: trang hiện tại trước, rồi lan dần ra hai phía
  * - Retry tự động tối đa MAX_ATTEMPTS lần, delay 3 s mỗi lần
