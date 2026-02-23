@@ -33,12 +33,13 @@ export function useReaderImages(images: string[], currentIndex: number) {
   );
 
   // Ref mirror của state – không cần re-render để đọc
-  const stateRef   = useRef<PageState[]>(pages);
-  const parallelRef = useRef(0);
-  const xhrsRef    = useRef<XMLHttpRequest[]>([]);
-  const blobsRef   = useRef<(string | null)[]>(new Array(images.length).fill(null));
-  const queueRef   = useRef<number[]>([]);
-  const mountedRef = useRef(true);
+  const stateRef    = useRef<PageState[]>(pages);
+  const parallelRef  = useRef(0);
+  const xhrsRef      = useRef<XMLHttpRequest[]>([]);
+  const blobsRef     = useRef<(string | null)[]>(new Array(images.length).fill(null));
+  const queueRef     = useRef<number[]>([]);
+  const mountedRef   = useRef(true);
+  const retryTimers  = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
   // Sync state → ref
   useEffect(() => { stateRef.current = pages; }, [pages]);
@@ -109,7 +110,11 @@ export function useReaderImages(images: string[], currentIndex: number) {
         xhr.addEventListener("error", () => {
           xhrsRef.current.splice(xhrsRef.current.indexOf(xhr), 1);
           if (attempt < MAX_ATTEMPTS - 1) {
-            setTimeout(() => load(attempt + 1), RETRY_DELAY_MS);
+            const t = setTimeout(() => {
+              retryTimers.current.delete(t);
+              if (mountedRef.current) load(attempt + 1);
+            }, RETRY_DELAY_MS);
+            retryTimers.current.add(t);
           } else {
             updatePage(idx, { isFailed: true, isLoading: false });
             parallelRef.current--;
@@ -159,6 +164,8 @@ export function useReaderImages(images: string[], currentIndex: number) {
     mountedRef.current = true;
     return () => {
       mountedRef.current = false;
+      retryTimers.current.forEach((t) => clearTimeout(t));
+      retryTimers.current.clear();
       xhrsRef.current.forEach((xhr) => xhr.abort());
       blobsRef.current.forEach((b) => { if (b) URL.revokeObjectURL(b); });
     };
