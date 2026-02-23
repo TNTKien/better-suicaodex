@@ -38,9 +38,9 @@ export default function SinglePage({
       className="flex-1 flex flex-col items-center justify-center min-h-dvh cursor-pointer select-none"
       onClick={handleClick}
     >
-      <p className="text-xs text-muted-foreground pb-2">
+      <span className="absolute top-2 text-xs text-muted-foreground z-10 bg-primary px-1 rounded opacity-25">
         {currentIndex + 1} / {pages.length}
-      </p>
+      </span>
       <MangaImage
         page={page}
         alt={`Trang ${currentIndex + 1}`}

@@ -44,10 +44,10 @@ export default function DoublePage({
       className="flex-1 flex flex-col items-center justify-center min-h-dvh cursor-pointer select-none"
       onClick={handleClick}
     >
-      {/* Chỉ báo trang */}
-      <p className="text-xs text-muted-foreground pb-2">
+      {/* page index */}
+      <span className="absolute top-2 text-xs text-muted-foreground z-10 bg-primary px-1 rounded opacity-25">
         {pageLabel} / {pages.length}
-      </p>
+      </span>
 
       {/* Spread */}
       <div
