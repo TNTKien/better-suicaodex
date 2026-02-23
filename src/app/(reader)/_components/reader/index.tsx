@@ -54,8 +54,9 @@ export default function Reader({ images, chapterData }: ReaderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { pages, retry } = useReaderImages(images, currentIndex);
 
-  // Reset to page 0 when images change (shouldn't happen since key={id}, but just in case)
-  useEffect(() => { setCurrentIndex(0); }, [images]);
+  // Reset to page 0 only when the chapter itself changes, not on SWR background revalidation
+  // (which may swap in a new array reference for the same chapter and would reset mid-session)
+  useEffect(() => { setCurrentIndex(0); }, [chapterData.id]);
 
   // ── Spreads (double mode) ─────────────────────────────────────────────
   const spreads = useMemo(
