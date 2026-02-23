@@ -21,11 +21,13 @@ export async function GET(req: NextRequest) {
 
   const [mangaComments, chapterComments] = await Promise.all([
     prisma.mangaComment.findMany({
+      where: { parentId: null },
       take: 10,
       orderBy: { createdAt: "desc" },
       include: { user: true },
     }),
     prisma.chapterComment.findMany({
+      where: { parentId: null },
       take: 10,
       orderBy: { createdAt: "desc" },
       include: { user: true },

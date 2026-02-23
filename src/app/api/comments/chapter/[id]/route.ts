@@ -130,6 +130,34 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     );
   }
 
+  if (parentId) {
+    const parent = await prisma.chapterComment.findUnique({
+      where: { id: parentId },
+      select: { chapterId: true, parentId: true },
+    });
+
+    if (!parent) {
+      return NextResponse.json(
+        { error: "Parent comment not found" },
+        { status: 404 }
+      );
+    }
+
+    if (parent.chapterId !== id) {
+      return NextResponse.json(
+        { error: "Parent comment does not belong to this chapter" },
+        { status: 400 }
+      );
+    }
+
+    if (parent.parentId !== null) {
+      return NextResponse.json(
+        { error: "Cannot reply to a reply" },
+        { status: 400 }
+      );
+    }
+  }
+
   const comment = await prisma.chapterComment.create({
     data: {
       content,
