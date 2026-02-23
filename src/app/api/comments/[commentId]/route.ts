@@ -4,6 +4,7 @@ import { serializeComment } from "@/lib/suicaodex/serializers";
 import { auth } from "@/auth";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
 import { getContentLength } from "@/lib/utils";
+import { Prisma } from "../../../../../prisma/generated/client";
 
 interface RouteParams {
   params: Promise<{
@@ -66,17 +67,29 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const updated = await prisma.mangaComment.update({
-      where: { id: commentId },
-      data: {
-        content,
-        isEdited: true,
-        updatedAt: new Date(),
-      },
-      include: { user: true },
-    });
-
-    return NextResponse.json(serializeComment(updated));
+    try {
+      const updated = await prisma.mangaComment.update({
+        where: { id: commentId, isEdited: false },
+        data: {
+          content,
+          isEdited: true,
+          updatedAt: new Date(),
+        },
+        include: { user: true },
+      });
+      return NextResponse.json(serializeComment(updated));
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === "P2025"
+      ) {
+        return NextResponse.json(
+          { error: "Comment can only be edited once" },
+          { status: 403 }
+        );
+      }
+      throw err;
+    }
   } else if (type === "chapter") {
     const existing = await prisma.chapterComment.findUnique({
       where: { id: commentId },
@@ -89,17 +102,29 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const updated = await prisma.chapterComment.update({
-      where: { id: commentId },
-      data: {
-        content,
-        isEdited: true,
-        updatedAt: new Date(),
-      },
-      include: { user: true },
-    });
-
-    return NextResponse.json(serializeComment(updated));
+    try {
+      const updated = await prisma.chapterComment.update({
+        where: { id: commentId, isEdited: false },
+        data: {
+          content,
+          isEdited: true,
+          updatedAt: new Date(),
+        },
+        include: { user: true },
+      });
+      return NextResponse.json(serializeComment(updated));
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === "P2025"
+      ) {
+        return NextResponse.json(
+          { error: "Comment can only be edited once" },
+          { status: 403 }
+        );
+      }
+      throw err;
+    }
   }
 
   return NextResponse.json({ error: "Invalid type" }, { status: 400 });
