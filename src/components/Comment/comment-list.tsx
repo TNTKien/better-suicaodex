@@ -101,7 +101,40 @@ const CommentList = ({
             className="rounded-none shadow-none border-none p-0 bg-transparent overflow-hidden"
           >
             <CardContent className="p-0!">
-              <CommentCard comment={comment} />
+              <div className="relative">
+                <CommentCard
+                  comment={comment}
+                  type={type}
+                  contentId={id}
+                  onMutate={mutate}
+                />
+                {comment.replies && comment.replies.length > 0 && (
+                  <div className="relative mt-2 space-y-3">
+                    {/* Vertical line going up through parent and down through all replies */}
+                    <div className="absolute left-4 top-[-9999px] bottom-0 w-0.5 bg-border" />
+                    {comment.replies.map((reply: any, index: number, arr: any[]) => {
+                      const isLast = index === arr.length - 1;
+                      return (
+                        <div key={reply.id} className="relative pl-10">
+                          {/* Horizontal branch to reply avatar */}
+                          <div className="absolute left-4 top-4 h-0.5 w-6 bg-border" />
+                          {/* Cover vertical line below last reply's avatar center */}
+                          {isLast && (
+                            <div className="absolute left-4 top-[17px] bottom-0 w-0.5 bg-background" />
+                          )}
+                          <CommentCard
+                            comment={reply}
+                            type={type}
+                            contentId={id}
+                            isReply={true}
+                            onMutate={mutate}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         ))}
