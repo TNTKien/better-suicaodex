@@ -5,7 +5,12 @@ import GitHub from "next-auth/providers/github";
 import Facebook from "next-auth/providers/facebook";
 
 export default {
-  providers: [Discord, Google, GitHub, Facebook],
+  providers: [
+    Discord({ allowDangerousEmailAccountLinking: true }),
+    Google({ allowDangerousEmailAccountLinking: true }),
+    GitHub({ allowDangerousEmailAccountLinking: true }),
+    Facebook({ allowDangerousEmailAccountLinking: true }),
+  ],
   trustHost: true,
   // đặt callbacks logic ở đây để cả Middleware và App đều dùng được logic này
   callbacks: {
