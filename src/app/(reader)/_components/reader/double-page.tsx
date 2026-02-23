@@ -1,0 +1,78 @@
+"use client";
+
+import { type PageState } from "@/hooks/use-reader-images";
+import { cn } from "@/lib/utils";
+import MangaImage from "./manga-image";
+
+interface DoublePageProps {
+  pages: PageState[];
+  /** Indices của spread hiện tại – [left] hoặc [left, right] */
+  spreadPages: [number] | [number, number];
+  retry: (index: number) => void;
+  /** RTL: đảo thứ tự hiển thị */
+  rtl?: boolean;
+  onNavigatePrev: () => void;
+  onNavigateNext: () => void;
+}
+
+export default function DoublePage({
+  pages,
+  spreadPages,
+  retry,
+  rtl = false,
+  onNavigatePrev,
+  onNavigateNext,
+}: DoublePageProps) {
+  // RTL đảo thứ tự: trang phải hiển thị trước (trang trái = số nhỏ hơn)
+  const displayIndices = rtl ? ([...spreadPages].reverse() as typeof spreadPages) : spreadPages;
+  const isDouble = spreadPages.length === 2;
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const isLeft = e.clientX < rect.left + rect.width / 2;
+    const goForward = rtl ? isLeft : !isLeft;
+    if (goForward) onNavigateNext();
+    else onNavigatePrev();
+  };
+
+  const pageLabel = isDouble
+    ? `${spreadPages[0] + 1}–${(spreadPages as [number, number])[1] + 1}`
+    : `${spreadPages[0] + 1}`;
+
+  return (
+    <div
+      className="flex-1 flex flex-col items-center justify-center min-h-dvh cursor-pointer select-none"
+      onClick={handleClick}
+    >
+      {/* Chỉ báo trang */}
+      <p className="text-xs text-muted-foreground pb-2">
+        {pageLabel} / {pages.length}
+      </p>
+
+      {/* Spread */}
+      <div
+        className={cn(
+          "flex items-center justify-center w-full max-h-dvh",
+          isDouble ? "gap-0" : "justify-center",
+        )}
+      >
+        {displayIndices.map((idx) => (
+          <div
+            key={idx}
+            className={cn(
+              "flex items-center justify-center overflow-hidden",
+              isDouble ? "flex-1" : "w-auto",
+            )}
+          >
+            <MangaImage
+              page={pages[idx]}
+              alt={`Trang ${idx + 1}`}
+              onRetry={() => retry(idx)}
+              isDouble={isDouble}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
