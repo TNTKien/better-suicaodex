@@ -6,7 +6,7 @@ import MangaImage from "./manga-image";
 
 interface DoublePageProps {
   pages: PageState[];
-  /** Indices của spread hiện tại – [left] hoặc [left, right] */
+  /** Indices của spread hiện tại - [left] hoặc [left, right] */
   spreadPages: [number] | [number, number];
   retry: (index: number) => void;
   /** RTL: đảo thứ tự hiển thị */
@@ -36,7 +36,7 @@ export default function DoublePage({
   };
 
   const pageLabel = isDouble
-    ? `${spreadPages[0] + 1}–${(spreadPages as [number, number])[1] + 1}`
+    ? `${spreadPages[0] + 1}-${(spreadPages as [number, number])[1] + 1}`
     : `${spreadPages[0] + 1}`;
 
   return (

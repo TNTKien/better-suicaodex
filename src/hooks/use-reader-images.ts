@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * `useReaderImages` – tải ảnh reader qua XHR và quản lý blob URLs.
+ * `useReaderImages` - tải ảnh reader qua XHR và quản lý blob URLs.
  *
  * From weebdex-reader:
  * - Tối đa MAX_PARALLEL XHR đồng thời
@@ -32,7 +32,7 @@ export function useReaderImages(images: string[], currentIndex: number) {
     images.map(() => ({ blob: null, isLoaded: false, isLoading: false, isFailed: false })),
   );
 
-  // Ref mirror của state – không cần re-render để đọc
+  // Ref mirror của state - không cần re-render để đọc
   const stateRef    = useRef<PageState[]>(pages);
   const parallelRef  = useRef(0);
   const xhrsRef      = useRef<XMLHttpRequest[]>([]);

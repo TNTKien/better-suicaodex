@@ -40,7 +40,6 @@ import {
   ArrowRight,
   BookOpen,
   ChevronsUp,
-  File,
   FileInput,
   FileOutput,
   GalleryVertical,
@@ -57,7 +56,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
-import { toast } from "sonner";
 import useSWR from "swr";
 
 interface ChapterNavProps {

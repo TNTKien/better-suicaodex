@@ -12,7 +12,7 @@ interface MangaImageProps {
   page: PageState;
   alt: string;
   onRetry: () => void;
-  /** Dùng trong chế độ 2 trang – căn ảnh vào giữa spread */
+  /** Dùng trong chế độ 2 trang - căn ảnh vào giữa spread */
   isDouble?: boolean;
 }
 
@@ -30,7 +30,7 @@ export default function MangaImage({ page, alt, onRetry, isDouble }: MangaImageP
         page.isFailed && "flex items-center justify-center",
       )}
     >
-      {/* Ảnh chính – chỉ hiển thị khi blob đã sẵn sàng */}
+      {/* Ảnh chính - chỉ hiển thị khi blob đã sẵn sàng */}
       {page.blob && (
         // eslint-disable-next-line @next/next/no-img-element
         <img

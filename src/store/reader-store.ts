@@ -5,11 +5,11 @@ import { persist } from "zustand/middleware";
 /** Chế độ đọc */
 export type ReaderMode =
   | "long-strip"   // Cuộn dọc (webtoon)
-  | "single"       // Từng trang – LTR
-  | "single-rtl"   // Từng trang – RTL (manga Nhật)
-  | "double";      // 2 trang cạnh nhau – LTR
+  | "single"       // Từng trang - LTR
+  | "single-rtl"   // Từng trang - RTL (manga Nhật)
+  | "double";      // 2 trang cạnh nhau - LTR
 
-/** Tỉ lệ hiển thị ảnh – tương đương ReaderScale của weebdex */
+/** Tỉ lệ hiển thị ảnh - tương đương ReaderScale của weebdex */
 export type ImageScale =
   | "original"      // Kích thước gốc
   | "limit-all"     // Vừa màn hình (max-w + max-h)

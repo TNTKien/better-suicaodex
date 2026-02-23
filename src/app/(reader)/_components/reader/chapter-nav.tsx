@@ -29,7 +29,7 @@ import { useSidebar } from "@/components/ui/sidebar-2-reader";
 interface ChapterNavProps {
   chapterData: Chapter;
   chapterAggregate: ChapterAggregate[];
-  /** Pre-computed bởi Reader/index – dùng trực tiếp, bỏ qua tính toán nội bộ */
+  /** Pre-computed bởi Reader/index - dùng trực tiếp, bỏ qua tính toán nội bộ */
   prevChapterId?: string;
   nextChapterId?: string;
 }
