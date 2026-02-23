@@ -11,7 +11,14 @@ import Image from "next/image";
 import DoroLoading from "#/images/doro-loading.gif";
 import { Marquee } from "@/components/ui/marquee";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: res.statusText }));
+    throw Object.assign(new Error(error.error || "Có lỗi xảy ra"), { status: res.status });
+  }
+  return res.json();
+};
 
 export default function CommentFeed() {
   const {

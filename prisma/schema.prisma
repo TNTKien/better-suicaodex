@@ -143,10 +143,15 @@ model MangaComment {
   mangaId String
   manga   Manga  @relation(fields: [mangaId], references: [mangadexId], onDelete: Cascade)
 
+  parentId String?
+  parent   MangaComment?  @relation("MangaCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  MangaComment[] @relation("MangaCommentReplies")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@index([parentId])
   // Lấy Comment của Manga X + Sắp xếp mới nhất
   @@index([mangaId, createdAt(sort: Desc)])
 }
@@ -176,10 +181,15 @@ model ChapterComment {
   chapterId String
   chapter   Chapter @relation(fields: [chapterId], references: [mangadexId], onDelete: Cascade)
 
+  parentId String?
+  parent   ChapterComment?  @relation("ChapterCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  ChapterComment[] @relation("ChapterCommentReplies")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@index([parentId])
   // Tương tự MangaComment, lấy comment chapter nhanh hơn
   @@index([chapterId, createdAt(sort: Desc)])
 }
