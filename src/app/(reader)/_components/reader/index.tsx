@@ -26,6 +26,7 @@ import ChapterNav from "./chapter-nav";
 import DoublePage from "./double-page";
 import LongStrip from "./long-strip";
 import SinglePage from "./single-page";
+import { SiPiped } from "@icons-pack/react-simple-icons";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type SpreadPages = [number] | [number, number];
@@ -167,14 +168,14 @@ export default function Reader({ images, chapterData }: ReaderProps) {
 
   const goPrevChapter = useCallback(() => {
     if (prevChapterId) {
-      toast.info("Đang chuyển chương...", { duration: 3000, closeButton: false });
+      toast.info("Đang chuyển chương...", { duration: 3000, closeButton: false, icon: <Spinner/> });
       router.push(`/chapter/${prevChapterId}`);
     } else toast.warning("Đây là chương đầu tiên mà!");
   }, [prevChapterId, router]);
 
   const goNextChapter = useCallback(() => {
     if (nextChapterId) {
-      toast.info("Đang chuyển chương...", { duration: 3000, closeButton: false });
+      toast.info("Đang chuyển chương...", { duration: 3000, closeButton: false, icon: <Spinner/> });
       router.push(`/chapter/${nextChapterId}`);
     } else toast.warning("Đây là chương mới nhất rồi nha!");
   }, [nextChapterId, router]);
