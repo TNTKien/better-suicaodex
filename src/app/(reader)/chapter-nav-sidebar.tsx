@@ -82,7 +82,10 @@ function ReaderSettingsDialog() {
                     ...config,
                     reader: { ...config.reader, type: "single" },
                   });
-                  return toast.info("Chức năng đang phát triển!");
+                  return toast.warning("Chức năng chưa hoàn thiện", {
+                    description:
+                      "Chế độ này dang được thử nghiệm và chưa hoàn thiện, có thể lỗi hoặc trải nghiệm không tốt.",
+                  });
                 }}
               >
                 <File />
