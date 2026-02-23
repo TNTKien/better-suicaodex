@@ -23,6 +23,10 @@ const MAX_PARALLEL = 3;
 const MAX_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 3000;
 
+/** Set NEXT_PUBLIC_IMAGE_PROXY_URL in .env.development if got CORS issue*/
+// TODO: fix CORS issue in suicaodex-api
+const IMAGE_PROXY = process.env.NEXT_PUBLIC_IMAGE_PROXY_URL ?? "";
+
 export function useReaderImages(images: string[], currentIndex: number) {
   const [pages, setPages] = useState<PageState[]>(() =>
     images.map(() => ({ blob: null, isLoaded: false, isLoading: false, isFailed: false })),
@@ -90,7 +94,7 @@ export function useReaderImages(images: string[], currentIndex: number) {
         const xhr = new XMLHttpRequest();
         xhrsRef.current.push(xhr);
         xhr.responseType = "blob";
-        xhr.open("GET", images[idx]);
+        xhr.open("GET", IMAGE_PROXY + images[idx]);
 
         xhr.addEventListener("load", () => {
           xhrsRef.current.splice(xhrsRef.current.indexOf(xhr), 1);
