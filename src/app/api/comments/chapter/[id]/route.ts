@@ -46,11 +46,17 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
   const [totalCount, comments] = await Promise.all([
     prisma.chapterComment.count({
-      where: { chapterId: id },
+      where: { chapterId: id, parentId: null },
     }),
     prisma.chapterComment.findMany({
-      where: { chapterId: id },
-      include: { user: true },
+      where: { chapterId: id, parentId: null },
+      include: {
+        user: true,
+        replies: {
+          include: { user: true },
+          orderBy: { createdAt: "asc" },
+        },
+      },
       orderBy: { createdAt: "desc" },
       skip: offset,
       take: limit,
@@ -92,10 +98,18 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     throw err;
   }
 
-  const { content, title, chapterNumber } = await req.json();
+  const { content, title, chapterNumber, parentId } = await req.json();
   const contentLength = getContentLength(content || "");
 
-  if (!id || !content || !title || !chapterNumber) {
+  if (!id || !content) {
+    return NextResponse.json(
+      { error: "Missing data" },
+      { status: 400 }
+    );
+  }
+
+  // Top-level comments require title and chapterNumber, replies do not
+  if (!parentId && (!title || !chapterNumber)) {
     return NextResponse.json(
       { error: "Missing data" },
       { status: 400 }
@@ -119,10 +133,11 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   const comment = await prisma.chapterComment.create({
     data: {
       content,
-      title,
+      title: parentId ? "" : title,
       chapterId: id,
-      chapterNumber,
+      chapterNumber: parentId ? "" : chapterNumber,
       userId: session.user.id,
+      ...(parentId ? { parentId } : {}),
     },
     include: {
       user: true,

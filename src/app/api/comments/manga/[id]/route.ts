@@ -46,11 +46,17 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
   const [totalCount, comments] = await Promise.all([
     prisma.mangaComment.count({
-      where: { mangaId: id },
+      where: { mangaId: id, parentId: null },
     }),
     prisma.mangaComment.findMany({
-      where: { mangaId: id },
-      include: { user: true },
+      where: { mangaId: id, parentId: null },
+      include: {
+        user: true,
+        replies: {
+          include: { user: true },
+          orderBy: { createdAt: "asc" },
+        },
+      },
       orderBy: { createdAt: "desc" },
       skip: offset,
       take: limit,
@@ -92,10 +98,18 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     throw err;
   }
 
-  const { content, title } = await req.json();
+  const { content, title, parentId } = await req.json();
   const contentLength = getContentLength(content || "");
 
-  if (!id || !content || !title) {
+  if (!id || !content) {
+    return NextResponse.json(
+      { error: "Missing data" },
+      { status: 400 }
+    );
+  }
+
+  // Top-level comments require a title, replies do not
+  if (!parentId && !title) {
     return NextResponse.json(
       { error: "Missing data" },
       { status: 400 }
@@ -119,9 +133,10 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   const comment = await prisma.mangaComment.create({
     data: {
       content,
-      title,
+      title: parentId ? "" : title,
       mangaId: id,
       userId: session.user.id,
+      ...(parentId ? { parentId } : {}),
     },
     include: {
       user: true,
