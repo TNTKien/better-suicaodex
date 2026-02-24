@@ -83,7 +83,7 @@ export const getGetUserHistoryMangaUrl = (params?: GetUserHistoryMangaParams,) =
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/user/history/manga?${stringifiedParams}` : `https://wd.memaydex.com/user/history/manga`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/user/history/manga?${stringifiedParams}` : `https://wd.memaydex.online/user/history/manga`
 }
 
 export const getUserHistoryManga = async (params?: GetUserHistoryMangaParams, options?: RequestInit): Promise<getUserHistoryMangaResponse> => {
@@ -109,7 +109,7 @@ export const getUserHistoryManga = async (params?: GetUserHistoryMangaParams, op
 
 export const getGetUserHistoryMangaQueryKey = (params?: GetUserHistoryMangaParams,) => {
     return [
-    `https://wd.memaydex.com/user/history/manga`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/user/history/manga`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -216,7 +216,7 @@ export const getGetUserHistoryMangaIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/history/manga/${id}`
+  return `https://wd.memaydex.online/user/history/manga/${id}`
 }
 
 export const getUserHistoryMangaId = async (id: string, options?: RequestInit): Promise<getUserHistoryMangaIdResponse> => {
@@ -242,7 +242,7 @@ export const getUserHistoryMangaId = async (id: string, options?: RequestInit): 
 
 export const getGetUserHistoryMangaIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/user/history/manga/${id}`
+    `https://wd.memaydex.online/user/history/manga/${id}`
     ] as const;
     }
 
@@ -349,7 +349,7 @@ export const getPostUserHistoryMangaIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/history/manga/${id}`
+  return `https://wd.memaydex.online/user/history/manga/${id}`
 }
 
 export const postUserHistoryMangaId = async (id: string,

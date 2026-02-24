@@ -77,7 +77,7 @@ export const getGetThreadIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/thread/${id}`
+  return `https://wd.memaydex.online/thread/${id}`
 }
 
 export const getThreadId = async (id: string, options?: RequestInit): Promise<getThreadIdResponse> => {
@@ -103,7 +103,7 @@ export const getThreadId = async (id: string, options?: RequestInit): Promise<ge
 
 export const getGetThreadIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/thread/${id}`
+    `https://wd.memaydex.online/thread/${id}`
     ] as const;
     }
 
@@ -218,7 +218,7 @@ export const getGetThreadIdRepliesUrl = (id: string,
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/thread/${id}/replies?${stringifiedParams}` : `https://wd.memaydex.com/thread/${id}/replies`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/thread/${id}/replies?${stringifiedParams}` : `https://wd.memaydex.online/thread/${id}/replies`
 }
 
 export const getThreadIdReplies = async (id: string,
@@ -246,7 +246,7 @@ export const getThreadIdReplies = async (id: string,
 export const getGetThreadIdRepliesQueryKey = (id: string,
     params?: GetThreadIdRepliesParams,) => {
     return [
-    `https://wd.memaydex.com/thread/${id}/replies`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/thread/${id}/replies`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -363,7 +363,7 @@ export const getPostThreadIdRepliesUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/thread/${id}/replies`
+  return `https://wd.memaydex.online/thread/${id}/replies`
 }
 
 export const postThreadIdReplies = async (id: string,
@@ -475,7 +475,7 @@ export const getPostThreadIdRepliesReplyIdUrl = (id: string,
 
   
 
-  return `https://wd.memaydex.com/thread/${id}/replies/${replyId}`
+  return `https://wd.memaydex.online/thread/${id}/replies/${replyId}`
 }
 
 export const postThreadIdRepliesReplyId = async (id: string,
@@ -588,7 +588,7 @@ export const getDeleteThreadIdRepliesReplyIdUrl = (id: string,
 
   
 
-  return `https://wd.memaydex.com/thread/${id}/replies/${replyId}`
+  return `https://wd.memaydex.online/thread/${id}/replies/${replyId}`
 }
 
 export const deleteThreadIdRepliesReplyId = async (id: string,

@@ -78,7 +78,7 @@ export const getGetGroupUrl = (params?: GetGroupParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/group?${stringifiedParams}` : `https://wd.memaydex.com/group`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/group?${stringifiedParams}` : `https://wd.memaydex.online/group`
 }
 
 export const getGroup = async (params?: GetGroupParams, options?: RequestInit): Promise<getGroupResponse> => {
@@ -104,7 +104,7 @@ export const getGroup = async (params?: GetGroupParams, options?: RequestInit): 
 
 export const getGetGroupQueryKey = (params?: GetGroupParams,) => {
     return [
-    `https://wd.memaydex.com/group`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/group`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -216,7 +216,7 @@ export const getPostGroupUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/group`
+  return `https://wd.memaydex.online/group`
 }
 
 export const postGroup = async (controllersCreateGroupRequest: ControllersCreateGroupRequest, options?: RequestInit): Promise<postGroupResponse> => {
@@ -321,7 +321,7 @@ export const getGetGroupIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/group/${id}`
+  return `https://wd.memaydex.online/group/${id}`
 }
 
 export const getGroupId = async (id: string, options?: RequestInit): Promise<getGroupIdResponse> => {
@@ -347,7 +347,7 @@ export const getGroupId = async (id: string, options?: RequestInit): Promise<get
 
 export const getGetGroupIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/group/${id}`
+    `https://wd.memaydex.online/group/${id}`
     ] as const;
     }
 
@@ -464,7 +464,7 @@ export const getPutGroupIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/group/${id}`
+  return `https://wd.memaydex.online/group/${id}`
 }
 
 export const putGroupId = async (id: string,
@@ -575,7 +575,7 @@ export const getDeleteGroupIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/group/${id}`
+  return `https://wd.memaydex.online/group/${id}`
 }
 
 export const deleteGroupId = async (id: string, options?: RequestInit): Promise<deleteGroupIdResponse> => {

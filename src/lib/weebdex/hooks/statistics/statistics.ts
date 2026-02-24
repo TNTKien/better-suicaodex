@@ -72,7 +72,7 @@ export const getGetChapterIdStatisticsUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/chapter/${id}/statistics`
+  return `https://wd.memaydex.online/chapter/${id}/statistics`
 }
 
 export const getChapterIdStatistics = async (id: string, options?: RequestInit): Promise<getChapterIdStatisticsResponse> => {
@@ -98,7 +98,7 @@ export const getChapterIdStatistics = async (id: string, options?: RequestInit):
 
 export const getGetChapterIdStatisticsQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/chapter/${id}/statistics`
+    `https://wd.memaydex.online/chapter/${id}/statistics`
     ] as const;
     }
 
@@ -205,7 +205,7 @@ export const getGetGroupIdStatisticsUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/group/${id}/statistics`
+  return `https://wd.memaydex.online/group/${id}/statistics`
 }
 
 export const getGroupIdStatistics = async (id: string, options?: RequestInit): Promise<getGroupIdStatisticsResponse> => {
@@ -231,7 +231,7 @@ export const getGroupIdStatistics = async (id: string, options?: RequestInit): P
 
 export const getGetGroupIdStatisticsQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/group/${id}/statistics`
+    `https://wd.memaydex.online/group/${id}/statistics`
     ] as const;
     }
 
@@ -338,7 +338,7 @@ export const getGetMangaIdStatisticsUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/manga/${id}/statistics`
+  return `https://wd.memaydex.online/manga/${id}/statistics`
 }
 
 export const getMangaIdStatistics = async (id: string, options?: RequestInit): Promise<getMangaIdStatisticsResponse> => {
@@ -364,7 +364,7 @@ export const getMangaIdStatistics = async (id: string, options?: RequestInit): P
 
 export const getGetMangaIdStatisticsQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/manga/${id}/statistics`
+    `https://wd.memaydex.online/manga/${id}/statistics`
     ] as const;
     }
 
@@ -471,7 +471,7 @@ export const getGetThreadIdStatisticsUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/thread/${id}/statistics`
+  return `https://wd.memaydex.online/thread/${id}/statistics`
 }
 
 export const getThreadIdStatistics = async (id: string, options?: RequestInit): Promise<getThreadIdStatisticsResponse> => {
@@ -497,7 +497,7 @@ export const getThreadIdStatistics = async (id: string, options?: RequestInit): 
 
 export const getGetThreadIdStatisticsQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/thread/${id}/statistics`
+    `https://wd.memaydex.online/thread/${id}/statistics`
     ] as const;
     }
 
@@ -604,7 +604,7 @@ export const getGetUserIdStatisticsUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/${id}/statistics`
+  return `https://wd.memaydex.online/user/${id}/statistics`
 }
 
 export const getUserIdStatistics = async (id: string, options?: RequestInit): Promise<getUserIdStatisticsResponse> => {
@@ -630,7 +630,7 @@ export const getUserIdStatistics = async (id: string, options?: RequestInit): Pr
 
 export const getGetUserIdStatisticsQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/user/${id}/statistics`
+    `https://wd.memaydex.online/user/${id}/statistics`
     ] as const;
     }
 

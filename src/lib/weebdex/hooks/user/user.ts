@@ -77,7 +77,7 @@ export const getGetUserUrl = (params?: GetUserParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/user?${stringifiedParams}` : `https://wd.memaydex.com/user`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/user?${stringifiedParams}` : `https://wd.memaydex.online/user`
 }
 
 export const getUser = async (params?: GetUserParams, options?: RequestInit): Promise<getUserResponse> => {
@@ -103,7 +103,7 @@ export const getUser = async (params?: GetUserParams, options?: RequestInit): Pr
 
 export const getGetUserQueryKey = (params?: GetUserParams,) => {
     return [
-    `https://wd.memaydex.com/user`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/user`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -210,7 +210,7 @@ export const getGetUserIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/${id}`
+  return `https://wd.memaydex.online/user/${id}`
 }
 
 export const getUserId = async (id: string, options?: RequestInit): Promise<getUserIdResponse> => {
@@ -236,7 +236,7 @@ export const getUserId = async (id: string, options?: RequestInit): Promise<getU
 
 export const getGetUserIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/user/${id}`
+    `https://wd.memaydex.online/user/${id}`
     ] as const;
     }
 
@@ -353,7 +353,7 @@ export const getPutUserIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/${id}`
+  return `https://wd.memaydex.online/user/${id}`
 }
 
 export const putUserId = async (id: string,

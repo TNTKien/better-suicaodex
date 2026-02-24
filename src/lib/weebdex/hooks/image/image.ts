@@ -67,7 +67,7 @@ export const getGetCoversMangaidCoveridExtUrl = (mangaid: string,
 
   
 
-  return `https://wd.memaydex.com/covers/${mangaid}/${coverid}.${ext}`
+  return `https://wd.memaydex.online/covers/${mangaid}/${coverid}.${ext}`
 }
 
 export const getCoversMangaidCoveridExt = async (mangaid: string,
@@ -97,7 +97,7 @@ export const getGetCoversMangaidCoveridExtQueryKey = (mangaid: string,
     coverid: string,
     ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp',) => {
     return [
-    `https://wd.memaydex.com/covers/${mangaid}/${coverid}.${ext}`
+    `https://wd.memaydex.online/covers/${mangaid}/${coverid}.${ext}`
     ] as const;
     }
 
@@ -216,7 +216,7 @@ export const getGetDataChapteridNameUrl = (chapterid: string,
 
   
 
-  return `https://wd.memaydex.com/data/${chapterid}/${name}`
+  return `https://wd.memaydex.online/data/${chapterid}/${name}`
 }
 
 export const getDataChapteridName = async (chapterid: string,
@@ -244,7 +244,7 @@ export const getDataChapteridName = async (chapterid: string,
 export const getGetDataChapteridNameQueryKey = (chapterid: string,
     name: string,) => {
     return [
-    `https://wd.memaydex.com/data/${chapterid}/${name}`
+    `https://wd.memaydex.online/data/${chapterid}/${name}`
     ] as const;
     }
 

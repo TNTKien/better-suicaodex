@@ -80,7 +80,7 @@ export const getGetUploadUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/upload`
+  return `https://wd.memaydex.online/upload`
 }
 
 export const getUpload = async ( options?: RequestInit): Promise<getUploadResponse> => {
@@ -106,7 +106,7 @@ export const getUpload = async ( options?: RequestInit): Promise<getUploadRespon
 
 export const getGetUploadQueryKey = () => {
     return [
-    `https://wd.memaydex.com/upload`
+    `https://wd.memaydex.online/upload`
     ] as const;
     }
 
@@ -218,7 +218,7 @@ export const getPostUploadBeginUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/upload/begin`
+  return `https://wd.memaydex.online/upload/begin`
 }
 
 export const postUploadBegin = async (controllersBeginUploadSessionRequest: ControllersBeginUploadSessionRequest, options?: RequestInit): Promise<postUploadBeginResponse> => {
@@ -333,7 +333,7 @@ export const getPostUploadBeginChapterIdUrl = (chapterId: string,) => {
 
   
 
-  return `https://wd.memaydex.com/upload/begin/${chapterId}`
+  return `https://wd.memaydex.online/upload/begin/${chapterId}`
 }
 
 export const postUploadBeginChapterId = async (chapterId: string,
@@ -444,7 +444,7 @@ export const getPostUploadCheckApprovalRequiredUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/upload/check-approval-required`
+  return `https://wd.memaydex.online/upload/check-approval-required`
 }
 
 export const postUploadCheckApprovalRequired = async (controllersCheckApprovalRequiredRequest: ControllersCheckApprovalRequiredRequest, options?: RequestInit): Promise<postUploadCheckApprovalRequiredResponse> => {
@@ -549,7 +549,7 @@ export const getPostUploadUploadSessionIdUrl = (uploadSessionId: string,) => {
 
   
 
-  return `https://wd.memaydex.com/upload/${uploadSessionId}`
+  return `https://wd.memaydex.online/upload/${uploadSessionId}`
 }
 
 export const postUploadUploadSessionId = async (uploadSessionId: string,
@@ -657,7 +657,7 @@ export const getDeleteUploadUploadSessionIdUrl = (uploadSessionId: string,) => {
 
   
 
-  return `https://wd.memaydex.com/upload/${uploadSessionId}`
+  return `https://wd.memaydex.online/upload/${uploadSessionId}`
 }
 
 export const deleteUploadUploadSessionId = async (uploadSessionId: string, options?: RequestInit): Promise<deleteUploadUploadSessionIdResponse> => {
@@ -761,7 +761,7 @@ export const getDeleteUploadUploadSessionIdBatchUrl = (uploadSessionId: string,)
 
   
 
-  return `https://wd.memaydex.com/upload/${uploadSessionId}/batch`
+  return `https://wd.memaydex.online/upload/${uploadSessionId}/batch`
 }
 
 export const deleteUploadUploadSessionIdBatch = async (uploadSessionId: string,
@@ -867,7 +867,7 @@ export const getPostUploadUploadSessionIdCommitUrl = (uploadSessionId: string,) 
 
   
 
-  return `https://wd.memaydex.com/upload/${uploadSessionId}/commit`
+  return `https://wd.memaydex.online/upload/${uploadSessionId}/commit`
 }
 
 export const postUploadUploadSessionIdCommit = async (uploadSessionId: string,
@@ -974,7 +974,7 @@ export const getDeleteUploadUploadSessionIdFileIdUrl = (uploadSessionId: string,
 
   
 
-  return `https://wd.memaydex.com/upload/${uploadSessionId}/${fileId}`
+  return `https://wd.memaydex.online/upload/${uploadSessionId}/${fileId}`
 }
 
 export const deleteUploadUploadSessionIdFileId = async (uploadSessionId: string,

@@ -74,7 +74,7 @@ export const getGetCoverIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/cover/${id}`
+  return `https://wd.memaydex.online/cover/${id}`
 }
 
 export const getCoverId = async (id: string, options?: RequestInit): Promise<getCoverIdResponse> => {
@@ -100,7 +100,7 @@ export const getCoverId = async (id: string, options?: RequestInit): Promise<get
 
 export const getGetCoverIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/cover/${id}`
+    `https://wd.memaydex.online/cover/${id}`
     ] as const;
     }
 
@@ -217,7 +217,7 @@ export const getPutCoverIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/cover/${id}`
+  return `https://wd.memaydex.online/cover/${id}`
 }
 
 export const putCoverId = async (id: string,
@@ -328,7 +328,7 @@ export const getDeleteCoverIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/cover/${id}`
+  return `https://wd.memaydex.online/cover/${id}`
 }
 
 export const deleteCoverId = async (id: string, options?: RequestInit): Promise<deleteCoverIdResponse> => {
@@ -437,7 +437,7 @@ export const getPostCoverMangaIdUrl = (mangaId: string,) => {
 
   
 
-  return `https://wd.memaydex.com/cover/${mangaId}`
+  return `https://wd.memaydex.online/cover/${mangaId}`
 }
 
 export const postCoverMangaId = async (mangaId: string,
@@ -555,7 +555,7 @@ export const getGetMangaIdCoversUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/manga/${id}/covers`
+  return `https://wd.memaydex.online/manga/${id}/covers`
 }
 
 export const getMangaIdCovers = async (id: string, options?: RequestInit): Promise<getMangaIdCoversResponse> => {
@@ -581,7 +581,7 @@ export const getMangaIdCovers = async (id: string, options?: RequestInit): Promi
 
 export const getGetMangaIdCoversQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/manga/${id}/covers`
+    `https://wd.memaydex.online/manga/${id}/covers`
     ] as const;
     }
 

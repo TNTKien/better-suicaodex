@@ -84,7 +84,7 @@ export const getGetChapterUrl = (params?: GetChapterParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/chapter?${stringifiedParams}` : `https://wd.memaydex.com/chapter`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/chapter?${stringifiedParams}` : `https://wd.memaydex.online/chapter`
 }
 
 export const getChapter = async (params?: GetChapterParams, options?: RequestInit): Promise<getChapterResponse> => {
@@ -110,7 +110,7 @@ export const getChapter = async (params?: GetChapterParams, options?: RequestIni
 
 export const getGetChapterQueryKey = (params?: GetChapterParams,) => {
     return [
-    `https://wd.memaydex.com/chapter`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/chapter`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -219,7 +219,7 @@ export const getGetChapterFeedUrl = (params?: GetChapterFeedParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/chapter/feed?${stringifiedParams}` : `https://wd.memaydex.com/chapter/feed`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/chapter/feed?${stringifiedParams}` : `https://wd.memaydex.online/chapter/feed`
 }
 
 export const getChapterFeed = async (params?: GetChapterFeedParams, options?: RequestInit): Promise<getChapterFeedResponse> => {
@@ -245,7 +245,7 @@ export const getChapterFeed = async (params?: GetChapterFeedParams, options?: Re
 
 export const getGetChapterFeedQueryKey = (params?: GetChapterFeedParams,) => {
     return [
-    `https://wd.memaydex.com/chapter/feed`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/chapter/feed`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -354,7 +354,7 @@ export const getGetChapterTopUrl = (params?: GetChapterTopParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/chapter/top?${stringifiedParams}` : `https://wd.memaydex.com/chapter/top`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/chapter/top?${stringifiedParams}` : `https://wd.memaydex.online/chapter/top`
 }
 
 export const getChapterTop = async (params?: GetChapterTopParams, options?: RequestInit): Promise<getChapterTopResponse> => {
@@ -380,7 +380,7 @@ export const getChapterTop = async (params?: GetChapterTopParams, options?: Requ
 
 export const getGetChapterTopQueryKey = (params?: GetChapterTopParams,) => {
     return [
-    `https://wd.memaydex.com/chapter/top`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/chapter/top`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -490,7 +490,7 @@ export const getGetChapterUpdatesUrl = (params?: GetChapterUpdatesParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/chapter/updates?${stringifiedParams}` : `https://wd.memaydex.com/chapter/updates`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/chapter/updates?${stringifiedParams}` : `https://wd.memaydex.online/chapter/updates`
 }
 
 export const getChapterUpdates = async (params?: GetChapterUpdatesParams, options?: RequestInit): Promise<getChapterUpdatesResponse> => {
@@ -516,7 +516,7 @@ export const getChapterUpdates = async (params?: GetChapterUpdatesParams, option
 
 export const getGetChapterUpdatesQueryKey = (params?: GetChapterUpdatesParams,) => {
     return [
-    `https://wd.memaydex.com/chapter/updates`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/chapter/updates`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -623,7 +623,7 @@ export const getGetChapterIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/chapter/${id}`
+  return `https://wd.memaydex.online/chapter/${id}`
 }
 
 export const getChapterId = async (id: string, options?: RequestInit): Promise<getChapterIdResponse> => {
@@ -649,7 +649,7 @@ export const getChapterId = async (id: string, options?: RequestInit): Promise<g
 
 export const getGetChapterIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/chapter/${id}`
+    `https://wd.memaydex.online/chapter/${id}`
     ] as const;
     }
 
@@ -766,7 +766,7 @@ export const getPutChapterIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/chapter/${id}`
+  return `https://wd.memaydex.online/chapter/${id}`
 }
 
 export const putChapterId = async (id: string,
@@ -877,7 +877,7 @@ export const getDeleteChapterIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/chapter/${id}`
+  return `https://wd.memaydex.online/chapter/${id}`
 }
 
 export const deleteChapterId = async (id: string, options?: RequestInit): Promise<deleteChapterIdResponse> => {
@@ -989,7 +989,7 @@ export const getGetMangaIdAggregateUrl = (id: string,
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/manga/${id}/aggregate?${stringifiedParams}` : `https://wd.memaydex.com/manga/${id}/aggregate`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/manga/${id}/aggregate?${stringifiedParams}` : `https://wd.memaydex.online/manga/${id}/aggregate`
 }
 
 export const getMangaIdAggregate = async (id: string,
@@ -1017,7 +1017,7 @@ export const getMangaIdAggregate = async (id: string,
 export const getGetMangaIdAggregateQueryKey = (id: string,
     params?: GetMangaIdAggregateParams,) => {
     return [
-    `https://wd.memaydex.com/manga/${id}/aggregate`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/manga/${id}/aggregate`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -1137,7 +1137,7 @@ export const getGetMangaIdChaptersUrl = (id: string,
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/manga/${id}/chapters?${stringifiedParams}` : `https://wd.memaydex.com/manga/${id}/chapters`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/manga/${id}/chapters?${stringifiedParams}` : `https://wd.memaydex.online/manga/${id}/chapters`
 }
 
 export const getMangaIdChapters = async (id: string,
@@ -1165,7 +1165,7 @@ export const getMangaIdChapters = async (id: string,
 export const getGetMangaIdChaptersQueryKey = (id: string,
     params?: GetMangaIdChaptersParams,) => {
     return [
-    `https://wd.memaydex.com/manga/${id}/chapters`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/manga/${id}/chapters`, ...(params ? [params] : [])
     ] as const;
     }
 

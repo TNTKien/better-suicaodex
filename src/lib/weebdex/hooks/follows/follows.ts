@@ -88,7 +88,7 @@ export const getGetUserFollowsChapterFeedUrl = (params?: GetUserFollowsChapterFe
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/user/follows/chapter/feed?${stringifiedParams}` : `https://wd.memaydex.com/user/follows/chapter/feed`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/user/follows/chapter/feed?${stringifiedParams}` : `https://wd.memaydex.online/user/follows/chapter/feed`
 }
 
 export const getUserFollowsChapterFeed = async (params?: GetUserFollowsChapterFeedParams, options?: RequestInit): Promise<getUserFollowsChapterFeedResponse> => {
@@ -114,7 +114,7 @@ export const getUserFollowsChapterFeed = async (params?: GetUserFollowsChapterFe
 
 export const getGetUserFollowsChapterFeedQueryKey = (params?: GetUserFollowsChapterFeedParams,) => {
     return [
-    `https://wd.memaydex.com/user/follows/chapter/feed`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/user/follows/chapter/feed`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -228,7 +228,7 @@ export const getGetUserFollowsGroupsUrl = (params?: GetUserFollowsGroupsParams,)
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/user/follows/groups?${stringifiedParams}` : `https://wd.memaydex.com/user/follows/groups`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/user/follows/groups?${stringifiedParams}` : `https://wd.memaydex.online/user/follows/groups`
 }
 
 export const getUserFollowsGroups = async (params?: GetUserFollowsGroupsParams, options?: RequestInit): Promise<getUserFollowsGroupsResponse> => {
@@ -254,7 +254,7 @@ export const getUserFollowsGroups = async (params?: GetUserFollowsGroupsParams, 
 
 export const getGetUserFollowsGroupsQueryKey = (params?: GetUserFollowsGroupsParams,) => {
     return [
-    `https://wd.memaydex.com/user/follows/groups`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/user/follows/groups`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -366,7 +366,7 @@ export const getGetUserFollowsGroupsIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/groups/${id}`
+  return `https://wd.memaydex.online/user/follows/groups/${id}`
 }
 
 export const getUserFollowsGroupsId = async (id: string, options?: RequestInit): Promise<getUserFollowsGroupsIdResponse> => {
@@ -392,7 +392,7 @@ export const getUserFollowsGroupsId = async (id: string, options?: RequestInit):
 
 export const getGetUserFollowsGroupsIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/user/follows/groups/${id}`
+    `https://wd.memaydex.online/user/follows/groups/${id}`
     ] as const;
     }
 
@@ -504,7 +504,7 @@ export const getPostUserFollowsGroupsIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/groups/${id}`
+  return `https://wd.memaydex.online/user/follows/groups/${id}`
 }
 
 export const postUserFollowsGroupsId = async (id: string, options?: RequestInit): Promise<postUserFollowsGroupsIdResponse> => {
@@ -613,7 +613,7 @@ export const getDeleteUserFollowsGroupsIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/groups/${id}`
+  return `https://wd.memaydex.online/user/follows/groups/${id}`
 }
 
 export const deleteUserFollowsGroupsId = async (id: string, options?: RequestInit): Promise<deleteUserFollowsGroupsIdResponse> => {
@@ -724,7 +724,7 @@ export const getGetUserFollowsMangaUrl = (params?: GetUserFollowsMangaParams,) =
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/user/follows/manga?${stringifiedParams}` : `https://wd.memaydex.com/user/follows/manga`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/user/follows/manga?${stringifiedParams}` : `https://wd.memaydex.online/user/follows/manga`
 }
 
 export const getUserFollowsManga = async (params?: GetUserFollowsMangaParams, options?: RequestInit): Promise<getUserFollowsMangaResponse> => {
@@ -750,7 +750,7 @@ export const getUserFollowsManga = async (params?: GetUserFollowsMangaParams, op
 
 export const getGetUserFollowsMangaQueryKey = (params?: GetUserFollowsMangaParams,) => {
     return [
-    `https://wd.memaydex.com/user/follows/manga`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/user/follows/manga`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -857,7 +857,7 @@ export const getGetUserFollowsMangaExportUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/manga/export`
+  return `https://wd.memaydex.online/user/follows/manga/export`
 }
 
 export const getUserFollowsMangaExport = async ( options?: RequestInit): Promise<getUserFollowsMangaExportResponse> => {
@@ -883,7 +883,7 @@ export const getUserFollowsMangaExport = async ( options?: RequestInit): Promise
 
 export const getGetUserFollowsMangaExportQueryKey = () => {
     return [
-    `https://wd.memaydex.com/user/follows/manga/export`
+    `https://wd.memaydex.online/user/follows/manga/export`
     ] as const;
     }
 
@@ -990,7 +990,7 @@ export const getPostUserFollowsMangaImportUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/manga/import`
+  return `https://wd.memaydex.online/user/follows/manga/import`
 }
 
 export const postUserFollowsMangaImport = async (controllersImportFollowedMangaRequest: ControllersImportFollowedMangaRequest, options?: RequestInit): Promise<postUserFollowsMangaImportResponse> => {
@@ -1100,7 +1100,7 @@ export const getPostUserFollowsMangaIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/manga/${id}`
+  return `https://wd.memaydex.online/user/follows/manga/${id}`
 }
 
 export const postUserFollowsMangaId = async (id: string,
@@ -1211,7 +1211,7 @@ export const getDeleteUserFollowsMangaIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/manga/${id}`
+  return `https://wd.memaydex.online/user/follows/manga/${id}`
 }
 
 export const deleteUserFollowsMangaId = async (id: string, options?: RequestInit): Promise<deleteUserFollowsMangaIdResponse> => {
@@ -1322,7 +1322,7 @@ export const getGetUserFollowsUsersUrl = (params?: GetUserFollowsUsersParams,) =
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/user/follows/users?${stringifiedParams}` : `https://wd.memaydex.com/user/follows/users`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/user/follows/users?${stringifiedParams}` : `https://wd.memaydex.online/user/follows/users`
 }
 
 export const getUserFollowsUsers = async (params?: GetUserFollowsUsersParams, options?: RequestInit): Promise<getUserFollowsUsersResponse> => {
@@ -1348,7 +1348,7 @@ export const getUserFollowsUsers = async (params?: GetUserFollowsUsersParams, op
 
 export const getGetUserFollowsUsersQueryKey = (params?: GetUserFollowsUsersParams,) => {
     return [
-    `https://wd.memaydex.com/user/follows/users`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/user/follows/users`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -1460,7 +1460,7 @@ export const getGetUserFollowsUsersIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/users/${id}`
+  return `https://wd.memaydex.online/user/follows/users/${id}`
 }
 
 export const getUserFollowsUsersId = async (id: string, options?: RequestInit): Promise<getUserFollowsUsersIdResponse> => {
@@ -1486,7 +1486,7 @@ export const getUserFollowsUsersId = async (id: string, options?: RequestInit): 
 
 export const getGetUserFollowsUsersIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/user/follows/users/${id}`
+    `https://wd.memaydex.online/user/follows/users/${id}`
     ] as const;
     }
 
@@ -1598,7 +1598,7 @@ export const getPostUserFollowsUsersIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/users/${id}`
+  return `https://wd.memaydex.online/user/follows/users/${id}`
 }
 
 export const postUserFollowsUsersId = async (id: string, options?: RequestInit): Promise<postUserFollowsUsersIdResponse> => {
@@ -1707,7 +1707,7 @@ export const getDeleteUserFollowsUsersIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/user/follows/users/${id}`
+  return `https://wd.memaydex.online/user/follows/users/${id}`
 }
 
 export const deleteUserFollowsUsersId = async (id: string, options?: RequestInit): Promise<deleteUserFollowsUsersIdResponse> => {

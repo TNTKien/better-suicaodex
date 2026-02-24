@@ -73,7 +73,7 @@ export const getGetTopMangaUrl = (params?: GetTopMangaParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/top/manga?${stringifiedParams}` : `https://wd.memaydex.com/top/manga`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/top/manga?${stringifiedParams}` : `https://wd.memaydex.online/top/manga`
 }
 
 export const getTopManga = async (params?: GetTopMangaParams, options?: RequestInit): Promise<getTopMangaResponse> => {
@@ -99,7 +99,7 @@ export const getTopManga = async (params?: GetTopMangaParams, options?: RequestI
 
 export const getGetTopMangaQueryKey = (params?: GetTopMangaParams,) => {
     return [
-    `https://wd.memaydex.com/top/manga`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/top/manga`, ...(params ? [params] : [])
     ] as const;
     }
 

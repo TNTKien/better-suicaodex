@@ -3,7 +3,7 @@ import { defineConfig } from 'orval';
 export default defineConfig({
   weebdex: {
     output: {
-      baseUrl: 'https://wd.memaydex.com',
+      baseUrl: 'https://wd.memaydex.online',
       mode: 'tags-split',
       target: './src/lib/weebdex/hooks',
       schemas: './src/lib/weebdex/model',

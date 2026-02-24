@@ -82,7 +82,7 @@ export const getGetReportUrl = (params?: GetReportParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/report?${stringifiedParams}` : `https://wd.memaydex.com/report`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/report?${stringifiedParams}` : `https://wd.memaydex.online/report`
 }
 
 export const getReport = async (params?: GetReportParams, options?: RequestInit): Promise<getReportResponse> => {
@@ -108,7 +108,7 @@ export const getReport = async (params?: GetReportParams, options?: RequestInit)
 
 export const getGetReportQueryKey = (params?: GetReportParams,) => {
     return [
-    `https://wd.memaydex.com/report`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/report`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -215,7 +215,7 @@ export const getPostReportUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/report`
+  return `https://wd.memaydex.online/report`
 }
 
 export const postReport = async (controllersCreateReportRequest: ControllersCreateReportRequest, options?: RequestInit): Promise<postReportResponse> => {
@@ -315,7 +315,7 @@ export const getGetReportReasonsCategoryUrl = (category: 'user' | 'manga' | 'aut
 
   
 
-  return `https://wd.memaydex.com/report/reasons/${category}`
+  return `https://wd.memaydex.online/report/reasons/${category}`
 }
 
 export const getReportReasonsCategory = async (category: 'user' | 'manga' | 'author' | 'chapter' | 'scanlation_group' | 'thread' | 'reply', options?: RequestInit): Promise<getReportReasonsCategoryResponse> => {
@@ -341,7 +341,7 @@ export const getReportReasonsCategory = async (category: 'user' | 'manga' | 'aut
 
 export const getGetReportReasonsCategoryQueryKey = (category: 'user' | 'manga' | 'author' | 'chapter' | 'scanlation_group' | 'thread' | 'reply',) => {
     return [
-    `https://wd.memaydex.com/report/reasons/${category}`
+    `https://wd.memaydex.online/report/reasons/${category}`
     ] as const;
     }
 

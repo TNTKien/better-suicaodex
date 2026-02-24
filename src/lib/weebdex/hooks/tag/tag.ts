@@ -71,7 +71,7 @@ export const getGetMangaTagUrl = (params?: GetMangaTagParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/manga/tag?${stringifiedParams}` : `https://wd.memaydex.com/manga/tag`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/manga/tag?${stringifiedParams}` : `https://wd.memaydex.online/manga/tag`
 }
 
 export const getMangaTag = async (params?: GetMangaTagParams, options?: RequestInit): Promise<getMangaTagResponse> => {
@@ -97,7 +97,7 @@ export const getMangaTag = async (params?: GetMangaTagParams, options?: RequestI
 
 export const getGetMangaTagQueryKey = (params?: GetMangaTagParams,) => {
     return [
-    `https://wd.memaydex.com/manga/tag`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/manga/tag`, ...(params ? [params] : [])
     ] as const;
     }
 

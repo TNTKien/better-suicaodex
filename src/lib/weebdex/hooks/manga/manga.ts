@@ -84,7 +84,7 @@ export const getGetMangaUrl = (params?: GetMangaParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/manga?${stringifiedParams}` : `https://wd.memaydex.com/manga`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/manga?${stringifiedParams}` : `https://wd.memaydex.online/manga`
 }
 
 export const getManga = async (params?: GetMangaParams, options?: RequestInit): Promise<getMangaResponse> => {
@@ -110,7 +110,7 @@ export const getManga = async (params?: GetMangaParams, options?: RequestInit): 
 
 export const getGetMangaQueryKey = (params?: GetMangaParams,) => {
     return [
-    `https://wd.memaydex.com/manga`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/manga`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -217,7 +217,7 @@ export const getPostMangaUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/manga`
+  return `https://wd.memaydex.online/manga`
 }
 
 export const postManga = async (controllersCreateMangaRequest: ControllersCreateMangaRequest, options?: RequestInit): Promise<postMangaResponse> => {
@@ -322,7 +322,7 @@ export const getGetMangaIdRelationsUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/manga/:id/relations`
+  return `https://wd.memaydex.online/manga/:id/relations`
 }
 
 export const getMangaIdRelations = async ( options?: RequestInit): Promise<getMangaIdRelationsResponse> => {
@@ -348,7 +348,7 @@ export const getMangaIdRelations = async ( options?: RequestInit): Promise<getMa
 
 export const getGetMangaIdRelationsQueryKey = () => {
     return [
-    `https://wd.memaydex.com/manga/:id/relations`
+    `https://wd.memaydex.online/manga/:id/relations`
     ] as const;
     }
 
@@ -460,7 +460,7 @@ export const getPostMangaIdRelationsUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/manga/:id/relations`
+  return `https://wd.memaydex.online/manga/:id/relations`
 }
 
 export const postMangaIdRelations = async (controllersCreateMangaRelationRequest: ControllersCreateMangaRelationRequest, options?: RequestInit): Promise<postMangaIdRelationsResponse> => {
@@ -570,7 +570,7 @@ export const getDeleteMangaIdRelationsUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/manga/:id/relations`
+  return `https://wd.memaydex.online/manga/:id/relations`
 }
 
 export const deleteMangaIdRelations = async (controllersDeleteMangaRelationRequest: ControllersDeleteMangaRelationRequest, options?: RequestInit): Promise<deleteMangaIdRelationsResponse> => {
@@ -682,7 +682,7 @@ export const getGetMangaDraftUrl = (params?: GetMangaDraftParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/manga/draft?${stringifiedParams}` : `https://wd.memaydex.com/manga/draft`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/manga/draft?${stringifiedParams}` : `https://wd.memaydex.online/manga/draft`
 }
 
 export const getMangaDraft = async (params?: GetMangaDraftParams, options?: RequestInit): Promise<getMangaDraftResponse> => {
@@ -708,7 +708,7 @@ export const getMangaDraft = async (params?: GetMangaDraftParams, options?: Requ
 
 export const getGetMangaDraftQueryKey = (params?: GetMangaDraftParams,) => {
     return [
-    `https://wd.memaydex.com/manga/draft`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/manga/draft`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -820,7 +820,7 @@ export const getGetMangaDraftIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/manga/draft/${id}`
+  return `https://wd.memaydex.online/manga/draft/${id}`
 }
 
 export const getMangaDraftId = async (id: string, options?: RequestInit): Promise<getMangaDraftIdResponse> => {
@@ -846,7 +846,7 @@ export const getMangaDraftId = async (id: string, options?: RequestInit): Promis
 
 export const getGetMangaDraftIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/manga/draft/${id}`
+    `https://wd.memaydex.online/manga/draft/${id}`
     ] as const;
     }
 
@@ -958,7 +958,7 @@ export const getPostMangaDraftIdCommitUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/manga/draft/${id}/commit`
+  return `https://wd.memaydex.online/manga/draft/${id}/commit`
 }
 
 export const postMangaDraftIdCommit = async (id: string, options?: RequestInit): Promise<postMangaDraftIdCommitResponse> => {
@@ -1069,7 +1069,7 @@ export const getGetMangaRandomUrl = (params?: GetMangaRandomParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/manga/random?${stringifiedParams}` : `https://wd.memaydex.com/manga/random`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/manga/random?${stringifiedParams}` : `https://wd.memaydex.online/manga/random`
 }
 
 export const getMangaRandom = async (params?: GetMangaRandomParams, options?: RequestInit): Promise<getMangaRandomResponse> => {
@@ -1095,7 +1095,7 @@ export const getMangaRandom = async (params?: GetMangaRandomParams, options?: Re
 
 export const getGetMangaRandomQueryKey = (params?: GetMangaRandomParams,) => {
     return [
-    `https://wd.memaydex.com/manga/random`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/manga/random`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -1204,7 +1204,7 @@ export const getGetMangaTopUrl = (params?: GetMangaTopParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/manga/top?${stringifiedParams}` : `https://wd.memaydex.com/manga/top`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/manga/top?${stringifiedParams}` : `https://wd.memaydex.online/manga/top`
 }
 
 export const getMangaTop = async (params?: GetMangaTopParams, options?: RequestInit): Promise<getMangaTopResponse> => {
@@ -1230,7 +1230,7 @@ export const getMangaTop = async (params?: GetMangaTopParams, options?: RequestI
 
 export const getGetMangaTopQueryKey = (params?: GetMangaTopParams,) => {
     return [
-    `https://wd.memaydex.com/manga/top`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/manga/top`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -1337,7 +1337,7 @@ export const getGetMangaIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/manga/${id}`
+  return `https://wd.memaydex.online/manga/${id}`
 }
 
 export const getMangaId = async (id: string, options?: RequestInit): Promise<getMangaIdResponse> => {
@@ -1363,7 +1363,7 @@ export const getMangaId = async (id: string, options?: RequestInit): Promise<get
 
 export const getGetMangaIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/manga/${id}`
+    `https://wd.memaydex.online/manga/${id}`
     ] as const;
     }
 
@@ -1480,7 +1480,7 @@ export const getPutMangaIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/manga/${id}`
+  return `https://wd.memaydex.online/manga/${id}`
 }
 
 export const putMangaId = async (id: string,
@@ -1591,7 +1591,7 @@ export const getDeleteMangaIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/manga/${id}`
+  return `https://wd.memaydex.online/manga/${id}`
 }
 
 export const deleteMangaId = async (id: string, options?: RequestInit): Promise<deleteMangaIdResponse> => {
@@ -1695,7 +1695,7 @@ export const getGetMangaIdRecommendationsUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/manga/${id}/recommendations`
+  return `https://wd.memaydex.online/manga/${id}/recommendations`
 }
 
 export const getMangaIdRecommendations = async (id: string, options?: RequestInit): Promise<getMangaIdRecommendationsResponse> => {
@@ -1721,7 +1721,7 @@ export const getMangaIdRecommendations = async (id: string, options?: RequestIni
 
 export const getGetMangaIdRecommendationsQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/manga/${id}/recommendations`
+    `https://wd.memaydex.online/manga/${id}/recommendations`
     ] as const;
     }
 

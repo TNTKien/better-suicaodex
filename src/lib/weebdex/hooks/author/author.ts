@@ -78,7 +78,7 @@ export const getGetAuthorUrl = (params?: GetAuthorParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.com/author?${stringifiedParams}` : `https://wd.memaydex.com/author`
+  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/author?${stringifiedParams}` : `https://wd.memaydex.online/author`
 }
 
 export const getAuthor = async (params?: GetAuthorParams, options?: RequestInit): Promise<getAuthorResponse> => {
@@ -104,7 +104,7 @@ export const getAuthor = async (params?: GetAuthorParams, options?: RequestInit)
 
 export const getGetAuthorQueryKey = (params?: GetAuthorParams,) => {
     return [
-    `https://wd.memaydex.com/author`, ...(params ? [params] : [])
+    `https://wd.memaydex.online/author`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -216,7 +216,7 @@ export const getPostAuthorUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/author`
+  return `https://wd.memaydex.online/author`
 }
 
 export const postAuthor = async (controllersCreateAuthorRequest: ControllersCreateAuthorRequest, options?: RequestInit): Promise<postAuthorResponse> => {
@@ -321,7 +321,7 @@ export const getGetAuthorIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/author/${id}`
+  return `https://wd.memaydex.online/author/${id}`
 }
 
 export const getAuthorId = async (id: string, options?: RequestInit): Promise<getAuthorIdResponse> => {
@@ -347,7 +347,7 @@ export const getAuthorId = async (id: string, options?: RequestInit): Promise<ge
 
 export const getGetAuthorIdQueryKey = (id: string,) => {
     return [
-    `https://wd.memaydex.com/author/${id}`
+    `https://wd.memaydex.online/author/${id}`
     ] as const;
     }
 
@@ -464,7 +464,7 @@ export const getPutAuthorIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/author/${id}`
+  return `https://wd.memaydex.online/author/${id}`
 }
 
 export const putAuthorId = async (id: string,
@@ -575,7 +575,7 @@ export const getDeleteAuthorIdUrl = (id: string,) => {
 
   
 
-  return `https://wd.memaydex.com/author/${id}`
+  return `https://wd.memaydex.online/author/${id}`
 }
 
 export const deleteAuthorId = async (id: string, options?: RequestInit): Promise<deleteAuthorIdResponse> => {

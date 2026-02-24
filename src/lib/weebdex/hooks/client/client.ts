@@ -70,7 +70,7 @@ export const getGetClientUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/client`
+  return `https://wd.memaydex.online/client`
 }
 
 export const getClient = async ( options?: RequestInit): Promise<getClientResponse> => {
@@ -96,7 +96,7 @@ export const getClient = async ( options?: RequestInit): Promise<getClientRespon
 
 export const getGetClientQueryKey = () => {
     return [
-    `https://wd.memaydex.com/client`
+    `https://wd.memaydex.online/client`
     ] as const;
     }
 
@@ -208,7 +208,7 @@ export const getPostClientUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/client`
+  return `https://wd.memaydex.online/client`
 }
 
 export const postClient = async (controllersCreateClientRequest: ControllersCreateClientRequest, options?: RequestInit): Promise<postClientResponse> => {
@@ -318,7 +318,7 @@ export const getPostClientIdUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/client/:id`
+  return `https://wd.memaydex.online/client/:id`
 }
 
 export const postClientId = async (controllersUpdateClientRequest: ControllersUpdateClientRequest, options?: RequestInit): Promise<postClientIdResponse> => {
@@ -423,7 +423,7 @@ export const getDeleteClientIdUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/client/:id`
+  return `https://wd.memaydex.online/client/:id`
 }
 
 export const deleteClientId = async ( options?: RequestInit): Promise<deleteClientIdResponse> => {
@@ -527,7 +527,7 @@ export const getPostClientIdSecretUrl = () => {
 
   
 
-  return `https://wd.memaydex.com/client/:id/secret`
+  return `https://wd.memaydex.online/client/:id/secret`
 }
 
 export const postClientIdSecret = async ( options?: RequestInit): Promise<postClientIdSecretResponse> => {
