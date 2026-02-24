@@ -67,13 +67,13 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
   });
 
   useEffect(() => {
-    if (!chapters || chapters.length === 0) return;
+    if (!shouldFetch || !chapters || chapters.length === 0) return;
     if (chapters.length === 1) {
       router.push(`/chapter/${chapters[0].id}`);
     } else {
       setShowDialog(true);
     }
-  }, [chapters, router]);
+  }, [shouldFetch, chapters, router]);
 
   const handleReadNow = () => {
     if (chapters && chapters.length > 0) {
