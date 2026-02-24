@@ -3,14 +3,17 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CATAAS_BASE, getCatCount } from "@/lib/cat";
 import { IdCardIcon } from "lucide-react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 export function TotalCatAlert() {
   const {
     data: totalCats,
     error,
     isLoading,
-  } = useSWR("cat-count", () => getCatCount());
+  } = useQuery({
+    queryKey: ["cat-count"],
+    queryFn: () => getCatCount(),
+  });
 
   return (
     <Alert>

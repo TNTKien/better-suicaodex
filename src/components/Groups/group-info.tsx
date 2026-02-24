@@ -2,7 +2,7 @@
 
 import { getGroup } from "@/lib/mangadex/group";
 import Image from "next/image";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "../ui/button";
 import { Archive, Ban, Bookmark, Globe, Mail, ShieldUser } from "lucide-react";
 import { toast } from "sonner";
@@ -27,17 +27,15 @@ interface GroupInfoProps {
 
 export default function GroupInfo({ id, initialData }: GroupInfoProps) {
   const isMobile = useIsMobile();
-  const { data, isLoading, error } = useSWR(
-    ["group", id],
-    ([, id]) => getGroup(id),
-    {
-      fallbackData: initialData, // Use server data as initial value
-      revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["group", id],
+    queryFn: () => getGroup(id),
+    initialData: initialData,
+    refetchOnMount: !initialData,
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
   const displayLanguage = [
     { iso: "en", name: "Tiếng Anh", icon: GB },

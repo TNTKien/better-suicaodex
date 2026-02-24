@@ -7,7 +7,7 @@ import { getMangasByIDs } from "@/lib/mangadex/history";
 import { LibraryType } from "@/types/types";
 import { Trash, Undo, Trash2 } from "lucide-react";
 import { useState } from "react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import {
   Pagination,
   PaginationContent,
@@ -37,14 +37,12 @@ export default function MyLibrary({ category }: MyLibraryProps) {
   const offset = (page - 1) * LIMIT;
   const totalPages = Math.ceil(ids.length / LIMIT);
 
-  const { data, error, isLoading } = useSWR(
-    [category, page, ids],
-    ([, , ids]) => getMangasByIDs(ids.slice(offset, offset + LIMIT)),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: [category, page, ids],
+    queryFn: () => getMangasByIDs(ids.slice(offset, offset + LIMIT)),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);

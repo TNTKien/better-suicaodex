@@ -1,6 +1,6 @@
 "use client";
 
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import CommentFeedItem from "./comment-feed-item";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -25,7 +25,10 @@ export default function CommentFeed() {
     data: comments,
     isLoading,
     error,
-  } = useSWR("/api/comments/latest", fetcher);
+  } = useQuery({
+    queryKey: ["/api/comments/latest"],
+    queryFn: () => fetcher("/api/comments/latest"),
+  });
 
   if (isLoading)
     return (

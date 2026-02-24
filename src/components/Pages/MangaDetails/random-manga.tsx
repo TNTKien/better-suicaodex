@@ -1,7 +1,7 @@
 "use client";
 
 import ErrorPage from "@/components/error-page";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import MangaDetailsSkeleton from "./manga-details-skeleton";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -9,14 +9,12 @@ import { getRandomManga } from "@/lib/mangadex/random";
 
 export default function RandomManga() {
   const router = useRouter();
-  const { data, isLoading, error } = useSWR(
-    ["random-manga"],
-    ([]) => getRandomManga(true),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["random-manga"],
+    queryFn: () => getRandomManga(true),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     if (data) {
@@ -24,7 +22,7 @@ export default function RandomManga() {
     }
   }, [data, router]);
 
-  if (error) return <ErrorPage error={error} statusCode={error.status} />;
+  if (error) return <ErrorPage error={error} statusCode={(error as any).status} />;
 
   if (isLoading || !data) return <MangaDetailsSkeleton />;
 

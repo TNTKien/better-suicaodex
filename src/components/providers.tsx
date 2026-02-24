@@ -12,7 +12,18 @@ import {
 } from "@bprogress/next";
 import { NotificationProvider } from "./notification-provider";
 import { SessionProvider } from "next-auth/react";
-import { SWRConfig } from "swr";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+    },
+  },
+});
 
 export function ThemeProvider({
   children,
@@ -20,7 +31,7 @@ export function ThemeProvider({
 }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
     <JotaiProvider>
-      <SWRConfig value={{ errorRetryCount: 3 }}>
+      <QueryClientProvider client={queryClient}>
         <NextThemesProvider {...props}>
           <ThemeWrapper>
             <ProgressProvider
@@ -39,7 +50,7 @@ export function ThemeProvider({
             </ProgressProvider>
           </ThemeWrapper>
         </NextThemesProvider>
-      </SWRConfig>
+      </QueryClientProvider>
     </JotaiProvider>
   );
 }

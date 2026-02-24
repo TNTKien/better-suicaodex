@@ -5,7 +5,7 @@ import { useConfig } from "@/hooks/use-config";
 import { getCompletedMangas } from "@/lib/mangadex/manga";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -19,14 +19,12 @@ import { generateSlug } from "@/lib/utils";
 
 export default function CompletedSwiper() {
   const [config] = useConfig();
-  const { data, error, isLoading } = useSWR(
-    ["completed", config.translatedLanguage, config.r18],
-    ([, language, r18]) => getCompletedMangas(language, r18),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["completed", config.translatedLanguage, config.r18],
+    queryFn: () => getCompletedMangas(config.translatedLanguage, config.r18),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   if (isLoading)
     return (

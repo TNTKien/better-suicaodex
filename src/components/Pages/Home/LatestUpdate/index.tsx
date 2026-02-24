@@ -2,7 +2,7 @@
 
 import { useConfig } from "@/hooks/use-config";
 import { getLatestChapters } from "@/lib/mangadex/latest";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import LatestCard from "./latest-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -11,13 +11,11 @@ import LatestSkeleton from "./latest-skeleton";
 
 export default function LatestUpdate() {
   const [config] = useConfig();
-  const { data, error, isLoading } = useSWR(
-    [18, config.translatedLanguage, config.r18],
-    ([max, language, r18]) => getLatestChapters(max, language, r18),
-    {
-      refreshInterval: 1000 * 60 * 10,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["latest-update", 18, config.translatedLanguage, config.r18],
+    queryFn: () => getLatestChapters(18, config.translatedLanguage, config.r18),
+    refetchInterval: 1000 * 60 * 10,
+  });
 
   if (isLoading)
     return (

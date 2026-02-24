@@ -3,7 +3,7 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getTags, groupTags } from "@/lib/mangadex/tag";
 import Image from "next/image";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import DoroLoading from "#/images/doro-loading.gif";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -11,10 +11,10 @@ import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 import { generateSlug } from "@/lib/utils";
 
 export default function TagsPage() {
-  const { data, error, isLoading } = useSWR(
-    ["tags"],
-    () => getTags() // Fetch tags data
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["tags"],
+    queryFn: () => getTags(),
+  });
 
   if (isLoading) {
     return (

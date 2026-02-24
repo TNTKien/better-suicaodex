@@ -33,7 +33,7 @@ import {
   TranslatedLanguage,
 } from "@/types/types";
 import { AdvancedSearchManga } from "@/lib/mangadex/search";
-import useSWRMutation from "swr/mutation";
+import { useMutation } from "@tanstack/react-query";
 import ResultTabs from "@/components/Search/Result/result-tabs";
 import {
   Pagination,
@@ -242,56 +242,24 @@ export default function AdvancedSearch({
   };
 
   const offset = (page - 1) * limit;
-  const { data, error, trigger, isMutating } = useSWRMutation(
-    [
-      "advanced-search",
-      query,
-      offset,
-      limit,
-      selectedContent,
-      selectedStatus,
-      selectedInclude,
-      selectedExclude,
-      selectedAuthor,
-      selectedDemos,
-      selectedOriginLanguage,
-      hasAvailableChapter,
-      selectedLanguage,
-      selectedYear,
-    ],
-    ([
-      ,
-      q,
-      offset,
-      limit,
-      content,
-      status,
-      include,
-      exclude,
-      author,
-      graphic,
-      origin,
-      availableChapter,
-      translated,
-
-      year,
-    ]) =>
+  const { data, error, mutate: trigger, isPending: isMutating } = useMutation({
+    mutationFn: () =>
       AdvancedSearchManga(
-        q,
+        query,
         offset,
         limit,
-        content,
-        status,
-        include,
-        exclude,
-        author,
-        graphic,
-        origin,
-        availableChapter,
-        translated,
-        year
-      )
-  );
+        selectedContent,
+        selectedStatus,
+        selectedInclude,
+        selectedExclude,
+        selectedAuthor,
+        selectedDemos,
+        selectedOriginLanguage,
+        hasAvailableChapter,
+        selectedLanguage,
+        selectedYear
+      ),
+  });
 
   // Function to handle search button click
   const handleSearch = () => {

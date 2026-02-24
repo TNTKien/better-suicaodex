@@ -2,7 +2,7 @@
 
 import { useConfig } from "@/hooks/use-config";
 import { getTopFollowedMangas } from "@/lib/mangadex/manga";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import TopFollowedCard from "./top-followed-card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -10,14 +10,12 @@ import LeaderBoardCardSkeleton from "../leaderboard-card-skeleon";
 
 export default function TopFollowed() {
   const [config] = useConfig();
-  const { data, error, isLoading } = useSWR(
-    ["follow", config.translatedLanguage, config.r18],
-    ([, language, r18]) => getTopFollowedMangas(language, r18),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["follow", config.translatedLanguage, config.r18],
+    queryFn: () => getTopFollowedMangas(config.translatedLanguage, config.r18),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   if (isLoading)
     return (

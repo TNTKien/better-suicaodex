@@ -2,7 +2,7 @@
 
 import { getCovers } from "@/lib/mangadex/cover";
 import { Expand, Globe, Loader2 } from "lucide-react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { cn, getCoverImageUrl } from "@/lib/utils";
@@ -26,14 +26,12 @@ interface MangaCoversTabProps {
 
 export default function MangaCoversTab({ id }: MangaCoversTabProps) {
   const isMobile = useIsMobile();
-  const { data, error, isLoading } = useSWR(
-    ["manga-covers", [id]],
-    ([, [id]]) => getCovers([id]),
-    {
-      refreshInterval: 1000 * 60 * 30,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["manga-covers", id],
+    queryFn: () => getCovers([id]),
+    refetchInterval: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
+  });
   const [loaded, setLoaded] = useState(false);
   const [selectedLocale, setSelectedLocale] = useState(["ja", "vi"]);
 

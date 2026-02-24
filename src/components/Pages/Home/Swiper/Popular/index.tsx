@@ -1,6 +1,6 @@
 "use client";
 import { useConfig } from "@/hooks/use-config";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { getPopularMangas } from "@/lib/mangadex/manga";
 
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -16,14 +16,12 @@ import SlideSkeleton from "./slide-skeleton";
 
 export default function PopularSwiper() {
   const [config] = useConfig();
-  const { data, isLoading, error } = useSWR(
-    [config.translatedLanguage, config.r18],
-    ([language, r18]) => getPopularMangas(language, r18),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["popular", config.translatedLanguage, config.r18],
+    queryFn: () => getPopularMangas(config.translatedLanguage, config.r18),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
   const [slideIndex, setSlideIndex] = useState(1);
 
   if (isLoading) return <SlideSkeleton />;

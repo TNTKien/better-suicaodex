@@ -5,7 +5,7 @@ import { LayoutGrid, List, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { fetchHistory } from "@/lib/mangadex/history";
 import HistoryCompactCard from "./history-compact-card";
 import HistoryCoverCard from "./history-cover-card";
@@ -26,14 +26,12 @@ export default function History() {
     data,
     error,
     isLoading: swrLoading,
-  } = useSWR(
-    ["history", m_ids, c_ids],
-    ([, m_ids, c_ids]) => fetchHistory(m_ids, c_ids),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  } = useQuery({
+    queryKey: ["history", m_ids, c_ids],
+    queryFn: () => fetchHistory(m_ids, c_ids),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   if (isLoading || swrLoading) {
     return (

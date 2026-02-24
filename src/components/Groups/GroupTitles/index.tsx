@@ -1,7 +1,7 @@
 "use client";
 
 import { getGroupTitles } from "@/lib/mangadex/group";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import GroupTitleTabs from "./group-titles-tabs";
 import { useState } from "react";
 import {
@@ -22,13 +22,11 @@ export default function GroupTitles({ id }: GroupTitlesProps) {
   const [page, setPage] = useState(1);
   const offset = (page - 1) * 32;
 
-  const { data, error, isLoading } = useSWR(
-    ["group-titles", id, 32, offset],
-    ([, id, limit, offset]) => getGroupTitles(id, limit, offset),
-    {
-      refreshInterval: 1000 * 60 * 10,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["group-titles", id, 32, offset],
+    queryFn: () => getGroupTitles(id, 32, offset),
+    refetchInterval: 1000 * 60 * 10,
+  });
   const totalPages = Math.ceil((data?.total || 0) / 32);
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
