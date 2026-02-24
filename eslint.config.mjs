@@ -49,4 +49,4 @@ const eslintConfig = defineConfig([
   },
 ]);
 
-export default { eslintConfig, eslintConfigPrettier };
+export default eslintConfig;
