@@ -8,9 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -20,150 +18,203 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import type {
-  GetMangaTagParams,
-  TagFeedResponse
-} from '../../model';
-
-
-
-
+import type { GetMangaTagParams, TagFeedResponse } from "../../model";
 
 /**
  * @summary Get Tag List
  */
 export type getMangaTagResponse200 = {
-  data: TagFeedResponse
-  status: 200
-}
+  data: TagFeedResponse;
+  status: 200;
+};
 
 export type getMangaTagResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getMangaTagResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getMangaTagResponseSuccess = (getMangaTagResponse200) & {
-  headers: Headers;
-};
-export type getMangaTagResponseError = (getMangaTagResponse400 | getMangaTagResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getMangaTagResponse = (getMangaTagResponseSuccess | getMangaTagResponseError)
+export type getMangaTagResponseSuccess = getMangaTagResponse200 & {
+  headers: Headers;
+};
+export type getMangaTagResponseError = (
+  | getMangaTagResponse400
+  | getMangaTagResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetMangaTagUrl = (params?: GetMangaTagParams,) => {
+export type getMangaTagResponse =
+  | getMangaTagResponseSuccess
+  | getMangaTagResponseError;
+
+export const getGetMangaTagUrl = (params?: GetMangaTagParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/manga/tag?${stringifiedParams}` : `https://wd.memaydex.online/manga/tag`
-}
+  return stringifiedParams.length > 0
+    ? `https://wd.memaydex.online/manga/tag?${stringifiedParams}`
+    : `https://wd.memaydex.online/manga/tag`;
+};
 
-export const getMangaTag = async (params?: GetMangaTagParams, options?: RequestInit): Promise<getMangaTagResponse> => {
-  
-  const res = await fetch(getGetMangaTagUrl(params),
-  {      
+export const getMangaTag = async (
+  params?: GetMangaTagParams,
+  options?: RequestInit,
+): Promise<getMangaTagResponse> => {
+  const res = await fetch(getGetMangaTagUrl(params), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getMangaTagResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getMangaTagResponse
-}
-  
 
+  const data: getMangaTagResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getMangaTagResponse;
+};
 
+export const getGetMangaTagQueryKey = (params?: GetMangaTagParams) => {
+  return [
+    `https://wd.memaydex.online/manga/tag`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-
-export const getGetMangaTagQueryKey = (params?: GetMangaTagParams,) => {
-    return [
-    `https://wd.memaydex.online/manga/tag`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-    
-export const getGetMangaTagQueryOptions = <TData = Awaited<ReturnType<typeof getMangaTag>>, TError = void>(params?: GetMangaTagParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>>, fetch?: RequestInit}
+export const getGetMangaTagQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMangaTag>>,
+  TError = void,
+>(
+  params?: GetMangaTagParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetMangaTagQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMangaTagQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMangaTag>>> = ({
+    signal,
+  }) => getMangaTag(params, { signal, ...fetchOptions });
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMangaTag>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMangaTag>>> = ({ signal }) => getMangaTag(params, { signal, ...fetchOptions });
+export type GetMangaTagQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMangaTag>>
+>;
+export type GetMangaTagQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetMangaTagQueryResult = NonNullable<Awaited<ReturnType<typeof getMangaTag>>>
-export type GetMangaTagQueryError = void
-
-
-export function useGetMangaTag<TData = Awaited<ReturnType<typeof getMangaTag>>, TError = void>(
- params: undefined |  GetMangaTagParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>> & Pick<
+export function useGetMangaTag<
+  TData = Awaited<ReturnType<typeof getMangaTag>>,
+  TError = void,
+>(
+  params: undefined | GetMangaTagParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMangaTag>>,
           TError,
           Awaited<ReturnType<typeof getMangaTag>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMangaTag<TData = Awaited<ReturnType<typeof getMangaTag>>, TError = void>(
- params?: GetMangaTagParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetMangaTag<
+  TData = Awaited<ReturnType<typeof getMangaTag>>,
+  TError = void,
+>(
+  params?: GetMangaTagParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMangaTag>>,
           TError,
           Awaited<ReturnType<typeof getMangaTag>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMangaTag<TData = Awaited<ReturnType<typeof getMangaTag>>, TError = void>(
- params?: GetMangaTagParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetMangaTag<
+  TData = Awaited<ReturnType<typeof getMangaTag>>,
+  TError = void,
+>(
+  params?: GetMangaTagParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Tag List
  */
 
-export function useGetMangaTag<TData = Awaited<ReturnType<typeof getMangaTag>>, TError = void>(
- params?: GetMangaTagParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetMangaTag<
+  TData = Awaited<ReturnType<typeof getMangaTag>>,
+  TError = void,
+>(
+  params?: GetMangaTagParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMangaTag>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetMangaTagQueryOptions(params, options);
 
-  const queryOptions = getGetMangaTagQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

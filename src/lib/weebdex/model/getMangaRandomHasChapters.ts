@@ -9,12 +9,12 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetMangaRandomHasChapters = typeof GetMangaRandomHasChapters[keyof typeof GetMangaRandomHasChapters];
-
+export type GetMangaRandomHasChapters =
+  (typeof GetMangaRandomHasChapters)[keyof typeof GetMangaRandomHasChapters];
 
 export const GetMangaRandomHasChapters = {
-  NUMBER_0: '0',
-  NUMBER_1: '1',
-  false: 'false',
-  true: 'true',
+  NUMBER_0: "0",
+  NUMBER_1: "1",
+  false: "false",
+  true: "true",
 } as const;

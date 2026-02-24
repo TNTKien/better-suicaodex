@@ -10,8 +10,8 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  */
 
 export type GetMangaIdAggregateParams = {
-/**
- * Translated language(s)
- */
-tlang?: string[];
+  /**
+   * Translated language(s)
+   */
+  tlang?: string[];
 };

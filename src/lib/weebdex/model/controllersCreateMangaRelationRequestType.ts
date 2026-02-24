@@ -9,24 +9,24 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type ControllersCreateMangaRelationRequestType = typeof ControllersCreateMangaRelationRequestType[keyof typeof ControllersCreateMangaRelationRequestType];
-
+export type ControllersCreateMangaRelationRequestType =
+  (typeof ControllersCreateMangaRelationRequestType)[keyof typeof ControllersCreateMangaRelationRequestType];
 
 export const ControllersCreateMangaRelationRequestType = {
-  main_story: 'main_story',
-  side_story: 'side_story',
-  prequel: 'prequel',
-  sequel: 'sequel',
-  adapted_from: 'adapted_from',
-  spin_off: 'spin_off',
-  based_on: 'based_on',
-  doujinshi: 'doujinshi',
-  monochrome: 'monochrome',
-  colored: 'colored',
-  preserialization: 'preserialization',
-  serialization: 'serialization',
-  alternate_story: 'alternate_story',
-  alternate_version: 'alternate_version',
-  same_franchise: 'same_franchise',
-  shared_universe: 'shared_universe',
+  main_story: "main_story",
+  side_story: "side_story",
+  prequel: "prequel",
+  sequel: "sequel",
+  adapted_from: "adapted_from",
+  spin_off: "spin_off",
+  based_on: "based_on",
+  doujinshi: "doujinshi",
+  monochrome: "monochrome",
+  colored: "colored",
+  preserialization: "preserialization",
+  serialization: "serialization",
+  alternate_story: "alternate_story",
+  alternate_version: "alternate_version",
+  same_franchise: "same_franchise",
+  shared_universe: "shared_universe",
 } as const;

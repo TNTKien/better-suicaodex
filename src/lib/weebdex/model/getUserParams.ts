@@ -10,18 +10,18 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  */
 
 export type GetUserParams = {
-/**
- * @maxItems 100
- */
-id?: string[];
-/**
- * @minimum 0
- * @maximum 100
- */
-limit?: number;
-name?: string;
-/**
- * @minimum 1
- */
-page?: number;
+  /**
+   * @maxItems 100
+   */
+  id?: string[];
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  limit?: number;
+  name?: string;
+  /**
+   * @minimum 1
+   */
+  page?: number;
 };

@@ -9,18 +9,17 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetMangaSort = typeof GetMangaSort[keyof typeof GetMangaSort];
-
+export type GetMangaSort = (typeof GetMangaSort)[keyof typeof GetMangaSort];
 
 export const GetMangaSort = {
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  lastUploadedChapterAt: 'lastUploadedChapterAt',
-  relevance: 'relevance',
-  title: 'title',
-  year: 'year',
-  rating: 'rating',
-  views: 'views',
-  follows: 'follows',
-  chapters: 'chapters',
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+  lastUploadedChapterAt: "lastUploadedChapterAt",
+  relevance: "relevance",
+  title: "title",
+  year: "year",
+  rating: "rating",
+  views: "views",
+  follows: "follows",
+  chapters: "chapters",
 } as const;

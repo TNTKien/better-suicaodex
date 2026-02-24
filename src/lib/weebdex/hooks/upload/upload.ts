@@ -8,10 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -24,8 +21,8 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   Chapter,
@@ -36,1010 +33,1332 @@ import type {
   File,
   GetUploadSessionResponse,
   PostUploadUploadSessionIdBody,
-  UploadSession
-} from '../../model';
-
-
-
-
+  UploadSession,
+} from "../../model";
 
 /**
  * @summary Get Current Upload Session
  */
 export type getUploadResponse200 = {
-  data: GetUploadSessionResponse
-  status: 200
-}
+  data: GetUploadSessionResponse;
+  status: 200;
+};
 
 export type getUploadResponse204 = {
-  data: void
-  status: 204
-}
+  data: void;
+  status: 204;
+};
 
 export type getUploadResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getUploadResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getUploadResponseSuccess = (getUploadResponse200 | getUploadResponse204) & {
-  headers: Headers;
-};
-export type getUploadResponseError = (getUploadResponse400 | getUploadResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getUploadResponse = (getUploadResponseSuccess | getUploadResponseError)
+export type getUploadResponseSuccess = (
+  | getUploadResponse200
+  | getUploadResponse204
+) & {
+  headers: Headers;
+};
+export type getUploadResponseError = (
+  | getUploadResponse400
+  | getUploadResponse500
+) & {
+  headers: Headers;
+};
+
+export type getUploadResponse =
+  | getUploadResponseSuccess
+  | getUploadResponseError;
 
 export const getGetUploadUrl = () => {
+  return `https://wd.memaydex.online/upload`;
+};
 
-
-  
-
-  return `https://wd.memaydex.online/upload`
-}
-
-export const getUpload = async ( options?: RequestInit): Promise<getUploadResponse> => {
-  
-  const res = await fetch(getGetUploadUrl(),
-  {      
+export const getUpload = async (
+  options?: RequestInit,
+): Promise<getUploadResponse> => {
+  const res = await fetch(getGetUploadUrl(), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUploadResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUploadResponse
-}
-  
 
-
-
+  const data: getUploadResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getUploadResponse;
+};
 
 export const getGetUploadQueryKey = () => {
-    return [
-    `https://wd.memaydex.online/upload`
-    ] as const;
-    }
+  return [`https://wd.memaydex.online/upload`] as const;
+};
 
-    
-export const getGetUploadQueryOptions = <TData = Awaited<ReturnType<typeof getUpload>>, TError = void>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>>, fetch?: RequestInit}
-) => {
+export const getGetUploadQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUpload>>,
+  TError = void,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>
+  >;
+  fetch?: RequestInit;
+}) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetUploadQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUploadQueryKey();
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUpload>>> = ({
+    signal,
+  }) => getUpload({ signal, ...fetchOptions });
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUpload>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUpload>>> = ({ signal }) => getUpload({ signal, ...fetchOptions });
+export type GetUploadQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUpload>>
+>;
+export type GetUploadQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUploadQueryResult = NonNullable<Awaited<ReturnType<typeof getUpload>>>
-export type GetUploadQueryError = void
-
-
-export function useGetUpload<TData = Awaited<ReturnType<typeof getUpload>>, TError = void>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>> & Pick<
+export function useGetUpload<
+  TData = Awaited<ReturnType<typeof getUpload>>,
+  TError = void,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUpload>>,
           TError,
           Awaited<ReturnType<typeof getUpload>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUpload<TData = Awaited<ReturnType<typeof getUpload>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUpload<
+  TData = Awaited<ReturnType<typeof getUpload>>,
+  TError = void,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUpload>>,
           TError,
           Awaited<ReturnType<typeof getUpload>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUpload<TData = Awaited<ReturnType<typeof getUpload>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUpload<
+  TData = Awaited<ReturnType<typeof getUpload>>,
+  TError = void,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Current Upload Session
  */
 
-export function useGetUpload<TData = Awaited<ReturnType<typeof getUpload>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUpload<
+  TData = Awaited<ReturnType<typeof getUpload>>,
+  TError = void,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUpload>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetUploadQueryOptions(options);
 
-  const queryOptions = getGetUploadQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Begin Upload Session
  */
 export type postUploadBeginResponse201 = {
-  data: UploadSession
-  status: 201
-}
+  data: UploadSession;
+  status: 201;
+};
 
 export type postUploadBeginResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type postUploadBeginResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type postUploadBeginResponse409 = {
-  data: void
-  status: 409
-}
+  data: void;
+  status: 409;
+};
 
 export type postUploadBeginResponse500 = {
-  data: void
-  status: 500
-}
-
-export type postUploadBeginResponseSuccess = (postUploadBeginResponse201) & {
-  headers: Headers;
-};
-export type postUploadBeginResponseError = (postUploadBeginResponse400 | postUploadBeginResponse403 | postUploadBeginResponse409 | postUploadBeginResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type postUploadBeginResponse = (postUploadBeginResponseSuccess | postUploadBeginResponseError)
+export type postUploadBeginResponseSuccess = postUploadBeginResponse201 & {
+  headers: Headers;
+};
+export type postUploadBeginResponseError = (
+  | postUploadBeginResponse400
+  | postUploadBeginResponse403
+  | postUploadBeginResponse409
+  | postUploadBeginResponse500
+) & {
+  headers: Headers;
+};
+
+export type postUploadBeginResponse =
+  | postUploadBeginResponseSuccess
+  | postUploadBeginResponseError;
 
 export const getPostUploadBeginUrl = () => {
+  return `https://wd.memaydex.online/upload/begin`;
+};
 
-
-  
-
-  return `https://wd.memaydex.online/upload/begin`
-}
-
-export const postUploadBegin = async (controllersBeginUploadSessionRequest: ControllersBeginUploadSessionRequest, options?: RequestInit): Promise<postUploadBeginResponse> => {
-  
-  const res = await fetch(getPostUploadBeginUrl(),
-  {      
+export const postUploadBegin = async (
+  controllersBeginUploadSessionRequest: ControllersBeginUploadSessionRequest,
+  options?: RequestInit,
+): Promise<postUploadBeginResponse> => {
+  const res = await fetch(getPostUploadBeginUrl(), {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersBeginUploadSessionRequest,)
-  }
-)
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(controllersBeginUploadSessionRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postUploadBeginResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postUploadBeginResponse
-}
-  
 
+  const data: postUploadBeginResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postUploadBeginResponse;
+};
 
+export const getPostUploadBeginMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postUploadBegin>>,
+    TError,
+    { data: ControllersBeginUploadSessionRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postUploadBegin>>,
+  TError,
+  { data: ControllersBeginUploadSessionRequest },
+  TContext
+> => {
+  const mutationKey = ["postUploadBegin"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPostUploadBeginMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadBegin>>, TError,{data: ControllersBeginUploadSessionRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postUploadBegin>>, TError,{data: ControllersBeginUploadSessionRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postUploadBegin>>,
+    { data: ControllersBeginUploadSessionRequest }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['postUploadBegin'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return postUploadBegin(data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostUploadBeginMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postUploadBegin>>
+>;
+export type PostUploadBeginMutationBody = ControllersBeginUploadSessionRequest;
+export type PostUploadBeginMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUploadBegin>>, {data: ControllersBeginUploadSessionRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postUploadBegin(data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostUploadBeginMutationResult = NonNullable<Awaited<ReturnType<typeof postUploadBegin>>>
-    export type PostUploadBeginMutationBody = ControllersBeginUploadSessionRequest
-    export type PostUploadBeginMutationError = void
-
-    /**
+/**
  * @summary Begin Upload Session
  */
-export const usePostUploadBegin = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadBegin>>, TError,{data: ControllersBeginUploadSessionRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postUploadBegin>>,
-        TError,
-        {data: ControllersBeginUploadSessionRequest},
-        TContext
-      > => {
-      return useMutation(getPostUploadBeginMutationOptions(options), queryClient);
-    }
-    /**
+export const usePostUploadBegin = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postUploadBegin>>,
+      TError,
+      { data: ControllersBeginUploadSessionRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postUploadBegin>>,
+  TError,
+  { data: ControllersBeginUploadSessionRequest },
+  TContext
+> => {
+  return useMutation(getPostUploadBeginMutationOptions(options), queryClient);
+};
+/**
  * @summary Begin Chapter Edit Session
  */
 export type postUploadBeginChapterIdResponse201 = {
-  data: UploadSession
-  status: 201
-}
+  data: UploadSession;
+  status: 201;
+};
 
 export type postUploadBeginChapterIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type postUploadBeginChapterIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type postUploadBeginChapterIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type postUploadBeginChapterIdResponse409 = {
-  data: void
-  status: 409
-}
+  data: void;
+  status: 409;
+};
 
 export type postUploadBeginChapterIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type postUploadBeginChapterIdResponseSuccess = (postUploadBeginChapterIdResponse201) & {
-  headers: Headers;
-};
-export type postUploadBeginChapterIdResponseError = (postUploadBeginChapterIdResponse400 | postUploadBeginChapterIdResponse403 | postUploadBeginChapterIdResponse404 | postUploadBeginChapterIdResponse409 | postUploadBeginChapterIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type postUploadBeginChapterIdResponse = (postUploadBeginChapterIdResponseSuccess | postUploadBeginChapterIdResponseError)
+export type postUploadBeginChapterIdResponseSuccess =
+  postUploadBeginChapterIdResponse201 & {
+    headers: Headers;
+  };
+export type postUploadBeginChapterIdResponseError = (
+  | postUploadBeginChapterIdResponse400
+  | postUploadBeginChapterIdResponse403
+  | postUploadBeginChapterIdResponse404
+  | postUploadBeginChapterIdResponse409
+  | postUploadBeginChapterIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getPostUploadBeginChapterIdUrl = (chapterId: string,) => {
+export type postUploadBeginChapterIdResponse =
+  | postUploadBeginChapterIdResponseSuccess
+  | postUploadBeginChapterIdResponseError;
 
+export const getPostUploadBeginChapterIdUrl = (chapterId: string) => {
+  return `https://wd.memaydex.online/upload/begin/${chapterId}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/upload/begin/${chapterId}`
-}
-
-export const postUploadBeginChapterId = async (chapterId: string,
-    controllersBeginChapterEditSessionRequest: ControllersBeginChapterEditSessionRequest, options?: RequestInit): Promise<postUploadBeginChapterIdResponse> => {
-  
-  const res = await fetch(getPostUploadBeginChapterIdUrl(chapterId),
-  {      
+export const postUploadBeginChapterId = async (
+  chapterId: string,
+  controllersBeginChapterEditSessionRequest: ControllersBeginChapterEditSessionRequest,
+  options?: RequestInit,
+): Promise<postUploadBeginChapterIdResponse> => {
+  const res = await fetch(getPostUploadBeginChapterIdUrl(chapterId), {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersBeginChapterEditSessionRequest,)
-  }
-)
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(controllersBeginChapterEditSessionRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postUploadBeginChapterIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postUploadBeginChapterIdResponse
-}
-  
 
+  const data: postUploadBeginChapterIdResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postUploadBeginChapterIdResponse;
+};
 
+export const getPostUploadBeginChapterIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postUploadBeginChapterId>>,
+    TError,
+    { chapterId: string; data: ControllersBeginChapterEditSessionRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postUploadBeginChapterId>>,
+  TError,
+  { chapterId: string; data: ControllersBeginChapterEditSessionRequest },
+  TContext
+> => {
+  const mutationKey = ["postUploadBeginChapterId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPostUploadBeginChapterIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadBeginChapterId>>, TError,{chapterId: string;data: ControllersBeginChapterEditSessionRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postUploadBeginChapterId>>, TError,{chapterId: string;data: ControllersBeginChapterEditSessionRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postUploadBeginChapterId>>,
+    { chapterId: string; data: ControllersBeginChapterEditSessionRequest }
+  > = (props) => {
+    const { chapterId, data } = props ?? {};
 
-const mutationKey = ['postUploadBeginChapterId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return postUploadBeginChapterId(chapterId, data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostUploadBeginChapterIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postUploadBeginChapterId>>
+>;
+export type PostUploadBeginChapterIdMutationBody =
+  ControllersBeginChapterEditSessionRequest;
+export type PostUploadBeginChapterIdMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUploadBeginChapterId>>, {chapterId: string;data: ControllersBeginChapterEditSessionRequest}> = (props) => {
-          const {chapterId,data} = props ?? {};
-
-          return  postUploadBeginChapterId(chapterId,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostUploadBeginChapterIdMutationResult = NonNullable<Awaited<ReturnType<typeof postUploadBeginChapterId>>>
-    export type PostUploadBeginChapterIdMutationBody = ControllersBeginChapterEditSessionRequest
-    export type PostUploadBeginChapterIdMutationError = void
-
-    /**
+/**
  * @summary Begin Chapter Edit Session
  */
-export const usePostUploadBeginChapterId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadBeginChapterId>>, TError,{chapterId: string;data: ControllersBeginChapterEditSessionRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postUploadBeginChapterId>>,
-        TError,
-        {chapterId: string;data: ControllersBeginChapterEditSessionRequest},
-        TContext
-      > => {
-      return useMutation(getPostUploadBeginChapterIdMutationOptions(options), queryClient);
-    }
-    /**
+export const usePostUploadBeginChapterId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postUploadBeginChapterId>>,
+      TError,
+      { chapterId: string; data: ControllersBeginChapterEditSessionRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postUploadBeginChapterId>>,
+  TError,
+  { chapterId: string; data: ControllersBeginChapterEditSessionRequest },
+  TContext
+> => {
+  return useMutation(
+    getPostUploadBeginChapterIdMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Check if approval is required
  */
 export type postUploadCheckApprovalRequiredResponse200 = {
-  data: void
-  status: 200
-}
+  data: void;
+  status: 200;
+};
 
 export type postUploadCheckApprovalRequiredResponse204 = {
-  data: void
-  status: 204
-}
+  data: void;
+  status: 204;
+};
 
 export type postUploadCheckApprovalRequiredResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type postUploadCheckApprovalRequiredResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type postUploadCheckApprovalRequiredResponse500 = {
-  data: void
-  status: 500
-}
-
-export type postUploadCheckApprovalRequiredResponseSuccess = (postUploadCheckApprovalRequiredResponse200 | postUploadCheckApprovalRequiredResponse204) & {
-  headers: Headers;
-};
-export type postUploadCheckApprovalRequiredResponseError = (postUploadCheckApprovalRequiredResponse400 | postUploadCheckApprovalRequiredResponse403 | postUploadCheckApprovalRequiredResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type postUploadCheckApprovalRequiredResponse = (postUploadCheckApprovalRequiredResponseSuccess | postUploadCheckApprovalRequiredResponseError)
+export type postUploadCheckApprovalRequiredResponseSuccess = (
+  | postUploadCheckApprovalRequiredResponse200
+  | postUploadCheckApprovalRequiredResponse204
+) & {
+  headers: Headers;
+};
+export type postUploadCheckApprovalRequiredResponseError = (
+  | postUploadCheckApprovalRequiredResponse400
+  | postUploadCheckApprovalRequiredResponse403
+  | postUploadCheckApprovalRequiredResponse500
+) & {
+  headers: Headers;
+};
+
+export type postUploadCheckApprovalRequiredResponse =
+  | postUploadCheckApprovalRequiredResponseSuccess
+  | postUploadCheckApprovalRequiredResponseError;
 
 export const getPostUploadCheckApprovalRequiredUrl = () => {
+  return `https://wd.memaydex.online/upload/check-approval-required`;
+};
 
-
-  
-
-  return `https://wd.memaydex.online/upload/check-approval-required`
-}
-
-export const postUploadCheckApprovalRequired = async (controllersCheckApprovalRequiredRequest: ControllersCheckApprovalRequiredRequest, options?: RequestInit): Promise<postUploadCheckApprovalRequiredResponse> => {
-  
-  const res = await fetch(getPostUploadCheckApprovalRequiredUrl(),
-  {      
+export const postUploadCheckApprovalRequired = async (
+  controllersCheckApprovalRequiredRequest: ControllersCheckApprovalRequiredRequest,
+  options?: RequestInit,
+): Promise<postUploadCheckApprovalRequiredResponse> => {
+  const res = await fetch(getPostUploadCheckApprovalRequiredUrl(), {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersCheckApprovalRequiredRequest,)
-  }
-)
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(controllersCheckApprovalRequiredRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postUploadCheckApprovalRequiredResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postUploadCheckApprovalRequiredResponse
-}
-  
 
+  const data: postUploadCheckApprovalRequiredResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postUploadCheckApprovalRequiredResponse;
+};
 
+export const getPostUploadCheckApprovalRequiredMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>,
+    TError,
+    { data: ControllersCheckApprovalRequiredRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>,
+  TError,
+  { data: ControllersCheckApprovalRequiredRequest },
+  TContext
+> => {
+  const mutationKey = ["postUploadCheckApprovalRequired"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPostUploadCheckApprovalRequiredMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>, TError,{data: ControllersCheckApprovalRequiredRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>, TError,{data: ControllersCheckApprovalRequiredRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>,
+    { data: ControllersCheckApprovalRequiredRequest }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['postUploadCheckApprovalRequired'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return postUploadCheckApprovalRequired(data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostUploadCheckApprovalRequiredMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>
+>;
+export type PostUploadCheckApprovalRequiredMutationBody =
+  ControllersCheckApprovalRequiredRequest;
+export type PostUploadCheckApprovalRequiredMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>, {data: ControllersCheckApprovalRequiredRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postUploadCheckApprovalRequired(data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostUploadCheckApprovalRequiredMutationResult = NonNullable<Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>>
-    export type PostUploadCheckApprovalRequiredMutationBody = ControllersCheckApprovalRequiredRequest
-    export type PostUploadCheckApprovalRequiredMutationError = void
-
-    /**
+/**
  * @summary Check if approval is required
  */
-export const usePostUploadCheckApprovalRequired = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>, TError,{data: ControllersCheckApprovalRequiredRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>,
-        TError,
-        {data: ControllersCheckApprovalRequiredRequest},
-        TContext
-      > => {
-      return useMutation(getPostUploadCheckApprovalRequiredMutationOptions(options), queryClient);
-    }
-    /**
+export const usePostUploadCheckApprovalRequired = <
+  TError = void,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>,
+      TError,
+      { data: ControllersCheckApprovalRequiredRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postUploadCheckApprovalRequired>>,
+  TError,
+  { data: ControllersCheckApprovalRequiredRequest },
+  TContext
+> => {
+  return useMutation(
+    getPostUploadCheckApprovalRequiredMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Add Files to Upload Session
  */
 export type postUploadUploadSessionIdResponse200 = {
-  data: File[]
-  status: 200
-}
+  data: File[];
+  status: 200;
+};
 
 export type postUploadUploadSessionIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type postUploadUploadSessionIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type postUploadUploadSessionIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type postUploadUploadSessionIdResponseSuccess = (postUploadUploadSessionIdResponse200) & {
-  headers: Headers;
-};
-export type postUploadUploadSessionIdResponseError = (postUploadUploadSessionIdResponse400 | postUploadUploadSessionIdResponse403 | postUploadUploadSessionIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type postUploadUploadSessionIdResponse = (postUploadUploadSessionIdResponseSuccess | postUploadUploadSessionIdResponseError)
+export type postUploadUploadSessionIdResponseSuccess =
+  postUploadUploadSessionIdResponse200 & {
+    headers: Headers;
+  };
+export type postUploadUploadSessionIdResponseError = (
+  | postUploadUploadSessionIdResponse400
+  | postUploadUploadSessionIdResponse403
+  | postUploadUploadSessionIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getPostUploadUploadSessionIdUrl = (uploadSessionId: string,) => {
+export type postUploadUploadSessionIdResponse =
+  | postUploadUploadSessionIdResponseSuccess
+  | postUploadUploadSessionIdResponseError;
 
+export const getPostUploadUploadSessionIdUrl = (uploadSessionId: string) => {
+  return `https://wd.memaydex.online/upload/${uploadSessionId}`;
+};
 
-  
+export const postUploadUploadSessionId = async (
+  uploadSessionId: string,
+  postUploadUploadSessionIdBody: PostUploadUploadSessionIdBody,
+  options?: RequestInit,
+): Promise<postUploadUploadSessionIdResponse> => {
+  const formData = new FormData();
+  formData.append(`file`, postUploadUploadSessionIdBody.file);
 
-  return `https://wd.memaydex.online/upload/${uploadSessionId}`
-}
-
-export const postUploadUploadSessionId = async (uploadSessionId: string,
-    postUploadUploadSessionIdBody: PostUploadUploadSessionIdBody, options?: RequestInit): Promise<postUploadUploadSessionIdResponse> => {
-    const formData = new FormData();
-formData.append(`file`, postUploadUploadSessionIdBody.file);
-
-  const res = await fetch(getPostUploadUploadSessionIdUrl(uploadSessionId),
-  {      
+  const res = await fetch(getPostUploadUploadSessionIdUrl(uploadSessionId), {
     ...options,
-    method: 'POST'
-    ,
-    body: 
-      formData,
-  }
-)
+    method: "POST",
+    body: formData,
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postUploadUploadSessionIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postUploadUploadSessionIdResponse
-}
-  
 
+  const data: postUploadUploadSessionIdResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postUploadUploadSessionIdResponse;
+};
 
+export const getPostUploadUploadSessionIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postUploadUploadSessionId>>,
+    TError,
+    { uploadSessionId: string; data: PostUploadUploadSessionIdBody },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postUploadUploadSessionId>>,
+  TError,
+  { uploadSessionId: string; data: PostUploadUploadSessionIdBody },
+  TContext
+> => {
+  const mutationKey = ["postUploadUploadSessionId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPostUploadUploadSessionIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadUploadSessionId>>, TError,{uploadSessionId: string;data: PostUploadUploadSessionIdBody}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postUploadUploadSessionId>>, TError,{uploadSessionId: string;data: PostUploadUploadSessionIdBody}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postUploadUploadSessionId>>,
+    { uploadSessionId: string; data: PostUploadUploadSessionIdBody }
+  > = (props) => {
+    const { uploadSessionId, data } = props ?? {};
 
-const mutationKey = ['postUploadUploadSessionId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return postUploadUploadSessionId(uploadSessionId, data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostUploadUploadSessionIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postUploadUploadSessionId>>
+>;
+export type PostUploadUploadSessionIdMutationBody =
+  PostUploadUploadSessionIdBody;
+export type PostUploadUploadSessionIdMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUploadUploadSessionId>>, {uploadSessionId: string;data: PostUploadUploadSessionIdBody}> = (props) => {
-          const {uploadSessionId,data} = props ?? {};
-
-          return  postUploadUploadSessionId(uploadSessionId,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostUploadUploadSessionIdMutationResult = NonNullable<Awaited<ReturnType<typeof postUploadUploadSessionId>>>
-    export type PostUploadUploadSessionIdMutationBody = PostUploadUploadSessionIdBody
-    export type PostUploadUploadSessionIdMutationError = void
-
-    /**
+/**
  * @summary Add Files to Upload Session
  */
-export const usePostUploadUploadSessionId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadUploadSessionId>>, TError,{uploadSessionId: string;data: PostUploadUploadSessionIdBody}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postUploadUploadSessionId>>,
-        TError,
-        {uploadSessionId: string;data: PostUploadUploadSessionIdBody},
-        TContext
-      > => {
-      return useMutation(getPostUploadUploadSessionIdMutationOptions(options), queryClient);
-    }
-    /**
+export const usePostUploadUploadSessionId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postUploadUploadSessionId>>,
+      TError,
+      { uploadSessionId: string; data: PostUploadUploadSessionIdBody },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postUploadUploadSessionId>>,
+  TError,
+  { uploadSessionId: string; data: PostUploadUploadSessionIdBody },
+  TContext
+> => {
+  return useMutation(
+    getPostUploadUploadSessionIdMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete Upload Session
  */
 export type deleteUploadUploadSessionIdResponse204 = {
-  data: void
-  status: 204
-}
+  data: void;
+  status: 204;
+};
 
 export type deleteUploadUploadSessionIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type deleteUploadUploadSessionIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type deleteUploadUploadSessionIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type deleteUploadUploadSessionIdResponseSuccess = (deleteUploadUploadSessionIdResponse204) & {
-  headers: Headers;
-};
-export type deleteUploadUploadSessionIdResponseError = (deleteUploadUploadSessionIdResponse400 | deleteUploadUploadSessionIdResponse403 | deleteUploadUploadSessionIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type deleteUploadUploadSessionIdResponse = (deleteUploadUploadSessionIdResponseSuccess | deleteUploadUploadSessionIdResponseError)
+export type deleteUploadUploadSessionIdResponseSuccess =
+  deleteUploadUploadSessionIdResponse204 & {
+    headers: Headers;
+  };
+export type deleteUploadUploadSessionIdResponseError = (
+  | deleteUploadUploadSessionIdResponse400
+  | deleteUploadUploadSessionIdResponse403
+  | deleteUploadUploadSessionIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getDeleteUploadUploadSessionIdUrl = (uploadSessionId: string,) => {
+export type deleteUploadUploadSessionIdResponse =
+  | deleteUploadUploadSessionIdResponseSuccess
+  | deleteUploadUploadSessionIdResponseError;
 
+export const getDeleteUploadUploadSessionIdUrl = (uploadSessionId: string) => {
+  return `https://wd.memaydex.online/upload/${uploadSessionId}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/upload/${uploadSessionId}`
-}
-
-export const deleteUploadUploadSessionId = async (uploadSessionId: string, options?: RequestInit): Promise<deleteUploadUploadSessionIdResponse> => {
-  
-  const res = await fetch(getDeleteUploadUploadSessionIdUrl(uploadSessionId),
-  {      
+export const deleteUploadUploadSessionId = async (
+  uploadSessionId: string,
+  options?: RequestInit,
+): Promise<deleteUploadUploadSessionIdResponse> => {
+  const res = await fetch(getDeleteUploadUploadSessionIdUrl(uploadSessionId), {
     ...options,
-    method: 'DELETE'
-    
-    
-  }
-)
+    method: "DELETE",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteUploadUploadSessionIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteUploadUploadSessionIdResponse
-}
-  
 
+  const data: deleteUploadUploadSessionIdResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as deleteUploadUploadSessionIdResponse;
+};
 
+export const getDeleteUploadUploadSessionIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteUploadUploadSessionId>>,
+    TError,
+    { uploadSessionId: string },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionId>>,
+  TError,
+  { uploadSessionId: string },
+  TContext
+> => {
+  const mutationKey = ["deleteUploadUploadSessionId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getDeleteUploadUploadSessionIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionId>>, TError,{uploadSessionId: string}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionId>>, TError,{uploadSessionId: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteUploadUploadSessionId>>,
+    { uploadSessionId: string }
+  > = (props) => {
+    const { uploadSessionId } = props ?? {};
 
-const mutationKey = ['deleteUploadUploadSessionId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return deleteUploadUploadSessionId(uploadSessionId, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeleteUploadUploadSessionIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionId>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUploadUploadSessionId>>, {uploadSessionId: string}> = (props) => {
-          const {uploadSessionId} = props ?? {};
+export type DeleteUploadUploadSessionIdMutationError = void;
 
-          return  deleteUploadUploadSessionId(uploadSessionId,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteUploadUploadSessionIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUploadUploadSessionId>>>
-    
-    export type DeleteUploadUploadSessionIdMutationError = void
-
-    /**
+/**
  * @summary Delete Upload Session
  */
-export const useDeleteUploadUploadSessionId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionId>>, TError,{uploadSessionId: string}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteUploadUploadSessionId>>,
-        TError,
-        {uploadSessionId: string},
-        TContext
-      > => {
-      return useMutation(getDeleteUploadUploadSessionIdMutationOptions(options), queryClient);
-    }
-    /**
+export const useDeleteUploadUploadSessionId = <
+  TError = void,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteUploadUploadSessionId>>,
+      TError,
+      { uploadSessionId: string },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionId>>,
+  TError,
+  { uploadSessionId: string },
+  TContext
+> => {
+  return useMutation(
+    getDeleteUploadUploadSessionIdMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete Files from Upload Session
  */
 export type deleteUploadUploadSessionIdBatchResponse204 = {
-  data: void
-  status: 204
-}
+  data: void;
+  status: 204;
+};
 
 export type deleteUploadUploadSessionIdBatchResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type deleteUploadUploadSessionIdBatchResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type deleteUploadUploadSessionIdBatchResponse500 = {
-  data: void
-  status: 500
-}
-
-export type deleteUploadUploadSessionIdBatchResponseSuccess = (deleteUploadUploadSessionIdBatchResponse204) & {
-  headers: Headers;
-};
-export type deleteUploadUploadSessionIdBatchResponseError = (deleteUploadUploadSessionIdBatchResponse400 | deleteUploadUploadSessionIdBatchResponse403 | deleteUploadUploadSessionIdBatchResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type deleteUploadUploadSessionIdBatchResponse = (deleteUploadUploadSessionIdBatchResponseSuccess | deleteUploadUploadSessionIdBatchResponseError)
+export type deleteUploadUploadSessionIdBatchResponseSuccess =
+  deleteUploadUploadSessionIdBatchResponse204 & {
+    headers: Headers;
+  };
+export type deleteUploadUploadSessionIdBatchResponseError = (
+  | deleteUploadUploadSessionIdBatchResponse400
+  | deleteUploadUploadSessionIdBatchResponse403
+  | deleteUploadUploadSessionIdBatchResponse500
+) & {
+  headers: Headers;
+};
 
-export const getDeleteUploadUploadSessionIdBatchUrl = (uploadSessionId: string,) => {
+export type deleteUploadUploadSessionIdBatchResponse =
+  | deleteUploadUploadSessionIdBatchResponseSuccess
+  | deleteUploadUploadSessionIdBatchResponseError;
 
+export const getDeleteUploadUploadSessionIdBatchUrl = (
+  uploadSessionId: string,
+) => {
+  return `https://wd.memaydex.online/upload/${uploadSessionId}/batch`;
+};
 
-  
-
-  return `https://wd.memaydex.online/upload/${uploadSessionId}/batch`
-}
-
-export const deleteUploadUploadSessionIdBatch = async (uploadSessionId: string,
-    deleteUploadUploadSessionIdBatchBody: string[], options?: RequestInit): Promise<deleteUploadUploadSessionIdBatchResponse> => {
-  
-  const res = await fetch(getDeleteUploadUploadSessionIdBatchUrl(uploadSessionId),
-  {      
-    ...options,
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      deleteUploadUploadSessionIdBatchBody,)
-  }
-)
+export const deleteUploadUploadSessionIdBatch = async (
+  uploadSessionId: string,
+  deleteUploadUploadSessionIdBatchBody: string[],
+  options?: RequestInit,
+): Promise<deleteUploadUploadSessionIdBatchResponse> => {
+  const res = await fetch(
+    getDeleteUploadUploadSessionIdBatchUrl(uploadSessionId),
+    {
+      ...options,
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(deleteUploadUploadSessionIdBatchBody),
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteUploadUploadSessionIdBatchResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteUploadUploadSessionIdBatchResponse
-}
-  
 
+  const data: deleteUploadUploadSessionIdBatchResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as deleteUploadUploadSessionIdBatchResponse;
+};
 
+export const getDeleteUploadUploadSessionIdBatchMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>,
+    TError,
+    { uploadSessionId: string; data: string[] },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>,
+  TError,
+  { uploadSessionId: string; data: string[] },
+  TContext
+> => {
+  const mutationKey = ["deleteUploadUploadSessionIdBatch"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getDeleteUploadUploadSessionIdBatchMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>, TError,{uploadSessionId: string;data: string[]}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>, TError,{uploadSessionId: string;data: string[]}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>,
+    { uploadSessionId: string; data: string[] }
+  > = (props) => {
+    const { uploadSessionId, data } = props ?? {};
 
-const mutationKey = ['deleteUploadUploadSessionIdBatch'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return deleteUploadUploadSessionIdBatch(
+      uploadSessionId,
+      data,
+      fetchOptions,
+    );
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeleteUploadUploadSessionIdBatchMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>
+>;
+export type DeleteUploadUploadSessionIdBatchMutationBody = string[];
+export type DeleteUploadUploadSessionIdBatchMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>, {uploadSessionId: string;data: string[]}> = (props) => {
-          const {uploadSessionId,data} = props ?? {};
-
-          return  deleteUploadUploadSessionIdBatch(uploadSessionId,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteUploadUploadSessionIdBatchMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>>
-    export type DeleteUploadUploadSessionIdBatchMutationBody = string[]
-    export type DeleteUploadUploadSessionIdBatchMutationError = void
-
-    /**
+/**
  * @summary Delete Files from Upload Session
  */
-export const useDeleteUploadUploadSessionIdBatch = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>, TError,{uploadSessionId: string;data: string[]}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>,
-        TError,
-        {uploadSessionId: string;data: string[]},
-        TContext
-      > => {
-      return useMutation(getDeleteUploadUploadSessionIdBatchMutationOptions(options), queryClient);
-    }
-    /**
+export const useDeleteUploadUploadSessionIdBatch = <
+  TError = void,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>,
+      TError,
+      { uploadSessionId: string; data: string[] },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionIdBatch>>,
+  TError,
+  { uploadSessionId: string; data: string[] },
+  TContext
+> => {
+  return useMutation(
+    getDeleteUploadUploadSessionIdBatchMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Commit Upload Session
  */
 export type postUploadUploadSessionIdCommitResponse200 = {
-  data: Chapter
-  status: 200
-}
+  data: Chapter;
+  status: 200;
+};
 
 export type postUploadUploadSessionIdCommitResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type postUploadUploadSessionIdCommitResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type postUploadUploadSessionIdCommitResponse500 = {
-  data: void
-  status: 500
-}
-
-export type postUploadUploadSessionIdCommitResponseSuccess = (postUploadUploadSessionIdCommitResponse200) & {
-  headers: Headers;
-};
-export type postUploadUploadSessionIdCommitResponseError = (postUploadUploadSessionIdCommitResponse400 | postUploadUploadSessionIdCommitResponse403 | postUploadUploadSessionIdCommitResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type postUploadUploadSessionIdCommitResponse = (postUploadUploadSessionIdCommitResponseSuccess | postUploadUploadSessionIdCommitResponseError)
+export type postUploadUploadSessionIdCommitResponseSuccess =
+  postUploadUploadSessionIdCommitResponse200 & {
+    headers: Headers;
+  };
+export type postUploadUploadSessionIdCommitResponseError = (
+  | postUploadUploadSessionIdCommitResponse400
+  | postUploadUploadSessionIdCommitResponse403
+  | postUploadUploadSessionIdCommitResponse500
+) & {
+  headers: Headers;
+};
 
-export const getPostUploadUploadSessionIdCommitUrl = (uploadSessionId: string,) => {
+export type postUploadUploadSessionIdCommitResponse =
+  | postUploadUploadSessionIdCommitResponseSuccess
+  | postUploadUploadSessionIdCommitResponseError;
 
+export const getPostUploadUploadSessionIdCommitUrl = (
+  uploadSessionId: string,
+) => {
+  return `https://wd.memaydex.online/upload/${uploadSessionId}/commit`;
+};
 
-  
-
-  return `https://wd.memaydex.online/upload/${uploadSessionId}/commit`
-}
-
-export const postUploadUploadSessionIdCommit = async (uploadSessionId: string,
-    controllersCommitUploadSessionRequest: ControllersCommitUploadSessionRequest, options?: RequestInit): Promise<postUploadUploadSessionIdCommitResponse> => {
-  
-  const res = await fetch(getPostUploadUploadSessionIdCommitUrl(uploadSessionId),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersCommitUploadSessionRequest,)
-  }
-)
+export const postUploadUploadSessionIdCommit = async (
+  uploadSessionId: string,
+  controllersCommitUploadSessionRequest: ControllersCommitUploadSessionRequest,
+  options?: RequestInit,
+): Promise<postUploadUploadSessionIdCommitResponse> => {
+  const res = await fetch(
+    getPostUploadUploadSessionIdCommitUrl(uploadSessionId),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(controllersCommitUploadSessionRequest),
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postUploadUploadSessionIdCommitResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postUploadUploadSessionIdCommitResponse
-}
-  
 
+  const data: postUploadUploadSessionIdCommitResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postUploadUploadSessionIdCommitResponse;
+};
 
+export const getPostUploadUploadSessionIdCommitMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>,
+    TError,
+    { uploadSessionId: string; data: ControllersCommitUploadSessionRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>,
+  TError,
+  { uploadSessionId: string; data: ControllersCommitUploadSessionRequest },
+  TContext
+> => {
+  const mutationKey = ["postUploadUploadSessionIdCommit"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPostUploadUploadSessionIdCommitMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>, TError,{uploadSessionId: string;data: ControllersCommitUploadSessionRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>, TError,{uploadSessionId: string;data: ControllersCommitUploadSessionRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>,
+    { uploadSessionId: string; data: ControllersCommitUploadSessionRequest }
+  > = (props) => {
+    const { uploadSessionId, data } = props ?? {};
 
-const mutationKey = ['postUploadUploadSessionIdCommit'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return postUploadUploadSessionIdCommit(uploadSessionId, data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostUploadUploadSessionIdCommitMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>
+>;
+export type PostUploadUploadSessionIdCommitMutationBody =
+  ControllersCommitUploadSessionRequest;
+export type PostUploadUploadSessionIdCommitMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>, {uploadSessionId: string;data: ControllersCommitUploadSessionRequest}> = (props) => {
-          const {uploadSessionId,data} = props ?? {};
-
-          return  postUploadUploadSessionIdCommit(uploadSessionId,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostUploadUploadSessionIdCommitMutationResult = NonNullable<Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>>
-    export type PostUploadUploadSessionIdCommitMutationBody = ControllersCommitUploadSessionRequest
-    export type PostUploadUploadSessionIdCommitMutationError = void
-
-    /**
+/**
  * @summary Commit Upload Session
  */
-export const usePostUploadUploadSessionIdCommit = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>, TError,{uploadSessionId: string;data: ControllersCommitUploadSessionRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>,
-        TError,
-        {uploadSessionId: string;data: ControllersCommitUploadSessionRequest},
-        TContext
-      > => {
-      return useMutation(getPostUploadUploadSessionIdCommitMutationOptions(options), queryClient);
-    }
-    /**
+export const usePostUploadUploadSessionIdCommit = <
+  TError = void,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>,
+      TError,
+      { uploadSessionId: string; data: ControllersCommitUploadSessionRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postUploadUploadSessionIdCommit>>,
+  TError,
+  { uploadSessionId: string; data: ControllersCommitUploadSessionRequest },
+  TContext
+> => {
+  return useMutation(
+    getPostUploadUploadSessionIdCommitMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete File from Upload Session
  */
 export type deleteUploadUploadSessionIdFileIdResponse204 = {
-  data: void
-  status: 204
-}
+  data: void;
+  status: 204;
+};
 
 export type deleteUploadUploadSessionIdFileIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type deleteUploadUploadSessionIdFileIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type deleteUploadUploadSessionIdFileIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type deleteUploadUploadSessionIdFileIdResponseSuccess = (deleteUploadUploadSessionIdFileIdResponse204) & {
-  headers: Headers;
-};
-export type deleteUploadUploadSessionIdFileIdResponseError = (deleteUploadUploadSessionIdFileIdResponse400 | deleteUploadUploadSessionIdFileIdResponse403 | deleteUploadUploadSessionIdFileIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type deleteUploadUploadSessionIdFileIdResponse = (deleteUploadUploadSessionIdFileIdResponseSuccess | deleteUploadUploadSessionIdFileIdResponseError)
+export type deleteUploadUploadSessionIdFileIdResponseSuccess =
+  deleteUploadUploadSessionIdFileIdResponse204 & {
+    headers: Headers;
+  };
+export type deleteUploadUploadSessionIdFileIdResponseError = (
+  | deleteUploadUploadSessionIdFileIdResponse400
+  | deleteUploadUploadSessionIdFileIdResponse403
+  | deleteUploadUploadSessionIdFileIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getDeleteUploadUploadSessionIdFileIdUrl = (uploadSessionId: string,
-    fileId: string,) => {
+export type deleteUploadUploadSessionIdFileIdResponse =
+  | deleteUploadUploadSessionIdFileIdResponseSuccess
+  | deleteUploadUploadSessionIdFileIdResponseError;
 
+export const getDeleteUploadUploadSessionIdFileIdUrl = (
+  uploadSessionId: string,
+  fileId: string,
+) => {
+  return `https://wd.memaydex.online/upload/${uploadSessionId}/${fileId}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/upload/${uploadSessionId}/${fileId}`
-}
-
-export const deleteUploadUploadSessionIdFileId = async (uploadSessionId: string,
-    fileId: string, options?: RequestInit): Promise<deleteUploadUploadSessionIdFileIdResponse> => {
-  
-  const res = await fetch(getDeleteUploadUploadSessionIdFileIdUrl(uploadSessionId,fileId),
-  {      
-    ...options,
-    method: 'DELETE'
-    
-    
-  }
-)
+export const deleteUploadUploadSessionIdFileId = async (
+  uploadSessionId: string,
+  fileId: string,
+  options?: RequestInit,
+): Promise<deleteUploadUploadSessionIdFileIdResponse> => {
+  const res = await fetch(
+    getDeleteUploadUploadSessionIdFileIdUrl(uploadSessionId, fileId),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteUploadUploadSessionIdFileIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteUploadUploadSessionIdFileIdResponse
-}
-  
 
+  const data: deleteUploadUploadSessionIdFileIdResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as deleteUploadUploadSessionIdFileIdResponse;
+};
 
+export const getDeleteUploadUploadSessionIdFileIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>,
+    TError,
+    { uploadSessionId: string; fileId: string },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>,
+  TError,
+  { uploadSessionId: string; fileId: string },
+  TContext
+> => {
+  const mutationKey = ["deleteUploadUploadSessionIdFileId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getDeleteUploadUploadSessionIdFileIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>, TError,{uploadSessionId: string;fileId: string}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>, TError,{uploadSessionId: string;fileId: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>,
+    { uploadSessionId: string; fileId: string }
+  > = (props) => {
+    const { uploadSessionId, fileId } = props ?? {};
 
-const mutationKey = ['deleteUploadUploadSessionIdFileId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return deleteUploadUploadSessionIdFileId(
+      uploadSessionId,
+      fileId,
+      fetchOptions,
+    );
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeleteUploadUploadSessionIdFileIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>, {uploadSessionId: string;fileId: string}> = (props) => {
-          const {uploadSessionId,fileId} = props ?? {};
+export type DeleteUploadUploadSessionIdFileIdMutationError = void;
 
-          return  deleteUploadUploadSessionIdFileId(uploadSessionId,fileId,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteUploadUploadSessionIdFileIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>>
-    
-    export type DeleteUploadUploadSessionIdFileIdMutationError = void
-
-    /**
+/**
  * @summary Delete File from Upload Session
  */
-export const useDeleteUploadUploadSessionIdFileId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>, TError,{uploadSessionId: string;fileId: string}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>,
-        TError,
-        {uploadSessionId: string;fileId: string},
-        TContext
-      > => {
-      return useMutation(getDeleteUploadUploadSessionIdFileIdMutationOptions(options), queryClient);
-    }
-    
+export const useDeleteUploadUploadSessionIdFileId = <
+  TError = void,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>,
+      TError,
+      { uploadSessionId: string; fileId: string },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteUploadUploadSessionIdFileId>>,
+  TError,
+  { uploadSessionId: string; fileId: string },
+  TContext
+> => {
+  return useMutation(
+    getDeleteUploadUploadSessionIdFileIdMutationOptions(options),
+    queryClient,
+  );
+};

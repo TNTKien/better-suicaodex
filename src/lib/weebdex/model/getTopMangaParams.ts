@@ -8,24 +8,24 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import type { GetTopMangaContentRatingItem } from './getTopMangaContentRatingItem';
-import type { GetTopMangaRank } from './getTopMangaRank';
-import type { GetTopMangaTime } from './getTopMangaTime';
+import type { GetTopMangaContentRatingItem } from "./getTopMangaContentRatingItem";
+import type { GetTopMangaRank } from "./getTopMangaRank";
+import type { GetTopMangaTime } from "./getTopMangaTime";
 
 export type GetTopMangaParams = {
-/**
- * Default: `contentRating=safe&contentRating=suggestive&contentRating=erotica`
- */
-contentRating?: GetTopMangaContentRatingItem[];
-/**
- * @minimum 0
- * @maximum 100
- */
-limit?: number;
-/**
- * @minimum 1
- */
-page?: number;
-rank?: GetTopMangaRank;
-time?: GetTopMangaTime;
+  /**
+   * Default: `contentRating=safe&contentRating=suggestive&contentRating=erotica`
+   */
+  contentRating?: GetTopMangaContentRatingItem[];
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @minimum 1
+   */
+  page?: number;
+  rank?: GetTopMangaRank;
+  time?: GetTopMangaTime;
 };

@@ -9,4 +9,6 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type ControllersUpdateMangaRequestAltTitles = {[key: string]: string[]};
+export type ControllersUpdateMangaRequestAltTitles = {
+  [key: string]: string[];
+};

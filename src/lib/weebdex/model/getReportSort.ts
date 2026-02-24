@@ -9,9 +9,8 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetReportSort = typeof GetReportSort[keyof typeof GetReportSort];
-
+export type GetReportSort = (typeof GetReportSort)[keyof typeof GetReportSort];
 
 export const GetReportSort = {
-  createdAt: 'createdAt',
+  createdAt: "createdAt",
 } as const;

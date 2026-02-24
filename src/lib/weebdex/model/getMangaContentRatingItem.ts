@@ -9,12 +9,12 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetMangaContentRatingItem = typeof GetMangaContentRatingItem[keyof typeof GetMangaContentRatingItem];
-
+export type GetMangaContentRatingItem =
+  (typeof GetMangaContentRatingItem)[keyof typeof GetMangaContentRatingItem];
 
 export const GetMangaContentRatingItem = {
-  safe: 'safe',
-  suggestive: 'suggestive',
-  erotica: 'erotica',
-  pornographic: 'pornographic',
+  safe: "safe",
+  suggestive: "suggestive",
+  erotica: "erotica",
+  pornographic: "pornographic",
 } as const;

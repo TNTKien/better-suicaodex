@@ -9,13 +9,13 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type ControllersCreateMangaRequestDemographic = typeof ControllersCreateMangaRequestDemographic[keyof typeof ControllersCreateMangaRequestDemographic];
-
+export type ControllersCreateMangaRequestDemographic =
+  (typeof ControllersCreateMangaRequestDemographic)[keyof typeof ControllersCreateMangaRequestDemographic];
 
 export const ControllersCreateMangaRequestDemographic = {
-  shounen: 'shounen',
-  shoujo: 'shoujo',
-  josei: 'josei',
-  seinen: 'seinen',
-  none: 'none',
+  shounen: "shounen",
+  shoujo: "shoujo",
+  josei: "josei",
+  seinen: "seinen",
+  none: "none",
 } as const;

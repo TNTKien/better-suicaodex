@@ -8,10 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -24,398 +21,597 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   ControllersUpdateChaptersHistoryBatchRequest,
   GetUserHistoryManga200,
   GetUserHistoryMangaId200,
   GetUserHistoryMangaParams,
-  UpdateChaptersHistoryBatchResponse
-} from '../../model';
-
-
-
-
+  UpdateChaptersHistoryBatchResponse,
+} from "../../model";
 
 /**
  * @summary Get Manga Read History Batch
  */
 export type getUserHistoryMangaResponse200 = {
-  data: GetUserHistoryManga200
-  status: 200
-}
+  data: GetUserHistoryManga200;
+  status: 200;
+};
 
 export type getUserHistoryMangaResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getUserHistoryMangaResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type getUserHistoryMangaResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getUserHistoryMangaResponseSuccess = (getUserHistoryMangaResponse200) & {
-  headers: Headers;
-};
-export type getUserHistoryMangaResponseError = (getUserHistoryMangaResponse400 | getUserHistoryMangaResponse403 | getUserHistoryMangaResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getUserHistoryMangaResponse = (getUserHistoryMangaResponseSuccess | getUserHistoryMangaResponseError)
+export type getUserHistoryMangaResponseSuccess =
+  getUserHistoryMangaResponse200 & {
+    headers: Headers;
+  };
+export type getUserHistoryMangaResponseError = (
+  | getUserHistoryMangaResponse400
+  | getUserHistoryMangaResponse403
+  | getUserHistoryMangaResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetUserHistoryMangaUrl = (params?: GetUserHistoryMangaParams,) => {
+export type getUserHistoryMangaResponse =
+  | getUserHistoryMangaResponseSuccess
+  | getUserHistoryMangaResponseError;
+
+export const getGetUserHistoryMangaUrl = (
+  params?: GetUserHistoryMangaParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/user/history/manga?${stringifiedParams}` : `https://wd.memaydex.online/user/history/manga`
-}
+  return stringifiedParams.length > 0
+    ? `https://wd.memaydex.online/user/history/manga?${stringifiedParams}`
+    : `https://wd.memaydex.online/user/history/manga`;
+};
 
-export const getUserHistoryManga = async (params?: GetUserHistoryMangaParams, options?: RequestInit): Promise<getUserHistoryMangaResponse> => {
-  
-  const res = await fetch(getGetUserHistoryMangaUrl(params),
-  {      
+export const getUserHistoryManga = async (
+  params?: GetUserHistoryMangaParams,
+  options?: RequestInit,
+): Promise<getUserHistoryMangaResponse> => {
+  const res = await fetch(getGetUserHistoryMangaUrl(params), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUserHistoryMangaResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUserHistoryMangaResponse
-}
-  
 
+  const data: getUserHistoryMangaResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getUserHistoryMangaResponse;
+};
 
-
-
-export const getGetUserHistoryMangaQueryKey = (params?: GetUserHistoryMangaParams,) => {
-    return [
-    `https://wd.memaydex.online/user/history/manga`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-    
-export const getGetUserHistoryMangaQueryOptions = <TData = Awaited<ReturnType<typeof getUserHistoryManga>>, TError = void>(params?: GetUserHistoryMangaParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryManga>>, TError, TData>>, fetch?: RequestInit}
+export const getGetUserHistoryMangaQueryKey = (
+  params?: GetUserHistoryMangaParams,
 ) => {
+  return [
+    `https://wd.memaydex.online/user/history/manga`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+export const getGetUserHistoryMangaQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserHistoryManga>>,
+  TError = void,
+>(
+  params?: GetUserHistoryMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserHistoryMangaQueryKey(params);
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserHistoryMangaQueryKey(params);
 
-  
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserHistoryManga>>
+  > = ({ signal }) => getUserHistoryManga(params, { signal, ...fetchOptions });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserHistoryManga>>> = ({ signal }) => getUserHistoryManga(params, { signal, ...fetchOptions });
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserHistoryManga>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetUserHistoryMangaQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserHistoryManga>>
+>;
+export type GetUserHistoryMangaQueryError = void;
 
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryManga>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUserHistoryMangaQueryResult = NonNullable<Awaited<ReturnType<typeof getUserHistoryManga>>>
-export type GetUserHistoryMangaQueryError = void
-
-
-export function useGetUserHistoryManga<TData = Awaited<ReturnType<typeof getUserHistoryManga>>, TError = void>(
- params: undefined |  GetUserHistoryMangaParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryManga>>, TError, TData>> & Pick<
+export function useGetUserHistoryManga<
+  TData = Awaited<ReturnType<typeof getUserHistoryManga>>,
+  TError = void,
+>(
+  params: undefined | GetUserHistoryMangaParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryManga>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserHistoryManga>>,
           TError,
           Awaited<ReturnType<typeof getUserHistoryManga>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserHistoryManga<TData = Awaited<ReturnType<typeof getUserHistoryManga>>, TError = void>(
- params?: GetUserHistoryMangaParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryManga>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserHistoryManga<
+  TData = Awaited<ReturnType<typeof getUserHistoryManga>>,
+  TError = void,
+>(
+  params?: GetUserHistoryMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryManga>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserHistoryManga>>,
           TError,
           Awaited<ReturnType<typeof getUserHistoryManga>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserHistoryManga<TData = Awaited<ReturnType<typeof getUserHistoryManga>>, TError = void>(
- params?: GetUserHistoryMangaParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryManga>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserHistoryManga<
+  TData = Awaited<ReturnType<typeof getUserHistoryManga>>,
+  TError = void,
+>(
+  params?: GetUserHistoryMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Manga Read History Batch
  */
 
-export function useGetUserHistoryManga<TData = Awaited<ReturnType<typeof getUserHistoryManga>>, TError = void>(
- params?: GetUserHistoryMangaParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryManga>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUserHistoryManga<
+  TData = Awaited<ReturnType<typeof getUserHistoryManga>>,
+  TError = void,
+>(
+  params?: GetUserHistoryMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetUserHistoryMangaQueryOptions(params, options);
 
-  const queryOptions = getGetUserHistoryMangaQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get Manga Read History
  */
 export type getUserHistoryMangaIdResponse200 = {
-  data: GetUserHistoryMangaId200
-  status: 200
-}
+  data: GetUserHistoryMangaId200;
+  status: 200;
+};
 
 export type getUserHistoryMangaIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getUserHistoryMangaIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type getUserHistoryMangaIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getUserHistoryMangaIdResponseSuccess = (getUserHistoryMangaIdResponse200) & {
-  headers: Headers;
-};
-export type getUserHistoryMangaIdResponseError = (getUserHistoryMangaIdResponse400 | getUserHistoryMangaIdResponse403 | getUserHistoryMangaIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getUserHistoryMangaIdResponse = (getUserHistoryMangaIdResponseSuccess | getUserHistoryMangaIdResponseError)
+export type getUserHistoryMangaIdResponseSuccess =
+  getUserHistoryMangaIdResponse200 & {
+    headers: Headers;
+  };
+export type getUserHistoryMangaIdResponseError = (
+  | getUserHistoryMangaIdResponse400
+  | getUserHistoryMangaIdResponse403
+  | getUserHistoryMangaIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetUserHistoryMangaIdUrl = (id: string,) => {
+export type getUserHistoryMangaIdResponse =
+  | getUserHistoryMangaIdResponseSuccess
+  | getUserHistoryMangaIdResponseError;
 
+export const getGetUserHistoryMangaIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/user/history/manga/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/user/history/manga/${id}`
-}
-
-export const getUserHistoryMangaId = async (id: string, options?: RequestInit): Promise<getUserHistoryMangaIdResponse> => {
-  
-  const res = await fetch(getGetUserHistoryMangaIdUrl(id),
-  {      
+export const getUserHistoryMangaId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getUserHistoryMangaIdResponse> => {
+  const res = await fetch(getGetUserHistoryMangaIdUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUserHistoryMangaIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUserHistoryMangaIdResponse
-}
-  
 
+  const data: getUserHistoryMangaIdResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getUserHistoryMangaIdResponse;
+};
 
+export const getGetUserHistoryMangaIdQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/user/history/manga/${id}`] as const;
+};
 
-
-export const getGetUserHistoryMangaIdQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/user/history/manga/${id}`
-    ] as const;
-    }
-
-    
-export const getGetUserHistoryMangaIdQueryOptions = <TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError, TData>>, fetch?: RequestInit}
+export const getGetUserHistoryMangaIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserHistoryMangaIdQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserHistoryMangaIdQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserHistoryMangaId>>
+  > = ({ signal }) => getUserHistoryMangaId(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserHistoryMangaId>>> = ({ signal }) => getUserHistoryMangaId(id, { signal, ...fetchOptions });
+export type GetUserHistoryMangaIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserHistoryMangaId>>
+>;
+export type GetUserHistoryMangaIdQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUserHistoryMangaIdQueryResult = NonNullable<Awaited<ReturnType<typeof getUserHistoryMangaId>>>
-export type GetUserHistoryMangaIdQueryError = void
-
-
-export function useGetUserHistoryMangaId<TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError, TData>> & Pick<
+export function useGetUserHistoryMangaId<
+  TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserHistoryMangaId>>,
           TError,
           Awaited<ReturnType<typeof getUserHistoryMangaId>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserHistoryMangaId<TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserHistoryMangaId<
+  TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserHistoryMangaId>>,
           TError,
           Awaited<ReturnType<typeof getUserHistoryMangaId>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserHistoryMangaId<TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserHistoryMangaId<
+  TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Manga Read History
  */
 
-export function useGetUserHistoryMangaId<TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserHistoryMangaId>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUserHistoryMangaId<
+  TData = Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserHistoryMangaId>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetUserHistoryMangaIdQueryOptions(id, options);
 
-  const queryOptions = getGetUserHistoryMangaIdQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update Manga Read History Batch
  */
 export type postUserHistoryMangaIdResponse200 = {
-  data: UpdateChaptersHistoryBatchResponse
-  status: 200
-}
+  data: UpdateChaptersHistoryBatchResponse;
+  status: 200;
+};
 
 export type postUserHistoryMangaIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type postUserHistoryMangaIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type postUserHistoryMangaIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type postUserHistoryMangaIdResponseSuccess = (postUserHistoryMangaIdResponse200) & {
-  headers: Headers;
-};
-export type postUserHistoryMangaIdResponseError = (postUserHistoryMangaIdResponse400 | postUserHistoryMangaIdResponse403 | postUserHistoryMangaIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type postUserHistoryMangaIdResponse = (postUserHistoryMangaIdResponseSuccess | postUserHistoryMangaIdResponseError)
+export type postUserHistoryMangaIdResponseSuccess =
+  postUserHistoryMangaIdResponse200 & {
+    headers: Headers;
+  };
+export type postUserHistoryMangaIdResponseError = (
+  | postUserHistoryMangaIdResponse400
+  | postUserHistoryMangaIdResponse403
+  | postUserHistoryMangaIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getPostUserHistoryMangaIdUrl = (id: string,) => {
+export type postUserHistoryMangaIdResponse =
+  | postUserHistoryMangaIdResponseSuccess
+  | postUserHistoryMangaIdResponseError;
 
+export const getPostUserHistoryMangaIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/user/history/manga/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/user/history/manga/${id}`
-}
-
-export const postUserHistoryMangaId = async (id: string,
-    controllersUpdateChaptersHistoryBatchRequest: ControllersUpdateChaptersHistoryBatchRequest, options?: RequestInit): Promise<postUserHistoryMangaIdResponse> => {
-  
-  const res = await fetch(getPostUserHistoryMangaIdUrl(id),
-  {      
+export const postUserHistoryMangaId = async (
+  id: string,
+  controllersUpdateChaptersHistoryBatchRequest: ControllersUpdateChaptersHistoryBatchRequest,
+  options?: RequestInit,
+): Promise<postUserHistoryMangaIdResponse> => {
+  const res = await fetch(getPostUserHistoryMangaIdUrl(id), {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersUpdateChaptersHistoryBatchRequest,)
-  }
-)
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(controllersUpdateChaptersHistoryBatchRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postUserHistoryMangaIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postUserHistoryMangaIdResponse
-}
-  
 
+  const data: postUserHistoryMangaIdResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postUserHistoryMangaIdResponse;
+};
 
+export const getPostUserHistoryMangaIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postUserHistoryMangaId>>,
+    TError,
+    { id: string; data: ControllersUpdateChaptersHistoryBatchRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postUserHistoryMangaId>>,
+  TError,
+  { id: string; data: ControllersUpdateChaptersHistoryBatchRequest },
+  TContext
+> => {
+  const mutationKey = ["postUserHistoryMangaId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPostUserHistoryMangaIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUserHistoryMangaId>>, TError,{id: string;data: ControllersUpdateChaptersHistoryBatchRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postUserHistoryMangaId>>, TError,{id: string;data: ControllersUpdateChaptersHistoryBatchRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postUserHistoryMangaId>>,
+    { id: string; data: ControllersUpdateChaptersHistoryBatchRequest }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-const mutationKey = ['postUserHistoryMangaId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return postUserHistoryMangaId(id, data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostUserHistoryMangaIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postUserHistoryMangaId>>
+>;
+export type PostUserHistoryMangaIdMutationBody =
+  ControllersUpdateChaptersHistoryBatchRequest;
+export type PostUserHistoryMangaIdMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUserHistoryMangaId>>, {id: string;data: ControllersUpdateChaptersHistoryBatchRequest}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  postUserHistoryMangaId(id,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostUserHistoryMangaIdMutationResult = NonNullable<Awaited<ReturnType<typeof postUserHistoryMangaId>>>
-    export type PostUserHistoryMangaIdMutationBody = ControllersUpdateChaptersHistoryBatchRequest
-    export type PostUserHistoryMangaIdMutationError = void
-
-    /**
+/**
  * @summary Update Manga Read History Batch
  */
-export const usePostUserHistoryMangaId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUserHistoryMangaId>>, TError,{id: string;data: ControllersUpdateChaptersHistoryBatchRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postUserHistoryMangaId>>,
-        TError,
-        {id: string;data: ControllersUpdateChaptersHistoryBatchRequest},
-        TContext
-      > => {
-      return useMutation(getPostUserHistoryMangaIdMutationOptions(options), queryClient);
-    }
-    
+export const usePostUserHistoryMangaId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postUserHistoryMangaId>>,
+      TError,
+      { id: string; data: ControllersUpdateChaptersHistoryBatchRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postUserHistoryMangaId>>,
+  TError,
+  { id: string; data: ControllersUpdateChaptersHistoryBatchRequest },
+  TContext
+> => {
+  return useMutation(
+    getPostUserHistoryMangaIdMutationOptions(options),
+    queryClient,
+  );
+};

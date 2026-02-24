@@ -8,10 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -24,402 +21,532 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   ControllersUpdateUserRequest,
   GetUserParams,
   User,
-  UserFeedResponse
-} from '../../model';
-
-
-
-
+  UserFeedResponse,
+} from "../../model";
 
 /**
  * @summary Get User List
  */
 export type getUserResponse200 = {
-  data: UserFeedResponse
-  status: 200
-}
+  data: UserFeedResponse;
+  status: 200;
+};
 
 export type getUserResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getUserResponse500 = {
-  data: void
-  status: 500
-}
+  data: void;
+  status: 500;
+};
 
-export type getUserResponseSuccess = (getUserResponse200) & {
+export type getUserResponseSuccess = getUserResponse200 & {
   headers: Headers;
 };
 export type getUserResponseError = (getUserResponse400 | getUserResponse500) & {
   headers: Headers;
 };
 
-export type getUserResponse = (getUserResponseSuccess | getUserResponseError)
+export type getUserResponse = getUserResponseSuccess | getUserResponseError;
 
-export const getGetUserUrl = (params?: GetUserParams,) => {
+export const getGetUserUrl = (params?: GetUserParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/user?${stringifiedParams}` : `https://wd.memaydex.online/user`
-}
+  return stringifiedParams.length > 0
+    ? `https://wd.memaydex.online/user?${stringifiedParams}`
+    : `https://wd.memaydex.online/user`;
+};
 
-export const getUser = async (params?: GetUserParams, options?: RequestInit): Promise<getUserResponse> => {
-  
-  const res = await fetch(getGetUserUrl(params),
-  {      
+export const getUser = async (
+  params?: GetUserParams,
+  options?: RequestInit,
+): Promise<getUserResponse> => {
+  const res = await fetch(getGetUserUrl(params), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUserResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUserResponse
-}
-  
 
+  const data: getUserResponse["data"] = body ? JSON.parse(body) : {};
+  return { data, status: res.status, headers: res.headers } as getUserResponse;
+};
 
+export const getGetUserQueryKey = (params?: GetUserParams) => {
+  return [
+    `https://wd.memaydex.online/user`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-
-export const getGetUserQueryKey = (params?: GetUserParams,) => {
-    return [
-    `https://wd.memaydex.online/user`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-    
-export const getGetUserQueryOptions = <TData = Awaited<ReturnType<typeof getUser>>, TError = void>(params?: GetUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>>, fetch?: RequestInit}
+export const getGetUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUser>>,
+  TError = void,
+>(
+  params?: GetUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetUserQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUser>>> = ({
+    signal,
+  }) => getUser(params, { signal, ...fetchOptions });
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUser>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUser>>> = ({ signal }) => getUser(params, { signal, ...fetchOptions });
+export type GetUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUser>>
+>;
+export type GetUserQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUserQueryResult = NonNullable<Awaited<ReturnType<typeof getUser>>>
-export type GetUserQueryError = void
-
-
-export function useGetUser<TData = Awaited<ReturnType<typeof getUser>>, TError = void>(
- params: undefined |  GetUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>> & Pick<
+export function useGetUser<
+  TData = Awaited<ReturnType<typeof getUser>>,
+  TError = void,
+>(
+  params: undefined | GetUserParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUser>>,
           TError,
           Awaited<ReturnType<typeof getUser>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUser<TData = Awaited<ReturnType<typeof getUser>>, TError = void>(
- params?: GetUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUser<
+  TData = Awaited<ReturnType<typeof getUser>>,
+  TError = void,
+>(
+  params?: GetUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUser>>,
           TError,
           Awaited<ReturnType<typeof getUser>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUser<TData = Awaited<ReturnType<typeof getUser>>, TError = void>(
- params?: GetUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUser<
+  TData = Awaited<ReturnType<typeof getUser>>,
+  TError = void,
+>(
+  params?: GetUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get User List
  */
 
-export function useGetUser<TData = Awaited<ReturnType<typeof getUser>>, TError = void>(
- params?: GetUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUser<
+  TData = Awaited<ReturnType<typeof getUser>>,
+  TError = void,
+>(
+  params?: GetUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUser>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetUserQueryOptions(params, options);
 
-  const queryOptions = getGetUserQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get User
  */
 export type getUserIdResponse200 = {
-  data: User
-  status: 200
-}
+  data: User;
+  status: 200;
+};
 
 export type getUserIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getUserIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getUserIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getUserIdResponseSuccess = (getUserIdResponse200) & {
-  headers: Headers;
-};
-export type getUserIdResponseError = (getUserIdResponse400 | getUserIdResponse404 | getUserIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getUserIdResponse = (getUserIdResponseSuccess | getUserIdResponseError)
+export type getUserIdResponseSuccess = getUserIdResponse200 & {
+  headers: Headers;
+};
+export type getUserIdResponseError = (
+  | getUserIdResponse400
+  | getUserIdResponse404
+  | getUserIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetUserIdUrl = (id: string,) => {
+export type getUserIdResponse =
+  | getUserIdResponseSuccess
+  | getUserIdResponseError;
 
+export const getGetUserIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/user/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/user/${id}`
-}
-
-export const getUserId = async (id: string, options?: RequestInit): Promise<getUserIdResponse> => {
-  
-  const res = await fetch(getGetUserIdUrl(id),
-  {      
+export const getUserId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getUserIdResponse> => {
+  const res = await fetch(getGetUserIdUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUserIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUserIdResponse
-}
-  
 
+  const data: getUserIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getUserIdResponse;
+};
 
+export const getGetUserIdQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/user/${id}`] as const;
+};
 
-
-export const getGetUserIdQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/user/${id}`
-    ] as const;
-    }
-
-    
-export const getGetUserIdQueryOptions = <TData = Awaited<ReturnType<typeof getUserId>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>>, fetch?: RequestInit}
+export const getGetUserIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetUserIdQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserIdQueryKey(id);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserId>>> = ({
+    signal,
+  }) => getUserId(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserId>>> = ({ signal }) => getUserId(id, { signal, ...fetchOptions });
+export type GetUserIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserId>>
+>;
+export type GetUserIdQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUserIdQueryResult = NonNullable<Awaited<ReturnType<typeof getUserId>>>
-export type GetUserIdQueryError = void
-
-
-export function useGetUserId<TData = Awaited<ReturnType<typeof getUserId>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>> & Pick<
+export function useGetUserId<
+  TData = Awaited<ReturnType<typeof getUserId>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserId>>,
           TError,
           Awaited<ReturnType<typeof getUserId>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserId<TData = Awaited<ReturnType<typeof getUserId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserId<
+  TData = Awaited<ReturnType<typeof getUserId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserId>>,
           TError,
           Awaited<ReturnType<typeof getUserId>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserId<TData = Awaited<ReturnType<typeof getUserId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserId<
+  TData = Awaited<ReturnType<typeof getUserId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get User
  */
 
-export function useGetUserId<TData = Awaited<ReturnType<typeof getUserId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUserId<
+  TData = Awaited<ReturnType<typeof getUserId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUserId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetUserIdQueryOptions(id, options);
 
-  const queryOptions = getGetUserIdQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update User
  */
 export type putUserIdResponse200 = {
-  data: User
-  status: 200
-}
+  data: User;
+  status: 200;
+};
 
 export type putUserIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type putUserIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type putUserIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type putUserIdResponse409 = {
-  data: void
-  status: 409
-}
+  data: void;
+  status: 409;
+};
 
 export type putUserIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type putUserIdResponseSuccess = (putUserIdResponse200) & {
-  headers: Headers;
-};
-export type putUserIdResponseError = (putUserIdResponse400 | putUserIdResponse403 | putUserIdResponse404 | putUserIdResponse409 | putUserIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type putUserIdResponse = (putUserIdResponseSuccess | putUserIdResponseError)
+export type putUserIdResponseSuccess = putUserIdResponse200 & {
+  headers: Headers;
+};
+export type putUserIdResponseError = (
+  | putUserIdResponse400
+  | putUserIdResponse403
+  | putUserIdResponse404
+  | putUserIdResponse409
+  | putUserIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getPutUserIdUrl = (id: string,) => {
+export type putUserIdResponse =
+  | putUserIdResponseSuccess
+  | putUserIdResponseError;
 
+export const getPutUserIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/user/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/user/${id}`
-}
-
-export const putUserId = async (id: string,
-    controllersUpdateUserRequest: ControllersUpdateUserRequest, options?: RequestInit): Promise<putUserIdResponse> => {
-  
-  const res = await fetch(getPutUserIdUrl(id),
-  {      
+export const putUserId = async (
+  id: string,
+  controllersUpdateUserRequest: ControllersUpdateUserRequest,
+  options?: RequestInit,
+): Promise<putUserIdResponse> => {
+  const res = await fetch(getPutUserIdUrl(id), {
     ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersUpdateUserRequest,)
-  }
-)
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(controllersUpdateUserRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: putUserIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as putUserIdResponse
-}
-  
 
+  const data: putUserIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as putUserIdResponse;
+};
 
+export const getPutUserIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof putUserId>>,
+    TError,
+    { id: string; data: ControllersUpdateUserRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof putUserId>>,
+  TError,
+  { id: string; data: ControllersUpdateUserRequest },
+  TContext
+> => {
+  const mutationKey = ["putUserId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPutUserIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUserId>>, TError,{id: string;data: ControllersUpdateUserRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof putUserId>>, TError,{id: string;data: ControllersUpdateUserRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof putUserId>>,
+    { id: string; data: ControllersUpdateUserRequest }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-const mutationKey = ['putUserId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return putUserId(id, data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PutUserIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof putUserId>>
+>;
+export type PutUserIdMutationBody = ControllersUpdateUserRequest;
+export type PutUserIdMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putUserId>>, {id: string;data: ControllersUpdateUserRequest}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  putUserId(id,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PutUserIdMutationResult = NonNullable<Awaited<ReturnType<typeof putUserId>>>
-    export type PutUserIdMutationBody = ControllersUpdateUserRequest
-    export type PutUserIdMutationError = void
-
-    /**
+/**
  * @summary Update User
  */
-export const usePutUserId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUserId>>, TError,{id: string;data: ControllersUpdateUserRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof putUserId>>,
-        TError,
-        {id: string;data: ControllersUpdateUserRequest},
-        TContext
-      > => {
-      return useMutation(getPutUserIdMutationOptions(options), queryClient);
-    }
-    
+export const usePutUserId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof putUserId>>,
+      TError,
+      { id: string; data: ControllersUpdateUserRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof putUserId>>,
+  TError,
+  { id: string; data: ControllersUpdateUserRequest },
+  TContext
+> => {
+  return useMutation(getPutUserIdMutationOptions(options), queryClient);
+};

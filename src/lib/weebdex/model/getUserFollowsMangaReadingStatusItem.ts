@@ -9,14 +9,14 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetUserFollowsMangaReadingStatusItem = typeof GetUserFollowsMangaReadingStatusItem[keyof typeof GetUserFollowsMangaReadingStatusItem];
-
+export type GetUserFollowsMangaReadingStatusItem =
+  (typeof GetUserFollowsMangaReadingStatusItem)[keyof typeof GetUserFollowsMangaReadingStatusItem];
 
 export const GetUserFollowsMangaReadingStatusItem = {
-  reading: 'reading',
-  plan_to_read: 'plan_to_read',
-  completed: 'completed',
-  on_hold: 'on_hold',
-  re_reading: 're_reading',
-  dropped: 'dropped',
+  reading: "reading",
+  plan_to_read: "plan_to_read",
+  completed: "completed",
+  on_hold: "on_hold",
+  re_reading: "re_reading",
+  dropped: "dropped",
 } as const;

@@ -8,10 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -24,622 +21,806 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   ControllersCreateGroupRequest,
   ControllersUpdateGroupRequest,
   GetGroupParams,
   ScanlationGroup,
-  ScanlationGroupFeedResponse
-} from '../../model';
-
-
-
-
+  ScanlationGroupFeedResponse,
+} from "../../model";
 
 /**
  * @summary Get Scanlation Group List
  */
 export type getGroupResponse200 = {
-  data: ScanlationGroupFeedResponse
-  status: 200
-}
+  data: ScanlationGroupFeedResponse;
+  status: 200;
+};
 
 export type getGroupResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getGroupResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getGroupResponseSuccess = (getGroupResponse200) & {
-  headers: Headers;
-};
-export type getGroupResponseError = (getGroupResponse400 | getGroupResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getGroupResponse = (getGroupResponseSuccess | getGroupResponseError)
+export type getGroupResponseSuccess = getGroupResponse200 & {
+  headers: Headers;
+};
+export type getGroupResponseError = (
+  | getGroupResponse400
+  | getGroupResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetGroupUrl = (params?: GetGroupParams,) => {
+export type getGroupResponse = getGroupResponseSuccess | getGroupResponseError;
+
+export const getGetGroupUrl = (params?: GetGroupParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/group?${stringifiedParams}` : `https://wd.memaydex.online/group`
-}
+  return stringifiedParams.length > 0
+    ? `https://wd.memaydex.online/group?${stringifiedParams}`
+    : `https://wd.memaydex.online/group`;
+};
 
-export const getGroup = async (params?: GetGroupParams, options?: RequestInit): Promise<getGroupResponse> => {
-  
-  const res = await fetch(getGetGroupUrl(params),
-  {      
+export const getGroup = async (
+  params?: GetGroupParams,
+  options?: RequestInit,
+): Promise<getGroupResponse> => {
+  const res = await fetch(getGetGroupUrl(params), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getGroupResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getGroupResponse
-}
-  
 
+  const data: getGroupResponse["data"] = body ? JSON.parse(body) : {};
+  return { data, status: res.status, headers: res.headers } as getGroupResponse;
+};
 
+export const getGetGroupQueryKey = (params?: GetGroupParams) => {
+  return [
+    `https://wd.memaydex.online/group`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-
-export const getGetGroupQueryKey = (params?: GetGroupParams,) => {
-    return [
-    `https://wd.memaydex.online/group`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-    
-export const getGetGroupQueryOptions = <TData = Awaited<ReturnType<typeof getGroup>>, TError = void>(params?: GetGroupParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>>, fetch?: RequestInit}
+export const getGetGroupQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGroup>>,
+  TError = void,
+>(
+  params?: GetGroupParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetGroupQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetGroupQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGroup>>> = ({
+    signal,
+  }) => getGroup(params, { signal, ...fetchOptions });
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGroup>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGroup>>> = ({ signal }) => getGroup(params, { signal, ...fetchOptions });
+export type GetGroupQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGroup>>
+>;
+export type GetGroupQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetGroupQueryResult = NonNullable<Awaited<ReturnType<typeof getGroup>>>
-export type GetGroupQueryError = void
-
-
-export function useGetGroup<TData = Awaited<ReturnType<typeof getGroup>>, TError = void>(
- params: undefined |  GetGroupParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>> & Pick<
+export function useGetGroup<
+  TData = Awaited<ReturnType<typeof getGroup>>,
+  TError = void,
+>(
+  params: undefined | GetGroupParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getGroup>>,
           TError,
           Awaited<ReturnType<typeof getGroup>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetGroup<TData = Awaited<ReturnType<typeof getGroup>>, TError = void>(
- params?: GetGroupParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetGroup<
+  TData = Awaited<ReturnType<typeof getGroup>>,
+  TError = void,
+>(
+  params?: GetGroupParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getGroup>>,
           TError,
           Awaited<ReturnType<typeof getGroup>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetGroup<TData = Awaited<ReturnType<typeof getGroup>>, TError = void>(
- params?: GetGroupParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetGroup<
+  TData = Awaited<ReturnType<typeof getGroup>>,
+  TError = void,
+>(
+  params?: GetGroupParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Scanlation Group List
  */
 
-export function useGetGroup<TData = Awaited<ReturnType<typeof getGroup>>, TError = void>(
- params?: GetGroupParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetGroup<
+  TData = Awaited<ReturnType<typeof getGroup>>,
+  TError = void,
+>(
+  params?: GetGroupParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroup>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetGroupQueryOptions(params, options);
 
-  const queryOptions = getGetGroupQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Create Scanlation Group
  */
 export type postGroupResponse201 = {
-  data: ScanlationGroup
-  status: 201
-}
+  data: ScanlationGroup;
+  status: 201;
+};
 
 export type postGroupResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type postGroupResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type postGroupResponse409 = {
-  data: void
-  status: 409
-}
+  data: void;
+  status: 409;
+};
 
 export type postGroupResponse500 = {
-  data: void
-  status: 500
-}
-
-export type postGroupResponseSuccess = (postGroupResponse201) & {
-  headers: Headers;
-};
-export type postGroupResponseError = (postGroupResponse400 | postGroupResponse403 | postGroupResponse409 | postGroupResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type postGroupResponse = (postGroupResponseSuccess | postGroupResponseError)
+export type postGroupResponseSuccess = postGroupResponse201 & {
+  headers: Headers;
+};
+export type postGroupResponseError = (
+  | postGroupResponse400
+  | postGroupResponse403
+  | postGroupResponse409
+  | postGroupResponse500
+) & {
+  headers: Headers;
+};
+
+export type postGroupResponse =
+  | postGroupResponseSuccess
+  | postGroupResponseError;
 
 export const getPostGroupUrl = () => {
+  return `https://wd.memaydex.online/group`;
+};
 
-
-  
-
-  return `https://wd.memaydex.online/group`
-}
-
-export const postGroup = async (controllersCreateGroupRequest: ControllersCreateGroupRequest, options?: RequestInit): Promise<postGroupResponse> => {
-  
-  const res = await fetch(getPostGroupUrl(),
-  {      
+export const postGroup = async (
+  controllersCreateGroupRequest: ControllersCreateGroupRequest,
+  options?: RequestInit,
+): Promise<postGroupResponse> => {
+  const res = await fetch(getPostGroupUrl(), {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersCreateGroupRequest,)
-  }
-)
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(controllersCreateGroupRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postGroupResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postGroupResponse
-}
-  
 
+  const data: postGroupResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postGroupResponse;
+};
 
+export const getPostGroupMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postGroup>>,
+    TError,
+    { data: ControllersCreateGroupRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postGroup>>,
+  TError,
+  { data: ControllersCreateGroupRequest },
+  TContext
+> => {
+  const mutationKey = ["postGroup"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPostGroupMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postGroup>>, TError,{data: ControllersCreateGroupRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postGroup>>, TError,{data: ControllersCreateGroupRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postGroup>>,
+    { data: ControllersCreateGroupRequest }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['postGroup'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return postGroup(data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostGroupMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postGroup>>
+>;
+export type PostGroupMutationBody = ControllersCreateGroupRequest;
+export type PostGroupMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postGroup>>, {data: ControllersCreateGroupRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postGroup(data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostGroupMutationResult = NonNullable<Awaited<ReturnType<typeof postGroup>>>
-    export type PostGroupMutationBody = ControllersCreateGroupRequest
-    export type PostGroupMutationError = void
-
-    /**
+/**
  * @summary Create Scanlation Group
  */
-export const usePostGroup = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postGroup>>, TError,{data: ControllersCreateGroupRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postGroup>>,
-        TError,
-        {data: ControllersCreateGroupRequest},
-        TContext
-      > => {
-      return useMutation(getPostGroupMutationOptions(options), queryClient);
-    }
-    /**
+export const usePostGroup = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postGroup>>,
+      TError,
+      { data: ControllersCreateGroupRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postGroup>>,
+  TError,
+  { data: ControllersCreateGroupRequest },
+  TContext
+> => {
+  return useMutation(getPostGroupMutationOptions(options), queryClient);
+};
+/**
  * @summary Get Scanlation Group
  */
 export type getGroupIdResponse200 = {
-  data: ScanlationGroup
-  status: 200
-}
+  data: ScanlationGroup;
+  status: 200;
+};
 
 export type getGroupIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getGroupIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getGroupIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getGroupIdResponseSuccess = (getGroupIdResponse200) & {
-  headers: Headers;
-};
-export type getGroupIdResponseError = (getGroupIdResponse400 | getGroupIdResponse404 | getGroupIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getGroupIdResponse = (getGroupIdResponseSuccess | getGroupIdResponseError)
+export type getGroupIdResponseSuccess = getGroupIdResponse200 & {
+  headers: Headers;
+};
+export type getGroupIdResponseError = (
+  | getGroupIdResponse400
+  | getGroupIdResponse404
+  | getGroupIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetGroupIdUrl = (id: string,) => {
+export type getGroupIdResponse =
+  | getGroupIdResponseSuccess
+  | getGroupIdResponseError;
 
+export const getGetGroupIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/group/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/group/${id}`
-}
-
-export const getGroupId = async (id: string, options?: RequestInit): Promise<getGroupIdResponse> => {
-  
-  const res = await fetch(getGetGroupIdUrl(id),
-  {      
+export const getGroupId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getGroupIdResponse> => {
+  const res = await fetch(getGetGroupIdUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getGroupIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getGroupIdResponse
-}
-  
 
+  const data: getGroupIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getGroupIdResponse;
+};
 
+export const getGetGroupIdQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/group/${id}`] as const;
+};
 
-
-export const getGetGroupIdQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/group/${id}`
-    ] as const;
-    }
-
-    
-export const getGetGroupIdQueryOptions = <TData = Awaited<ReturnType<typeof getGroupId>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>>, fetch?: RequestInit}
+export const getGetGroupIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGroupId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetGroupIdQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetGroupIdQueryKey(id);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGroupId>>> = ({
+    signal,
+  }) => getGroupId(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGroupId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGroupId>>> = ({ signal }) => getGroupId(id, { signal, ...fetchOptions });
+export type GetGroupIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGroupId>>
+>;
+export type GetGroupIdQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetGroupIdQueryResult = NonNullable<Awaited<ReturnType<typeof getGroupId>>>
-export type GetGroupIdQueryError = void
-
-
-export function useGetGroupId<TData = Awaited<ReturnType<typeof getGroupId>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>> & Pick<
+export function useGetGroupId<
+  TData = Awaited<ReturnType<typeof getGroupId>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getGroupId>>,
           TError,
           Awaited<ReturnType<typeof getGroupId>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetGroupId<TData = Awaited<ReturnType<typeof getGroupId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetGroupId<
+  TData = Awaited<ReturnType<typeof getGroupId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getGroupId>>,
           TError,
           Awaited<ReturnType<typeof getGroupId>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetGroupId<TData = Awaited<ReturnType<typeof getGroupId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetGroupId<
+  TData = Awaited<ReturnType<typeof getGroupId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Scanlation Group
  */
 
-export function useGetGroupId<TData = Awaited<ReturnType<typeof getGroupId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetGroupId<
+  TData = Awaited<ReturnType<typeof getGroupId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGroupId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetGroupIdQueryOptions(id, options);
 
-  const queryOptions = getGetGroupIdQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update Scanlation Group
  */
 export type putGroupIdResponse200 = {
-  data: ScanlationGroup
-  status: 200
-}
+  data: ScanlationGroup;
+  status: 200;
+};
 
 export type putGroupIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type putGroupIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type putGroupIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type putGroupIdResponse409 = {
-  data: void
-  status: 409
-}
+  data: void;
+  status: 409;
+};
 
 export type putGroupIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type putGroupIdResponseSuccess = (putGroupIdResponse200) & {
-  headers: Headers;
-};
-export type putGroupIdResponseError = (putGroupIdResponse400 | putGroupIdResponse403 | putGroupIdResponse404 | putGroupIdResponse409 | putGroupIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type putGroupIdResponse = (putGroupIdResponseSuccess | putGroupIdResponseError)
+export type putGroupIdResponseSuccess = putGroupIdResponse200 & {
+  headers: Headers;
+};
+export type putGroupIdResponseError = (
+  | putGroupIdResponse400
+  | putGroupIdResponse403
+  | putGroupIdResponse404
+  | putGroupIdResponse409
+  | putGroupIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getPutGroupIdUrl = (id: string,) => {
+export type putGroupIdResponse =
+  | putGroupIdResponseSuccess
+  | putGroupIdResponseError;
 
+export const getPutGroupIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/group/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/group/${id}`
-}
-
-export const putGroupId = async (id: string,
-    controllersUpdateGroupRequest: ControllersUpdateGroupRequest, options?: RequestInit): Promise<putGroupIdResponse> => {
-  
-  const res = await fetch(getPutGroupIdUrl(id),
-  {      
+export const putGroupId = async (
+  id: string,
+  controllersUpdateGroupRequest: ControllersUpdateGroupRequest,
+  options?: RequestInit,
+): Promise<putGroupIdResponse> => {
+  const res = await fetch(getPutGroupIdUrl(id), {
     ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersUpdateGroupRequest,)
-  }
-)
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(controllersUpdateGroupRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: putGroupIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as putGroupIdResponse
-}
-  
 
+  const data: putGroupIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as putGroupIdResponse;
+};
 
+export const getPutGroupIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof putGroupId>>,
+    TError,
+    { id: string; data: ControllersUpdateGroupRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof putGroupId>>,
+  TError,
+  { id: string; data: ControllersUpdateGroupRequest },
+  TContext
+> => {
+  const mutationKey = ["putGroupId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPutGroupIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putGroupId>>, TError,{id: string;data: ControllersUpdateGroupRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof putGroupId>>, TError,{id: string;data: ControllersUpdateGroupRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof putGroupId>>,
+    { id: string; data: ControllersUpdateGroupRequest }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-const mutationKey = ['putGroupId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return putGroupId(id, data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PutGroupIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof putGroupId>>
+>;
+export type PutGroupIdMutationBody = ControllersUpdateGroupRequest;
+export type PutGroupIdMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putGroupId>>, {id: string;data: ControllersUpdateGroupRequest}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  putGroupId(id,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PutGroupIdMutationResult = NonNullable<Awaited<ReturnType<typeof putGroupId>>>
-    export type PutGroupIdMutationBody = ControllersUpdateGroupRequest
-    export type PutGroupIdMutationError = void
-
-    /**
+/**
  * @summary Update Scanlation Group
  */
-export const usePutGroupId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putGroupId>>, TError,{id: string;data: ControllersUpdateGroupRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof putGroupId>>,
-        TError,
-        {id: string;data: ControllersUpdateGroupRequest},
-        TContext
-      > => {
-      return useMutation(getPutGroupIdMutationOptions(options), queryClient);
-    }
-    /**
+export const usePutGroupId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof putGroupId>>,
+      TError,
+      { id: string; data: ControllersUpdateGroupRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof putGroupId>>,
+  TError,
+  { id: string; data: ControllersUpdateGroupRequest },
+  TContext
+> => {
+  return useMutation(getPutGroupIdMutationOptions(options), queryClient);
+};
+/**
  * @summary Delete Scanlation Group
  */
 export type deleteGroupIdResponse204 = {
-  data: void
-  status: 204
-}
+  data: void;
+  status: 204;
+};
 
 export type deleteGroupIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type deleteGroupIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type deleteGroupIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type deleteGroupIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type deleteGroupIdResponseSuccess = (deleteGroupIdResponse204) & {
-  headers: Headers;
-};
-export type deleteGroupIdResponseError = (deleteGroupIdResponse400 | deleteGroupIdResponse403 | deleteGroupIdResponse404 | deleteGroupIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type deleteGroupIdResponse = (deleteGroupIdResponseSuccess | deleteGroupIdResponseError)
+export type deleteGroupIdResponseSuccess = deleteGroupIdResponse204 & {
+  headers: Headers;
+};
+export type deleteGroupIdResponseError = (
+  | deleteGroupIdResponse400
+  | deleteGroupIdResponse403
+  | deleteGroupIdResponse404
+  | deleteGroupIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getDeleteGroupIdUrl = (id: string,) => {
+export type deleteGroupIdResponse =
+  | deleteGroupIdResponseSuccess
+  | deleteGroupIdResponseError;
 
+export const getDeleteGroupIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/group/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/group/${id}`
-}
-
-export const deleteGroupId = async (id: string, options?: RequestInit): Promise<deleteGroupIdResponse> => {
-  
-  const res = await fetch(getDeleteGroupIdUrl(id),
-  {      
+export const deleteGroupId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<deleteGroupIdResponse> => {
+  const res = await fetch(getDeleteGroupIdUrl(id), {
     ...options,
-    method: 'DELETE'
-    
-    
-  }
-)
+    method: "DELETE",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteGroupIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteGroupIdResponse
-}
-  
 
+  const data: deleteGroupIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as deleteGroupIdResponse;
+};
 
+export const getDeleteGroupIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteGroupId>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteGroupId>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteGroupId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getDeleteGroupIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteGroupId>>, TError,{id: string}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteGroupId>>, TError,{id: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteGroupId>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-const mutationKey = ['deleteGroupId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return deleteGroupId(id, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeleteGroupIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteGroupId>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteGroupId>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+export type DeleteGroupIdMutationError = void;
 
-          return  deleteGroupId(id,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteGroupIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteGroupId>>>
-    
-    export type DeleteGroupIdMutationError = void
-
-    /**
+/**
  * @summary Delete Scanlation Group
  */
-export const useDeleteGroupId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteGroupId>>, TError,{id: string}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteGroupId>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getDeleteGroupIdMutationOptions(options), queryClient);
-    }
-    
+export const useDeleteGroupId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteGroupId>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteGroupId>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(getDeleteGroupIdMutationOptions(options), queryClient);
+};

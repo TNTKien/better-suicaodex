@@ -9,12 +9,12 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type ControllersCreateMangaRequestStatus = typeof ControllersCreateMangaRequestStatus[keyof typeof ControllersCreateMangaRequestStatus];
-
+export type ControllersCreateMangaRequestStatus =
+  (typeof ControllersCreateMangaRequestStatus)[keyof typeof ControllersCreateMangaRequestStatus];
 
 export const ControllersCreateMangaRequestStatus = {
-  ongoing: 'ongoing',
-  completed: 'completed',
-  hiatus: 'hiatus',
-  cancelled: 'cancelled',
+  ongoing: "ongoing",
+  completed: "completed",
+  hiatus: "hiatus",
+  cancelled: "cancelled",
 } as const;

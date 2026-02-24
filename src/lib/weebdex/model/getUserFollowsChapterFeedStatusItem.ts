@@ -9,12 +9,12 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetUserFollowsChapterFeedStatusItem = typeof GetUserFollowsChapterFeedStatusItem[keyof typeof GetUserFollowsChapterFeedStatusItem];
-
+export type GetUserFollowsChapterFeedStatusItem =
+  (typeof GetUserFollowsChapterFeedStatusItem)[keyof typeof GetUserFollowsChapterFeedStatusItem];
 
 export const GetUserFollowsChapterFeedStatusItem = {
-  ongoing: 'ongoing',
-  completed: 'completed',
-  hiatus: 'hiatus',
-  cancelled: 'cancelled',
+  ongoing: "ongoing",
+  completed: "completed",
+  hiatus: "hiatus",
+  cancelled: "cancelled",
 } as const;

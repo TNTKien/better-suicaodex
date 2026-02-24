@@ -10,9 +10,9 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  */
 
 export type GetUserHistoryMangaParams = {
-/**
- * Manga ID(s)
- * @maxItems 100
- */
-id?: string[];
+  /**
+   * Manga ID(s)
+   * @maxItems 100
+   */
+  id?: string[];
 };

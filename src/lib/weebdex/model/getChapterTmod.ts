@@ -9,12 +9,12 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetChapterTmod = typeof GetChapterTmod[keyof typeof GetChapterTmod];
-
+export type GetChapterTmod =
+  (typeof GetChapterTmod)[keyof typeof GetChapterTmod];
 
 export const GetChapterTmod = {
-  NUMBER_0: '0',
-  NUMBER_1: '1',
-  AND: 'AND',
-  OR: 'OR',
+  NUMBER_0: "0",
+  NUMBER_1: "1",
+  AND: "AND",
+  OR: "OR",
 } as const;

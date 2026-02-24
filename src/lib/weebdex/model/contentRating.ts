@@ -9,12 +9,11 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type ContentRating = typeof ContentRating[keyof typeof ContentRating];
-
+export type ContentRating = (typeof ContentRating)[keyof typeof ContentRating];
 
 export const ContentRating = {
-  ContentRatingSafe: 'safe',
-  ContentRatingSuggestive: 'suggestive',
-  ContentRatingErotica: 'erotica',
-  ContentRatingPornographic: 'pornographic',
+  ContentRatingSafe: "safe",
+  ContentRatingSuggestive: "suggestive",
+  ContentRatingErotica: "erotica",
+  ContentRatingPornographic: "pornographic",
 } as const;

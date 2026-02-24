@@ -9,10 +9,10 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetThreadIdRepliesOrder = typeof GetThreadIdRepliesOrder[keyof typeof GetThreadIdRepliesOrder];
-
+export type GetThreadIdRepliesOrder =
+  (typeof GetThreadIdRepliesOrder)[keyof typeof GetThreadIdRepliesOrder];
 
 export const GetThreadIdRepliesOrder = {
-  asc: 'asc',
-  desc: 'desc',
+  asc: "asc",
+  desc: "desc",
 } as const;

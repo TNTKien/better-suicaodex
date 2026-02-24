@@ -9,14 +9,14 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type PublicReadingStatus = typeof PublicReadingStatus[keyof typeof PublicReadingStatus];
-
+export type PublicReadingStatus =
+  (typeof PublicReadingStatus)[keyof typeof PublicReadingStatus];
 
 export const PublicReadingStatus = {
-  ReadingStatusReading: 'reading',
-  ReadingStatusPlanToRead: 'plan_to_read',
-  ReadingStatusCompleted: 'completed',
-  ReadingStatusOnHold: 'on_hold',
-  ReadingStatusReReading: 're_reading',
-  ReadingStatusDropped: 'dropped',
+  ReadingStatusReading: "reading",
+  ReadingStatusPlanToRead: "plan_to_read",
+  ReadingStatusCompleted: "completed",
+  ReadingStatusOnHold: "on_hold",
+  ReadingStatusReReading: "re_reading",
+  ReadingStatusDropped: "dropped",
 } as const;

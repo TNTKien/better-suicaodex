@@ -8,91 +8,91 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import type { GetUserFollowsChapterFeedContentRatingItem } from './getUserFollowsChapterFeedContentRatingItem';
-import type { GetUserFollowsChapterFeedDemographicItem } from './getUserFollowsChapterFeedDemographicItem';
-import type { GetUserFollowsChapterFeedOrder } from './getUserFollowsChapterFeedOrder';
-import type { GetUserFollowsChapterFeedStatusItem } from './getUserFollowsChapterFeedStatusItem';
-import type { GetUserFollowsChapterFeedTmod } from './getUserFollowsChapterFeedTmod';
-import type { GetUserFollowsChapterFeedTxmod } from './getUserFollowsChapterFeedTxmod';
+import type { GetUserFollowsChapterFeedContentRatingItem } from "./getUserFollowsChapterFeedContentRatingItem";
+import type { GetUserFollowsChapterFeedDemographicItem } from "./getUserFollowsChapterFeedDemographicItem";
+import type { GetUserFollowsChapterFeedOrder } from "./getUserFollowsChapterFeedOrder";
+import type { GetUserFollowsChapterFeedStatusItem } from "./getUserFollowsChapterFeedStatusItem";
+import type { GetUserFollowsChapterFeedTmod } from "./getUserFollowsChapterFeedTmod";
+import type { GetUserFollowsChapterFeedTxmod } from "./getUserFollowsChapterFeedTxmod";
 
 export type GetUserFollowsChapterFeedParams = {
-/**
- * Artists to filter by (array of IDs)
- * @maxItems 25
- */
-artist?: string[];
-/**
- * Authors to filter by (array of IDs)
- * @maxItems 25
- */
-author?: string[];
-authorOrArtist?: string;
-/**
- * Default: `contentRating=safe&contentRating=suggestive&contentRating=erotica`
- */
-contentRating?: GetUserFollowsChapterFeedContentRatingItem[];
-demographic?: GetUserFollowsChapterFeedDemographicItem[];
-/**
- * Groups to include (array of IDs)
- * @maxItems 25
- */
-group?: string[];
-/**
- * Groups to exclude (array of IDs)
- * @maxItems 25
- */
-groupx?: string[];
-/**
- * Original language(s) to include
- */
-lang?: string[];
-/**
- * Original language(s) to exclude
- */
-langx?: string[];
-/**
- * @minimum 0
- * @maximum 100
- */
-limit?: number;
-order?: GetUserFollowsChapterFeedOrder;
-/**
- * @minimum 1
- */
-page?: number;
-status?: GetUserFollowsChapterFeedStatusItem[];
-/**
- * Tags to include (array of IDs)
- */
-tag?: string[];
-/**
- * Tags to exclude (array of IDs)
- */
-tagx?: string[];
-/**
- * Translated language(s) to include
- */
-tlang?: string[];
-/**
- * Translated language(s) to exclude
- */
-tlangx?: string[];
-/**
- * Mode for tag inclusion
- */
-tmod?: GetUserFollowsChapterFeedTmod;
-/**
- * Mode for tag exclusion
- */
-txmod?: GetUserFollowsChapterFeedTxmod;
-/**
- * Uploaders to include (array of IDs)
- * @maxItems 25
- */
-uploader?: string[];
-/**
- * Uploaders to exclude (array of IDs)
- * @maxItems 25
- */
-uploaderx?: string[];
+  /**
+   * Artists to filter by (array of IDs)
+   * @maxItems 25
+   */
+  artist?: string[];
+  /**
+   * Authors to filter by (array of IDs)
+   * @maxItems 25
+   */
+  author?: string[];
+  authorOrArtist?: string;
+  /**
+   * Default: `contentRating=safe&contentRating=suggestive&contentRating=erotica`
+   */
+  contentRating?: GetUserFollowsChapterFeedContentRatingItem[];
+  demographic?: GetUserFollowsChapterFeedDemographicItem[];
+  /**
+   * Groups to include (array of IDs)
+   * @maxItems 25
+   */
+  group?: string[];
+  /**
+   * Groups to exclude (array of IDs)
+   * @maxItems 25
+   */
+  groupx?: string[];
+  /**
+   * Original language(s) to include
+   */
+  lang?: string[];
+  /**
+   * Original language(s) to exclude
+   */
+  langx?: string[];
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  limit?: number;
+  order?: GetUserFollowsChapterFeedOrder;
+  /**
+   * @minimum 1
+   */
+  page?: number;
+  status?: GetUserFollowsChapterFeedStatusItem[];
+  /**
+   * Tags to include (array of IDs)
+   */
+  tag?: string[];
+  /**
+   * Tags to exclude (array of IDs)
+   */
+  tagx?: string[];
+  /**
+   * Translated language(s) to include
+   */
+  tlang?: string[];
+  /**
+   * Translated language(s) to exclude
+   */
+  tlangx?: string[];
+  /**
+   * Mode for tag inclusion
+   */
+  tmod?: GetUserFollowsChapterFeedTmod;
+  /**
+   * Mode for tag exclusion
+   */
+  txmod?: GetUserFollowsChapterFeedTxmod;
+  /**
+   * Uploaders to include (array of IDs)
+   * @maxItems 25
+   */
+  uploader?: string[];
+  /**
+   * Uploaders to exclude (array of IDs)
+   * @maxItems 25
+   */
+  uploaderx?: string[];
 };

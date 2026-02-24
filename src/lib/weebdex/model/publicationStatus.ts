@@ -9,12 +9,12 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type PublicationStatus = typeof PublicationStatus[keyof typeof PublicationStatus];
-
+export type PublicationStatus =
+  (typeof PublicationStatus)[keyof typeof PublicationStatus];
 
 export const PublicationStatus = {
-  PublicationStatusOngoing: 'ongoing',
-  PublicationStatusCompleted: 'completed',
-  PublicationStatusHiatus: 'hiatus',
-  PublicationStatusCancelled: 'cancelled',
+  PublicationStatusOngoing: "ongoing",
+  PublicationStatusCompleted: "completed",
+  PublicationStatusHiatus: "hiatus",
+  PublicationStatusCancelled: "cancelled",
 } as const;

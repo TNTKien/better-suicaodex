@@ -9,10 +9,10 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetMangaDraftOrder = typeof GetMangaDraftOrder[keyof typeof GetMangaDraftOrder];
-
+export type GetMangaDraftOrder =
+  (typeof GetMangaDraftOrder)[keyof typeof GetMangaDraftOrder];
 
 export const GetMangaDraftOrder = {
-  asc: 'asc',
-  desc: 'desc',
+  asc: "asc",
+  desc: "desc",
 } as const;

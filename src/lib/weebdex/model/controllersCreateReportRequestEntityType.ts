@@ -9,15 +9,15 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type ControllersCreateReportRequestEntityType = typeof ControllersCreateReportRequestEntityType[keyof typeof ControllersCreateReportRequestEntityType];
-
+export type ControllersCreateReportRequestEntityType =
+  (typeof ControllersCreateReportRequestEntityType)[keyof typeof ControllersCreateReportRequestEntityType];
 
 export const ControllersCreateReportRequestEntityType = {
-  user: 'user',
-  manga: 'manga',
-  author: 'author',
-  chapter: 'chapter',
-  scanlation_group: 'scanlation_group',
-  thread: 'thread',
-  reply: 'reply',
+  user: "user",
+  manga: "manga",
+  author: "author",
+  chapter: "chapter",
+  scanlation_group: "scanlation_group",
+  thread: "thread",
+  reply: "reply",
 } as const;

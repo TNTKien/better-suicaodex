@@ -9,10 +9,10 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetUserFollowsUsersSort = typeof GetUserFollowsUsersSort[keyof typeof GetUserFollowsUsersSort];
-
+export type GetUserFollowsUsersSort =
+  (typeof GetUserFollowsUsersSort)[keyof typeof GetUserFollowsUsersSort];
 
 export const GetUserFollowsUsersSort = {
-  name: 'name',
-  followedAt: 'followedAt',
+  name: "name",
+  followedAt: "followedAt",
 } as const;

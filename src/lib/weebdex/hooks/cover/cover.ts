@@ -8,10 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -24,630 +21,838 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   ControllersUpdateCoverRequest,
   Cover,
-  PostCoverMangaIdBody
-} from '../../model';
-
-
-
-
+  PostCoverMangaIdBody,
+} from "../../model";
 
 /**
  * @summary Get Cover
  */
 export type getCoverIdResponse200 = {
-  data: Cover
-  status: 200
-}
+  data: Cover;
+  status: 200;
+};
 
 export type getCoverIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getCoverIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getCoverIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getCoverIdResponseSuccess = (getCoverIdResponse200) & {
-  headers: Headers;
-};
-export type getCoverIdResponseError = (getCoverIdResponse400 | getCoverIdResponse404 | getCoverIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getCoverIdResponse = (getCoverIdResponseSuccess | getCoverIdResponseError)
+export type getCoverIdResponseSuccess = getCoverIdResponse200 & {
+  headers: Headers;
+};
+export type getCoverIdResponseError = (
+  | getCoverIdResponse400
+  | getCoverIdResponse404
+  | getCoverIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetCoverIdUrl = (id: string,) => {
+export type getCoverIdResponse =
+  | getCoverIdResponseSuccess
+  | getCoverIdResponseError;
 
+export const getGetCoverIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/cover/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/cover/${id}`
-}
-
-export const getCoverId = async (id: string, options?: RequestInit): Promise<getCoverIdResponse> => {
-  
-  const res = await fetch(getGetCoverIdUrl(id),
-  {      
+export const getCoverId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getCoverIdResponse> => {
+  const res = await fetch(getGetCoverIdUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getCoverIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getCoverIdResponse
-}
-  
 
+  const data: getCoverIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getCoverIdResponse;
+};
 
+export const getGetCoverIdQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/cover/${id}`] as const;
+};
 
-
-export const getGetCoverIdQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/cover/${id}`
-    ] as const;
-    }
-
-    
-export const getGetCoverIdQueryOptions = <TData = Awaited<ReturnType<typeof getCoverId>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>>, fetch?: RequestInit}
+export const getGetCoverIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCoverId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetCoverIdQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetCoverIdQueryKey(id);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCoverId>>> = ({
+    signal,
+  }) => getCoverId(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCoverId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCoverId>>> = ({ signal }) => getCoverId(id, { signal, ...fetchOptions });
+export type GetCoverIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCoverId>>
+>;
+export type GetCoverIdQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetCoverIdQueryResult = NonNullable<Awaited<ReturnType<typeof getCoverId>>>
-export type GetCoverIdQueryError = void
-
-
-export function useGetCoverId<TData = Awaited<ReturnType<typeof getCoverId>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>> & Pick<
+export function useGetCoverId<
+  TData = Awaited<ReturnType<typeof getCoverId>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCoverId>>,
           TError,
           Awaited<ReturnType<typeof getCoverId>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCoverId<TData = Awaited<ReturnType<typeof getCoverId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCoverId<
+  TData = Awaited<ReturnType<typeof getCoverId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCoverId>>,
           TError,
           Awaited<ReturnType<typeof getCoverId>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCoverId<TData = Awaited<ReturnType<typeof getCoverId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCoverId<
+  TData = Awaited<ReturnType<typeof getCoverId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Cover
  */
 
-export function useGetCoverId<TData = Awaited<ReturnType<typeof getCoverId>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetCoverId<
+  TData = Awaited<ReturnType<typeof getCoverId>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getCoverId>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetCoverIdQueryOptions(id, options);
 
-  const queryOptions = getGetCoverIdQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update Cover
  */
 export type putCoverIdResponse200 = {
-  data: Cover
-  status: 200
-}
+  data: Cover;
+  status: 200;
+};
 
 export type putCoverIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type putCoverIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type putCoverIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type putCoverIdResponse409 = {
-  data: void
-  status: 409
-}
+  data: void;
+  status: 409;
+};
 
 export type putCoverIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type putCoverIdResponseSuccess = (putCoverIdResponse200) & {
-  headers: Headers;
-};
-export type putCoverIdResponseError = (putCoverIdResponse400 | putCoverIdResponse403 | putCoverIdResponse404 | putCoverIdResponse409 | putCoverIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type putCoverIdResponse = (putCoverIdResponseSuccess | putCoverIdResponseError)
+export type putCoverIdResponseSuccess = putCoverIdResponse200 & {
+  headers: Headers;
+};
+export type putCoverIdResponseError = (
+  | putCoverIdResponse400
+  | putCoverIdResponse403
+  | putCoverIdResponse404
+  | putCoverIdResponse409
+  | putCoverIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getPutCoverIdUrl = (id: string,) => {
+export type putCoverIdResponse =
+  | putCoverIdResponseSuccess
+  | putCoverIdResponseError;
 
+export const getPutCoverIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/cover/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/cover/${id}`
-}
-
-export const putCoverId = async (id: string,
-    controllersUpdateCoverRequest: ControllersUpdateCoverRequest, options?: RequestInit): Promise<putCoverIdResponse> => {
-  
-  const res = await fetch(getPutCoverIdUrl(id),
-  {      
+export const putCoverId = async (
+  id: string,
+  controllersUpdateCoverRequest: ControllersUpdateCoverRequest,
+  options?: RequestInit,
+): Promise<putCoverIdResponse> => {
+  const res = await fetch(getPutCoverIdUrl(id), {
     ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      controllersUpdateCoverRequest,)
-  }
-)
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(controllersUpdateCoverRequest),
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: putCoverIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as putCoverIdResponse
-}
-  
 
+  const data: putCoverIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as putCoverIdResponse;
+};
 
+export const getPutCoverIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof putCoverId>>,
+    TError,
+    { id: string; data: ControllersUpdateCoverRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof putCoverId>>,
+  TError,
+  { id: string; data: ControllersUpdateCoverRequest },
+  TContext
+> => {
+  const mutationKey = ["putCoverId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPutCoverIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putCoverId>>, TError,{id: string;data: ControllersUpdateCoverRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof putCoverId>>, TError,{id: string;data: ControllersUpdateCoverRequest}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof putCoverId>>,
+    { id: string; data: ControllersUpdateCoverRequest }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-const mutationKey = ['putCoverId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return putCoverId(id, data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PutCoverIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof putCoverId>>
+>;
+export type PutCoverIdMutationBody = ControllersUpdateCoverRequest;
+export type PutCoverIdMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putCoverId>>, {id: string;data: ControllersUpdateCoverRequest}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  putCoverId(id,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PutCoverIdMutationResult = NonNullable<Awaited<ReturnType<typeof putCoverId>>>
-    export type PutCoverIdMutationBody = ControllersUpdateCoverRequest
-    export type PutCoverIdMutationError = void
-
-    /**
+/**
  * @summary Update Cover
  */
-export const usePutCoverId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putCoverId>>, TError,{id: string;data: ControllersUpdateCoverRequest}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof putCoverId>>,
-        TError,
-        {id: string;data: ControllersUpdateCoverRequest},
-        TContext
-      > => {
-      return useMutation(getPutCoverIdMutationOptions(options), queryClient);
-    }
-    /**
+export const usePutCoverId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof putCoverId>>,
+      TError,
+      { id: string; data: ControllersUpdateCoverRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof putCoverId>>,
+  TError,
+  { id: string; data: ControllersUpdateCoverRequest },
+  TContext
+> => {
+  return useMutation(getPutCoverIdMutationOptions(options), queryClient);
+};
+/**
  * @summary Remove Cover
  */
 export type deleteCoverIdResponse204 = {
-  data: void
-  status: 204
-}
+  data: void;
+  status: 204;
+};
 
 export type deleteCoverIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type deleteCoverIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type deleteCoverIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type deleteCoverIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type deleteCoverIdResponseSuccess = (deleteCoverIdResponse204) & {
-  headers: Headers;
-};
-export type deleteCoverIdResponseError = (deleteCoverIdResponse400 | deleteCoverIdResponse403 | deleteCoverIdResponse404 | deleteCoverIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type deleteCoverIdResponse = (deleteCoverIdResponseSuccess | deleteCoverIdResponseError)
+export type deleteCoverIdResponseSuccess = deleteCoverIdResponse204 & {
+  headers: Headers;
+};
+export type deleteCoverIdResponseError = (
+  | deleteCoverIdResponse400
+  | deleteCoverIdResponse403
+  | deleteCoverIdResponse404
+  | deleteCoverIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getDeleteCoverIdUrl = (id: string,) => {
+export type deleteCoverIdResponse =
+  | deleteCoverIdResponseSuccess
+  | deleteCoverIdResponseError;
 
+export const getDeleteCoverIdUrl = (id: string) => {
+  return `https://wd.memaydex.online/cover/${id}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/cover/${id}`
-}
-
-export const deleteCoverId = async (id: string, options?: RequestInit): Promise<deleteCoverIdResponse> => {
-  
-  const res = await fetch(getDeleteCoverIdUrl(id),
-  {      
+export const deleteCoverId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<deleteCoverIdResponse> => {
+  const res = await fetch(getDeleteCoverIdUrl(id), {
     ...options,
-    method: 'DELETE'
-    
-    
-  }
-)
+    method: "DELETE",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: deleteCoverIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteCoverIdResponse
-}
-  
 
+  const data: deleteCoverIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as deleteCoverIdResponse;
+};
 
+export const getDeleteCoverIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteCoverId>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteCoverId>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteCoverId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getDeleteCoverIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCoverId>>, TError,{id: string}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteCoverId>>, TError,{id: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteCoverId>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-const mutationKey = ['deleteCoverId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return deleteCoverId(id, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeleteCoverIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteCoverId>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteCoverId>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+export type DeleteCoverIdMutationError = void;
 
-          return  deleteCoverId(id,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteCoverIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCoverId>>>
-    
-    export type DeleteCoverIdMutationError = void
-
-    /**
+/**
  * @summary Remove Cover
  */
-export const useDeleteCoverId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCoverId>>, TError,{id: string}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteCoverId>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getDeleteCoverIdMutationOptions(options), queryClient);
-    }
-    /**
+export const useDeleteCoverId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteCoverId>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteCoverId>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(getDeleteCoverIdMutationOptions(options), queryClient);
+};
+/**
  * @summary Upload Cover
  */
 export type postCoverMangaIdResponse200 = {
-  data: Cover
-  status: 200
-}
+  data: Cover;
+  status: 200;
+};
 
 export type postCoverMangaIdResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type postCoverMangaIdResponse403 = {
-  data: void
-  status: 403
-}
+  data: void;
+  status: 403;
+};
 
 export type postCoverMangaIdResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type postCoverMangaIdResponse500 = {
-  data: void
-  status: 500
-}
-
-export type postCoverMangaIdResponseSuccess = (postCoverMangaIdResponse200) & {
-  headers: Headers;
-};
-export type postCoverMangaIdResponseError = (postCoverMangaIdResponse400 | postCoverMangaIdResponse403 | postCoverMangaIdResponse404 | postCoverMangaIdResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type postCoverMangaIdResponse = (postCoverMangaIdResponseSuccess | postCoverMangaIdResponseError)
+export type postCoverMangaIdResponseSuccess = postCoverMangaIdResponse200 & {
+  headers: Headers;
+};
+export type postCoverMangaIdResponseError = (
+  | postCoverMangaIdResponse400
+  | postCoverMangaIdResponse403
+  | postCoverMangaIdResponse404
+  | postCoverMangaIdResponse500
+) & {
+  headers: Headers;
+};
 
-export const getPostCoverMangaIdUrl = (mangaId: string,) => {
+export type postCoverMangaIdResponse =
+  | postCoverMangaIdResponseSuccess
+  | postCoverMangaIdResponseError;
 
+export const getPostCoverMangaIdUrl = (mangaId: string) => {
+  return `https://wd.memaydex.online/cover/${mangaId}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/cover/${mangaId}`
-}
-
-export const postCoverMangaId = async (mangaId: string,
-    postCoverMangaIdBody: PostCoverMangaIdBody, options?: RequestInit): Promise<postCoverMangaIdResponse> => {
-    const formData = new FormData();
-if(postCoverMangaIdBody.description !== undefined) {
- formData.append(`description`, postCoverMangaIdBody.description);
- }
-formData.append(`file`, postCoverMangaIdBody.file);
-formData.append(`language`, postCoverMangaIdBody.language);
-if(postCoverMangaIdBody.main !== undefined) {
- formData.append(`main`, postCoverMangaIdBody.main.toString())
- }
-if(postCoverMangaIdBody.volume !== undefined) {
- formData.append(`volume`, postCoverMangaIdBody.volume);
- }
-
-  const res = await fetch(getPostCoverMangaIdUrl(mangaId),
-  {      
-    ...options,
-    method: 'POST'
-    ,
-    body: 
-      formData,
+export const postCoverMangaId = async (
+  mangaId: string,
+  postCoverMangaIdBody: PostCoverMangaIdBody,
+  options?: RequestInit,
+): Promise<postCoverMangaIdResponse> => {
+  const formData = new FormData();
+  if (postCoverMangaIdBody.description !== undefined) {
+    formData.append(`description`, postCoverMangaIdBody.description);
   }
-)
+  formData.append(`file`, postCoverMangaIdBody.file);
+  formData.append(`language`, postCoverMangaIdBody.language);
+  if (postCoverMangaIdBody.main !== undefined) {
+    formData.append(`main`, postCoverMangaIdBody.main.toString());
+  }
+  if (postCoverMangaIdBody.volume !== undefined) {
+    formData.append(`volume`, postCoverMangaIdBody.volume);
+  }
+
+  const res = await fetch(getPostCoverMangaIdUrl(mangaId), {
+    ...options,
+    method: "POST",
+    body: formData,
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postCoverMangaIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postCoverMangaIdResponse
-}
-  
 
+  const data: postCoverMangaIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postCoverMangaIdResponse;
+};
 
+export const getPostCoverMangaIdMutationOptions = <
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postCoverMangaId>>,
+    TError,
+    { mangaId: string; data: PostCoverMangaIdBody },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postCoverMangaId>>,
+  TError,
+  { mangaId: string; data: PostCoverMangaIdBody },
+  TContext
+> => {
+  const mutationKey = ["postCoverMangaId"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
 
-export const getPostCoverMangaIdMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postCoverMangaId>>, TError,{mangaId: string;data: PostCoverMangaIdBody}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postCoverMangaId>>, TError,{mangaId: string;data: PostCoverMangaIdBody}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postCoverMangaId>>,
+    { mangaId: string; data: PostCoverMangaIdBody }
+  > = (props) => {
+    const { mangaId, data } = props ?? {};
 
-const mutationKey = ['postCoverMangaId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+    return postCoverMangaId(mangaId, data, fetchOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostCoverMangaIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postCoverMangaId>>
+>;
+export type PostCoverMangaIdMutationBody = PostCoverMangaIdBody;
+export type PostCoverMangaIdMutationError = void;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postCoverMangaId>>, {mangaId: string;data: PostCoverMangaIdBody}> = (props) => {
-          const {mangaId,data} = props ?? {};
-
-          return  postCoverMangaId(mangaId,data,fetchOptions)
-        }
-
-
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostCoverMangaIdMutationResult = NonNullable<Awaited<ReturnType<typeof postCoverMangaId>>>
-    export type PostCoverMangaIdMutationBody = PostCoverMangaIdBody
-    export type PostCoverMangaIdMutationError = void
-
-    /**
+/**
  * @summary Upload Cover
  */
-export const usePostCoverMangaId = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postCoverMangaId>>, TError,{mangaId: string;data: PostCoverMangaIdBody}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postCoverMangaId>>,
-        TError,
-        {mangaId: string;data: PostCoverMangaIdBody},
-        TContext
-      > => {
-      return useMutation(getPostCoverMangaIdMutationOptions(options), queryClient);
-    }
-    /**
+export const usePostCoverMangaId = <TError = void, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postCoverMangaId>>,
+      TError,
+      { mangaId: string; data: PostCoverMangaIdBody },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postCoverMangaId>>,
+  TError,
+  { mangaId: string; data: PostCoverMangaIdBody },
+  TContext
+> => {
+  return useMutation(getPostCoverMangaIdMutationOptions(options), queryClient);
+};
+/**
  * @summary Get Manga Covers
  */
 export type getMangaIdCoversResponse200 = {
-  data: Cover[]
-  status: 200
-}
+  data: Cover[];
+  status: 200;
+};
 
 export type getMangaIdCoversResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getMangaIdCoversResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getMangaIdCoversResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getMangaIdCoversResponseSuccess = (getMangaIdCoversResponse200) & {
-  headers: Headers;
-};
-export type getMangaIdCoversResponseError = (getMangaIdCoversResponse400 | getMangaIdCoversResponse404 | getMangaIdCoversResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getMangaIdCoversResponse = (getMangaIdCoversResponseSuccess | getMangaIdCoversResponseError)
+export type getMangaIdCoversResponseSuccess = getMangaIdCoversResponse200 & {
+  headers: Headers;
+};
+export type getMangaIdCoversResponseError = (
+  | getMangaIdCoversResponse400
+  | getMangaIdCoversResponse404
+  | getMangaIdCoversResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetMangaIdCoversUrl = (id: string,) => {
+export type getMangaIdCoversResponse =
+  | getMangaIdCoversResponseSuccess
+  | getMangaIdCoversResponseError;
 
+export const getGetMangaIdCoversUrl = (id: string) => {
+  return `https://wd.memaydex.online/manga/${id}/covers`;
+};
 
-  
-
-  return `https://wd.memaydex.online/manga/${id}/covers`
-}
-
-export const getMangaIdCovers = async (id: string, options?: RequestInit): Promise<getMangaIdCoversResponse> => {
-  
-  const res = await fetch(getGetMangaIdCoversUrl(id),
-  {      
+export const getMangaIdCovers = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getMangaIdCoversResponse> => {
+  const res = await fetch(getGetMangaIdCoversUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getMangaIdCoversResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getMangaIdCoversResponse
-}
-  
 
+  const data: getMangaIdCoversResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getMangaIdCoversResponse;
+};
 
+export const getGetMangaIdCoversQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/manga/${id}/covers`] as const;
+};
 
-
-export const getGetMangaIdCoversQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/manga/${id}/covers`
-    ] as const;
-    }
-
-    
-export const getGetMangaIdCoversQueryOptions = <TData = Awaited<ReturnType<typeof getMangaIdCovers>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdCovers>>, TError, TData>>, fetch?: RequestInit}
+export const getGetMangaIdCoversQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMangaIdCovers>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdCovers>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetMangaIdCoversQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMangaIdCoversQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getMangaIdCovers>>
+  > = ({ signal }) => getMangaIdCovers(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMangaIdCovers>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMangaIdCovers>>> = ({ signal }) => getMangaIdCovers(id, { signal, ...fetchOptions });
+export type GetMangaIdCoversQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMangaIdCovers>>
+>;
+export type GetMangaIdCoversQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMangaIdCovers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetMangaIdCoversQueryResult = NonNullable<Awaited<ReturnType<typeof getMangaIdCovers>>>
-export type GetMangaIdCoversQueryError = void
-
-
-export function useGetMangaIdCovers<TData = Awaited<ReturnType<typeof getMangaIdCovers>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdCovers>>, TError, TData>> & Pick<
+export function useGetMangaIdCovers<
+  TData = Awaited<ReturnType<typeof getMangaIdCovers>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdCovers>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMangaIdCovers>>,
           TError,
           Awaited<ReturnType<typeof getMangaIdCovers>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMangaIdCovers<TData = Awaited<ReturnType<typeof getMangaIdCovers>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdCovers>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetMangaIdCovers<
+  TData = Awaited<ReturnType<typeof getMangaIdCovers>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdCovers>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMangaIdCovers>>,
           TError,
           Awaited<ReturnType<typeof getMangaIdCovers>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMangaIdCovers<TData = Awaited<ReturnType<typeof getMangaIdCovers>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdCovers>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetMangaIdCovers<
+  TData = Awaited<ReturnType<typeof getMangaIdCovers>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdCovers>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Manga Covers
  */
 
-export function useGetMangaIdCovers<TData = Awaited<ReturnType<typeof getMangaIdCovers>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdCovers>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetMangaIdCovers<
+  TData = Awaited<ReturnType<typeof getMangaIdCovers>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdCovers>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetMangaIdCoversQueryOptions(id, options);
 
-  const queryOptions = getGetMangaIdCoversQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

@@ -8,88 +8,88 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import type { GetMangaContentRatingItem } from './getMangaContentRatingItem';
-import type { GetMangaDemographicItem } from './getMangaDemographicItem';
-import type { GetMangaHasChapters } from './getMangaHasChapters';
-import type { GetMangaOrder } from './getMangaOrder';
-import type { GetMangaSort } from './getMangaSort';
-import type { GetMangaStatusItem } from './getMangaStatusItem';
-import type { GetMangaTmod } from './getMangaTmod';
-import type { GetMangaTxmod } from './getMangaTxmod';
+import type { GetMangaContentRatingItem } from "./getMangaContentRatingItem";
+import type { GetMangaDemographicItem } from "./getMangaDemographicItem";
+import type { GetMangaHasChapters } from "./getMangaHasChapters";
+import type { GetMangaOrder } from "./getMangaOrder";
+import type { GetMangaSort } from "./getMangaSort";
+import type { GetMangaStatusItem } from "./getMangaStatusItem";
+import type { GetMangaTmod } from "./getMangaTmod";
+import type { GetMangaTxmod } from "./getMangaTxmod";
 
 export type GetMangaParams = {
-/**
- * Artists to filter by (array of IDs)
- * @maxItems 25
- */
-artist?: string[];
-/**
- * Authors to filter by (array of IDs)
- * @maxItems 25
- */
-author?: string[];
-authorOrArtist?: string;
-availableTranslatedLang?: string[];
-/**
- * Default: `contentRating=safe&contentRating=suggestive&contentRating=erotica`
- */
-contentRating?: GetMangaContentRatingItem[];
-demographic?: GetMangaDemographicItem[];
-group?: string;
-hasChapters?: GetMangaHasChapters;
-/**
- * Original language(s) to include
- */
-lang?: string[];
-/**
- * Original language(s) to exclude
- */
-langx?: string[];
-/**
- * @minimum 0
- * @maximum 100
- */
-limit?: number;
-/**
- * Sort order
- */
-order?: GetMangaOrder;
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * Field to sort by
- */
-sort?: GetMangaSort;
-status?: GetMangaStatusItem[];
-/**
- * Tags to include (array of IDs)
- */
-tag?: string[];
-/**
- * Tags to exclude (array of IDs)
- */
-tagx?: string[];
-title?: string;
-/**
- * Mode for tag inclusion
- */
-tmod?: GetMangaTmod;
-/**
- * Mode for tag exclusion
- */
-txmod?: GetMangaTxmod;
-/**
- * Start of the release year range
- * @minimum 1900
- * @maximum 2100
- */
-yearFrom?: number;
-/**
- * End of the release year range
- * @minimum 1900
- * @maximum 2100
- */
-yearTo?: number;
+  /**
+   * Artists to filter by (array of IDs)
+   * @maxItems 25
+   */
+  artist?: string[];
+  /**
+   * Authors to filter by (array of IDs)
+   * @maxItems 25
+   */
+  author?: string[];
+  authorOrArtist?: string;
+  availableTranslatedLang?: string[];
+  /**
+   * Default: `contentRating=safe&contentRating=suggestive&contentRating=erotica`
+   */
+  contentRating?: GetMangaContentRatingItem[];
+  demographic?: GetMangaDemographicItem[];
+  group?: string;
+  hasChapters?: GetMangaHasChapters;
+  /**
+   * Original language(s) to include
+   */
+  lang?: string[];
+  /**
+   * Original language(s) to exclude
+   */
+  langx?: string[];
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * Sort order
+   */
+  order?: GetMangaOrder;
+  /**
+   * @minimum 1
+   */
+  page?: number;
+  /**
+   * Field to sort by
+   */
+  sort?: GetMangaSort;
+  status?: GetMangaStatusItem[];
+  /**
+   * Tags to include (array of IDs)
+   */
+  tag?: string[];
+  /**
+   * Tags to exclude (array of IDs)
+   */
+  tagx?: string[];
+  title?: string;
+  /**
+   * Mode for tag inclusion
+   */
+  tmod?: GetMangaTmod;
+  /**
+   * Mode for tag exclusion
+   */
+  txmod?: GetMangaTxmod;
+  /**
+   * Start of the release year range
+   * @minimum 1900
+   * @maximum 2100
+   */
+  yearFrom?: number;
+  /**
+   * End of the release year range
+   * @minimum 1900
+   * @maximum 2100
+   */
+  yearTo?: number;
 };

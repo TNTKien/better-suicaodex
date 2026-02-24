@@ -8,8 +8,8 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import type { ChapterRelationships } from './chapterRelationships';
-import type { Page } from './page';
+import type { ChapterRelationships } from "./chapterRelationships";
+import type { Page } from "./page";
 
 export interface Chapter {
   chapter?: string;

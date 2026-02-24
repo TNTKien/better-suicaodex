@@ -8,9 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -20,17 +18,10 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import type {
-  GetTopMangaParams,
-  Manga
-} from '../../model';
-
-
-
-
+import type { GetTopMangaParams, Manga } from "../../model";
 
 /**
  * **Deprecated:** use `/manga/top` instead.
@@ -38,135 +29,195 @@ import type {
  * @summary Get Top Manga
  */
 export type getTopMangaResponse200 = {
-  data: Manga
-  status: 200
-}
+  data: Manga;
+  status: 200;
+};
 
 export type getTopMangaResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getTopMangaResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getTopMangaResponseSuccess = (getTopMangaResponse200) & {
-  headers: Headers;
-};
-export type getTopMangaResponseError = (getTopMangaResponse400 | getTopMangaResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getTopMangaResponse = (getTopMangaResponseSuccess | getTopMangaResponseError)
+export type getTopMangaResponseSuccess = getTopMangaResponse200 & {
+  headers: Headers;
+};
+export type getTopMangaResponseError = (
+  | getTopMangaResponse400
+  | getTopMangaResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetTopMangaUrl = (params?: GetTopMangaParams,) => {
+export type getTopMangaResponse =
+  | getTopMangaResponseSuccess
+  | getTopMangaResponseError;
+
+export const getGetTopMangaUrl = (params?: GetTopMangaParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `https://wd.memaydex.online/top/manga?${stringifiedParams}` : `https://wd.memaydex.online/top/manga`
-}
+  return stringifiedParams.length > 0
+    ? `https://wd.memaydex.online/top/manga?${stringifiedParams}`
+    : `https://wd.memaydex.online/top/manga`;
+};
 
-export const getTopManga = async (params?: GetTopMangaParams, options?: RequestInit): Promise<getTopMangaResponse> => {
-  
-  const res = await fetch(getGetTopMangaUrl(params),
-  {      
+export const getTopManga = async (
+  params?: GetTopMangaParams,
+  options?: RequestInit,
+): Promise<getTopMangaResponse> => {
+  const res = await fetch(getGetTopMangaUrl(params), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getTopMangaResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getTopMangaResponse
-}
-  
 
+  const data: getTopMangaResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getTopMangaResponse;
+};
 
+export const getGetTopMangaQueryKey = (params?: GetTopMangaParams) => {
+  return [
+    `https://wd.memaydex.online/top/manga`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-
-export const getGetTopMangaQueryKey = (params?: GetTopMangaParams,) => {
-    return [
-    `https://wd.memaydex.online/top/manga`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-    
-export const getGetTopMangaQueryOptions = <TData = Awaited<ReturnType<typeof getTopManga>>, TError = void>(params?: GetTopMangaParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>>, fetch?: RequestInit}
+export const getGetTopMangaQueryOptions = <
+  TData = Awaited<ReturnType<typeof getTopManga>>,
+  TError = void,
+>(
+  params?: GetTopMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetTopMangaQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetTopMangaQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getTopManga>>> = ({
+    signal,
+  }) => getTopManga(params, { signal, ...fetchOptions });
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getTopManga>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTopManga>>> = ({ signal }) => getTopManga(params, { signal, ...fetchOptions });
+export type GetTopMangaQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getTopManga>>
+>;
+export type GetTopMangaQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetTopMangaQueryResult = NonNullable<Awaited<ReturnType<typeof getTopManga>>>
-export type GetTopMangaQueryError = void
-
-
-export function useGetTopManga<TData = Awaited<ReturnType<typeof getTopManga>>, TError = void>(
- params: undefined |  GetTopMangaParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>> & Pick<
+export function useGetTopManga<
+  TData = Awaited<ReturnType<typeof getTopManga>>,
+  TError = void,
+>(
+  params: undefined | GetTopMangaParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getTopManga>>,
           TError,
           Awaited<ReturnType<typeof getTopManga>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetTopManga<TData = Awaited<ReturnType<typeof getTopManga>>, TError = void>(
- params?: GetTopMangaParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetTopManga<
+  TData = Awaited<ReturnType<typeof getTopManga>>,
+  TError = void,
+>(
+  params?: GetTopMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getTopManga>>,
           TError,
           Awaited<ReturnType<typeof getTopManga>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetTopManga<TData = Awaited<ReturnType<typeof getTopManga>>, TError = void>(
- params?: GetTopMangaParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetTopManga<
+  TData = Awaited<ReturnType<typeof getTopManga>>,
+  TError = void,
+>(
+  params?: GetTopMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @deprecated
  * @summary Get Top Manga
  */
 
-export function useGetTopManga<TData = Awaited<ReturnType<typeof getTopManga>>, TError = void>(
- params?: GetTopMangaParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetTopManga<
+  TData = Awaited<ReturnType<typeof getTopManga>>,
+  TError = void,
+>(
+  params?: GetTopMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getTopManga>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetTopMangaQueryOptions(params, options);
 
-  const queryOptions = getGetTopMangaQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

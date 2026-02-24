@@ -9,11 +9,11 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetChapterTopTime = typeof GetChapterTopTime[keyof typeof GetChapterTopTime];
-
+export type GetChapterTopTime =
+  (typeof GetChapterTopTime)[keyof typeof GetChapterTopTime];
 
 export const GetChapterTopTime = {
-  '24h': '24h',
-  '7d': '7d',
-  '30d': '30d',
+  "24h": "24h",
+  "7d": "7d",
+  "30d": "30d",
 } as const;

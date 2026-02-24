@@ -9,12 +9,12 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetReportStatus = typeof GetReportStatus[keyof typeof GetReportStatus];
-
+export type GetReportStatus =
+  (typeof GetReportStatus)[keyof typeof GetReportStatus];
 
 export const GetReportStatus = {
-  refused: 'refused',
-  waiting: 'waiting',
-  accepted: 'accepted',
-  autoresolved: 'autoresolved',
+  refused: "refused",
+  waiting: "waiting",
+  accepted: "accepted",
+  autoresolved: "autoresolved",
 } as const;

@@ -9,14 +9,13 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type Group = typeof Group[keyof typeof Group];
-
+export type Group = (typeof Group)[keyof typeof Group];
 
 export const Group = {
-  NamespaceContent: 'content',
-  NamespaceFormat: 'format',
-  NamespaceGenre: 'genre',
-  NamespaceTheme: 'theme',
-  NamespaceAuthor: 'author',
-  NamespaceTag: 'tag',
+  NamespaceContent: "content",
+  NamespaceFormat: "format",
+  NamespaceGenre: "genre",
+  NamespaceTheme: "theme",
+  NamespaceAuthor: "author",
+  NamespaceTag: "tag",
 } as const;

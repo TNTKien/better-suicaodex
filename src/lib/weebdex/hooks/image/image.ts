@@ -8,9 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -20,302 +18,488 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
-
-
-
-
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 /**
  * **Cover domain: srv.weebdex.net**
  * @summary Get Cover Image
  */
 export type getCoversMangaidCoveridExtResponse200 = {
-  data: void
-  status: 200
-}
+  data: void;
+  status: 200;
+};
 
 export type getCoversMangaidCoveridExtResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getCoversMangaidCoveridExtResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getCoversMangaidCoveridExtResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getCoversMangaidCoveridExtResponseSuccess = (getCoversMangaidCoveridExtResponse200) & {
-  headers: Headers;
-};
-export type getCoversMangaidCoveridExtResponseError = (getCoversMangaidCoveridExtResponse400 | getCoversMangaidCoveridExtResponse404 | getCoversMangaidCoveridExtResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getCoversMangaidCoveridExtResponse = (getCoversMangaidCoveridExtResponseSuccess | getCoversMangaidCoveridExtResponseError)
+export type getCoversMangaidCoveridExtResponseSuccess =
+  getCoversMangaidCoveridExtResponse200 & {
+    headers: Headers;
+  };
+export type getCoversMangaidCoveridExtResponseError = (
+  | getCoversMangaidCoveridExtResponse400
+  | getCoversMangaidCoveridExtResponse404
+  | getCoversMangaidCoveridExtResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetCoversMangaidCoveridExtUrl = (mangaid: string,
-    coverid: string,
-    ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp',) => {
+export type getCoversMangaidCoveridExtResponse =
+  | getCoversMangaidCoveridExtResponseSuccess
+  | getCoversMangaidCoveridExtResponseError;
 
+export const getGetCoversMangaidCoveridExtUrl = (
+  mangaid: string,
+  coverid: string,
+  ext: "gif" | "jpg" | "png" | "webp" | "256.webp" | "512.webp",
+) => {
+  return `https://wd.memaydex.online/covers/${mangaid}/${coverid}.${ext}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/covers/${mangaid}/${coverid}.${ext}`
-}
-
-export const getCoversMangaidCoveridExt = async (mangaid: string,
-    coverid: string,
-    ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp', options?: RequestInit): Promise<getCoversMangaidCoveridExtResponse> => {
-  
-  const res = await fetch(getGetCoversMangaidCoveridExtUrl(mangaid,coverid,ext),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-)
+export const getCoversMangaidCoveridExt = async (
+  mangaid: string,
+  coverid: string,
+  ext: "gif" | "jpg" | "png" | "webp" | "256.webp" | "512.webp",
+  options?: RequestInit,
+): Promise<getCoversMangaidCoveridExtResponse> => {
+  const res = await fetch(
+    getGetCoversMangaidCoveridExtUrl(mangaid, coverid, ext),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getCoversMangaidCoveridExtResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getCoversMangaidCoveridExtResponse
-}
-  
 
+  const data: getCoversMangaidCoveridExtResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getCoversMangaidCoveridExtResponse;
+};
 
-
-
-export const getGetCoversMangaidCoveridExtQueryKey = (mangaid: string,
-    coverid: string,
-    ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp',) => {
-    return [
-    `https://wd.memaydex.online/covers/${mangaid}/${coverid}.${ext}`
-    ] as const;
-    }
-
-    
-export const getGetCoversMangaidCoveridExtQueryOptions = <TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError = void>(mangaid: string,
-    coverid: string,
-    ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp', options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError, TData>>, fetch?: RequestInit}
+export const getGetCoversMangaidCoveridExtQueryKey = (
+  mangaid: string,
+  coverid: string,
+  ext: "gif" | "jpg" | "png" | "webp" | "256.webp" | "512.webp",
 ) => {
+  return [
+    `https://wd.memaydex.online/covers/${mangaid}/${coverid}.${ext}`,
+  ] as const;
+};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+export const getGetCoversMangaidCoveridExtQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+  TError = void,
+>(
+  mangaid: string,
+  coverid: string,
+  ext: "gif" | "jpg" | "png" | "webp" | "256.webp" | "512.webp",
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetCoversMangaidCoveridExtQueryKey(mangaid,coverid,ext);
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGetCoversMangaidCoveridExtQueryKey(mangaid, coverid, ext);
 
-  
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>
+  > = ({ signal }) =>
+    getCoversMangaidCoveridExt(mangaid, coverid, ext, {
+      signal,
+      ...fetchOptions,
+    });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>> = ({ signal }) => getCoversMangaidCoveridExt(mangaid,coverid,ext, { signal, ...fetchOptions });
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!(mangaid && coverid && ext),
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetCoversMangaidCoveridExtQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>
+>;
+export type GetCoversMangaidCoveridExtQueryError = void;
 
-      
-
-   return  { queryKey, queryFn, enabled: !!(mangaid && coverid && ext), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetCoversMangaidCoveridExtQueryResult = NonNullable<Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>>
-export type GetCoversMangaidCoveridExtQueryError = void
-
-
-export function useGetCoversMangaidCoveridExt<TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError = void>(
- mangaid: string,
-    coverid: string,
-    ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp', options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError, TData>> & Pick<
+export function useGetCoversMangaidCoveridExt<
+  TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+  TError = void,
+>(
+  mangaid: string,
+  coverid: string,
+  ext: "gif" | "jpg" | "png" | "webp" | "256.webp" | "512.webp",
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
           TError,
           Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCoversMangaidCoveridExt<TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError = void>(
- mangaid: string,
-    coverid: string,
-    ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp', options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCoversMangaidCoveridExt<
+  TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+  TError = void,
+>(
+  mangaid: string,
+  coverid: string,
+  ext: "gif" | "jpg" | "png" | "webp" | "256.webp" | "512.webp",
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
           TError,
           Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCoversMangaidCoveridExt<TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError = void>(
- mangaid: string,
-    coverid: string,
-    ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp', options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCoversMangaidCoveridExt<
+  TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+  TError = void,
+>(
+  mangaid: string,
+  coverid: string,
+  ext: "gif" | "jpg" | "png" | "webp" | "256.webp" | "512.webp",
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Cover Image
  */
 
-export function useGetCoversMangaidCoveridExt<TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError = void>(
- mangaid: string,
-    coverid: string,
-    ext: 'gif' | 'jpg' | 'png' | 'webp' | '256.webp' | '512.webp', options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetCoversMangaidCoveridExt<
+  TData = Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+  TError = void,
+>(
+  mangaid: string,
+  coverid: string,
+  ext: "gif" | "jpg" | "png" | "webp" | "256.webp" | "512.webp",
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getCoversMangaidCoveridExt>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetCoversMangaidCoveridExtQueryOptions(
+    mangaid,
+    coverid,
+    ext,
+    options,
+  );
 
-  const queryOptions = getGetCoversMangaidCoveridExtQueryOptions(mangaid,coverid,ext,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * **Use the domain from the `node` field to avoid potential issues.**
  * @summary Get Chapter Page Image
  */
 export type getDataChapteridNameResponse200 = {
-  data: void
-  status: 200
-}
+  data: void;
+  status: 200;
+};
 
 export type getDataChapteridNameResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getDataChapteridNameResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getDataChapteridNameResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getDataChapteridNameResponseSuccess = (getDataChapteridNameResponse200) & {
-  headers: Headers;
-};
-export type getDataChapteridNameResponseError = (getDataChapteridNameResponse400 | getDataChapteridNameResponse404 | getDataChapteridNameResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getDataChapteridNameResponse = (getDataChapteridNameResponseSuccess | getDataChapteridNameResponseError)
+export type getDataChapteridNameResponseSuccess =
+  getDataChapteridNameResponse200 & {
+    headers: Headers;
+  };
+export type getDataChapteridNameResponseError = (
+  | getDataChapteridNameResponse400
+  | getDataChapteridNameResponse404
+  | getDataChapteridNameResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetDataChapteridNameUrl = (chapterid: string,
-    name: string,) => {
+export type getDataChapteridNameResponse =
+  | getDataChapteridNameResponseSuccess
+  | getDataChapteridNameResponseError;
 
+export const getGetDataChapteridNameUrl = (chapterid: string, name: string) => {
+  return `https://wd.memaydex.online/data/${chapterid}/${name}`;
+};
 
-  
-
-  return `https://wd.memaydex.online/data/${chapterid}/${name}`
-}
-
-export const getDataChapteridName = async (chapterid: string,
-    name: string, options?: RequestInit): Promise<getDataChapteridNameResponse> => {
-  
-  const res = await fetch(getGetDataChapteridNameUrl(chapterid,name),
-  {      
+export const getDataChapteridName = async (
+  chapterid: string,
+  name: string,
+  options?: RequestInit,
+): Promise<getDataChapteridNameResponse> => {
+  const res = await fetch(getGetDataChapteridNameUrl(chapterid, name), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getDataChapteridNameResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getDataChapteridNameResponse
-}
-  
 
+  const data: getDataChapteridNameResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getDataChapteridNameResponse;
+};
 
-
-
-export const getGetDataChapteridNameQueryKey = (chapterid: string,
-    name: string,) => {
-    return [
-    `https://wd.memaydex.online/data/${chapterid}/${name}`
-    ] as const;
-    }
-
-    
-export const getGetDataChapteridNameQueryOptions = <TData = Awaited<ReturnType<typeof getDataChapteridName>>, TError = void>(chapterid: string,
-    name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDataChapteridName>>, TError, TData>>, fetch?: RequestInit}
+export const getGetDataChapteridNameQueryKey = (
+  chapterid: string,
+  name: string,
 ) => {
+  return [`https://wd.memaydex.online/data/${chapterid}/${name}`] as const;
+};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+export const getGetDataChapteridNameQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDataChapteridName>>,
+  TError = void,
+>(
+  chapterid: string,
+  name: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDataChapteridName>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetDataChapteridNameQueryKey(chapterid,name);
+  const queryKey =
+    queryOptions?.queryKey ?? getGetDataChapteridNameQueryKey(chapterid, name);
 
-  
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getDataChapteridName>>
+  > = ({ signal }) =>
+    getDataChapteridName(chapterid, name, { signal, ...fetchOptions });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDataChapteridName>>> = ({ signal }) => getDataChapteridName(chapterid,name, { signal, ...fetchOptions });
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!(chapterid && name),
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDataChapteridName>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetDataChapteridNameQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDataChapteridName>>
+>;
+export type GetDataChapteridNameQueryError = void;
 
-      
-
-   return  { queryKey, queryFn, enabled: !!(chapterid && name), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDataChapteridName>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetDataChapteridNameQueryResult = NonNullable<Awaited<ReturnType<typeof getDataChapteridName>>>
-export type GetDataChapteridNameQueryError = void
-
-
-export function useGetDataChapteridName<TData = Awaited<ReturnType<typeof getDataChapteridName>>, TError = void>(
- chapterid: string,
-    name: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDataChapteridName>>, TError, TData>> & Pick<
+export function useGetDataChapteridName<
+  TData = Awaited<ReturnType<typeof getDataChapteridName>>,
+  TError = void,
+>(
+  chapterid: string,
+  name: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDataChapteridName>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getDataChapteridName>>,
           TError,
           Awaited<ReturnType<typeof getDataChapteridName>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetDataChapteridName<TData = Awaited<ReturnType<typeof getDataChapteridName>>, TError = void>(
- chapterid: string,
-    name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDataChapteridName>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetDataChapteridName<
+  TData = Awaited<ReturnType<typeof getDataChapteridName>>,
+  TError = void,
+>(
+  chapterid: string,
+  name: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDataChapteridName>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getDataChapteridName>>,
           TError,
           Awaited<ReturnType<typeof getDataChapteridName>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetDataChapteridName<TData = Awaited<ReturnType<typeof getDataChapteridName>>, TError = void>(
- chapterid: string,
-    name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDataChapteridName>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetDataChapteridName<
+  TData = Awaited<ReturnType<typeof getDataChapteridName>>,
+  TError = void,
+>(
+  chapterid: string,
+  name: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDataChapteridName>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Chapter Page Image
  */
 
-export function useGetDataChapteridName<TData = Awaited<ReturnType<typeof getDataChapteridName>>, TError = void>(
- chapterid: string,
-    name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDataChapteridName>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetDataChapteridName<
+  TData = Awaited<ReturnType<typeof getDataChapteridName>>,
+  TError = void,
+>(
+  chapterid: string,
+  name: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getDataChapteridName>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetDataChapteridNameQueryOptions(
+    chapterid,
+    name,
+    options,
+  );
 
-  const queryOptions = getGetDataChapteridNameQueryOptions(chapterid,name,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

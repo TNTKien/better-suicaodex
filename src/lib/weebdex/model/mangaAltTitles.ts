@@ -9,4 +9,4 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type MangaAltTitles = {[key: string]: string[]};
+export type MangaAltTitles = { [key: string]: string[] };

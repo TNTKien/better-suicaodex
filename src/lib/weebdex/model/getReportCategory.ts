@@ -9,15 +9,15 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetReportCategory = typeof GetReportCategory[keyof typeof GetReportCategory];
-
+export type GetReportCategory =
+  (typeof GetReportCategory)[keyof typeof GetReportCategory];
 
 export const GetReportCategory = {
-  user: 'user',
-  manga: 'manga',
-  author: 'author',
-  chapter: 'chapter',
-  scanlation_group: 'scanlation_group',
-  thread: 'thread',
-  reply: 'reply',
+  user: "user",
+  manga: "manga",
+  author: "author",
+  chapter: "chapter",
+  scanlation_group: "scanlation_group",
+  thread: "thread",
+  reply: "reply",
 } as const;

@@ -9,24 +9,23 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type RelationType = typeof RelationType[keyof typeof RelationType];
-
+export type RelationType = (typeof RelationType)[keyof typeof RelationType];
 
 export const RelationType = {
-  RelationTypeMainStory: 'main_story',
-  RelationTypeSideStory: 'side_story',
-  RelationTypePrequel: 'prequel',
-  RelationTypeSequel: 'sequel',
-  RelationTypeAdaptedFrom: 'adapted_from',
-  RelationTypeSpinOff: 'spin_off',
-  RelationTypeBasedOn: 'based_on',
-  RelationTypeDoujinshi: 'doujinshi',
-  RelationTypeMonochrome: 'monochrome',
-  RelationTypeColored: 'colored',
-  RelationTypePreserialization: 'preserialization',
-  RelationTypeSerialization: 'serialization',
-  RelationTypeAlternateStory: 'alternate_story',
-  RelationTypeAlternateVersion: 'alternate_version',
-  RelationTypeSameFranchise: 'same_franchise',
-  RelationTypeSharedUniverse: 'shared_universe',
+  RelationTypeMainStory: "main_story",
+  RelationTypeSideStory: "side_story",
+  RelationTypePrequel: "prequel",
+  RelationTypeSequel: "sequel",
+  RelationTypeAdaptedFrom: "adapted_from",
+  RelationTypeSpinOff: "spin_off",
+  RelationTypeBasedOn: "based_on",
+  RelationTypeDoujinshi: "doujinshi",
+  RelationTypeMonochrome: "monochrome",
+  RelationTypeColored: "colored",
+  RelationTypePreserialization: "preserialization",
+  RelationTypeSerialization: "serialization",
+  RelationTypeAlternateStory: "alternate_story",
+  RelationTypeAlternateVersion: "alternate_version",
+  RelationTypeSameFranchise: "same_franchise",
+  RelationTypeSharedUniverse: "shared_universe",
 } as const;

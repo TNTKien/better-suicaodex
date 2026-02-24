@@ -8,17 +8,17 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import type { GetThreadIdRepliesOrder } from './getThreadIdRepliesOrder';
+import type { GetThreadIdRepliesOrder } from "./getThreadIdRepliesOrder";
 
 export type GetThreadIdRepliesParams = {
-/**
- * @minimum 0
- * @maximum 50
- */
-limit?: number;
-order?: GetThreadIdRepliesOrder;
-/**
- * @minimum 1
- */
-page?: number;
+  /**
+   * @minimum 0
+   * @maximum 50
+   */
+  limit?: number;
+  order?: GetThreadIdRepliesOrder;
+  /**
+   * @minimum 1
+   */
+  page?: number;
 };

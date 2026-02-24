@@ -8,13 +8,13 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import type { Cover } from './cover';
-import type { MangaFollowRelationshipsLinks } from './mangaFollowRelationshipsLinks';
-import type { MangaStats } from './mangaStats';
-import type { Relation } from './relation';
-import type { Tag } from './tag';
-import type { Thread } from './thread';
-import type { User } from './user';
+import type { Cover } from "./cover";
+import type { MangaFollowRelationshipsLinks } from "./mangaFollowRelationshipsLinks";
+import type { MangaStats } from "./mangaStats";
+import type { Relation } from "./relation";
+import type { Tag } from "./tag";
+import type { Thread } from "./thread";
+import type { User } from "./user";
 
 export type MangaFollowRelationships = {
   artists?: Tag[];

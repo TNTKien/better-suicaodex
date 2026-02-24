@@ -9,4 +9,6 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetUserHistoryMangaId200 = {[key: string]: { [key: string]: unknown }};
+export type GetUserHistoryMangaId200 = {
+  [key: string]: { [key: string]: unknown };
+};

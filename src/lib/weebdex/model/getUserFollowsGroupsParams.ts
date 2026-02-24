@@ -8,20 +8,20 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import type { GetUserFollowsGroupsOrder } from './getUserFollowsGroupsOrder';
-import type { GetUserFollowsGroupsSort } from './getUserFollowsGroupsSort';
+import type { GetUserFollowsGroupsOrder } from "./getUserFollowsGroupsOrder";
+import type { GetUserFollowsGroupsSort } from "./getUserFollowsGroupsSort";
 
 export type GetUserFollowsGroupsParams = {
-/**
- * @minimum 0
- * @maximum 100
- */
-limit?: number;
-order?: GetUserFollowsGroupsOrder;
-/**
- * @minimum 1
- */
-page?: number;
-sort?: GetUserFollowsGroupsSort;
-user?: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  limit?: number;
+  order?: GetUserFollowsGroupsOrder;
+  /**
+   * @minimum 1
+   */
+  page?: number;
+  sort?: GetUserFollowsGroupsSort;
+  user?: string;
 };

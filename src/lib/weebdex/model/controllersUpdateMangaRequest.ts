@@ -8,11 +8,11 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import type { ControllersUpdateMangaRequestAltTitles } from './controllersUpdateMangaRequestAltTitles';
-import type { ControllersUpdateMangaRequestContentRating } from './controllersUpdateMangaRequestContentRating';
-import type { ControllersUpdateMangaRequestDemographic } from './controllersUpdateMangaRequestDemographic';
-import type { ControllersUpdateMangaRequestLinks } from './controllersUpdateMangaRequestLinks';
-import type { ControllersUpdateMangaRequestStatus } from './controllersUpdateMangaRequestStatus';
+import type { ControllersUpdateMangaRequestAltTitles } from "./controllersUpdateMangaRequestAltTitles";
+import type { ControllersUpdateMangaRequestContentRating } from "./controllersUpdateMangaRequestContentRating";
+import type { ControllersUpdateMangaRequestDemographic } from "./controllersUpdateMangaRequestDemographic";
+import type { ControllersUpdateMangaRequestLinks } from "./controllersUpdateMangaRequestLinks";
+import type { ControllersUpdateMangaRequestStatus } from "./controllersUpdateMangaRequestStatus";
 
 export interface ControllersUpdateMangaRequest {
   alt_titles?: ControllersUpdateMangaRequestAltTitles;

@@ -9,14 +9,14 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type ControllersUpdateMangaFollowRequestStatus = typeof ControllersUpdateMangaFollowRequestStatus[keyof typeof ControllersUpdateMangaFollowRequestStatus];
-
+export type ControllersUpdateMangaFollowRequestStatus =
+  (typeof ControllersUpdateMangaFollowRequestStatus)[keyof typeof ControllersUpdateMangaFollowRequestStatus];
 
 export const ControllersUpdateMangaFollowRequestStatus = {
-  reading: 'reading',
-  plan_to_read: 'plan_to_read',
-  completed: 'completed',
-  on_hold: 'on_hold',
-  re_reading: 're_reading',
-  dropped: 'dropped',
+  reading: "reading",
+  plan_to_read: "plan_to_read",
+  completed: "completed",
+  on_hold: "on_hold",
+  re_reading: "re_reading",
+  dropped: "dropped",
 } as const;

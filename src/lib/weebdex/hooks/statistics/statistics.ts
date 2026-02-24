@@ -8,9 +8,7 @@ All API endpoints have a global rate limit of 5 requests per second per IP. <br 
 To avoid future issues, include the Origin: https://weebdex.org and Referer: https://weebdex.org/ headers when making API requests.<br/>
  * OpenAPI spec version: 1.2.0
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -20,683 +18,1092 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   ChapterStats,
   MangaStats,
   ScanlationGroupStats,
   ThreadStats,
-  UserStats
-} from '../../model';
-
-
-
-
+  UserStats,
+} from "../../model";
 
 /**
  * @summary Get Chapter Statistics
  */
 export type getChapterIdStatisticsResponse200 = {
-  data: ChapterStats
-  status: 200
-}
+  data: ChapterStats;
+  status: 200;
+};
 
 export type getChapterIdStatisticsResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getChapterIdStatisticsResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getChapterIdStatisticsResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getChapterIdStatisticsResponseSuccess = (getChapterIdStatisticsResponse200) & {
-  headers: Headers;
-};
-export type getChapterIdStatisticsResponseError = (getChapterIdStatisticsResponse400 | getChapterIdStatisticsResponse404 | getChapterIdStatisticsResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getChapterIdStatisticsResponse = (getChapterIdStatisticsResponseSuccess | getChapterIdStatisticsResponseError)
+export type getChapterIdStatisticsResponseSuccess =
+  getChapterIdStatisticsResponse200 & {
+    headers: Headers;
+  };
+export type getChapterIdStatisticsResponseError = (
+  | getChapterIdStatisticsResponse400
+  | getChapterIdStatisticsResponse404
+  | getChapterIdStatisticsResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetChapterIdStatisticsUrl = (id: string,) => {
+export type getChapterIdStatisticsResponse =
+  | getChapterIdStatisticsResponseSuccess
+  | getChapterIdStatisticsResponseError;
 
+export const getGetChapterIdStatisticsUrl = (id: string) => {
+  return `https://wd.memaydex.online/chapter/${id}/statistics`;
+};
 
-  
-
-  return `https://wd.memaydex.online/chapter/${id}/statistics`
-}
-
-export const getChapterIdStatistics = async (id: string, options?: RequestInit): Promise<getChapterIdStatisticsResponse> => {
-  
-  const res = await fetch(getGetChapterIdStatisticsUrl(id),
-  {      
+export const getChapterIdStatistics = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getChapterIdStatisticsResponse> => {
+  const res = await fetch(getGetChapterIdStatisticsUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getChapterIdStatisticsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getChapterIdStatisticsResponse
-}
-  
 
+  const data: getChapterIdStatisticsResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getChapterIdStatisticsResponse;
+};
 
+export const getGetChapterIdStatisticsQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/chapter/${id}/statistics`] as const;
+};
 
-
-export const getGetChapterIdStatisticsQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/chapter/${id}/statistics`
-    ] as const;
-    }
-
-    
-export const getGetChapterIdStatisticsQueryOptions = <TData = Awaited<ReturnType<typeof getChapterIdStatistics>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChapterIdStatistics>>, TError, TData>>, fetch?: RequestInit}
+export const getGetChapterIdStatisticsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getChapterIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getChapterIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetChapterIdStatisticsQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetChapterIdStatisticsQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getChapterIdStatistics>>
+  > = ({ signal }) => getChapterIdStatistics(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getChapterIdStatistics>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChapterIdStatistics>>> = ({ signal }) => getChapterIdStatistics(id, { signal, ...fetchOptions });
+export type GetChapterIdStatisticsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getChapterIdStatistics>>
+>;
+export type GetChapterIdStatisticsQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getChapterIdStatistics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetChapterIdStatisticsQueryResult = NonNullable<Awaited<ReturnType<typeof getChapterIdStatistics>>>
-export type GetChapterIdStatisticsQueryError = void
-
-
-export function useGetChapterIdStatistics<TData = Awaited<ReturnType<typeof getChapterIdStatistics>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChapterIdStatistics>>, TError, TData>> & Pick<
+export function useGetChapterIdStatistics<
+  TData = Awaited<ReturnType<typeof getChapterIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getChapterIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getChapterIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getChapterIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetChapterIdStatistics<TData = Awaited<ReturnType<typeof getChapterIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChapterIdStatistics>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetChapterIdStatistics<
+  TData = Awaited<ReturnType<typeof getChapterIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getChapterIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getChapterIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getChapterIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetChapterIdStatistics<TData = Awaited<ReturnType<typeof getChapterIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChapterIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetChapterIdStatistics<
+  TData = Awaited<ReturnType<typeof getChapterIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getChapterIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Chapter Statistics
  */
 
-export function useGetChapterIdStatistics<TData = Awaited<ReturnType<typeof getChapterIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChapterIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetChapterIdStatistics<
+  TData = Awaited<ReturnType<typeof getChapterIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getChapterIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetChapterIdStatisticsQueryOptions(id, options);
 
-  const queryOptions = getGetChapterIdStatisticsQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get Group Statistics
  */
 export type getGroupIdStatisticsResponse200 = {
-  data: ScanlationGroupStats
-  status: 200
-}
+  data: ScanlationGroupStats;
+  status: 200;
+};
 
 export type getGroupIdStatisticsResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getGroupIdStatisticsResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getGroupIdStatisticsResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getGroupIdStatisticsResponseSuccess = (getGroupIdStatisticsResponse200) & {
-  headers: Headers;
-};
-export type getGroupIdStatisticsResponseError = (getGroupIdStatisticsResponse400 | getGroupIdStatisticsResponse404 | getGroupIdStatisticsResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getGroupIdStatisticsResponse = (getGroupIdStatisticsResponseSuccess | getGroupIdStatisticsResponseError)
+export type getGroupIdStatisticsResponseSuccess =
+  getGroupIdStatisticsResponse200 & {
+    headers: Headers;
+  };
+export type getGroupIdStatisticsResponseError = (
+  | getGroupIdStatisticsResponse400
+  | getGroupIdStatisticsResponse404
+  | getGroupIdStatisticsResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetGroupIdStatisticsUrl = (id: string,) => {
+export type getGroupIdStatisticsResponse =
+  | getGroupIdStatisticsResponseSuccess
+  | getGroupIdStatisticsResponseError;
 
+export const getGetGroupIdStatisticsUrl = (id: string) => {
+  return `https://wd.memaydex.online/group/${id}/statistics`;
+};
 
-  
-
-  return `https://wd.memaydex.online/group/${id}/statistics`
-}
-
-export const getGroupIdStatistics = async (id: string, options?: RequestInit): Promise<getGroupIdStatisticsResponse> => {
-  
-  const res = await fetch(getGetGroupIdStatisticsUrl(id),
-  {      
+export const getGroupIdStatistics = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getGroupIdStatisticsResponse> => {
+  const res = await fetch(getGetGroupIdStatisticsUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getGroupIdStatisticsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getGroupIdStatisticsResponse
-}
-  
 
+  const data: getGroupIdStatisticsResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getGroupIdStatisticsResponse;
+};
 
+export const getGetGroupIdStatisticsQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/group/${id}/statistics`] as const;
+};
 
-
-export const getGetGroupIdStatisticsQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/group/${id}/statistics`
-    ] as const;
-    }
-
-    
-export const getGetGroupIdStatisticsQueryOptions = <TData = Awaited<ReturnType<typeof getGroupIdStatistics>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupIdStatistics>>, TError, TData>>, fetch?: RequestInit}
+export const getGetGroupIdStatisticsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGroupIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetGroupIdStatisticsQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetGroupIdStatisticsQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getGroupIdStatistics>>
+  > = ({ signal }) => getGroupIdStatistics(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGroupIdStatistics>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGroupIdStatistics>>> = ({ signal }) => getGroupIdStatistics(id, { signal, ...fetchOptions });
+export type GetGroupIdStatisticsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGroupIdStatistics>>
+>;
+export type GetGroupIdStatisticsQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGroupIdStatistics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetGroupIdStatisticsQueryResult = NonNullable<Awaited<ReturnType<typeof getGroupIdStatistics>>>
-export type GetGroupIdStatisticsQueryError = void
-
-
-export function useGetGroupIdStatistics<TData = Awaited<ReturnType<typeof getGroupIdStatistics>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupIdStatistics>>, TError, TData>> & Pick<
+export function useGetGroupIdStatistics<
+  TData = Awaited<ReturnType<typeof getGroupIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getGroupIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getGroupIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetGroupIdStatistics<TData = Awaited<ReturnType<typeof getGroupIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupIdStatistics>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetGroupIdStatistics<
+  TData = Awaited<ReturnType<typeof getGroupIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getGroupIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getGroupIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetGroupIdStatistics<TData = Awaited<ReturnType<typeof getGroupIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetGroupIdStatistics<
+  TData = Awaited<ReturnType<typeof getGroupIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Group Statistics
  */
 
-export function useGetGroupIdStatistics<TData = Awaited<ReturnType<typeof getGroupIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGroupIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetGroupIdStatistics<
+  TData = Awaited<ReturnType<typeof getGroupIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getGroupIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetGroupIdStatisticsQueryOptions(id, options);
 
-  const queryOptions = getGetGroupIdStatisticsQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get Manga Statistics
  */
 export type getMangaIdStatisticsResponse200 = {
-  data: MangaStats
-  status: 200
-}
+  data: MangaStats;
+  status: 200;
+};
 
 export type getMangaIdStatisticsResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getMangaIdStatisticsResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getMangaIdStatisticsResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getMangaIdStatisticsResponseSuccess = (getMangaIdStatisticsResponse200) & {
-  headers: Headers;
-};
-export type getMangaIdStatisticsResponseError = (getMangaIdStatisticsResponse400 | getMangaIdStatisticsResponse404 | getMangaIdStatisticsResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getMangaIdStatisticsResponse = (getMangaIdStatisticsResponseSuccess | getMangaIdStatisticsResponseError)
+export type getMangaIdStatisticsResponseSuccess =
+  getMangaIdStatisticsResponse200 & {
+    headers: Headers;
+  };
+export type getMangaIdStatisticsResponseError = (
+  | getMangaIdStatisticsResponse400
+  | getMangaIdStatisticsResponse404
+  | getMangaIdStatisticsResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetMangaIdStatisticsUrl = (id: string,) => {
+export type getMangaIdStatisticsResponse =
+  | getMangaIdStatisticsResponseSuccess
+  | getMangaIdStatisticsResponseError;
 
+export const getGetMangaIdStatisticsUrl = (id: string) => {
+  return `https://wd.memaydex.online/manga/${id}/statistics`;
+};
 
-  
-
-  return `https://wd.memaydex.online/manga/${id}/statistics`
-}
-
-export const getMangaIdStatistics = async (id: string, options?: RequestInit): Promise<getMangaIdStatisticsResponse> => {
-  
-  const res = await fetch(getGetMangaIdStatisticsUrl(id),
-  {      
+export const getMangaIdStatistics = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getMangaIdStatisticsResponse> => {
+  const res = await fetch(getGetMangaIdStatisticsUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getMangaIdStatisticsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getMangaIdStatisticsResponse
-}
-  
 
+  const data: getMangaIdStatisticsResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getMangaIdStatisticsResponse;
+};
 
+export const getGetMangaIdStatisticsQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/manga/${id}/statistics`] as const;
+};
 
-
-export const getGetMangaIdStatisticsQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/manga/${id}/statistics`
-    ] as const;
-    }
-
-    
-export const getGetMangaIdStatisticsQueryOptions = <TData = Awaited<ReturnType<typeof getMangaIdStatistics>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdStatistics>>, TError, TData>>, fetch?: RequestInit}
+export const getGetMangaIdStatisticsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMangaIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetMangaIdStatisticsQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMangaIdStatisticsQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getMangaIdStatistics>>
+  > = ({ signal }) => getMangaIdStatistics(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMangaIdStatistics>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMangaIdStatistics>>> = ({ signal }) => getMangaIdStatistics(id, { signal, ...fetchOptions });
+export type GetMangaIdStatisticsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMangaIdStatistics>>
+>;
+export type GetMangaIdStatisticsQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMangaIdStatistics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetMangaIdStatisticsQueryResult = NonNullable<Awaited<ReturnType<typeof getMangaIdStatistics>>>
-export type GetMangaIdStatisticsQueryError = void
-
-
-export function useGetMangaIdStatistics<TData = Awaited<ReturnType<typeof getMangaIdStatistics>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdStatistics>>, TError, TData>> & Pick<
+export function useGetMangaIdStatistics<
+  TData = Awaited<ReturnType<typeof getMangaIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMangaIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getMangaIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMangaIdStatistics<TData = Awaited<ReturnType<typeof getMangaIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdStatistics>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetMangaIdStatistics<
+  TData = Awaited<ReturnType<typeof getMangaIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMangaIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getMangaIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMangaIdStatistics<TData = Awaited<ReturnType<typeof getMangaIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetMangaIdStatistics<
+  TData = Awaited<ReturnType<typeof getMangaIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Manga Statistics
  */
 
-export function useGetMangaIdStatistics<TData = Awaited<ReturnType<typeof getMangaIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMangaIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetMangaIdStatistics<
+  TData = Awaited<ReturnType<typeof getMangaIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getMangaIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetMangaIdStatisticsQueryOptions(id, options);
 
-  const queryOptions = getGetMangaIdStatisticsQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get Thread Statistics
  */
 export type getThreadIdStatisticsResponse200 = {
-  data: ThreadStats
-  status: 200
-}
+  data: ThreadStats;
+  status: 200;
+};
 
 export type getThreadIdStatisticsResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getThreadIdStatisticsResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getThreadIdStatisticsResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getThreadIdStatisticsResponseSuccess = (getThreadIdStatisticsResponse200) & {
-  headers: Headers;
-};
-export type getThreadIdStatisticsResponseError = (getThreadIdStatisticsResponse400 | getThreadIdStatisticsResponse404 | getThreadIdStatisticsResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getThreadIdStatisticsResponse = (getThreadIdStatisticsResponseSuccess | getThreadIdStatisticsResponseError)
+export type getThreadIdStatisticsResponseSuccess =
+  getThreadIdStatisticsResponse200 & {
+    headers: Headers;
+  };
+export type getThreadIdStatisticsResponseError = (
+  | getThreadIdStatisticsResponse400
+  | getThreadIdStatisticsResponse404
+  | getThreadIdStatisticsResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetThreadIdStatisticsUrl = (id: string,) => {
+export type getThreadIdStatisticsResponse =
+  | getThreadIdStatisticsResponseSuccess
+  | getThreadIdStatisticsResponseError;
 
+export const getGetThreadIdStatisticsUrl = (id: string) => {
+  return `https://wd.memaydex.online/thread/${id}/statistics`;
+};
 
-  
-
-  return `https://wd.memaydex.online/thread/${id}/statistics`
-}
-
-export const getThreadIdStatistics = async (id: string, options?: RequestInit): Promise<getThreadIdStatisticsResponse> => {
-  
-  const res = await fetch(getGetThreadIdStatisticsUrl(id),
-  {      
+export const getThreadIdStatistics = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getThreadIdStatisticsResponse> => {
+  const res = await fetch(getGetThreadIdStatisticsUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getThreadIdStatisticsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getThreadIdStatisticsResponse
-}
-  
 
+  const data: getThreadIdStatisticsResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getThreadIdStatisticsResponse;
+};
 
+export const getGetThreadIdStatisticsQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/thread/${id}/statistics`] as const;
+};
 
-
-export const getGetThreadIdStatisticsQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/thread/${id}/statistics`
-    ] as const;
-    }
-
-    
-export const getGetThreadIdStatisticsQueryOptions = <TData = Awaited<ReturnType<typeof getThreadIdStatistics>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThreadIdStatistics>>, TError, TData>>, fetch?: RequestInit}
+export const getGetThreadIdStatisticsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getThreadIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getThreadIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetThreadIdStatisticsQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetThreadIdStatisticsQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getThreadIdStatistics>>
+  > = ({ signal }) => getThreadIdStatistics(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getThreadIdStatistics>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getThreadIdStatistics>>> = ({ signal }) => getThreadIdStatistics(id, { signal, ...fetchOptions });
+export type GetThreadIdStatisticsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getThreadIdStatistics>>
+>;
+export type GetThreadIdStatisticsQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getThreadIdStatistics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetThreadIdStatisticsQueryResult = NonNullable<Awaited<ReturnType<typeof getThreadIdStatistics>>>
-export type GetThreadIdStatisticsQueryError = void
-
-
-export function useGetThreadIdStatistics<TData = Awaited<ReturnType<typeof getThreadIdStatistics>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThreadIdStatistics>>, TError, TData>> & Pick<
+export function useGetThreadIdStatistics<
+  TData = Awaited<ReturnType<typeof getThreadIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getThreadIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getThreadIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getThreadIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetThreadIdStatistics<TData = Awaited<ReturnType<typeof getThreadIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThreadIdStatistics>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetThreadIdStatistics<
+  TData = Awaited<ReturnType<typeof getThreadIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getThreadIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getThreadIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getThreadIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetThreadIdStatistics<TData = Awaited<ReturnType<typeof getThreadIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThreadIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetThreadIdStatistics<
+  TData = Awaited<ReturnType<typeof getThreadIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getThreadIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Thread Statistics
  */
 
-export function useGetThreadIdStatistics<TData = Awaited<ReturnType<typeof getThreadIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThreadIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetThreadIdStatistics<
+  TData = Awaited<ReturnType<typeof getThreadIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getThreadIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetThreadIdStatisticsQueryOptions(id, options);
 
-  const queryOptions = getGetThreadIdStatisticsQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get User Statistics
  */
 export type getUserIdStatisticsResponse200 = {
-  data: UserStats
-  status: 200
-}
+  data: UserStats;
+  status: 200;
+};
 
 export type getUserIdStatisticsResponse400 = {
-  data: void
-  status: 400
-}
+  data: void;
+  status: 400;
+};
 
 export type getUserIdStatisticsResponse404 = {
-  data: void
-  status: 404
-}
+  data: void;
+  status: 404;
+};
 
 export type getUserIdStatisticsResponse500 = {
-  data: void
-  status: 500
-}
-
-export type getUserIdStatisticsResponseSuccess = (getUserIdStatisticsResponse200) & {
-  headers: Headers;
-};
-export type getUserIdStatisticsResponseError = (getUserIdStatisticsResponse400 | getUserIdStatisticsResponse404 | getUserIdStatisticsResponse500) & {
-  headers: Headers;
+  data: void;
+  status: 500;
 };
 
-export type getUserIdStatisticsResponse = (getUserIdStatisticsResponseSuccess | getUserIdStatisticsResponseError)
+export type getUserIdStatisticsResponseSuccess =
+  getUserIdStatisticsResponse200 & {
+    headers: Headers;
+  };
+export type getUserIdStatisticsResponseError = (
+  | getUserIdStatisticsResponse400
+  | getUserIdStatisticsResponse404
+  | getUserIdStatisticsResponse500
+) & {
+  headers: Headers;
+};
 
-export const getGetUserIdStatisticsUrl = (id: string,) => {
+export type getUserIdStatisticsResponse =
+  | getUserIdStatisticsResponseSuccess
+  | getUserIdStatisticsResponseError;
 
+export const getGetUserIdStatisticsUrl = (id: string) => {
+  return `https://wd.memaydex.online/user/${id}/statistics`;
+};
 
-  
-
-  return `https://wd.memaydex.online/user/${id}/statistics`
-}
-
-export const getUserIdStatistics = async (id: string, options?: RequestInit): Promise<getUserIdStatisticsResponse> => {
-  
-  const res = await fetch(getGetUserIdStatisticsUrl(id),
-  {      
+export const getUserIdStatistics = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getUserIdStatisticsResponse> => {
+  const res = await fetch(getGetUserIdStatisticsUrl(id), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: "GET",
+  });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: getUserIdStatisticsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getUserIdStatisticsResponse
-}
-  
 
+  const data: getUserIdStatisticsResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getUserIdStatisticsResponse;
+};
 
+export const getGetUserIdStatisticsQueryKey = (id: string) => {
+  return [`https://wd.memaydex.online/user/${id}/statistics`] as const;
+};
 
-
-export const getGetUserIdStatisticsQueryKey = (id: string,) => {
-    return [
-    `https://wd.memaydex.online/user/${id}/statistics`
-    ] as const;
-    }
-
-    
-export const getGetUserIdStatisticsQueryOptions = <TData = Awaited<ReturnType<typeof getUserIdStatistics>>, TError = void>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserIdStatistics>>, TError, TData>>, fetch?: RequestInit}
+export const getGetUserIdStatisticsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
 ) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetUserIdStatisticsQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserIdStatisticsQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserIdStatistics>>
+  > = ({ signal }) => getUserIdStatistics(id, { signal, ...fetchOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserIdStatistics>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserIdStatistics>>> = ({ signal }) => getUserIdStatistics(id, { signal, ...fetchOptions });
+export type GetUserIdStatisticsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserIdStatistics>>
+>;
+export type GetUserIdStatisticsQueryError = void;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserIdStatistics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUserIdStatisticsQueryResult = NonNullable<Awaited<ReturnType<typeof getUserIdStatistics>>>
-export type GetUserIdStatisticsQueryError = void
-
-
-export function useGetUserIdStatistics<TData = Awaited<ReturnType<typeof getUserIdStatistics>>, TError = void>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserIdStatistics>>, TError, TData>> & Pick<
+export function useGetUserIdStatistics<
+  TData = Awaited<ReturnType<typeof getUserIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getUserIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserIdStatistics<TData = Awaited<ReturnType<typeof getUserIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserIdStatistics>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserIdStatistics<
+  TData = Awaited<ReturnType<typeof getUserIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserIdStatistics>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserIdStatistics>>,
           TError,
           Awaited<ReturnType<typeof getUserIdStatistics>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserIdStatistics<TData = Awaited<ReturnType<typeof getUserIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserIdStatistics<
+  TData = Awaited<ReturnType<typeof getUserIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get User Statistics
  */
 
-export function useGetUserIdStatistics<TData = Awaited<ReturnType<typeof getUserIdStatistics>>, TError = void>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserIdStatistics>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUserIdStatistics<
+  TData = Awaited<ReturnType<typeof getUserIdStatistics>>,
+  TError = void,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserIdStatistics>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetUserIdStatisticsQueryOptions(id, options);
 
-  const queryOptions = getGetUserIdStatisticsQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

@@ -9,10 +9,10 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetMangaTopRank = typeof GetMangaTopRank[keyof typeof GetMangaTopRank];
-
+export type GetMangaTopRank =
+  (typeof GetMangaTopRank)[keyof typeof GetMangaTopRank];
 
 export const GetMangaTopRank = {
-  views: 'views',
-  read: 'read',
+  views: "views",
+  read: "read",
 } as const;

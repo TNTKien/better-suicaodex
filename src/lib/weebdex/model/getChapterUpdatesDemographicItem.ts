@@ -9,13 +9,13 @@ To avoid future issues, include the Origin: https://weebdex.org and Referer: htt
  * OpenAPI spec version: 1.2.0
  */
 
-export type GetChapterUpdatesDemographicItem = typeof GetChapterUpdatesDemographicItem[keyof typeof GetChapterUpdatesDemographicItem];
-
+export type GetChapterUpdatesDemographicItem =
+  (typeof GetChapterUpdatesDemographicItem)[keyof typeof GetChapterUpdatesDemographicItem];
 
 export const GetChapterUpdatesDemographicItem = {
-  shounen: 'shounen',
-  shoujo: 'shoujo',
-  josei: 'josei',
-  seinen: 'seinen',
-  none: 'none',
+  shounen: "shounen",
+  shoujo: "shoujo",
+  josei: "josei",
+  seinen: "seinen",
+  none: "none",
 } as const;
