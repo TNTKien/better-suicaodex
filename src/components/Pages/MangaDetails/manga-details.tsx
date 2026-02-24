@@ -29,7 +29,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { siteConfig } from "@/config/site";
 import { useConfig } from "@/hooks/use-config";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { fetchMangaDetail } from "@/lib/mangadex/manga";
 import { Artist, Author, Manga } from "@/types/types";
 import {
@@ -40,17 +39,15 @@ import {
   LibraryBig,
   List,
   MessageSquare,
-  Share2,
   Sprout,
   Square,
   SquareArrowOutUpRightIcon,
   SquareCheckBig,
 } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import MangaDetailsSkeleton from "./manga-details-skeleton";
-import { toast } from "sonner";
 import AddToLibraryBtn from "@/components/Manga/add-to-library-btn";
 import MangaCoversTab from "@/components/Manga/manga-covers-tab";
 import MangaSubInfo from "@/components/Manga/manga-subinfo";
@@ -74,7 +71,6 @@ interface MangaDetailsProps {
 }
 
 export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
-  const isMobile = useIsMobile();
   const [config, setConfig] = useConfig();
 
   const { count: cmtCount } = useCommentCount(id);
