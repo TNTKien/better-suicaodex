@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "gen:api": "bunx --bun orval --config ./orval.config.ts",
     "postinstall": "bun prisma generate",
     "dev": "next dev",
     "build": "next build",
