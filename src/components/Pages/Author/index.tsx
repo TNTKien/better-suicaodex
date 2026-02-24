@@ -10,7 +10,7 @@ import { Archive, Bookmark, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import { AuthorDetail } from "@/types/types";
@@ -34,17 +34,15 @@ interface AuthorProps {
 
 export default function Author({ id, initialData }: AuthorProps) {
   const isMobile = useIsMobile();
-  const { data, isLoading, error } = useSWR(
-    ["author", id],
-    ([, id]) => GetAuthor(id),
-    {
-      fallbackData: initialData, // Use server data as initial value
-      revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["author", id],
+    queryFn: () => GetAuthor(id),
+    initialData: initialData,
+    refetchOnMount: !initialData,
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
   if (isLoading)
     return (

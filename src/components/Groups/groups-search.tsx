@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { ArrowRight, Loader2, Search, X } from "lucide-react";
 import { Button } from "../ui/button";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { searchGroups } from "@/lib/mangadex/group";
 import { Card } from "../ui/card";
 import GroupCards from "./group-cards";
@@ -58,14 +58,12 @@ export default function GroupsSearch({ page, q }: GroupsSearchProps) {
   }, [inputValue, page, q, router]);
 
   const offset = Math.max((page - 1) * 32, 0);
-  const { data, error, isLoading } = useSWR(
-    ["/group", debouncedQuery, 32, offset],
-    ([, query, limit, offset]) => searchGroups(query, limit, offset),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["/group", debouncedQuery, 32, offset],
+    queryFn: () => searchGroups(debouncedQuery, 32, offset),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
   const totalPages = Math.ceil((data?.total || 0) / 32);
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams();

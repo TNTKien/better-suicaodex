@@ -3,7 +3,7 @@
 import ResultTabs from "@/components/Search/Result/result-tabs";
 import { useConfig } from "@/hooks/use-config";
 import { getRecentlyMangas } from "@/lib/mangadex/manga";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import {
   Pagination,
   PaginationContent,
@@ -23,14 +23,11 @@ export default function Recent({ page }: RecentProps) {
   const [config] = useConfig();
   const router = useRouter();
   const offset = (page - 1) * 32;
-  const { data, error, isLoading } = useSWR(
-    ["recent_page", 32, config.translatedLanguage, config.r18, offset],
-    ([, limit, language, r18, offset]) =>
-      getRecentlyMangas(limit, language, r18, offset),
-    {
-      refreshInterval: 1000 * 60 * 10,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["recent_page", 32, config.translatedLanguage, config.r18, offset],
+    queryFn: () => getRecentlyMangas(32, config.translatedLanguage, config.r18, offset),
+    refetchInterval: 1000 * 60 * 10,
+  });
   const totalPages = Math.ceil((data?.total || 0) / 32);
 
   const handlePageChange = (newPage: number) => {

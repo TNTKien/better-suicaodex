@@ -5,7 +5,7 @@ import { useConfig } from "@/hooks/use-config";
 import { getRecentlyMangas } from "@/lib/mangadex/manga";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import RecentlyCard from "./recently-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
@@ -13,13 +13,11 @@ import { generateSlug } from "@/lib/utils";
 
 export default function RecentlyAdded() {
   const [config] = useConfig();
-  const { data, error, isLoading } = useSWR(
-    ["recently", 18, config.translatedLanguage, config.r18],
-    ([, limit, language, r18]) => getRecentlyMangas(limit, language, r18),
-    {
-      refreshInterval: 1000 * 60 * 10,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["recently", 18, config.translatedLanguage, config.r18],
+    queryFn: () => getRecentlyMangas(18, config.translatedLanguage, config.r18),
+    refetchInterval: 1000 * 60 * 10,
+  });
 
   if (isLoading)
     return (

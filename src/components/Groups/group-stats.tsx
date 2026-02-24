@@ -2,7 +2,7 @@
 
 import { getGroupStats } from "@/lib/mangadex/group";
 import { MessageSquare, Upload } from "lucide-react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "../ui/skeleton";
 
 interface GroupStatsProps {
@@ -10,14 +10,12 @@ interface GroupStatsProps {
 }
 
 export default function GroupStats({ id }: GroupStatsProps) {
-  const { data, isLoading, error } = useSWR(
-    ["group-stats", id],
-    ([, id]) => getGroupStats(id),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["group-stats", id],
+    queryFn: () => getGroupStats(id),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   if (isLoading || error || !data)
     return (

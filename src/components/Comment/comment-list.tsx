@@ -1,6 +1,6 @@
 "use client";
 
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import CommentCard from "./comment-card";
 import { useImperativeHandle, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
@@ -46,10 +46,11 @@ const CommentList = ({
 }) => {
   const [page, setPage] = useState(1);
   const offset = (page - 1) * LIMIT; // Calculate offset based on page number
-  const { data, mutate, isLoading, error } = useSWR(
-    `/api/comments/${type}/${id}?offset=${offset}&limit=${LIMIT}`,
-    fetcher,
-  );
+  const { data, refetch: mutate, isLoading, error } = useQuery({
+    queryKey: [`/api/comments/${type}/${id}`, offset, LIMIT],
+    queryFn: () =>
+      fetcher(`/api/comments/${type}/${id}?offset=${offset}&limit=${LIMIT}`),
+  });
 
   // Expose the mutate function to the parent component
   useImperativeHandle(ref, () => ({

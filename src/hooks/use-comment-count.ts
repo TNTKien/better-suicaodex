@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
@@ -10,15 +10,17 @@ const fetcher = async (url: string) => {
 };
 
 export function useCommentCount(mangaId: string) {
-  const { data, mutate } = useSWR(
-    mangaId ? `/api/comments/manga/${mangaId}/count` : null,
-    fetcher,
-    { refreshInterval: 0 } // Không auto revalidate
-  );
+  const { data, refetch, isLoading } = useQuery({
+    queryKey: [`comment-count-${mangaId}`],
+    queryFn: () => fetcher(`/api/comments/manga/${mangaId}/count`),
+    enabled: !!mangaId,
+    refetchInterval: false, // Không auto revalidate
+    staleTime: Infinity,
+  });
 
   return {
     count: data?.count ?? 0,
-    refresh: mutate,
-    isLoading: !data,
+    refresh: refetch,
+    isLoading,
   };
 }

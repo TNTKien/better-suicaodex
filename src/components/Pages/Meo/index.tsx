@@ -1,7 +1,7 @@
 "use client";
 
 import { getCatsList, getCatCount, type Cat } from "@/lib/cat";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import {
   Pagination,
   PaginationContent,
@@ -34,12 +34,17 @@ export default function MeoPage({ page, limit }: MeoPageProps) {
     data: cats,
     error,
     isLoading,
-  } = useSWR(`cats-${skip}-${limit}`, () => fetchCatsList(skip, limit), {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
+  } = useQuery({
+    queryKey: [`cats-${skip}-${limit}`],
+    queryFn: () => fetchCatsList(skip, limit),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
-  const { data: totalCats } = useSWR("cat-count", () => getCatCount());
+  const { data: totalCats } = useQuery({
+    queryKey: ["cat-count"],
+    queryFn: () => getCatCount(),
+  });
 
   const totalPages = Math.ceil((totalCats || 0) / limit);
   const handlePageChange = (newPage: number) => {

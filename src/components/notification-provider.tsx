@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import { useRouter } from "next/navigation";
@@ -21,19 +21,15 @@ export function NotificationProvider({
     useLocalNotification();
 
   // Fetch latest chapters every 5 minutes
-  const { data } = useSWR(
-    ["feed", 100, 0, config.translatedLanguage, config.r18],
-    ([, limit, offset, language, r18]) =>
-      fetchLatestChapters(limit, offset, language, r18),
-    {
-      refreshInterval: 1000 * 60 * 5, // 5 minutes
-      revalidateOnFocus: false,
-      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-        if (retryCount >= 3) return; // Stop retrying after 3 attempts
-        setTimeout(() => revalidate({ retryCount }), 1000); // Retry after 1 second
-      },
-    }
-  );
+  const { data } = useQuery({
+    queryKey: ["feed", 100, 0, config.translatedLanguage, config.r18],
+    queryFn: () =>
+      fetchLatestChapters(100, 0, config.translatedLanguage, config.r18),
+    refetchInterval: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
+    retry: 3,
+    retryDelay: 1000,
+  });
 
   // Check for new chapters and show notifications
   useEffect(() => {

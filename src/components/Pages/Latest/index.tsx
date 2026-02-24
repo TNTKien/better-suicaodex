@@ -2,7 +2,7 @@
 
 import { useConfig } from "@/hooks/use-config";
 import { getLatestManga } from "@/lib/mangadex/latest";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import LatestMangaCard from "./latest-manga-card";
 import { Chapter } from "@/types/types";
 import {
@@ -28,11 +28,10 @@ export default function Latest({ page, limit }: LatestProps) {
   const router = useRouter();
   const offset = (page - 1) * limit;
   const [config] = useConfig();
-  const { data, isLoading, error } = useSWR(
-    ["latest_page", limit, offset, config.translatedLanguage, config.r18],
-    ([, limit, offset, translatedLanguage, r18]) =>
-      getLatestManga(limit, offset, translatedLanguage, r18)
-  );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["latest_page", limit, offset, config.translatedLanguage, config.r18],
+    queryFn: () => getLatestManga(limit, offset, config.translatedLanguage, config.r18),
+  });
   if (isLoading)
     return (
       <DefaultTabs>

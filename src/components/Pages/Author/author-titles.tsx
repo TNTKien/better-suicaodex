@@ -3,7 +3,7 @@
 import GroupTitleTabs from "@/components/Groups/GroupTitles/group-titles-tabs";
 import { GetAuthorTitles } from "@/lib/mangadex/author";
 import { useState } from "react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import {
   Pagination,
   PaginationContent,
@@ -22,14 +22,12 @@ export default function AuthorTitles({ id }: AuthorTitlesProps) {
   const [page, setPage] = useState(1);
   const limit = 32;
   const offset = (page - 1) * limit;
-  const { data, isLoading, error } = useSWR(
-    ["author-titles", id, limit, offset],
-    ([, id, limit, offset]) => GetAuthorTitles(id, limit, offset),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["author-titles", id, limit, offset],
+    queryFn: () => GetAuthorTitles(id, limit, offset),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   const totalPages = Math.ceil((data?.total || 0) / limit);
   const handlePageChange = (newPage: number) => {

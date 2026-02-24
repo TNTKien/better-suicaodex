@@ -2,7 +2,7 @@
 
 import { useConfig } from "@/hooks/use-config";
 import { getTopRatedMangas } from "@/lib/mangadex/manga";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
 import TopRatedCard from "./top-rated-card";
 import { cn } from "@/lib/utils";
@@ -10,14 +10,12 @@ import LeaderBoardCardSkeleton from "../leaderboard-card-skeleon";
 
 export default function TopRated() {
   const [config] = useConfig();
-  const { data, error, isLoading } = useSWR(
-    ["rating", config.translatedLanguage, config.r18],
-    ([, language, r18]) => getTopRatedMangas(language, r18),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["rating", config.translatedLanguage, config.r18],
+    queryFn: () => getTopRatedMangas(config.translatedLanguage, config.r18),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   if (isLoading)
     return (

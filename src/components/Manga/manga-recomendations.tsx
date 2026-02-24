@@ -3,7 +3,7 @@
 import { useConfig } from "@/hooks/use-config";
 import { getRecommendedMangas } from "@/lib/mangadex/manga";
 import { Loader2, Terminal } from "lucide-react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import NoPrefetchLink from "../Custom/no-prefetch-link";
 import RecentlyCard from "../Pages/Home/Recently/recently-card";
@@ -16,14 +16,12 @@ export default function MangaRecommendations({
   id,
 }: MangaRecommendationsProps) {
   const [config] = useConfig();
-  const { data, error, isLoading } = useSWR(
-    ["manga-recommendations", id, config.r18],
-    ([, id, r18]) => getRecommendedMangas(id, r18),
-    {
-      refreshInterval: 1000 * 60 * 30,
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["manga-recommendations", id, config.r18],
+    queryFn: () => getRecommendedMangas(id, config.r18),
+    refetchInterval: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
+  });
   if (isLoading) {
     return (
       <div className="flex justify-center items-center w-full h-16">

@@ -2,7 +2,7 @@
 
 import { useConfig } from "@/hooks/use-config";
 import { getMangasByTag } from "@/lib/mangadex/tag";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import ResultTabs from "@/components/Search/Result/result-tabs";
 import { useRouter } from "next/navigation";
 import {
@@ -25,11 +25,10 @@ export default function TagPage({ id, page }: TagPageProps) {
   const [config] = useConfig();
   const router = useRouter();
 
-  const { data, error, isLoading } = useSWR(
-    ["tag", id, 32, offset, config.translatedLanguage, config.r18],
-    ([, id, limit, offset, language, r18]) =>
-      getMangasByTag(id, limit, offset, language, r18)
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["tag", id, 32, offset, config.translatedLanguage, config.r18],
+    queryFn: () => getMangasByTag(id, 32, offset, config.translatedLanguage, config.r18),
+  });
   const totalPages = Math.ceil((data?.total || 0) / 32);
   const handlePageChange = (newPage: number) => {
     router.push(`/tag/${id}/?page=${newPage}`);

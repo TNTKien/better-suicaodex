@@ -33,7 +33,7 @@ import {
   TranslatedLanguage,
 } from "@/types/types";
 import { AdvancedSearchManga } from "@/lib/mangadex/search";
-import useSWRMutation from "swr/mutation";
+import { useQuery } from "@tanstack/react-query";
 import ResultTabs from "@/components/Search/Result/result-tabs";
 import {
   Pagination,
@@ -46,6 +46,13 @@ import {
 } from "@/components/ui/pagination";
 import AdvancedSearchGuide from "./advanded-search-guide";
 import { CN, GB, JP, KR, VN } from "country-flag-icons/react/3x2";
+
+// Module-level constants so they are stable references usable in state initialisers
+const ALLOWED_CONTENT_RATINGS: ContentRating[] = ["safe", "suggestive", "erotica", "pornographic"];
+const ALLOWED_STATUSES: Status[] = ["ongoing", "completed", "cancelled", "hiatus"];
+const ALLOWED_DEMOS: Demosgraphic[] = ["shounen", "shoujo", "jousei", "seinen"];
+const ALLOWED_ORIGIN_LANGUAGES: OriginLanguge[] = ["en", "vi", "ja", "ko", "zh"];
+const ALLOWED_TRANSLATED_LANGUAGES: TranslatedLanguage[] = ["en", "vi"];
 
 interface AdvancedSearchProps {
   page: number;
@@ -109,50 +116,22 @@ export default function AdvancedSearch({
   // Reset keys to force re-render of MultiSelect components
   const [resetKey, setResetKey] = useState(0);
 
-  // Define allowed values for each filter type
-  const allowedContentRatings: ContentRating[] = [
-    "safe",
-    "suggestive",
-    "erotica",
-    "pornographic",
-  ];
-  const allowedStatuses: Status[] = [
-    "ongoing",
-    "completed",
-    "cancelled",
-    "hiatus",
-  ];
-  const allowedDemos: Demosgraphic[] = [
-    "shounen",
-    "shoujo",
-    "jousei",
-    "seinen",
-  ];
-  const allowedOriginLanguages: OriginLanguge[] = [
-    "en",
-    "vi",
-    "ja",
-    "ko",
-    "zh",
-  ];
-  const allowedTranslatedLanguages: TranslatedLanguage[] = ["en", "vi"];
-
   // Filter and set the selected values based on their types
   const [selectedStatus, setSelectedStatus] = useState<string[]>(
-    filterByType(toArray(status), allowedStatuses)
+    filterByType(toArray(status), ALLOWED_STATUSES)
   );
   const [selectedDemos, setSelectedDemos] = useState<string[]>(
-    filterByType(toArray(demos), allowedDemos)
+    filterByType(toArray(demos), ALLOWED_DEMOS)
   );
   const [selectedContent, setSelectedContent] = useState<string[]>(
-    filterByType(toArray(content), allowedContentRatings)
+    filterByType(toArray(content), ALLOWED_CONTENT_RATINGS)
   );
   const [selectedLanguage, setSelectedLanguage] = useState<string[]>(
-    filterByType(toArray(translated), allowedTranslatedLanguages)
+    filterByType(toArray(translated), ALLOWED_TRANSLATED_LANGUAGES)
   );
   const [selectedOriginLanguage, setSelectedOriginLanguage] = useState<
     string[]
-  >(filterByType(toArray(origin), allowedOriginLanguages));
+  >(filterByType(toArray(origin), ALLOWED_ORIGIN_LANGUAGES));
   const [selectedAuthor, setSelectedAuthor] = useState<string[]>(
     toArray(author)
   );
@@ -169,6 +148,24 @@ export default function AdvancedSearch({
     useState(availableChapter);
 
   const [selectedYear, setSelectedYear] = useState(year);
+
+  // Committed search params — only updated on explicit user actions (Search button,
+  // page change). Keyed into useQuery so data resets whenever they change.
+  const [committedSearch, setCommittedSearch] = useState(() => ({
+    query: q,
+    offset: (page - 1) * limit,
+    limit,
+    content: filterByType(toArray(content), ALLOWED_CONTENT_RATINGS),
+    status: filterByType(toArray(status), ALLOWED_STATUSES),
+    include: toArray(include),
+    exclude: toArray(exclude),
+    author: toArray(author),
+    demos: filterByType(toArray(demos), ALLOWED_DEMOS),
+    originLanguage: filterByType(toArray(origin), ALLOWED_ORIGIN_LANGUAGES),
+    hasAvailableChapter: availableChapter,
+    language: filterByType(toArray(translated), ALLOWED_TRANSLATED_LANGUAGES),
+    year,
+  }));
 
   const statusList = [
     { value: "completed", label: "Đã hoàn thành" },
@@ -241,64 +238,47 @@ export default function AdvancedSearch({
     router.replace("/advanced-search");
   };
 
-  const offset = (page - 1) * limit;
-  const { data, error, trigger, isMutating } = useSWRMutation(
-    [
-      "advanced-search",
-      query,
-      offset,
-      limit,
-      selectedContent,
-      selectedStatus,
-      selectedInclude,
-      selectedExclude,
-      selectedAuthor,
-      selectedDemos,
-      selectedOriginLanguage,
-      hasAvailableChapter,
-      selectedLanguage,
-      selectedYear,
-    ],
-    ([
-      ,
-      q,
-      offset,
-      limit,
-      content,
-      status,
-      include,
-      exclude,
-      author,
-      graphic,
-      origin,
-      availableChapter,
-      translated,
-
-      year,
-    ]) =>
+  const { data, error, isFetching: isMutating } = useQuery({
+    queryKey: ["advanced-search", committedSearch],
+    queryFn: () =>
       AdvancedSearchManga(
-        q,
-        offset,
-        limit,
-        content,
-        status,
-        include,
-        exclude,
-        author,
-        graphic,
-        origin,
-        availableChapter,
-        translated,
-        year
-      )
-  );
+        committedSearch.query,
+        committedSearch.offset,
+        committedSearch.limit,
+        committedSearch.content,
+        committedSearch.status,
+        committedSearch.include,
+        committedSearch.exclude,
+        committedSearch.author,
+        committedSearch.demos,
+        committedSearch.originLanguage,
+        committedSearch.hasAvailableChapter,
+        committedSearch.language,
+        committedSearch.year,
+      ),
+    staleTime: 1000 * 60 * 5,
+  });
 
   // Function to handle search button click
   const handleSearch = () => {
-    // Generate search params from current state
+    const newCommitted = {
+      query,
+      offset: 0,
+      limit,
+      content: selectedContent as ContentRating[],
+      status: selectedStatus as Status[],
+      include: selectedInclude,
+      exclude: selectedExclude,
+      author: selectedAuthor,
+      demos: selectedDemos as Demosgraphic[],
+      originLanguage: selectedOriginLanguage as OriginLanguge[],
+      hasAvailableChapter,
+      language: selectedLanguage as TranslatedLanguage[],
+      year: selectedYear,
+    };
     const params = generateSearchParams({
       q: query,
-      page,
+      page: 1,
       limit,
       author: selectedAuthor.join(","),
       content: selectedContent.join(","),
@@ -311,41 +291,29 @@ export default function AdvancedSearch({
       translated: selectedLanguage.join(","),
       year: selectedYear,
     });
-
-    // Update the URL with search parameters
     router.push(`/advanced-search?${params.toString()}`);
-
-    // Trigger the search
-    trigger();
+    setCommittedSearch(newCommitted);
   };
 
   const handlePageChange = (newPage: number) => {
-    // Generate search params from current state
     const params = generateSearchParams({
-      q: query,
+      q: committedSearch.query,
       page: newPage,
       limit,
-      author: selectedAuthor.join(","),
-      content: selectedContent.join(","),
-      status: selectedStatus.join(","),
-      demos: selectedDemos.join(","),
-      include: selectedInclude.join(","),
-      exclude: selectedExclude.join(","),
-      origin: selectedOriginLanguage.join(","),
-      availableChapter: hasAvailableChapter,
-      translated: selectedLanguage.join(","),
-      year: selectedYear,
+      author: committedSearch.author.join(","),
+      content: committedSearch.content.join(","),
+      status: committedSearch.status.join(","),
+      demos: committedSearch.demos.join(","),
+      include: committedSearch.include.join(","),
+      exclude: committedSearch.exclude.join(","),
+      origin: committedSearch.originLanguage.join(","),
+      availableChapter: committedSearch.hasAvailableChapter,
+      translated: committedSearch.language.join(","),
+      year: committedSearch.year,
     });
     router.push(`/advanced-search?${params.toString()}`);
-    trigger();
+    setCommittedSearch((prev) => ({ ...prev, offset: (newPage - 1) * limit }));
   };
-
-  //initial load
-  useEffect(() => {
-    if (!data) {
-      trigger();
-    }
-  }, [data, trigger]);
 
   const totalPages = Math.ceil((data?.total || 0) / limit);
 

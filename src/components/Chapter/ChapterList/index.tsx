@@ -11,7 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
@@ -37,14 +37,12 @@ export const ChapterList = ({
   const [totalPages, setTotalPages] = useState(0);
   const offset = (currentPage - 1) * limit;
 
-  const { data, error, isLoading } = useSWR(
-    [mangaID, language, limit, offset, r18, showUnavailable],
-    ([mangaID, language, limit, offset, r18, showUnavailable]) =>
+  const { data, error, isLoading } = useQuery({
+    queryKey: [mangaID, language, limit, offset, r18, showUnavailable],
+    queryFn: () =>
       getChapterVolume(mangaID, language, limit, offset, r18, showUnavailable),
-    {
-      refreshInterval: 1000 * 60 * 10,
-    }
-  );
+    refetchInterval: 1000 * 60 * 10,
+  });
 
   useEffect(() => {
     if (data) {

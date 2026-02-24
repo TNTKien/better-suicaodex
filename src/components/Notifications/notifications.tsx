@@ -2,7 +2,7 @@
 
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import { getUnreadChapters } from "@/lib/notifications";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "../ui/button";
 import { BellOff, CheckCheck, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "../ui/alert";
@@ -34,9 +34,10 @@ export default function Notifications({ page }: NotificationsProps) {
   const totalPages = Math.ceil(unreadIds.length / LIMIT);
   const idsPerPage = unreadIds.slice((page - 1) * LIMIT, page * LIMIT);
 
-  const { data, error, isLoading } = useSWR(["noti", idsPerPage], ([, ids]) =>
-    getUnreadChapters(ids)
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["noti", idsPerPage],
+    queryFn: () => getUnreadChapters(idsPerPage),
+  });
 
   const handlePageChange = (newPage: number) => {
     router.push(`/notifications?page=${newPage}`);

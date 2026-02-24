@@ -3,7 +3,7 @@
 import Reader from "./reader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getChapterDetail } from "@/lib/mangadex/chapter";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import ChapterNotFound from "./chapter-notfound";
 import MangaMaintain from "@/components/Manga/manga-maintain";
 import useReadingHistory from "@/hooks/use-reading-history";
@@ -19,17 +19,15 @@ interface ChapterProps {
 
 export default function ChapterPage({ id, initialData }: ChapterProps) {
   const { addHistory } = useReadingHistory();
-  const { data, isLoading, error } = useSWR(
-    [`chapter-${id}`, id],
-    ([, id]) => getChapterDetail(id),
-    {
-      fallbackData: initialData, // Use server data as initial value
-      revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
-      refreshInterval: 1000 * 60 * 30,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
+  const { data, isLoading, error } = useQuery({
+    queryKey: [`chapter-${id}`, id],
+    queryFn: () => getChapterDetail(id),
+    initialData: initialData,
+    refetchOnMount: !initialData,
+    refetchInterval: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
   useEffect(() => {
     try {
@@ -47,8 +45,8 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
   }, [addHistory, data, id]);
 
   if (error) {
-    if (error.status === 404) return <ChapterNotFound />;
-    if (error.status === 503) return <MangaMaintain />;
+    if ((error as any).status === 404) return <ChapterNotFound />;
+    if ((error as any).status === 503) return <MangaMaintain />;
     return <div>Lỗi mất rồi 😭</div>;
   }
 

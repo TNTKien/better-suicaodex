@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import useSWRMutation from "swr/mutation";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -95,19 +95,24 @@ export default function Reader({ images, chapterData }: ReaderProps) {
 
   const {
     data: chapterAggregate,
-    isMutating,
+    isFetching: isMutating,
     error,
-    trigger,
-  } = useSWRMutation(
-    [
+    refetch: trigger,
+  } = useQuery({
+    queryKey: [
       `chapter-aggregate-${chapterData.id}`,
       chapterData.manga.id,
       [chapterData.language],
       chapterData.group.map((g) => g.id),
     ],
-    ([, mangaId, language, groups]) =>
-      getChapterAggregate(mangaId, language, groups),
-  );
+    queryFn: () =>
+      getChapterAggregate(
+        chapterData.manga.id,
+        [chapterData.language],
+        chapterData.group.map((g) => g.id),
+      ),
+    enabled: false,
+  });
 
   const chapterExists = chapterAggregate?.some((vol) =>
     vol.chapters.some(

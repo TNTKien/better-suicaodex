@@ -2,7 +2,7 @@
 
 import { useConfig } from "@/hooks/use-config";
 import { getStaffPickMangas } from "@/lib/mangadex/manga";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import RecentlyCard from "../Recently/recently-card";
 import { cn, generateSlug } from "@/lib/utils";
@@ -48,14 +48,12 @@ export default function StaffPick() {
 
   const toggleExpanded = () => setExpanded((prev) => !prev);
 
-  const { data, error, isLoading } = useSWR(
-    ["staffpick", config.r18],
-    ([, r18]) => getStaffPickMangas(r18),
-    {
-      refreshInterval: 1000 * 60 * 10,
-      revalidateOnFocus: false,
-    },
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["staffpick", config.r18],
+    queryFn: () => getStaffPickMangas(config.r18),
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+  });
 
   if (isLoading) return <StaffPickSkeleton />;
 

@@ -3,11 +3,11 @@
 import { useConfig } from "@/hooks/use-config";
 import { FirstChapters } from "@/lib/mangadex/manga";
 import { getChapterAggregate } from "@/lib/mangadex/chapter";
-import { useState, memo } from "react";
+import { useState, memo, useEffect } from "react";
 import { Button } from "../ui/button";
 import { BookOpen, BookX, Loader2 } from "lucide-react";
 import useReadingHistory from "@/hooks/use-reading-history";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -37,11 +37,9 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
     language.length > 0 &&
     config.translatedLanguage.some((lang) => language.includes(lang));
 
-  const { data: chapters, isLoading } = useSWR(
-    shouldFetch && !readingHistory && hasMatchingLanguage
-      ? [`chapters-${id}`, config.translatedLanguage, config.r18]
-      : null,
-    async () => {
+  const { data: chapters, isLoading } = useQuery({
+    queryKey: [`chapters-${id}`, config.translatedLanguage, config.r18],
+    queryFn: async () => {
       const aggregate = await getChapterAggregate(
         id,
         config.translatedLanguage,
@@ -63,20 +61,19 @@ export function MangaReadNowButton({ id, language }: MangaReadNowButtonProps) {
       );
       return result;
     },
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      onSuccess: (data) => {
-        if (!data || data.length === 0) return;
+    enabled: shouldFetch && !readingHistory && hasMatchingLanguage,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
-        if (data.length === 1) {
-          router.push(`/chapter/${data[0].id}`);
-        } else {
-          setShowDialog(true);
-        }
-      },
-    },
-  );
+  useEffect(() => {
+    if (!shouldFetch || !chapters || chapters.length === 0) return;
+    if (chapters.length === 1) {
+      router.push(`/chapter/${chapters[0].id}`);
+    } else {
+      setShowDialog(true);
+    }
+  }, [shouldFetch, chapters, router]);
 
   const handleReadNow = () => {
     if (chapters && chapters.length > 0) {

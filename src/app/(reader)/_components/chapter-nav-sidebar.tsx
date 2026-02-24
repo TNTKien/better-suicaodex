@@ -56,7 +56,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 interface ChapterNavProps {
   chapter: Chapter;
@@ -298,20 +298,24 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
   const {
     data: chapterAggregate,
     isLoading,
-    isValidating,
+    isFetching: isValidating,
     error,
-    mutate,
-  } = useSWR(
-    [
+    refetch: mutate,
+  } = useQuery({
+    queryKey: [
       `chapter-aggregate-${chapter.id}`,
       chapter.manga.id,
       chapter.language,
       chapter.group.map((group) => group.id),
     ],
-    ([, mangaId, language, groups]) =>
-      getChapterAggregate(mangaId, [language], groups),
-    { revalidateOnFocus: false },
-  );
+    queryFn: () =>
+      getChapterAggregate(
+        chapter.manga.id,
+        [chapter.language],
+        chapter.group.map((group) => group.id),
+      ),
+    refetchOnWindowFocus: false,
+  });
 
   // Check if current chapter exists in the aggregate data
   const chapterExists = chapterAggregate?.some((volume) =>

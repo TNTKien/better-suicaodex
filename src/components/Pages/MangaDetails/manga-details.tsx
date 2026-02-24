@@ -29,7 +29,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { siteConfig } from "@/config/site";
 import { useConfig } from "@/hooks/use-config";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { fetchMangaDetail } from "@/lib/mangadex/manga";
 import { Artist, Author, Manga } from "@/types/types";
 import {
@@ -40,17 +39,15 @@ import {
   LibraryBig,
   List,
   MessageSquare,
-  Share2,
   Sprout,
   Square,
   SquareArrowOutUpRightIcon,
   SquareCheckBig,
 } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import MangaDetailsSkeleton from "./manga-details-skeleton";
-import { toast } from "sonner";
 import AddToLibraryBtn from "@/components/Manga/add-to-library-btn";
 import MangaCoversTab from "@/components/Manga/manga-covers-tab";
 import MangaSubInfo from "@/components/Manga/manga-subinfo";
@@ -74,7 +71,6 @@ interface MangaDetailsProps {
 }
 
 export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
-  const isMobile = useIsMobile();
   const [config, setConfig] = useConfig();
 
   const { count: cmtCount } = useCommentCount(id);
@@ -85,16 +81,18 @@ export default function MangaDetails({ id, initialData }: MangaDetailsProps) {
     data: manga,
     error,
     isLoading,
-  } = useSWR([`manga-${id}`, id], ([, id]) => fetchMangaDetail(id), {
-    fallbackData: initialData, // Use server data as initial value
-    revalidateOnMount: !initialData, // Only revalidate on mount if no initial data
-    refreshInterval: 1000 * 60 * 10,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
+  } = useQuery({
+    queryKey: [`manga-${id}`, id],
+    queryFn: () => fetchMangaDetail(id),
+    initialData: initialData,
+    refetchOnMount: !initialData,
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
-  if (error?.status === 404) return <MangaNotFound />;
-  if (error?.status === 503) return <MangaMaintain />;
+  if ((error as any)?.status === 404) return <MangaNotFound />;
+  if ((error as any)?.status === 503) return <MangaMaintain />;
 
   if (isLoading || !manga) return <MangaDetailsSkeleton />;
 
