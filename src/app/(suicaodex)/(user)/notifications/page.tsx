@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CircleHelp, MonitorCog, NotepadText } from "lucide-react";
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Notifications from "@/components/Notifications/notifications";
 
 interface pageProps {
@@ -82,7 +82,7 @@ export default async function Page({ searchParams }: pageProps) {
         </TabsContent>
         <TabsContent value="system">
           <Alert className="rounded-sm bg-secondary justify-center text-center">
-            Không có thông báo nào!
+            <AlertDescription className="text-center justify-items-center"> Không có thông báo nào!</AlertDescription>
           </Alert>
         </TabsContent>
       </Tabs>
