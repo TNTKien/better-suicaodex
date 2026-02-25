@@ -1,3 +1,5 @@
+export const MANGA_PAGE_TABS = ["chapters", "comments", "covers", "recommendations"] as const;
+
 export type Tag = {
   id: string;
   name: string;
