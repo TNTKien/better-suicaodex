@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', 'recharts'],
     // webpackMemoryOptimizations: true,
   },
+  // cacheComponents: true,
   images: {
     qualities: [25, 50, 75, 100],
     remotePatterns: [
