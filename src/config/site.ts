@@ -24,7 +24,8 @@ export const siteConfig = {
     apiURL: "https://api2.suicaodex.com", //pls use your own proxy server; or use built-in proxy, see /lib/axios.ts
   },
   weebdex: {
-    ogURL: "https://og.weebdex.org"
+    ogURL: "https://og.weebdex.org",
+    proxyURL: "https://wd.memaydex.online",
   }
 };
 
