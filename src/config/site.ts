@@ -23,6 +23,9 @@ export const siteConfig = {
     mato_domain: "https://mato.suicaodex.com",
     apiURL: "https://api2.suicaodex.com", //pls use your own proxy server; or use built-in proxy, see /lib/axios.ts
   },
+  weebdex: {
+    ogURL: "https://og.weebdex.org"
+  }
 };
 
 export type SiteConfig = typeof siteConfig;
