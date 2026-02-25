@@ -20,7 +20,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://suicaodex.com"),
-  title: siteConfig.name,
+  title: {
+    template: "%s - SuicaoDex",
+    default: siteConfig.name,
+  },
   description: siteConfig.description,
   openGraph: {
     type: "website",
