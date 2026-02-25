@@ -8,6 +8,7 @@ import { META_THEME_COLORS, siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ImageProxyInitializer } from "@/components/image-proxy-initializer";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const inter = Inter({
   preload: true,
@@ -71,22 +72,20 @@ export default function RootLayout({
       </head>
       {/* <body className={`${leagueSpartan.className} antialiased`}> */}
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          disableTransitionOnChange
-          enableColorScheme
-          enableSystem
-        >
-          <ImageProxyInitializer />
-          {children}
-          <Toaster
-            richColors
-            position="top-center"
-            closeButton
-          />
-          <ThemeSwitcher />
-        </ThemeProvider>
+        <NuqsAdapter>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+            enableColorScheme
+            enableSystem
+          >
+            <ImageProxyInitializer />
+            {children}
+            <Toaster richColors position="top-center" closeButton />
+            <ThemeSwitcher />
+          </ThemeProvider>
+        </NuqsAdapter>
       </body>
       <GoogleAnalytics gaId="G-GHG1HN9493" />
     </html>
