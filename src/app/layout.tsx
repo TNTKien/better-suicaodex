@@ -82,7 +82,7 @@ export default function RootLayout({
           >
             <ImageProxyInitializer />
             {children}
-            <Toaster richColors position="top-center" closeButton />
+            <Toaster richColors position="top-center" closeButton={false} />
             <ThemeSwitcher />
           </ThemeProvider>
         </NuqsAdapter>
