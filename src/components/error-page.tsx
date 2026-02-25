@@ -144,7 +144,7 @@ export default function ErrorPage({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.back()}
+            onClick={() => router.push("/")}
             className="gap-1 hover:bg-primary/10 hover:-translate-x-1 transition-all"
           >
             <ArrowLeft className="h-4 w-4" />
