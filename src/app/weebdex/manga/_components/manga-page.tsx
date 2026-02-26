@@ -27,6 +27,30 @@ import MangaCover from "./manga-cover";
 import { Author } from "@/lib/weebdex/model";
 import { useMemo } from "react";
 import MangaStats from "./manga-stats";
+import { MangaAddToLibBtn } from "./manga-add-to-lib-btn";
+import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group";
+import { Button } from "@/components/ui/button";
+import {
+  BookOpen,
+  Ellipsis,
+  Flag,
+  ImagesIcon,
+  List,
+  MessageSquare,
+  Sprout,
+  SquareArrowOutUpRight,
+} from "lucide-react";
+import { siteConfig } from "@/config/site";
+import { ContentRatingTag, NormalTag, StatusTag } from "./manga-tags";
+import MangaDescription from "./manga-description";
+import MangaSubInfo from "./manga-subinfo";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface PageProps {
   id: string;
@@ -116,6 +140,7 @@ export default function MangaPage({ id, initData, page, tab }: PageProps) {
               className="shadow-md drop-shadow-md"
               wrapper="w-[130px] md:w-[200px] h-auto"
               isExpandable
+              ext="512.webp"
             />
           </div>
 
@@ -200,67 +225,51 @@ export default function MangaPage({ id, initData, page, tab }: PageProps) {
               )}
             </div>
 
-            <div className="pt-[0.85rem] flex flex-col gap-4">
+            <div className="pt-[0.85rem] flex flex-col gap-[0.85rem]">
               <div className="flex flex-wrap gap-2">
-                {/* <AddToLibraryBtn manga={manga} /> */}
+                <MangaAddToLibBtn mangaId={id} />
 
                 {/* <MangaReadNowButton id={id} language={manga.language} /> */}
-
-                {/* <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      className="rounded-sm h-10 w-10"
-                      variant="secondary"
-                      size="icon"
-                    >
-                      <Ellipsis />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className={`theme-${config.theme}`}>
-                    <DropdownMenuItem>
-                      <Link
-                        href={`${siteConfig.mangadexAPI.webURL}/title/${manga.id}`}
-                        target="_blank"
-                        className="flex items-center gap-2"
-                      >
-                        <Archive size={18} />
-                        MangaDex
-                      </Link>
-                    </DropdownMenuItem>
-                    {!!manga.raw && (
-                      <DropdownMenuItem>
-                        <Link
-                          href={manga.raw}
-                          target="_blank"
-                          className="flex items-center gap-2"
-                        >
-                          <LibraryBig size={18} />
-                          Raw
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
-
-                    <DropdownMenuItem>
-                      <Link
-                        href={`${siteConfig.links.facebook}`}
-                        target="_blank"
-                        className="flex items-center gap-2"
-                      >
-                        <Bug size={18} />
-                        Báo lỗi
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu> */}
+                {/* TODO: Readnow Btn */}
+                <Button variant="secondary">
+                  <BookOpen />
+                  Đọc ngay
+                </Button>
+                <Button variant="secondary" asChild>
+                  <Link href={siteConfig.links.facebook} target="_blank">
+                    <Flag />
+                    Báo lỗi
+                  </Link>
+                </Button>
+                <Button variant="secondary" asChild>
+                  <Link
+                    href={`${siteConfig.weebdex.domain}/title/${id}`}
+                    target="_blank"
+                  >
+                    <SquareArrowOutUpRight />
+                    WeebDex
+                  </Link>
+                </Button>
               </div>
 
-              {/* <div className="flex flex-wrap gap-1">
-                <Tags
-                  tags={manga.tags}
-                  contentRating={manga.contentRating}
-                  status={manga.status}
-                />
-              </div> */}
+              <div className="flex flex-wrap gap-1">
+                {manga.status && (
+                  <StatusTag status={manga.status} isLink={true} />
+                )}
+                {manga.content_rating && (
+                  <ContentRatingTag
+                    rating={manga.content_rating}
+                    isLink={true}
+                  />
+                )}
+                {manga.relationships &&
+                  manga.relationships.tags &&
+                  manga.relationships.tags.map((tag) => (
+                    <NormalTag key={tag.id} className="uppercase">
+                      {tag.name}
+                    </NormalTag>
+                  ))}
+              </div>
 
               {!!manga.relationships && !!manga.relationships.stats && (
                 <MangaStats
@@ -270,6 +279,151 @@ export default function MangaPage({ id, initData, page, tab }: PageProps) {
                 />
               )}
             </div>
+          </div>
+        </div>
+
+        <div className="flex md:hidden flex-wrap gap-1">
+          {manga.status && <StatusTag status={manga.status} isLink={true} />}
+          {manga.content_rating && (
+            <ContentRatingTag rating={manga.content_rating} isLink={true} />
+          )}
+          {manga.relationships &&
+            manga.relationships.tags &&
+            manga.relationships.tags.map((tag) => (
+              <NormalTag key={tag.id} className="uppercase">
+                {tag.name}
+              </NormalTag>
+            ))}
+        </div>
+
+        <div className="flex md:hidden flex-wrap gap-2 w-full">
+          <MangaAddToLibBtn mangaId={id} />
+
+          <ButtonGroup className="flex-1">
+            <Button variant="secondary" className="flex-1">
+              <BookOpen />
+              Đọc ngay
+            </Button>
+
+            <ButtonGroupSeparator/>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="secondary" size="icon">
+                  <Ellipsis />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link href={siteConfig.links.facebook} target="_blank">
+                    <Flag />
+                    Báo lỗi
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`${siteConfig.weebdex.domain}/title/${id}`}
+                    target="_blank"
+                  >
+                    <SquareArrowOutUpRight />
+                    WeebDex
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>
+        </div>
+
+        <MangaDescription
+          content={manga.description || ""}
+          maxHeight={160}
+          manga={manga}
+        />
+
+        <div className="flex flex-row gap-4 w-full">
+          <div className="hidden xl:block pt-2 min-w-[25%] max-w-[400px]">
+            <MangaSubInfo manga={manga} />
+          </div>
+
+          <div className="w-full">
+            <Tabs
+              defaultValue={currentTab}
+              onValueChange={(value) =>
+                setCurrentTab(value as (typeof MANGA_PAGE_TABS)[number])
+              }
+            >
+              <div className="relative overflow-x-auto h-12">
+                <TabsList className="absolute ">
+                  <TabsTrigger value="chapters" className="flex gap-1 px-2">
+                    <List size={18} />
+                    Danh sách chương
+                  </TabsTrigger>
+                  <TabsTrigger value="comments" className="flex gap-1 px-2">
+                    <MessageSquare size={18} />
+                    Bình luận
+                    {/* {!!cmtCount && cmtCount > 0 && (
+                      <span>({cmtCount.toLocaleString("en-US")})</span>
+                    )} */}
+                  </TabsTrigger>
+
+                  <TabsTrigger value="covers" className="flex gap-1 px-2">
+                    <ImagesIcon size={18} />
+                    Ảnh bìa
+                  </TabsTrigger>
+
+                  <TabsTrigger
+                    value="recommendations"
+                    className="flex gap-1 px-2"
+                  >
+                    <Sprout size={18} />
+                    Có thể bạn sẽ thích
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="chapters" className="mt-0">
+                {/* <Button
+                  variant="ghost"
+                  className="px-0! hover:bg-transparent! text-base [&_svg]:size-5 whitespace-normal!"
+                  size="lg"
+                  onClick={() => setShowHiddenChapters(!showHiddenChapters)}
+                >
+                  {showHiddenChapters ? (
+                    <SquareCheckBig className="text-primary" strokeWidth={3} />
+                  ) : (
+                    <Square strokeWidth={3} />
+                  )}
+                  <span className="break-all! line-clamp-1">
+                    Hiển thị các chương ẩn (nếu có)
+                  </span>
+                </Button>
+
+                <ChapterList
+                  language={config.translatedLanguage}
+                  limit={100}
+                  mangaID={manga.id}
+                  finalChapter={manga.finalChapter}
+                  r18={config.r18}
+                  showUnavailable={showHiddenChapters}
+                /> */}
+              </TabsContent>
+
+              <TabsContent value="comments" className="mt-0">
+                {/* <CommentSection
+                  id={manga.id}
+                  type="manga"
+                  title={manga.title}
+                /> */}
+              </TabsContent>
+
+              <TabsContent value="covers" className="mt-0">
+                {/* <MangaCoversTab id={manga.id} /> */}
+              </TabsContent>
+
+              <TabsContent value="recommendations" className="mt-0">
+                {/* <MangaRecommendations id={manga.id} /> */}
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
