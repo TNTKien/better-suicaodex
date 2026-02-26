@@ -53,3 +53,8 @@ export const generateJsonLd = (manga: Manga) => {
     },
   };
 };
+
+const GOOGLE_API_FAVICON = "https://www.google.com/s2/favicons";
+export const generateFaviconURL = (site: string, size: number) => {
+  return `${GOOGLE_API_FAVICON}?sz=${size}&domain=${site}`;
+};
