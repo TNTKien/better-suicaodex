@@ -103,7 +103,7 @@ export function StatusTag({ status, isLink = false }: StatusTagProps) {
       {isLink ? (
         <a
           href={`/advanced-search?status=${status}`}
-          className="hover:underline"
+          // className="hover:underline"
         >
           {status}
         </a>
