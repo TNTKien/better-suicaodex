@@ -58,6 +58,7 @@ export default function MangaCover({
 
   const cover_ext = ext ? `.${ext}` : cover.ext || ".webp";
   const cover_url = `${siteConfig.weebdex.proxyURL}/covers/${manga_id}/${cover.id}${cover_ext}`;
+  const cover_full = `${siteConfig.weebdex.proxyURL}/covers/${manga_id}/${cover.id}${cover.ext}`;
 
   return (
     <div className="relative">
@@ -67,7 +68,7 @@ export default function MangaCover({
             <Expand size={50} color="white" />
           </DialogTrigger>
 
-          <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto rounded-none! justify-center">
+          <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto rounded-none! justify-center sm:max-w-full">
             <DialogTitle className="hidden"></DialogTitle>
             <DialogDescription className="hidden"></DialogDescription>
 
@@ -77,7 +78,7 @@ export default function MangaCover({
                 <Loader2 className="animate-spin" size={50} />
               </div>
               <img
-                src={cover_url}
+                src={cover_full}
                 alt={`Ảnh bìa ${alt}`}
                 className="max-h-full max-w-full object-cover z-20"
                 fetchPriority="high"
