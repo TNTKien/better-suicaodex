@@ -16,7 +16,7 @@ export const siteConfig = {
     ogURL: "https://og.mangadex.org/og-image",
     staffPickList: "805ba886-dd99-4aa4-b460-4bd7c7b71352",
     seasonalList: "68ab4f4e-6f01-4898-9038-c5eee066be27",
-    matoSeiheiID:"e1e38166-20e4-4468-9370-187f985c550e",
+    matoSeiheiID: "e1e38166-20e4-4468-9370-187f985c550e",
   },
   suicaodex: {
     domain: "https://suicaodex.com",
@@ -24,9 +24,10 @@ export const siteConfig = {
     apiURL: "https://api2.suicaodex.com", //pls use your own proxy server; or use built-in proxy, see /lib/axios.ts
   },
   weebdex: {
+    domain: "https://weebdex.org",
     ogURL: "https://og.weebdex.org",
     proxyURL: "https://wd.memaydex.online",
-  }
+  },
 };
 
 export type SiteConfig = typeof siteConfig;
