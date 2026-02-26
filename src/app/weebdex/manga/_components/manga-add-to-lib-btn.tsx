@@ -221,12 +221,12 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
     <ButtonGroup>
       <DropdownMenu>
         <DropdownMenuTrigger asChild disabled={isLoading}>
-          <Button>
+          <Button className="w-9 md:w-auto">
             {currentCategory?.icon}
             <span className="hidden md:inline">
               {currentCategory?.btnLabel}
             </span>
-            <ChevronDown className="size-3.5" />
+            <ChevronDown className="size-3.5 hidden md:inline" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="space-y-1">
@@ -262,12 +262,12 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
         <DropdownMenuTrigger asChild disabled={isLoading || isFetchingAccount}>
           <Button
             variant="secondary"
-            className="px-3 gap-2 font-semibold rounded-l-none"
+            size="icon"
           >
             {isFetchingAccount ? <Spinner /> : <>{currentStorage?.icon}</>}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="space-y-1">
+        <DropdownMenuContent align="start" className="space-y-1">
           {storageModeOptions.map((option) => (
             <DropdownMenuItem
               key={option.value}
