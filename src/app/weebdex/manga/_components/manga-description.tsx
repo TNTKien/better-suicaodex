@@ -76,7 +76,7 @@ export default function MangaDescription({
         <div ref={contentRef}>
           {!!content && (
             <ReactMarkdown
-              className="flex flex-col gap-3 text-balance"
+              className="flex flex-col gap-3 text-pretty"
               remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
               components={{
                 a: ({ href, children }) => (
