@@ -25,6 +25,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { useIsMounted } from "usehooks-ts";
 
 const LIMIT = 100;
 
@@ -89,6 +90,7 @@ export function MangaChaptersList({
   const setCurrentPage = onPageChange;
   const [volumes, setVolumes] = useState<VolumeGroup[]>([]);
   const [totalPages, setTotalPages] = useState(0);
+  const isMounted = useIsMounted();
 
   const params: GetMangaIdChaptersParams = {
     limit: LIMIT,
@@ -97,6 +99,7 @@ export function MangaChaptersList({
   };
 
   const { data, error, isLoading } = useQuery<getMangaIdChaptersResponse>({
+    enabled: isMounted(),
     queryKey: [
       `weebdex-chapters-${mangaId}`,
       mangaId,
@@ -128,7 +131,7 @@ export function MangaChaptersList({
     }
   }, [data]);
 
-  if (isLoading)
+  if (!isMounted() || isLoading)
     return (
       <div className="flex justify-center items-center w-full h-16">
         <Loader2 className="animate-spin w-8 h-8" />
