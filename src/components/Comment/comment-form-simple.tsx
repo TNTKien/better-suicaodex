@@ -24,7 +24,7 @@ import { Spinner } from "../ui/spinner";
 const FormSchema = z.object({
   comment: z
     .string()
-    .min(1, { message: "Bình luận phải dài ít nhất 1 ký tự!" })
+    .min(3, { message: "Bình luận phải dài ít nhất 3 ký tự!" })
     .max(2000, { message: "Bình luận không được dài hơn 2000 ký tự!" }),
 });
 
