@@ -125,7 +125,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
       </div>
 
       {altTitles.length > 0 && (
-        <Collapsible className="w-full">
+        <Collapsible className="w-full" defaultOpen={altTitles.length <= 5}>
           <CollapsibleTrigger asChild>
             <Button
               variant="ghost"
