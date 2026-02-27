@@ -57,6 +57,7 @@ import {
 import { MangaChaptersList } from "./chapters-list/manga-chapters-list";
 import CommentSection from "@/components/Comment/comment-section";
 import MangaCoversTab from "./manga-covers-tab";
+import MangaRcms from "./manga-rcms";
 
 interface PageProps {
   id: string;
@@ -408,7 +409,7 @@ export default function MangaPage({ id, initData }: PageProps) {
               </TabsContent>
 
               <TabsContent value="recommendations" className="mt-0">
-                {/* <MangaRecommendations id={manga.id} /> */}
+                <MangaRcms id={id} />
               </TabsContent>
             </Tabs>
           </div>
