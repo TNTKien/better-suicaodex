@@ -5,11 +5,7 @@ import { getMangaIdChaptersResponse } from "@/lib/weebdex/hooks/chapter/chapter"
 import { GetMangaIdChaptersParams } from "@/lib/weebdex/model/getMangaIdChaptersParams";
 import { Chapter } from "@/lib/weebdex/model";
 import { useEffect, useState } from "react";
-import {
-  BugIcon,
-  ListX,
-  Loader2,
-} from "lucide-react";
+import { BugIcon, ListX, Loader2 } from "lucide-react";
 import { useConfig } from "@/hooks/use-config";
 import {
   Pagination,
