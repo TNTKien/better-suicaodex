@@ -93,6 +93,7 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
     "none",
   );
   const [isFetchingAccount, setIsFetchingAccount] = useState(false);
+  const [hasFetchedAccount, setHasFetchedAccount] = useState(false);
 
   const {
     localLibrary,
@@ -121,19 +122,21 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
     setIsNotificationEnabled(isInLocalNotification(mangaId));
   }, [mangaId, localNotification]);
 
-  // Fetch account category on mount or when session/mangaId changes
-  useEffect(() => {
+  const value = storageMode === "local" ? localValue : accountValue;
+
+  const fetchAccountCategory = async () => {
     if (!session?.user?.id) return;
     setIsFetchingAccount(true);
-    getMangaCategory(session.user.id, mangaId)
-      .then((cat) => {
-        setAccountValue((cat.toLowerCase() as LibraryType | "none") ?? "none");
-      })
-      .catch(() => setAccountValue("none"))
-      .finally(() => setIsFetchingAccount(false));
-  }, [mangaId, session?.user?.id]);
-
-  const value = storageMode === "local" ? localValue : accountValue;
+    try {
+      const cat = await getMangaCategory(session.user.id, mangaId);
+      setAccountValue((cat.toLowerCase() as LibraryType | "none") ?? "none");
+      setHasFetchedAccount(true);
+    } catch {
+      setAccountValue("none");
+    } finally {
+      setIsFetchingAccount(false);
+    }
+  };
 
   const handleLocalNotificationToggle = (
     v: LibraryType | "none",
@@ -193,12 +196,15 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
     }
   };
 
-  const handleStorageModeChange = (mode: StorageMode) => {
+  const handleStorageModeChange = async (mode: StorageMode) => {
     if (mode === "account" && !session?.user?.id) {
       toast.info("Bạn cần đăng nhập để sử dụng chức năng này!");
       return;
     }
     setStorageMode(mode);
+    if (mode === "account" && !hasFetchedAccount) {
+      await fetchAccountCategory();
+    }
   };
 
   const handleBellToggle = () => {
@@ -260,10 +266,7 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild disabled={isLoading || isFetchingAccount}>
-          <Button
-            variant="secondary"
-            size="icon"
-          >
+          <Button variant="secondary" size="icon">
             {isFetchingAccount ? <Spinner /> : <>{currentStorage?.icon}</>}
           </Button>
         </DropdownMenuTrigger>
