@@ -1,7 +1,9 @@
 import { MANGA_PAGE_TABS } from "@/types/types";
-import { createLoader, parseAsInteger, parseAsStringLiteral } from "nuqs/server";
-
-
+import {
+  createLoader,
+  parseAsInteger,
+  parseAsStringLiteral,
+} from "nuqs/server";
 
 export const mangaSearchParams = {
   page: parseAsInteger.withDefault(1),
