@@ -73,5 +73,5 @@ export default async function Page({ params, searchParams }: PageProps) {
     return <ErrorPage statusCode={res.status} />;
   }
 
-  return <MangaPage id={id} initData={res}  />;
+  return <MangaPage id={id} initData={res} />;
 }
