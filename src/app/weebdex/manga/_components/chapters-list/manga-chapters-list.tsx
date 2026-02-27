@@ -74,14 +74,19 @@ function groupChaptersByVolume(chapters: Chapter[]): VolumeGroup[] {
 interface MangaChaptersListProps {
   mangaId: string;
   finalChapter?: string;
+  page: number;
+  onPageChange: (page: number) => void;
 }
 
 export function MangaChaptersList({
   mangaId,
   finalChapter,
+  page,
+  onPageChange,
 }: MangaChaptersListProps) {
   const [config] = useConfig();
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentPage = page;
+  const setCurrentPage = onPageChange;
   const [volumes, setVolumes] = useState<VolumeGroup[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -178,7 +183,7 @@ export function MangaChaptersList({
           <PaginationContent>
             <PaginationPrevious
               className="w-8 h-8"
-              onClick={() => setCurrentPage((prev) => prev - 1)}
+              onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
             />
 
@@ -242,7 +247,7 @@ export function MangaChaptersList({
 
             <PaginationNext
               className="w-8 h-8"
-              onClick={() => setCurrentPage((prev) => prev + 1)}
+              onClick={() => setCurrentPage(currentPage + 1)}
               disabled={currentPage === totalPages}
             />
           </PaginationContent>
