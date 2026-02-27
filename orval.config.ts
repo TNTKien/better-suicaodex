@@ -13,7 +13,7 @@ export default defineConfig({
       prettier: true,
     },
     input: {
-      target: './src/lib/weebdex/docs/weebdex-api-docs-v3.json'
+      target: './src/lib/weebdex/docs/weebdex-api-docs-v3.json',
     },
   },
 });
