@@ -34,7 +34,6 @@ import {
 } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
 import {
-  BookOpen,
   Ellipsis,
   Flag,
   ImagesIcon,
@@ -60,6 +59,7 @@ import CommentSection from "@/components/Comment/comment-section";
 import MangaCoversTab from "./manga-covers-tab";
 import MangaRcms from "./manga-rcms";
 import MangaRelated from "./manga-related";
+import MangaReadNowBtn from "./manga-readnow-btn";
 
 interface PageProps {
   id: string;
@@ -240,12 +240,7 @@ export default function MangaPage({ id, initData }: PageProps) {
               <div className="flex flex-wrap gap-2">
                 <MangaAddToLibBtn mangaId={id} />
 
-                {/* <MangaReadNowButton id={id} language={manga.language} /> */}
-                {/* TODO: Readnow Btn */}
-                <Button variant="secondary">
-                  <BookOpen />
-                  Đọc ngay
-                </Button>
+                <MangaReadNowBtn id={id} />
                 <Button variant="secondary" asChild>
                   <Link href={siteConfig.links.facebook} target="_blank">
                     <Flag />
@@ -311,10 +306,7 @@ export default function MangaPage({ id, initData }: PageProps) {
           <MangaAddToLibBtn mangaId={id} />
 
           <ButtonGroup className="flex-1">
-            <Button variant="secondary" className="flex-1">
-              <BookOpen />
-              Đọc ngay
-            </Button>
+            <MangaReadNowBtn id={id} />
 
             <ButtonGroupSeparator />
 
