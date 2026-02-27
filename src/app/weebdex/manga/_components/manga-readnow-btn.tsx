@@ -19,26 +19,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SingleCard } from "./chapters-list/chapter-card";
-import { siteConfig } from "@/config/site";
+import {
+  getMangaIdAggregate,
+  getMangaIdChapters,
+} from "@/lib/weebdex/hooks/chapter/chapter";
 
 interface MangaReadNowBtnProps {
   id: string;
-}
-
-function buildUrl(
-  base: string,
-  params: Record<string, string | string[] | number | undefined>,
-): string {
-  const url = new URL(base);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (Array.isArray(value)) {
-      value.forEach((v) => url.searchParams.append(key, v));
-    } else {
-      url.searchParams.append(key, String(value));
-    }
-  });
-  return url.toString();
 }
 
 //TODO: check history after
@@ -55,16 +42,11 @@ export function MangaReadNowBtn({ id }: MangaReadNowBtnProps) {
     queryKey: [`wd-readnow-${id}`, config.translatedLanguage],
     queryFn: async (): Promise<Chapter[]> => {
       // Fetch aggregate to find the first (oldest) chapter number
-      const aggregateUrl = buildUrl(
-        `${siteConfig.weebdex.proxyURL}/manga/${id}/aggregate`,
-        { tlang: config.translatedLanguage },
-      );
-      const aggregateRes = await fetch(aggregateUrl);
-      if (!aggregateRes.ok) return [];
-      const aggregateData = (await aggregateRes.json()) as {
-        chapters?: { chapter?: string; volume?: string }[];
-      };
-      const aggregateChapters = aggregateData.chapters ?? [];
+      const aggregateRes = await getMangaIdAggregate(id, {
+        tlang: config.translatedLanguage,
+      });
+      if (aggregateRes.status !== 200) return [];
+      const aggregateChapters = aggregateRes.data.chapters ?? [];
       if (aggregateChapters.length === 0) return [];
 
       // Find the oldest chapter (first by chapter number ascending)
@@ -80,19 +62,14 @@ export function MangaReadNowBtn({ id }: MangaReadNowBtnProps) {
       const oldestChapterNum = sorted[0]?.chapter ?? null;
 
       // Fetch chapters sorted ascending, filtered by language
-      const chaptersUrl = buildUrl(
-        `${siteConfig.weebdex.proxyURL}/manga/${id}/chapters`,
-        {
-          tlang: config.translatedLanguage,
-          order: GetMangaIdChaptersOrder.asc,
-          sort: GetMangaIdChaptersSort.name,
-          limit: 20,
-        },
-      );
-      const chaptersRes = await fetch(chaptersUrl);
-      if (!chaptersRes.ok) return [];
-      const chaptersData = (await chaptersRes.json()) as { data?: Chapter[] };
-      const allChapters = chaptersData.data ?? [];
+      const chaptersRes = await getMangaIdChapters(id, {
+        tlang: config.translatedLanguage,
+        order: GetMangaIdChaptersOrder.asc,
+        sort: GetMangaIdChaptersSort.name,
+        limit: 20,
+      });
+      if (chaptersRes.status !== 200) return [];
+      const allChapters = chaptersRes.data.data ?? [];
 
       if (allChapters.length === 0) return [];
 

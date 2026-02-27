@@ -1,7 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getMangaIdChaptersResponse } from "@/lib/weebdex/hooks/chapter/chapter";
+import {
+  getMangaIdChapters,
+  getMangaIdChaptersResponse,
+} from "@/lib/weebdex/hooks/chapter/chapter";
 import { GetMangaIdChaptersParams } from "@/lib/weebdex/model/getMangaIdChaptersParams";
 import { Chapter } from "@/lib/weebdex/model";
 import { useEffect, useState } from "react";
@@ -26,25 +29,8 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { useIsMounted } from "usehooks-ts";
-import { siteConfig } from "@/config/site";
 
 const LIMIT = 100;
-
-function buildChaptersUrl(
-  id: string,
-  params: GetMangaIdChaptersParams,
-): string {
-  const url = new URL(`${siteConfig.weebdex.proxyURL}/manga/${id}/chapters`);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (Array.isArray(value)) {
-      value.forEach((v) => url.searchParams.append(key, String(v)));
-    } else {
-      url.searchParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-  return url.toString();
-}
 
 function groupChaptersByVolume(chapters: Chapter[]): VolumeGroup[] {
   // Group by volume, preserving insertion order from the sorted API response
@@ -107,19 +93,7 @@ export function MangaChaptersList({
       currentPage,
       config.translatedLanguage,
     ],
-    queryFn: async ({ signal }) => {
-      const url = buildChaptersUrl(mangaId, params);
-      const res = await fetch(url, { signal });
-      const body = [204, 205, 304].includes(res.status)
-        ? null
-        : await res.text();
-      const responseData = body ? JSON.parse(body) : {};
-      return {
-        data: responseData,
-        status: res.status,
-        headers: res.headers,
-      } as getMangaIdChaptersResponse;
-    },
+    queryFn: ({ signal }) => getMangaIdChapters(mangaId, params, { signal }),
     refetchInterval: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
