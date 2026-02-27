@@ -26,6 +26,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { useIsMounted } from "usehooks-ts";
+import { siteConfig } from "@/config/site";
 
 const LIMIT = 100;
 
@@ -33,7 +34,7 @@ function buildChaptersUrl(
   id: string,
   params: GetMangaIdChaptersParams,
 ): string {
-  const url = new URL(`https://wd.memaydex.online/manga/${id}/chapters`);
+  const url = new URL(`${siteConfig.weebdex.proxyURL}/manga/${id}/chapters`);
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined) return;
     if (Array.isArray(value)) {
