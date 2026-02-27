@@ -73,7 +73,16 @@ export const getGetMangaUrl = (params?: GetMangaParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
@@ -886,7 +895,16 @@ export const getGetMangaDraftUrl = (params?: GetMangaDraftParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
@@ -1445,7 +1463,16 @@ export const getGetMangaRandomUrl = (params?: GetMangaRandomParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
@@ -1641,7 +1668,16 @@ export const getGetMangaTopUrl = (params?: GetMangaTopParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 

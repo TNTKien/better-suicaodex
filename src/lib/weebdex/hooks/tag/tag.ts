@@ -60,7 +60,16 @@ export const getGetMangaTagUrl = (params?: GetMangaTagParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 

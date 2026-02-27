@@ -75,7 +75,16 @@ export const getGetChapterUrl = (params?: GetChapterParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
@@ -271,7 +280,16 @@ export const getGetChapterFeedUrl = (params?: GetChapterFeedParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
@@ -467,7 +485,16 @@ export const getGetChapterTopUrl = (params?: GetChapterTopParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
@@ -664,7 +691,16 @@ export const getGetChapterUpdatesUrl = (params?: GetChapterUpdatesParams) => {
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
@@ -1360,7 +1396,16 @@ export const getGetMangaIdAggregateUrl = (
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
@@ -1604,7 +1649,16 @@ export const getGetMangaIdChaptersUrl = (
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      if (Array.isArray(value)) {
+        value.forEach((v) =>
+          normalizedParams.append(key, v === null ? "null" : String(v)),
+        );
+      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : value.toString(),
+        );
+      }
     }
   });
 
