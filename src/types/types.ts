@@ -1,4 +1,4 @@
-export const MANGA_PAGE_TABS = ["chapters", "comments", "covers", "recommendations"] as const;
+export const MANGA_PAGE_TABS = ["chapters", "comments", "covers", "recommendations", "related"] as const;
 export const MANGA_COVER_EXT = ["jpg", "png", "webp", "gif", "256.webp", "512.webp"] as const;
 
 export type Tag = {

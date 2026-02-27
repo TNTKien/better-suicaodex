@@ -1,5 +1,5 @@
 import { siteConfig } from "@/config/site";
-import { Manga } from "./model";
+import { Manga, Relation } from "./model";
 import { generateSlug } from "../utils";
 
 /**
@@ -29,6 +29,32 @@ export const parseMangaTitle = (
 
   const altTitles =
     viTitle && manga.title ? [manga.title, ...altTitlesRaw] : altTitlesRaw;
+
+  return { title, altTitles };
+};
+
+export const parseRelationTitle = (
+  rel: Relation,
+): {
+  title: string;
+  altTitles: string[];
+} => {
+  const viTitle = rel.alt_titles?.["vi"]?.[0];
+  const title = viTitle ?? rel.title ?? "";
+
+  const langPriority = (lang: string) => {
+    if (lang === "en") return 0;
+    if (lang === "ja") return 1;
+    return 2;
+  };
+
+  const altTitlesRaw = Object.entries(rel.alt_titles ?? {})
+    .filter(([lang]) => lang !== "vi")
+    .sort(([a], [b]) => langPriority(a) - langPriority(b))
+    .flatMap(([, values]) => values);
+
+  const altTitles =
+    viTitle && rel.title ? [rel.title, ...altTitlesRaw] : altTitlesRaw;
 
   return { title, altTitles };
 };

@@ -38,6 +38,7 @@ import {
   Ellipsis,
   Flag,
   ImagesIcon,
+  LinkIcon,
   List,
   MessageSquare,
   Sprout,
@@ -58,6 +59,7 @@ import { MangaChaptersList } from "./chapters-list/manga-chapters-list";
 import CommentSection from "@/components/Comment/comment-section";
 import MangaCoversTab from "./manga-covers-tab";
 import MangaRcms from "./manga-rcms";
+import MangaRelated from "./manga-related";
 
 interface PageProps {
   id: string;
@@ -377,6 +379,14 @@ export default function MangaPage({ id, initData }: PageProps) {
                     Ảnh bìa
                   </TabsTrigger>
 
+                  {!!manga.relationships?.relations &&
+                    manga.relationships.relations.length > 0 && (
+                      <TabsTrigger value="related" className="flex gap-1 px-2">
+                        <LinkIcon size={18} />
+                        Truyện liên quan
+                      </TabsTrigger>
+                    )}
+
                   <TabsTrigger
                     value="recommendations"
                     className="flex gap-1 px-2"
@@ -407,6 +417,13 @@ export default function MangaPage({ id, initData }: PageProps) {
               <TabsContent value="covers" className="mt-0">
                 <MangaCoversTab id={id} />
               </TabsContent>
+
+              {!!manga.relationships?.relations &&
+                manga.relationships.relations.length > 0 && (
+                  <TabsContent value="related" className="mt-0">
+                    <MangaRelated relations={manga.relationships.relations} />
+                  </TabsContent>
+                )}
 
               <TabsContent value="recommendations" className="mt-0">
                 <MangaRcms id={id} />
