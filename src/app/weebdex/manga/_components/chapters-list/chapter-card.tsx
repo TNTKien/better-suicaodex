@@ -147,7 +147,6 @@ export const SingleCard = ({
         )}
       </div>
 
-      {/* Row 2: groups (left) | uploader (right) */}
       <div className="flex items-center gap-2">
         <div className="flex flex-auto items-center space-x-1 min-w-0">
           <Users size={16} className="shrink-0" />

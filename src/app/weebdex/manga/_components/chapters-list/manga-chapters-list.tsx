@@ -4,11 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getMangaIdChaptersResponse } from "@/lib/weebdex/hooks/chapter/chapter";
 import { GetMangaIdChaptersParams } from "@/lib/weebdex/model/getMangaIdChaptersParams";
 import { Chapter } from "@/lib/weebdex/model";
-import { GetMangaIdChaptersSort } from "@/lib/weebdex/model/getMangaIdChaptersSort";
-import { GetMangaIdChaptersOrder } from "@/lib/weebdex/model/getMangaIdChaptersOrder";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
-import { Alert, AlertTitle } from "@/components/ui/alert";
+import {
+  BugIcon,
+  ListX,
+  Loader2,
+} from "lucide-react";
 import { useConfig } from "@/hooks/use-config";
 import {
   Pagination,
@@ -21,10 +22,20 @@ import {
 } from "@/components/ui/pagination";
 import { VolumeCard, VolumeGroup } from "./volume-card";
 import { ChapterGroup } from "./chapter-card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 const LIMIT = 100;
 
-function buildChaptersUrl(id: string, params: GetMangaIdChaptersParams): string {
+function buildChaptersUrl(
+  id: string,
+  params: GetMangaIdChaptersParams,
+): string {
   const url = new URL(`https://wd.memaydex.online/manga/${id}/chapters`);
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined) return;
@@ -94,9 +105,15 @@ export function MangaChaptersList({
     queryFn: async ({ signal }) => {
       const url = buildChaptersUrl(mangaId, params);
       const res = await fetch(url, { signal });
-      const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+      const body = [204, 205, 304].includes(res.status)
+        ? null
+        : await res.text();
       const responseData = body ? JSON.parse(body) : {};
-      return { data: responseData, status: res.status, headers: res.headers } as getMangaIdChaptersResponse;
+      return {
+        data: responseData,
+        status: res.status,
+        headers: res.headers,
+      } as getMangaIdChaptersResponse;
     },
     refetchInterval: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
@@ -119,20 +136,33 @@ export function MangaChaptersList({
 
   if (error || (data && data.status !== 200))
     return (
-      <Alert className="rounded-sm justify-center text-center mt-4">
-        <AlertTitle className="font-semibold">
-          Có lỗi xảy ra, vui lòng thử lại sau!
-        </AlertTitle>
-      </Alert>
+      <Empty className="bg-muted/30 h-full mt-2">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <BugIcon />
+          </EmptyMedia>
+          <EmptyTitle>Lỗi mất rồi 🤪</EmptyTitle>
+          <EmptyDescription className="max-w-xs text-pretty">
+            Có lỗi xảy ra, thử F5 xem sao nhé
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
 
   if (!data?.data?.data || data.data.data.length === 0)
     return (
-      <Alert className="rounded-sm justify-center text-center mt-4">
-        <AlertTitle className="font-semibold">
-          Truyện này chưa có chương nào!
-        </AlertTitle>
-      </Alert>
+      <Empty className="bg-muted/30 h-full mt-2">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <ListX />
+          </EmptyMedia>
+          <EmptyTitle>Không tìm thấy chương nào</EmptyTitle>
+          <EmptyDescription className="max-w-xs text-pretty">
+            Truyện này chưa có chương hoặc không có chương khớp với ngôn ngữ bạn
+            chọn
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
 
   return (
