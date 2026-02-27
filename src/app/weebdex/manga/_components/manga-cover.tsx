@@ -68,7 +68,7 @@ export default function MangaCover({
             <Expand size={50} color="white" />
           </DialogTrigger>
 
-          <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto rounded-none! justify-center sm:max-w-full">
+          <DialogContent className="[&>button]:hidden bg-transparent border-none border-0 shadow-none p-0 w-full h-auto rounded-none! justify-center sm:max-w-full ring-0!">
             <DialogTitle className="hidden"></DialogTitle>
             <DialogDescription className="hidden"></DialogDescription>
 

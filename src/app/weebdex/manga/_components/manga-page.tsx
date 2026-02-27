@@ -56,6 +56,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MangaChaptersList } from "./chapters-list/manga-chapters-list";
 import CommentSection from "@/components/Comment/comment-section";
+import MangaCoversTab from "./manga-covers-tab";
 
 interface PageProps {
   id: string;
@@ -403,7 +404,7 @@ export default function MangaPage({ id, initData }: PageProps) {
               </TabsContent>
 
               <TabsContent value="covers" className="mt-0">
-                {/* <MangaCoversTab id={manga.id} /> */}
+                <MangaCoversTab id={id} />
               </TabsContent>
 
               <TabsContent value="recommendations" className="mt-0">
