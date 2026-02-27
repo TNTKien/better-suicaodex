@@ -54,8 +54,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import CommentSection from "@/components/Comment/comment-section";
 import { MangaChaptersList } from "./chapters-list/manga-chapters-list";
+import CommentSection from "@/components/Comment/comment-section";
 
 interface PageProps {
   id: string;
@@ -368,9 +368,6 @@ export default function MangaPage({ id, initData }: PageProps) {
                   <TabsTrigger value="comments" className="flex gap-1 px-2">
                     <MessageSquare size={18} />
                     Bình luận
-                    {/* {!!cmtCount && cmtCount > 0 && (
-                      <span>({cmtCount.toLocaleString("en-US")})</span>
-                    )} */}
                   </TabsTrigger>
 
                   <TabsTrigger value="covers" className="flex gap-1 px-2">
@@ -398,11 +395,11 @@ export default function MangaPage({ id, initData }: PageProps) {
               </TabsContent>
 
               <TabsContent value="comments" className="mt-0">
-                {/* <CommentSection
+                <CommentSection
                   id={id}
                   type="manga"
                   title={title}
-                /> */}
+                />
               </TabsContent>
 
               <TabsContent value="covers" className="mt-0">

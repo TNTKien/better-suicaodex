@@ -3,7 +3,7 @@
 import CommentList from "./comment-list";
 import CommentFormSimple from "./comment-form-simple"; // New simple form with stickers
 import { useRef } from "react";
-import { useCommentCount } from "@/hooks/use-comment-count";
+// import { useCommentCount } from "@/hooks/use-comment-count";
 
 interface CommentSectionProps {
   id: string;
@@ -22,16 +22,16 @@ export default function CommentSection({
   const commentListRef = useRef<{ mutate: () => void } | null>(null);
 
   // Always call the hook unconditionally
-  const commentCount = useCommentCount(type === "manga" ? id : "");
+  // const commentCount = useCommentCount(type === "manga" ? id : "");
 
   const handleCommentPosted = () => {
     // Call the mutate function from the CommentList component to refresh data
     if (commentListRef.current) {
       commentListRef.current.mutate();
     }
-    if (type === "manga") {
-      commentCount.refresh();
-    }
+    // if (type === "manga") {
+    //   commentCount.refresh();
+    // }
   };
 
   return (
