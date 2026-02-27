@@ -28,7 +28,10 @@ import { Author } from "@/lib/weebdex/model";
 import { useMemo } from "react";
 import MangaStats from "./manga-stats";
 import { MangaAddToLibBtn } from "./manga-add-to-lib-btn";
-import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group";
+import {
+  ButtonGroup,
+  ButtonGroupSeparator,
+} from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
 import {
   BookOpen,
@@ -51,22 +54,26 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+// import CommentSection from "@/components/Comment/comment-section";
+import { MangaChaptersList } from "./chapters-list/manga-chapters-list";
 
 interface PageProps {
   id: string;
-  page: number;
-  tab: (typeof MANGA_PAGE_TABS)[number];
+  // page: number;
+  // tab: (typeof MANGA_PAGE_TABS)[number];
   initData?: getMangaIdResponse;
 }
 
-export default function MangaPage({ id, initData, page, tab }: PageProps) {
+export default function MangaPage({ id, initData }: PageProps) {
   const [currentPage, setCurrentPage] = useQueryState(
     "page",
-    parseAsInteger.withDefault(page),
+    parseAsInteger.withDefault(1),
   );
+  if(currentPage < 1) setCurrentPage(1);
+
   const [currentTab, setCurrentTab] = useQueryState(
     "tab",
-    parseAsStringLiteral(MANGA_PAGE_TABS).withDefault(tab),
+    parseAsStringLiteral(MANGA_PAGE_TABS).withDefault("chapters"),
   );
   const [config, setConfig] = useConfig();
 
@@ -305,7 +312,7 @@ export default function MangaPage({ id, initData, page, tab }: PageProps) {
               Đọc ngay
             </Button>
 
-            <ButtonGroupSeparator/>
+            <ButtonGroupSeparator />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -382,37 +389,19 @@ export default function MangaPage({ id, initData, page, tab }: PageProps) {
               </div>
 
               <TabsContent value="chapters" className="mt-0">
-                {/* <Button
-                  variant="ghost"
-                  className="px-0! hover:bg-transparent! text-base [&_svg]:size-5 whitespace-normal!"
-                  size="lg"
-                  onClick={() => setShowHiddenChapters(!showHiddenChapters)}
-                >
-                  {showHiddenChapters ? (
-                    <SquareCheckBig className="text-primary" strokeWidth={3} />
-                  ) : (
-                    <Square strokeWidth={3} />
-                  )}
-                  <span className="break-all! line-clamp-1">
-                    Hiển thị các chương ẩn (nếu có)
-                  </span>
-                </Button>
-
-                <ChapterList
-                  language={config.translatedLanguage}
-                  limit={100}
-                  mangaID={manga.id}
-                  finalChapter={manga.finalChapter}
-                  r18={config.r18}
-                  showUnavailable={showHiddenChapters}
-                /> */}
+                <MangaChaptersList
+                  mangaId={id}
+                  finalChapter={manga.last_chapter}
+                  page={currentPage}
+                  onPageChange={(p) => setCurrentPage(p)}
+                />
               </TabsContent>
 
               <TabsContent value="comments" className="mt-0">
                 {/* <CommentSection
-                  id={manga.id}
+                  id={id}
                   type="manga"
-                  title={manga.title}
+                  title={title}
                 /> */}
               </TabsContent>
 

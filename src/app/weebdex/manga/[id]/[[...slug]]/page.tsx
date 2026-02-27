@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { cache } from "react";
 import ErrorPage from "@/components/error-page";
 import type { SearchParams } from "nuqs/server";
-import { loadSearchParams } from "./searchParams";
+// import { loadSearchParams } from "./searchParams";
 import MangaPage from "../../_components/manga-page";
 
 // Revalidate the page every 24 hours (86400 seconds)
@@ -67,11 +67,11 @@ export async function generateMetadata({
 export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
   const res = await getCachedMangaData(id);
-  const { page, tab } = await loadSearchParams(searchParams);
+  // const { page, tab } = await loadSearchParams(searchParams);
 
   if (res.status !== 200) {
     return <ErrorPage statusCode={res.status} />;
   }
 
-  return <MangaPage id={id} initData={res} page={page} tab={tab} />;
+  return <MangaPage id={id} initData={res}  />;
 }
