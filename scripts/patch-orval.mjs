@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const HOOKS_DIR = join(__dirname, "..", "src", "lib", "weebdex", "hooks");
 
+// Pattern 1: fresh orval output — single-line append
 const OLD = `normalizedParams.append(key, value === null ? "null" : value.toString());`;
 const NEW = `if (Array.isArray(value)) {
         value.forEach((v) =>
@@ -19,7 +20,21 @@ const NEW = `if (Array.isArray(value)) {
       } else {
         normalizedParams.append(
           key,
+          value === null ? "null" : String(value as unknown),
+        );
+      }`;
+
+// Pattern 2: already-patched files from old version still using value.toString() in else
+const OLD2 = `      } else {
+        normalizedParams.append(
+          key,
           value === null ? "null" : value.toString(),
+        );
+      }`;
+const NEW2 = `      } else {
+        normalizedParams.append(
+          key,
+          value === null ? "null" : String(value as unknown),
         );
       }`;
 
@@ -30,9 +45,18 @@ function walk(dir) {
     if (entry.isDirectory()) {
       walk(full);
     } else if (entry.isFile() && entry.name.endsWith(".ts")) {
-      const content = readFileSync(full, "utf8");
+      let content = readFileSync(full, "utf8");
+      let changed = false;
       if (content.includes(OLD)) {
-        writeFileSync(full, content.replaceAll(OLD, NEW));
+        content = content.replaceAll(OLD, NEW);
+        changed = true;
+      }
+      if (content.includes(OLD2)) {
+        content = content.replaceAll(OLD2, NEW2);
+        changed = true;
+      }
+      if (changed) {
+        writeFileSync(full, content);
         console.log(`[patch-orval] Patched: ${full}`);
       }
     }
@@ -41,4 +65,3 @@ function walk(dir) {
 
 walk(HOOKS_DIR);
 console.log("[patch-orval] Done.");
-

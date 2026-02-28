@@ -80,7 +80,7 @@ export const getGetMangaUrl = (params?: GetMangaParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -902,7 +902,7 @@ export const getGetMangaDraftUrl = (params?: GetMangaDraftParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -1470,7 +1470,7 @@ export const getGetMangaRandomUrl = (params?: GetMangaRandomParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -1675,7 +1675,7 @@ export const getGetMangaTopUrl = (params?: GetMangaTopParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }

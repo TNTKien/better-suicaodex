@@ -74,7 +74,7 @@ export const getGetGroupUrl = (params?: GetGroupParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }

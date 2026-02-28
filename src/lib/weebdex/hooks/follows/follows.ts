@@ -90,7 +90,7 @@ export const getGetUserFollowsChapterFeedUrl = (
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -333,7 +333,7 @@ export const getGetUserFollowsGroupsUrl = (
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -1072,7 +1072,7 @@ export const getGetUserFollowsMangaUrl = (
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -1935,7 +1935,7 @@ export const getGetUserFollowsUsersUrl = (
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }

@@ -82,7 +82,7 @@ export const getGetChapterUrl = (params?: GetChapterParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -287,7 +287,7 @@ export const getGetChapterFeedUrl = (params?: GetChapterFeedParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -492,7 +492,7 @@ export const getGetChapterTopUrl = (params?: GetChapterTopParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -698,7 +698,7 @@ export const getGetChapterUpdatesUrl = (params?: GetChapterUpdatesParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -1403,7 +1403,7 @@ export const getGetMangaIdAggregateUrl = (
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
@@ -1656,7 +1656,7 @@ export const getGetMangaIdChaptersUrl = (
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }

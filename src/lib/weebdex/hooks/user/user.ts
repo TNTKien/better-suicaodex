@@ -70,7 +70,7 @@ export const getGetUserUrl = (params?: GetUserParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }

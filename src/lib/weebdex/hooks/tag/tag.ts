@@ -67,7 +67,7 @@ export const getGetMangaTagUrl = (params?: GetMangaTagParams) => {
       } else {
         normalizedParams.append(
           key,
-          value === null ? "null" : value.toString(),
+          value === null ? "null" : String(value as unknown),
         );
       }
     }
