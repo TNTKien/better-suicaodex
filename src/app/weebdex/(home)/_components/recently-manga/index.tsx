@@ -74,7 +74,7 @@ export default function Recently() {
           variant="secondary"
           className="[&_svg]:size-5"
         >
-          <Link href="/weebdex/recently" prefetch={false}>
+          <Link href="/weebdex/recent" prefetch={false}>
             <ArrowRight className="size-5" />
           </Link>
         </Button>
