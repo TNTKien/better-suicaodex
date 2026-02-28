@@ -1,6 +1,7 @@
 import { siteConfig } from "@/config/site";
 import PopularMangaSwiper from "./_components/popular-manga";
 import LatestUpdate from "./_components/latest-update";
+import Recently from "./_components/recently";
 
 function breadcrumbJsonLd() {
   return {
@@ -82,7 +83,9 @@ export default function Page() {
          <LatestUpdate/>
         </section>
 
-        <section className="mt-9">{/* <RecentlyAdded /> */}</section>
+        <section className="mt-9">
+          <Recently />
+        </section>
 
         <section className="mt-9 grid grid-cols-1 gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           <div className="lg:col-span-2 xl:col-span-3 2xl:col-span-4">
