@@ -71,6 +71,7 @@ import {
   tagsFromTagList,
 } from "./tags-filter";
 import TagsPanel from "./tags-panel";
+import { AuthorsSelector } from "./authors-selector";
 
 import { CN, GB, JP, VN } from "country-flag-icons/react/3x2";
 
@@ -141,6 +142,7 @@ const searchParsers = {
   tagx: parseAsArrayOf(parseAsString).withDefault([]),
   tmod: parseAsStringLiteral([...ALLOWED_TMOD]),
   txmod: parseAsStringLiteral([...ALLOWED_TMOD]),
+  author: parseAsArrayOf(parseAsString).withDefault([]),
 } as const;
 
 // ── Main component ───────────────────────────────────────────────────────────
@@ -196,6 +198,11 @@ export default function WeebdexAdvancedSearch() {
     committed.txmod,
   );
 
+  // Author filter state
+  const [selectedAuthors, setSelectedAuthors] = useState<string[]>(
+    committed.author,
+  );
+
   const includedTagsDraft = useMemo(() => getIncluded(tagStates), [tagStates]);
   const excludedTagsDraft = useMemo(() => getExcluded(tagStates), [tagStates]);
 
@@ -243,6 +250,7 @@ export default function WeebdexAdvancedSearch() {
           committed.tagx.length && committed.txmod
             ? committed.txmod
             : undefined,
+        author: committed.author.length ? committed.author : undefined,
         page: committed.page,
         limit: LIMIT,
       }),
@@ -271,6 +279,7 @@ export default function WeebdexAdvancedSearch() {
       tagx: excludedTagsDraft,
       tmod: includedTagsDraft.length > 0 ? selectedTmod : null,
       txmod: excludedTagsDraft.length > 0 ? selectedTxmod : null,
+      author: selectedAuthors,
       page: 1,
     });
   };
@@ -292,6 +301,7 @@ export default function WeebdexAdvancedSearch() {
     setTagStates({});
     setSelectedTmod(null);
     setSelectedTxmod(null);
+    setSelectedAuthors([]);
     setResetKey((prev) => prev + 1);
     setCommitted(null);
   };
@@ -306,7 +316,8 @@ export default function WeebdexAdvancedSearch() {
     selectedTranslatedLang.length === 0 &&
     selectedSort === null &&
     selectedOrder === null &&
-    Object.keys(tagStates).length === 0;
+    Object.keys(tagStates).length === 0 &&
+    selectedAuthors.length === 0;
 
   // ── Option lists ───────────────────────────────────────────────────────────
 
@@ -415,6 +426,25 @@ export default function WeebdexAdvancedSearch() {
                   "transition-opacity duration-200",
                 )}
               >
+                {/* ── Tác giả ── */}
+                <div className="flex flex-col gap-2">
+                  <Label className="uppercase font-semibold">
+                    Tác giả
+                    {selectedAuthors.length > 0 && (
+                      <span className="font-light text-primary">
+                        {" "}
+                        +{selectedAuthors.length}
+                      </span>
+                    )}
+                  </Label>
+                  <AuthorsSelector
+                    key={`author-${resetKey}`}
+                    defaultValue={selectedAuthors}
+                    onValueChange={setSelectedAuthors}
+                    placeholder="Ai cũng được"
+                  />
+                </div>
+
                 {/* Tình trạng */}
                 <div className="flex flex-col gap-2">
                   <Label className="uppercase font-semibold">
@@ -527,7 +557,10 @@ export default function WeebdexAdvancedSearch() {
                         if (!checked) setSelectedTranslatedLang([]);
                       }}
                     />
-                    <Label htmlFor="hasChapters" className="uppercase font-semibold">
+                    <Label
+                      htmlFor="hasChapters"
+                      className="uppercase font-semibold"
+                    >
                       Có bản dịch?
                       {hasChapters && selectedTranslatedLang.length > 0 && (
                         <span className="font-light text-primary">
@@ -554,7 +587,9 @@ export default function WeebdexAdvancedSearch() {
 
                 {/* Sắp xếp theo */}
                 <div className="flex flex-col gap-2">
-                  <Label className="uppercase font-semibold">Sắp xếp theo</Label>
+                  <Label className="uppercase font-semibold">
+                    Sắp xếp theo
+                  </Label>
                   <Select
                     key={`sort-${resetKey}`}
                     value={selectedSort ?? ""}
@@ -677,7 +712,9 @@ export default function WeebdexAdvancedSearch() {
                                   <span className="size-1.5 rounded-full bg-green-500" />
                                 )}
                               </span>
-                              {v === "AND" ? "Tất cả (AND)" : "Ít nhất một (OR)"}
+                              {v === "AND"
+                                ? "Tất cả (AND)"
+                                : "Ít nhất một (OR)"}
                             </button>
                           ))}
                         </div>
