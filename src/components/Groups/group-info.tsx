@@ -13,8 +13,7 @@ import { cn, isFacebookUrl } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "../ui/label";
-import remarkGfm from "remark-gfm";
-import ReactMarkdown from "react-markdown";
+import { Streamdown } from "streamdown";
 import { SiDiscord, SiFacebook, SiX } from "@icons-pack/react-simple-icons";
 import { CN, GB, JP, KR, VN } from "country-flag-icons/react/3x2";
 import GroupTitles from "./GroupTitles";
@@ -136,43 +135,9 @@ export default function GroupInfo({ id, initialData }: GroupInfoProps) {
               {!!data.description && (
                 <div className="flex flex-col gap-2">
                   <Label className="text-lg font-bold">Mô tả</Label>
-                  <ReactMarkdown
-                    className="flex flex-col gap-1"
-                    remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-                    components={{
-                      a: ({ href, children }) => (
-                        <a
-                          href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline"
-                        >
-                          {children}
-                        </a>
-                      ),
-                      table: ({ children }) => (
-                        <table className="table-auto border-collapse border border-secondary rounded-md w-fit">
-                          {children}
-                        </table>
-                      ),
-                      thead: ({ children }) => (
-                        <thead className="border-b border-secondary">
-                          {children}
-                        </thead>
-                      ),
-                      tr: ({ children }) => (
-                        <tr className="even:bg-secondary">{children}</tr>
-                      ),
-                      th: ({ children }) => (
-                        <th className="px-2 py-1 text-left">{children}</th>
-                      ),
-                      td: ({ children }) => (
-                        <td className="px-2 py-1">{children}</td>
-                      ),
-                    }}
-                  >
+                  <Streamdown className="flex flex-col gap-1">
                     {data.description}
-                  </ReactMarkdown>
+                  </Streamdown>
                 </div>
               )}
 

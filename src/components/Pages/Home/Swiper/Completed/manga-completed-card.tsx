@@ -7,8 +7,7 @@ import { Manga } from "@/types/types";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import remarkGfm from "remark-gfm";
-import ReactMarkdown from "react-markdown";
+import { Streamdown } from "streamdown";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 
 interface MangaCompletedCardProps {
@@ -23,41 +22,9 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
       <CardContent className="relative p-0 rounded-sm">
         <div className="z-10 flex rounded-sm opacity-0 hover:opacity-100 transition-opacity absolute inset-0 bg-black/75">
           <div className="p-2.5 grid grid-cols-1 gap-2 justify-between">
-            <ReactMarkdown
-              className="text-sm text-white overflow-auto"
-              remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-              components={{
-                a: ({ href, children }) => (
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    {children}
-                  </a>
-                ),
-                table: ({ children }) => (
-                  <table className="table-auto border-collapse border border-secondary rounded-md w-fit">
-                    {children}
-                  </table>
-                ),
-                thead: ({ children }) => (
-                  <thead className="border-b border-secondary">
-                    {children}
-                  </thead>
-                ),
-                tr: ({ children }) => (
-                  <tr className="even:bg-secondary">{children}</tr>
-                ),
-                th: ({ children }) => (
-                  <th className="px-2 py-1 text-left">{children}</th>
-                ),
-                td: ({ children }) => <td className="px-2 py-1">{children}</td>,
-              }}
-            >
+            <Streamdown className="text-sm text-white overflow-auto">
               {manga.description.content}
-            </ReactMarkdown>
+            </Streamdown>
 
             <Button
               asChild

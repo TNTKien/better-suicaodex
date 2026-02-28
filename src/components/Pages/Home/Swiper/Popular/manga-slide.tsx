@@ -2,8 +2,7 @@
 
 import { cn, generateSlug, getCoverImageUrl } from "@/lib/utils";
 import { Artist, Author, Manga } from "@/types/types";
-import remarkGfm from "remark-gfm";
-import ReactMarkdown from "react-markdown";
+import { Streamdown } from "streamdown";
 import Tags from "@/components/Manga/Tags";
 import MangaCover from "@/components/Manga/manga-cover";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -82,43 +81,9 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
 
           <div className="hidden md:block min-h-0 relative overflow-auto">
             <div className="relative overflow-hidden">
-              <ReactMarkdown
-                className="text-sm"
-                remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-                components={{
-                  a: ({ href, children }) => (
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      {children}
-                    </a>
-                  ),
-                  table: ({ children }) => (
-                    <table className="table-auto border-collapse border border-secondary rounded-md w-fit">
-                      {children}
-                    </table>
-                  ),
-                  thead: ({ children }) => (
-                    <thead className="border-b border-secondary">
-                      {children}
-                    </thead>
-                  ),
-                  tr: ({ children }) => (
-                    <tr className="even:bg-secondary">{children}</tr>
-                  ),
-                  th: ({ children }) => (
-                    <th className="px-2 py-1 text-left">{children}</th>
-                  ),
-                  td: ({ children }) => (
-                    <td className="px-2 py-1">{children}</td>
-                  ),
-                }}
-              >
+              <Streamdown className="text-sm">
                 {manga.description.content}
-              </ReactMarkdown>
+              </Streamdown>
             </div>
           </div>
 

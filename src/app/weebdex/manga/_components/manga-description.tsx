@@ -4,8 +4,7 @@ import useContentHeight from "@/hooks/use-content-height";
 import { Manga } from "@/lib/weebdex/model";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import remarkGfm from "remark-gfm";
-import ReactMarkdown from "react-markdown";
+import { Streamdown } from "streamdown";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { ChevronsDown, ChevronsUp, Undo2 } from "lucide-react";
@@ -75,41 +74,9 @@ export default function MangaDescription({
       >
         <div ref={contentRef}>
           {!!content && (
-            <ReactMarkdown
-              className="flex flex-col gap-3 text-pretty"
-              remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-              components={{
-                a: ({ href, children }) => (
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    {children}
-                  </a>
-                ),
-                table: ({ children }) => (
-                  <table className="table-auto border-collapse border border-secondary rounded-md w-fit">
-                    {children}
-                  </table>
-                ),
-                thead: ({ children }) => (
-                  <thead className="border-b border-secondary">
-                    {children}
-                  </thead>
-                ),
-                tr: ({ children }) => (
-                  <tr className="even:bg-secondary">{children}</tr>
-                ),
-                th: ({ children }) => (
-                  <th className="px-2 py-1 text-left">{children}</th>
-                ),
-                td: ({ children }) => <td className="px-2 py-1">{children}</td>,
-              }}
-            >
+            <Streamdown className="flex flex-col gap-3 text-pretty">
               {translated && translatedDesc ? translatedDesc : content}
-            </ReactMarkdown>
+            </Streamdown>
           )}
 
           <Button
