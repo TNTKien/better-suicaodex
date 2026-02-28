@@ -46,6 +46,12 @@ next-env.d.ts
 /public/sitemap-*.xml
 /public/robots.txt
 
+# serwist generated service worker
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
+
 #temp folder
 /temp
 

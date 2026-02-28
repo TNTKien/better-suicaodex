@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ImageProxyInitializer } from "@/components/image-proxy-initializer";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { ServiceWorkerRegistrar } from "@/components/sw-registrar";
 
 const inter = Inter({
   preload: true,
@@ -81,6 +82,7 @@ export default function RootLayout({
             enableSystem
           >
             <ImageProxyInitializer />
+            <ServiceWorkerRegistrar />
             {children}
             <Toaster richColors position="top-center" closeButton={false} />
             <ThemeSwitcher />
