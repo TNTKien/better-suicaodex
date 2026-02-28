@@ -24,7 +24,7 @@ Tuy vậy, SuicaoDex sẽ luôn:
 
 | Route | Status | Temp Route | Note |
 | --- | --- | --- | --- |
-| `/` | ⬛ | -- | -- |
+| `/` | ☑️ | `/weebdex` | -- |
 | `/manga/:id` | ☑️ | `/weebdex/manga/:id` | -- |
 | `/chapter/:id` | ⬛ | -- | -- |
 | `/author/:id` | ⬛ | -- | -- |
