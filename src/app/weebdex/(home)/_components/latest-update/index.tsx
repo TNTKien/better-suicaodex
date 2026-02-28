@@ -10,7 +10,7 @@ import { GetChapterUpdatesContentRatingItem } from "@/lib/weebdex/model";
 import LatestMangaCard from "./latest-manga-card";
 import LatestSkeletonCard from "./latest-skeleton-card";
 
-const LIMIT = 18;
+const LIMIT = 36;
 
 export default function LatestUpdate() {
   const [config] = useConfig();
