@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import WeebdexAdvancedSearch from "./_components/advanced-search";
 import { Metadata } from "next";
 
@@ -20,5 +21,9 @@ export async function generateMetadata({
 }
 
 export default function Page() {
-  return <WeebdexAdvancedSearch />;
+  return (
+    <Suspense>
+      <WeebdexAdvancedSearch />
+    </Suspense>
+  );
 }
