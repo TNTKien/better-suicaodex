@@ -35,7 +35,7 @@ Tuy vậy, SuicaoDex sẽ luôn:
 | `/latest` | ☑️ | `/weebdex/latest` | -- |
 | `/recent` | ☑️ | `/weebdex/recent` | -- |
 | `/random` | ☑️ | `/weebdex/random` | -- |
-| `/advanced-search` | ⬛ | -- | -- |
+| `/advanced-search` | ☑️ | `/weebdex/advanced-search` | -- |
 | `/history` | ⬛ | -- | -- |
 | `/my-library` | ⬛ | -- | -- |
 
