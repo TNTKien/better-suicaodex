@@ -82,7 +82,7 @@ export default function Page() {
         </section>
 
         <section className="-mt-4 md:-mt-8 lg:-mt-3">
-         <LatestUpdate/>
+          <LatestUpdate />
         </section>
 
         <section className="mt-9">

@@ -17,14 +17,17 @@ import { cn } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
 import { GetMangaTopContentRatingItem } from "@/lib/weebdex/model";
 import { useState } from "react";
+import { useIsMounted } from "usehooks-ts";
 
 export default function PopularMangaSwiper() {
+  const isMounted = useIsMounted();
   const [config] = useConfig();
   const contentRating = config.r18
     ? Object.values(GetMangaTopContentRatingItem)
     : undefined;
 
   const { data, isLoading, error } = useQuery({
+    enabled: isMounted(),
     queryKey: ["weebdex", "manga", "top", config.r18],
     queryFn: async () => {
       const res = await getMangaTop({
@@ -42,7 +45,7 @@ export default function PopularMangaSwiper() {
 
   const [, setSlideIndex] = useState(1);
 
-  if (isLoading) return <SlideSkeleton />;
+  if (!isMounted() || isLoading) return <SlideSkeleton />;
   if (error || !data) return null;
 
   return (

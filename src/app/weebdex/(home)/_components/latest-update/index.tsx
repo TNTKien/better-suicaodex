@@ -12,16 +12,19 @@ import LatestSkeletonCard from "./latest-skeleton-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useIsMounted } from "usehooks-ts";
 
 const LIMIT = 36;
 
 export default function LatestUpdate() {
+  const isMounted = useIsMounted();
   const [config] = useConfig();
   const contentRating = config.r18
     ? Object.values(GetChapterUpdatesContentRatingItem)
     : undefined;
 
   const { data, isLoading, error } = useQuery({
+    enabled: isMounted(),
     queryKey: [
       "weebdex",
       "chapter",
@@ -43,7 +46,7 @@ export default function LatestUpdate() {
     refetchOnWindowFocus: true,
   });
 
-  if (isLoading)
+  if (!isMounted() || isLoading)
     return (
       <div className="flex flex-col">
         <hr className="w-9 h-1 bg-primary border-none" />
@@ -66,7 +69,12 @@ export default function LatestUpdate() {
           <h1 className="text-2xl font-black uppercase">Mới cập nhật</h1>
         </div>
 
-        <Button asChild size="icon" variant="secondary" className="[&_svg]:size-5">
+        <Button
+          asChild
+          size="icon"
+          variant="secondary"
+          className="[&_svg]:size-5"
+        >
           <Link href={`/weebdex/latest`} prefetch={false}>
             <ArrowRight className="size-5" />
           </Link>

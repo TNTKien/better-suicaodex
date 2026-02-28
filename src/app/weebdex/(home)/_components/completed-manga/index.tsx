@@ -18,16 +18,19 @@ import CompletedSkeletonCard from "./completed-skeleton-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useIsMounted } from "usehooks-ts";
 
 const LIMIT = 40;
 
 export default function CompletedManga() {
+  const isMounted = useIsMounted();
   const [config] = useConfig();
   const contentRating = config.r18
     ? Object.values(GetMangaContentRatingItem)
     : undefined;
 
   const { data, isLoading, error } = useQuery({
+    enabled: isMounted(),
     queryKey: ["weebdex", "manga", "completed", config.r18],
     queryFn: async () => {
       const res = await getManga({
@@ -45,7 +48,7 @@ export default function CompletedManga() {
     refetchOnWindowFocus: false,
   });
 
-  if (isLoading)
+  if (!isMounted() || isLoading)
     return (
       <div className="flex flex-col gap-4">
         <div>
@@ -94,7 +97,7 @@ export default function CompletedManga() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 grid-rows-2 gap-3 h-[450px] md:h-[650px]">
+      <div className="relative grid grid-cols-1 grid-rows-2 gap-3 h-[450px] md:h-[650px]">
         <Marquee pauseOnHover className="[--duration:75s] p-0">
           {firstRow.map((manga) => (
             <Link
@@ -128,6 +131,9 @@ export default function CompletedManga() {
             </Link>
           ))}
         </Marquee>
+
+        <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-1/5 bg-linear-to-r"></div>
+        <div className="from-background pointer-events-none absolute inset-y-0 right-0 w-1/5 bg-linear-to-l"></div>
       </div>
     </div>
   );
