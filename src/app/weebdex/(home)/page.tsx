@@ -1,7 +1,7 @@
 import { siteConfig } from "@/config/site";
 import PopularMangaSwiper from "./_components/popular-manga";
 import LatestUpdate from "./_components/latest-update";
-import Recently from "./_components/recently";
+import Recently from "./_components/recently-manga";
 import CompletedManga from "./_components/completed-manga";
 import CommentsFeed from "./_components/comments-feed";
 

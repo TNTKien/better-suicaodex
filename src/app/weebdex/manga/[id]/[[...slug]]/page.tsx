@@ -15,7 +15,7 @@ interface PageProps {
   params: Promise<{
     id: string;
   }>;
-  searchParams: Promise<SearchParams>;
+  // searchParams: Promise<SearchParams>;
 }
 
 const getCachedMangaData = cache(async (id: string) => {
@@ -64,7 +64,10 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params, searchParams }: PageProps) {
+export default async function Page({
+  params,
+  // , searchParams
+}: PageProps) {
   const { id } = await params;
   const res = await getCachedMangaData(id);
   // const { page, tab } = await loadSearchParams(searchParams);
