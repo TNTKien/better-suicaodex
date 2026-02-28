@@ -89,18 +89,19 @@ export default function Page() {
           <Recently />
         </section>
 
-        <section className="mt-9 grid grid-cols-1 gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        {/* Temporary disabled because less of data */}
+        {/* <section className="mt-9 grid grid-cols-1 gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           <div className="lg:col-span-2 xl:col-span-3 2xl:col-span-4">
-            {/* <LazyLoadComponent>
-                  <StaffPick />
-                </LazyLoadComponent> */}
+            <LazyLoadComponent>
+              <StaffPick />
+            </LazyLoadComponent>
           </div>
           <div className="lg:col-span-2">
-            {/* <LazyLoadComponent>
-                  <LeaderBoard />
-                </LazyLoadComponent> */}
+            <LazyLoadComponent>
+              <LeaderBoard />
+            </LazyLoadComponent>
           </div>
-        </section>
+        </section> */}
 
         <section className="mt-9 grid grid-cols-1 gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           <div className="lg:col-span-2 xl:col-span-3 2xl:col-span-4">
