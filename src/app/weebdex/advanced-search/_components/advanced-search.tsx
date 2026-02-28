@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { Search, ChevronDown, Eraser, Loader2, SearchX } from "lucide-react";
@@ -14,6 +14,7 @@ import {
 } from "nuqs";
 
 import { getManga } from "@/lib/weebdex/hooks/manga/manga";
+import { getMangaTag } from "@/lib/weebdex/hooks/tag/tag";
 import type {
   GetMangaContentRatingItem,
   GetMangaDemographicItem,
@@ -61,6 +62,15 @@ import {
 import { cn } from "@/lib/utils";
 import useContentHeight from "@/hooks/use-content-height";
 import MangaCard from "@/app/weebdex/manga/_components/manga-card";
+import {
+  type TagStates,
+  type TagOption,
+  buildTagStates,
+  getIncluded,
+  getExcluded,
+  tagsFromTagList,
+} from "./tags-filter";
+import TagsPanel from "./tags-panel";
 
 import { CN, GB, JP, VN } from "country-flag-icons/react/3x2";
 
@@ -102,20 +112,35 @@ const ALLOWED_SORT = [
   "chapters",
 ] as const;
 const ALLOWED_ORDER = ["asc", "desc"] as const;
+const ALLOWED_TMOD = ["AND", "OR"] as const;
 
 // ── nuqs parsers ─────────────────────────────────────────────────────────────
 
 const searchParsers = {
   q: parseAsString.withDefault(""),
-  status: parseAsArrayOf(parseAsStringLiteral([...ALLOWED_STATUS])).withDefault([]),
-  demographic: parseAsArrayOf(parseAsStringLiteral([...ALLOWED_DEMOS])).withDefault([]),
-  contentRating: parseAsArrayOf(parseAsStringLiteral([...ALLOWED_CONTENT])).withDefault([]),
-  lang: parseAsArrayOf(parseAsStringLiteral([...ALLOWED_ORIG_LANG])).withDefault([]),
+  status: parseAsArrayOf(parseAsStringLiteral([...ALLOWED_STATUS])).withDefault(
+    [],
+  ),
+  demographic: parseAsArrayOf(
+    parseAsStringLiteral([...ALLOWED_DEMOS]),
+  ).withDefault([]),
+  contentRating: parseAsArrayOf(
+    parseAsStringLiteral([...ALLOWED_CONTENT]),
+  ).withDefault([]),
+  lang: parseAsArrayOf(
+    parseAsStringLiteral([...ALLOWED_ORIG_LANG]),
+  ).withDefault([]),
   hasChapters: parseAsBoolean.withDefault(false),
-  availableTranslatedLang: parseAsArrayOf(parseAsStringLiteral([...ALLOWED_TRANS_LANG])).withDefault([]),
+  availableTranslatedLang: parseAsArrayOf(
+    parseAsStringLiteral([...ALLOWED_TRANS_LANG]),
+  ).withDefault([]),
   sort: parseAsStringLiteral([...ALLOWED_SORT]),
   order: parseAsStringLiteral([...ALLOWED_ORDER]),
   page: parseAsInteger.withDefault(1),
+  tag: parseAsArrayOf(parseAsString).withDefault([]),
+  tagx: parseAsArrayOf(parseAsString).withDefault([]),
+  tmod: parseAsStringLiteral([...ALLOWED_TMOD]),
+  txmod: parseAsStringLiteral([...ALLOWED_TMOD]),
 } as const;
 
 // ── Main component ───────────────────────────────────────────────────────────
@@ -139,14 +164,54 @@ export default function WeebdexAdvancedSearch() {
   // ── Local draft state (form inputs before user hits Search) ───────────────
 
   const [query, setQuery] = useState(committed.q);
-  const [selectedStatus, setSelectedStatus] = useState<string[]>(committed.status);
-  const [selectedDemographic, setSelectedDemographic] = useState<string[]>(committed.demographic);
-  const [selectedContentRating, setSelectedContentRating] = useState<string[]>(committed.contentRating);
+  const [selectedStatus, setSelectedStatus] = useState<string[]>(
+    committed.status,
+  );
+  const [selectedDemographic, setSelectedDemographic] = useState<string[]>(
+    committed.demographic,
+  );
+  const [selectedContentRating, setSelectedContentRating] = useState<string[]>(
+    committed.contentRating,
+  );
   const [selectedLang, setSelectedLang] = useState<string[]>(committed.lang);
   const [hasChapters, setHasChapters] = useState(committed.hasChapters);
-  const [selectedTranslatedLang, setSelectedTranslatedLang] = useState<string[]>(committed.availableTranslatedLang);
-  const [selectedSort, setSelectedSort] = useState<GetMangaSort | null>(committed.sort);
-  const [selectedOrder, setSelectedOrder] = useState<GetMangaOrder | null>(committed.order);
+  const [selectedTranslatedLang, setSelectedTranslatedLang] = useState<
+    string[]
+  >(committed.availableTranslatedLang);
+  const [selectedSort, setSelectedSort] = useState<GetMangaSort | null>(
+    committed.sort,
+  );
+  const [selectedOrder, setSelectedOrder] = useState<GetMangaOrder | null>(
+    committed.order,
+  );
+
+  // Tag filter state
+  const [tagStates, setTagStates] = useState<TagStates>(() =>
+    buildTagStates(committed.tag, committed.tagx),
+  );
+  const [selectedTmod, setSelectedTmod] = useState<"AND" | "OR" | null>(
+    committed.tmod,
+  );
+  const [selectedTxmod, setSelectedTxmod] = useState<"AND" | "OR" | null>(
+    committed.txmod,
+  );
+
+  const includedTagsDraft = useMemo(() => getIncluded(tagStates), [tagStates]);
+  const excludedTagsDraft = useMemo(() => getExcluded(tagStates), [tagStates]);
+
+  // Fetch all available tags
+  const { data: tagsResponse } = useQuery({
+    queryKey: ["weebdex-manga-tags"],
+    queryFn: () => getMangaTag({ limit: 100 }),
+    staleTime: Infinity,
+  });
+  const tagOptions: TagOption[] = useMemo(
+    () =>
+      tagsResponse?.status === 200
+        ? tagsFromTagList(tagsResponse.data.data ?? [])
+        : [],
+    [tagsResponse],
+  );
 
   // ── API query ──────────────────────────────────────────────────────────────
 
@@ -156,8 +221,12 @@ export default function WeebdexAdvancedSearch() {
       getManga({
         title: committed.q || undefined,
         status: committed.status.length ? committed.status : undefined,
-        demographic: committed.demographic.length ? committed.demographic : undefined,
-        contentRating: committed.contentRating.length ? committed.contentRating : undefined,
+        demographic: committed.demographic.length
+          ? committed.demographic
+          : undefined,
+        contentRating: committed.contentRating.length
+          ? committed.contentRating
+          : undefined,
         lang: committed.lang.length ? committed.lang : undefined,
         hasChapters: committed.hasChapters ? "true" : undefined,
         availableTranslatedLang:
@@ -166,6 +235,14 @@ export default function WeebdexAdvancedSearch() {
             : undefined,
         sort: committed.sort ?? undefined,
         order: committed.order ?? undefined,
+        tag: committed.tag.length ? committed.tag : undefined,
+        tagx: committed.tagx.length ? committed.tagx : undefined,
+        tmod:
+          committed.tag.length && committed.tmod ? committed.tmod : undefined,
+        txmod:
+          committed.tagx.length && committed.txmod
+            ? committed.txmod
+            : undefined,
         page: committed.page,
         limit: LIMIT,
       }),
@@ -186,9 +263,14 @@ export default function WeebdexAdvancedSearch() {
       contentRating: selectedContentRating as GetMangaContentRatingItem[],
       lang: selectedLang as (typeof ALLOWED_ORIG_LANG)[number][],
       hasChapters,
-      availableTranslatedLang: selectedTranslatedLang as (typeof ALLOWED_TRANS_LANG)[number][],
+      availableTranslatedLang:
+        selectedTranslatedLang as (typeof ALLOWED_TRANS_LANG)[number][],
       sort: selectedSort,
       order: selectedOrder,
+      tag: includedTagsDraft,
+      tagx: excludedTagsDraft,
+      tmod: includedTagsDraft.length > 0 ? selectedTmod : null,
+      txmod: excludedTagsDraft.length > 0 ? selectedTxmod : null,
       page: 1,
     });
   };
@@ -207,6 +289,9 @@ export default function WeebdexAdvancedSearch() {
     setSelectedTranslatedLang([]);
     setSelectedSort(null);
     setSelectedOrder(null);
+    setTagStates({});
+    setSelectedTmod(null);
+    setSelectedTxmod(null);
     setResetKey((prev) => prev + 1);
     setCommitted(null);
   };
@@ -220,7 +305,8 @@ export default function WeebdexAdvancedSearch() {
     !hasChapters &&
     selectedTranslatedLang.length === 0 &&
     selectedSort === null &&
-    selectedOrder === null;
+    selectedOrder === null &&
+    Object.keys(tagStates).length === 0;
 
   // ── Option lists ───────────────────────────────────────────────────────────
 
@@ -331,7 +417,7 @@ export default function WeebdexAdvancedSearch() {
               >
                 {/* Tình trạng */}
                 <div className="flex flex-col gap-2">
-                  <Label>
+                  <Label className="uppercase font-semibold">
                     Tình trạng
                     {selectedStatus.length > 0 && (
                       <span className="font-light text-primary">
@@ -356,7 +442,7 @@ export default function WeebdexAdvancedSearch() {
 
                 {/* Dành cho */}
                 <div className="flex flex-col gap-2">
-                  <Label>
+                  <Label className="uppercase font-semibold">
                     Dành cho
                     {selectedDemographic.length > 0 && (
                       <span className="font-light text-primary">
@@ -381,7 +467,7 @@ export default function WeebdexAdvancedSearch() {
 
                 {/* Giới hạn nội dung */}
                 <div className="flex flex-col gap-2">
-                  <Label>
+                  <Label className="uppercase font-semibold">
                     Giới hạn nội dung
                     {selectedContentRating.length > 0 && (
                       <span className="font-light text-primary">
@@ -406,7 +492,7 @@ export default function WeebdexAdvancedSearch() {
 
                 {/* Ngôn ngữ gốc */}
                 <div className="flex flex-col gap-2">
-                  <Label>
+                  <Label className="uppercase font-semibold">
                     Ngôn ngữ gốc
                     {selectedLang.length > 0 && (
                       <span className="font-light text-primary">
@@ -441,7 +527,7 @@ export default function WeebdexAdvancedSearch() {
                         if (!checked) setSelectedTranslatedLang([]);
                       }}
                     />
-                    <Label htmlFor="hasChapters">
+                    <Label htmlFor="hasChapters" className="uppercase font-semibold">
                       Có bản dịch?
                       {hasChapters && selectedTranslatedLang.length > 0 && (
                         <span className="font-light text-primary">
@@ -468,16 +554,21 @@ export default function WeebdexAdvancedSearch() {
 
                 {/* Sắp xếp theo */}
                 <div className="flex flex-col gap-2">
-                  <Label>Sắp xếp theo</Label>
+                  <Label className="uppercase font-semibold">Sắp xếp theo</Label>
                   <Select
                     key={`sort-${resetKey}`}
                     value={selectedSort ?? ""}
-                    onValueChange={(v) => setSelectedSort((v as GetMangaSort) || null)}
+                    onValueChange={(v) =>
+                      setSelectedSort((v as GetMangaSort) || null)
+                    }
                   >
                     <SelectTrigger className="px-3! shadow-none rounded-md! h-10! w-full text-muted-foreground font-medium">
                       <SelectValue placeholder="Mặc định" />
                     </SelectTrigger>
-                    <SelectContent position="popper" className="max-h-[300px] rounded-md!">
+                    <SelectContent
+                      position="popper"
+                      className="max-h-[300px] rounded-md!"
+                    >
                       <SelectGroup>
                         {sortList.map((s) => (
                           <SelectItem
@@ -495,16 +586,21 @@ export default function WeebdexAdvancedSearch() {
 
                 {/* Thứ tự */}
                 <div className="flex flex-col gap-2">
-                  <Label>Thứ tự</Label>
+                  <Label className="uppercase font-semibold">Thứ tự</Label>
                   <Select
                     key={`order-${resetKey}`}
                     value={selectedOrder ?? ""}
-                    onValueChange={(v) => setSelectedOrder((v as GetMangaOrder) || null)}
+                    onValueChange={(v) =>
+                      setSelectedOrder((v as GetMangaOrder) || null)
+                    }
                   >
                     <SelectTrigger className="px-3 shadow-none rounded-md! h-10! w-full text-muted-foreground font-medium">
                       <SelectValue placeholder="Mặc định" />
                     </SelectTrigger>
-                    <SelectContent position="popper" className="max-h-[300px] rounded-md!">
+                    <SelectContent
+                      position="popper"
+                      className="max-h-[300px] rounded-md!"
+                    >
                       <SelectGroup>
                         {orderList.map((o) => (
                           <SelectItem
@@ -518,6 +614,110 @@ export default function WeebdexAdvancedSearch() {
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                </div>
+
+                {/* ── Thể loại (Tag filters) ── */}
+                <div className="col-span-full flex flex-col gap-3">
+                  {/* Header row: label + mode counts + tabs */}
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <Label className="flex items-center gap-1.5 uppercase font-semibold">
+                      Thể loại
+                      {includedTagsDraft.length > 0 && (
+                        <span className="font-light text-primary">
+                          +{includedTagsDraft.length}
+                        </span>
+                      )}
+                      {excludedTagsDraft.length > 0 && (
+                        <span className="font-light text-destructive">
+                          -{excludedTagsDraft.length}
+                        </span>
+                      )}
+                    </Label>
+                  </div>
+
+                  {/* Filter body */}
+                  <TagsPanel
+                    key={`tags-panel-${resetKey}`}
+                    tags={tagOptions}
+                    tagStates={tagStates}
+                    onTagStatesChange={setTagStates}
+                    isLoading={tagOptions.length === 0}
+                  />
+
+                  {/* tmod / txmod — only shown when relevant tags are selected */}
+                  {(includedTagsDraft.length > 0 ||
+                    excludedTagsDraft.length > 0) && (
+                    <div className="mt-1 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                      {includedTagsDraft.length > 0 && (
+                        <div className="flex items-center flex-wrap gap-2">
+                          <span className="text-muted-foreground uppercase font-medium">
+                            bao gồm:
+                          </span>
+                          {(["AND", "OR"] as const).map((v) => (
+                            <button
+                              key={v}
+                              type="button"
+                              onClick={() => setSelectedTmod(v)}
+                              className={cn(
+                                "flex items-center gap-1.5 cursor-pointer select-none transition-colors",
+                                (selectedTmod ?? "AND") === v
+                                  ? "text-foreground font-medium"
+                                  : "text-muted-foreground hover:text-foreground",
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  "inline-flex size-3.5 rounded-full border-2 items-center justify-center shrink-0",
+                                  (selectedTmod ?? "AND") === v
+                                    ? "border-green-500"
+                                    : "border-muted-foreground/40",
+                                )}
+                              >
+                                {(selectedTmod ?? "AND") === v && (
+                                  <span className="size-1.5 rounded-full bg-green-500" />
+                                )}
+                              </span>
+                              {v === "AND" ? "Tất cả (AND)" : "Ít nhất một (OR)"}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {excludedTagsDraft.length > 0 && (
+                        <div className="flex items-center flex-wrap gap-2">
+                          <span className="text-muted-foreground uppercase font-medium">
+                            loại trừ:
+                          </span>
+                          {(["OR", "AND"] as const).map((v) => (
+                            <button
+                              key={v}
+                              type="button"
+                              onClick={() => setSelectedTxmod(v)}
+                              className={cn(
+                                "flex items-center gap-1.5 cursor-pointer select-none transition-colors",
+                                (selectedTxmod ?? "OR") === v
+                                  ? "text-foreground font-medium"
+                                  : "text-muted-foreground hover:text-foreground",
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  "inline-flex size-3.5 rounded-full border-2 items-center justify-center shrink-0",
+                                  (selectedTxmod ?? "OR") === v
+                                    ? "border-red-500"
+                                    : "border-muted-foreground/40",
+                                )}
+                              >
+                                {(selectedTxmod ?? "OR") === v && (
+                                  <span className="size-1.5 rounded-full bg-red-500" />
+                                )}
+                              </span>
+                              {v === "OR" ? "Bất kỳ (OR)" : "Tất cả (AND)"}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </CollapsibleContent>
             </div>
