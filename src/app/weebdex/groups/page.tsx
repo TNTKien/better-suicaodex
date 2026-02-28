@@ -1,11 +1,6 @@
 import { Metadata } from "next";
-import type { SearchParams } from "nuqs/server";
-import { loadSearchParams } from "./searchParams";
+import { Suspense } from "react";
 import GroupsSearch from "./_components";
-
-interface PageProps {
-  searchParams: Promise<SearchParams>;
-}
 
 export function generateMetadata(): Metadata {
   return {
@@ -15,10 +10,7 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export default async function Page({ searchParams }: PageProps) {
-  let { page, q } = await loadSearchParams(searchParams);
-  if (page < 1 || isNaN(page)) page = 1;
-
+export default function Page() {
   return (
     <>
       <div>
@@ -27,7 +19,9 @@ export default async function Page({ searchParams }: PageProps) {
       </div>
 
       <div className="mt-4">
-        <GroupsSearch page={page} q={q} />
+        <Suspense>
+          <GroupsSearch />
+        </Suspense>
       </div>
     </>
   );

@@ -18,38 +18,39 @@ import {
   getGroupResponseSuccess,
 } from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useDebounceValue } from "usehooks-ts";
+import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { useEffect } from "react";
 import { ArrowRight, BugIcon, Search, Users, X } from "lucide-react";
-
-interface GroupsSearchProps {
-  page: number;
-  q: string;
-}
 
 const LIMIT = 100;
 
-export default function GroupsSearch({ page, q }: GroupsSearchProps) {
-  const router = useRouter();
-  const [inputValue, setInputValue] = useState(q);
+export default function GroupsSearch() {
+  const [inputValue, setInputValue] = useQueryState(
+    "q",
+    parseAsString
+      .withDefault("")
+      .withOptions({ shallow: false, throttleMs: 500 }),
+  );
+  const [page, setPage] = useQueryState(
+    "page",
+    parseAsInteger.withDefault(1).withOptions({ shallow: false }),
+  );
+  const safePage = Math.max(1, page);
+
   const [debouncedQuery] = useDebounceValue(inputValue, 500);
 
-  // When debounced query stabilises and differs from URL, update URL (reset to page 1)
   useEffect(() => {
-    if (debouncedQuery === q) return;
-    const params = new URLSearchParams();
-    if (debouncedQuery) params.set("q", debouncedQuery);
-    router.push(`/weebdex/groups${params.size ? `?${params}` : ""}`);
-  }, [debouncedQuery, q, router]);
+    if (page < 1) setPage(1);
+  }, [page, setPage]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["weebdex", "groups", debouncedQuery, page],
+    queryKey: ["weebdex", "groups", debouncedQuery, safePage],
     queryFn: async () => {
       const res = await getGroup({
         name: debouncedQuery || undefined,
         limit: LIMIT,
-        page,
+        page: safePage,
       });
       if (res.status !== 200) throw new Error("Failed to fetch groups");
       return (res as getGroupResponseSuccess).data;
@@ -62,7 +63,7 @@ export default function GroupsSearch({ page, q }: GroupsSearchProps) {
 
   const handleClear = () => {
     setInputValue("");
-    router.push("/weebdex/groups");
+    setPage(null);
   };
 
   const renderResults = () => {
@@ -134,7 +135,10 @@ export default function GroupsSearch({ page, q }: GroupsSearchProps) {
           placeholder="Nhập từ khóa..."
           autoComplete="off"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => {
+            setInputValue(e.target.value || null);
+            setPage(null);
+          }}
         />
         <Button
           size="icon"
@@ -149,7 +153,7 @@ export default function GroupsSearch({ page, q }: GroupsSearchProps) {
 
       {totalPages >= 1 && (
         <PaginationControl
-          currentPage={page}
+          currentPage={safePage}
           totalPages={totalPages}
           createHref={(p) => {
             const params = new URLSearchParams();
