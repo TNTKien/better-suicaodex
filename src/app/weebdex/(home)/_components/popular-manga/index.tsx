@@ -30,7 +30,7 @@ export default function PopularMangaSwiper() {
       const res = await getMangaTop({
         limit: 10,
         rank: "read",
-        time: "30d",
+        time: "7d",
         contentRating,
       });
       if (res.status !== 200) throw new Error("Failed to fetch top manga");
