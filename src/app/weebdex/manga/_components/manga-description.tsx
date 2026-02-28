@@ -74,7 +74,10 @@ export default function MangaDescription({
       >
         <div ref={contentRef}>
           {!!content && (
-            <Streamdown className="flex flex-col gap-3 text-pretty">
+            <Streamdown
+              controls={{ table: false }}
+              className="flex flex-col gap-3 text-pretty"
+            >
               {translated && translatedDesc ? translatedDesc : content}
             </Streamdown>
           )}

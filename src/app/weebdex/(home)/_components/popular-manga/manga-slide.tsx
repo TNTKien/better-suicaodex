@@ -105,7 +105,8 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
 
           <div className="hidden md:block min-h-0 relative overflow-auto">
             <div className="relative overflow-hidden">
-              <Streamdown className="text-sm">
+              <Streamdown
+              controls={{ table: false }}className="text-sm">
                 {manga.description ?? ""}
               </Streamdown>
             </div>

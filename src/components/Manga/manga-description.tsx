@@ -44,8 +44,8 @@ const MangaDescription = ({
     try {
       const response = await fetch(
         `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(
-          content
-        )}`
+          content,
+        )}`,
       );
       const data = await response.json();
       const translatedText = data[0].map((part: any) => part[0]).join("");
@@ -79,7 +79,10 @@ const MangaDescription = ({
       >
         <div ref={contentRef}>
           {!!content && (
-            <Streamdown className="flex flex-col gap-3">
+            <Streamdown
+              controls={{ table: false }}
+              className="flex flex-col gap-3"
+            >
               {state.translated && state.translatedDesc
                 ? state.translatedDesc
                 : content}
@@ -116,7 +119,7 @@ const MangaDescription = ({
         <div
           className={cn(
             "flex justify-center w-full border-t transition-[border-color]",
-            state.expanded ? "border-transparent" : "border-primary"
+            state.expanded ? "border-transparent" : "border-primary",
           )}
         >
           <Button

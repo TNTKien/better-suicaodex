@@ -53,7 +53,10 @@ export default function DetailsCard({ manga }: DetailsCardProps) {
                 "linear-gradient(black 0%, black 60%, transparent 100%)",
             }}
           >
-            <Streamdown className="flex flex-col gap-0 text-sm max-h-[60px] overflow-y-hidden break-all">
+            <Streamdown
+              controls={{ table: false }}
+              className="flex flex-col gap-0 text-sm max-h-[60px] overflow-y-hidden break-all"
+            >
               {manga.description.content}
             </Streamdown>
           </div>

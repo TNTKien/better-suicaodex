@@ -4,8 +4,7 @@ import { getGroup } from "@/lib/mangadex/group";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../ui/button";
-import { Archive, Ban, Bookmark, Globe, Mail, ShieldUser } from "lucide-react";
-import { toast } from "sonner";
+import { Archive, Globe, Mail, ShieldUser } from "lucide-react";
 import GroupStats from "./group-stats";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
@@ -135,7 +134,10 @@ export default function GroupInfo({ id, initialData }: GroupInfoProps) {
               {!!data.description && (
                 <div className="flex flex-col gap-2">
                   <Label className="text-lg font-bold">Mô tả</Label>
-                  <Streamdown className="flex flex-col gap-1">
+                  <Streamdown
+                    controls={{ table: false }}
+                    className="flex flex-col gap-1"
+                  >
                     {data.description}
                   </Streamdown>
                 </div>

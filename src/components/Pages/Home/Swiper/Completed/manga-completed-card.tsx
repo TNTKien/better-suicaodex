@@ -22,7 +22,10 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
       <CardContent className="relative p-0 rounded-sm">
         <div className="z-10 flex rounded-sm opacity-0 hover:opacity-100 transition-opacity absolute inset-0 bg-black/75">
           <div className="p-2.5 grid grid-cols-1 gap-2 justify-between">
-            <Streamdown className="text-sm text-white overflow-auto">
+            <Streamdown
+              controls={{ table: false }}
+              className="text-sm text-white overflow-auto"
+            >
               {manga.description.content}
             </Streamdown>
 
@@ -32,7 +35,9 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
               size="icon"
               variant="secondary"
             >
-              <NoPrefetchLink href={`/manga/${manga.id}/${generateSlug(manga.title)}`}>
+              <NoPrefetchLink
+                href={`/manga/${manga.id}/${generateSlug(manga.title)}`}
+              >
                 <ArrowRight />
               </NoPrefetchLink>
             </Button>
@@ -41,11 +46,11 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
         <LazyLoadImage
           wrapperClassName={cn(
             "block! rounded-sm object-cover w-full h-full",
-            !loaded && "aspect-5/7"
+            !loaded && "aspect-5/7",
           )}
           placeholderSrc="/images/place-doro.webp"
           className={cn(
-            "h-auto w-full rounded-sm block object-cover aspect-5/7"
+            "h-auto w-full rounded-sm block object-cover aspect-5/7",
           )}
           src={src}
           alt={`Ảnh bìa ${manga.title}`}
@@ -57,7 +62,9 @@ export default function MangaCompletedCard({ manga }: MangaCompletedCardProps) {
       </CardContent>
 
       <CardFooter className="py-2 px-0 w-full">
-        <NoPrefetchLink href={`/manga/${manga.id}/${generateSlug(manga.title)}`}>
+        <NoPrefetchLink
+          href={`/manga/${manga.id}/${generateSlug(manga.title)}`}
+        >
           <p className="text-base font-semibold line-clamp-2 drop-shadow-xs">
             {manga.title}
           </p>

@@ -152,7 +152,10 @@ export default function Author({ id, initialData }: AuthorProps) {
           {!!data.bio && (
             <div className="flex flex-col gap-2">
               <Label className="text-lg font-bold">Mô tả</Label>
-              <Streamdown className="flex flex-col gap-1">
+              <Streamdown
+                controls={{ table: false }}
+                className="flex flex-col gap-1"
+              >
                 {data.bio}
               </Streamdown>
             </div>

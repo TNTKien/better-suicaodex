@@ -23,7 +23,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { BookX, BugIcon, ExternalLink, Globe, Mail } from "lucide-react";
+import { BookX, BugIcon, Mail } from "lucide-react";
+import { Streamdown } from "streamdown";
 import PaginationControl from "@/components/Custom/pagination-control";
 import { Button } from "@/components/ui/button";
 import { SiDiscord, SiX } from "@icons-pack/react-simple-icons";
@@ -215,9 +216,12 @@ export default function GroupPage({ id, page }: GroupPageProps) {
         {!!group.description && (
           <div className="flex flex-col gap-2">
             <Label className="text-lg font-bold">Mô tả</Label>
-            <p className="text-muted-foreground text-sm whitespace-pre-wrap leading-relaxed">
+            <Streamdown
+              controls={{ table: false }}
+              className="flex flex-col gap-1 text-sm text-muted-foreground"
+            >
               {group.description}
-            </p>
+            </Streamdown>
           </div>
         )}
 

@@ -24,7 +24,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
         <div
           className={cn(
             "absolute h-[324px] md:h-[400px] w-full",
-            "bg-no-repeat bg-cover bg-position-[center_top_25%]"
+            "bg-no-repeat bg-cover bg-position-[center_top_25%]",
           )}
           style={{ backgroundImage: `url('${bannerSrc}')` }}
         ></div>
@@ -32,7 +32,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
         <div
           className={cn(
             "absolute h-[324px] md:h-[400px] w-auto inset-0 pointer-events-none",
-            "bg-linear-to-b from-background/25 to-background backdrop-blur-[0.5px]"
+            "bg-linear-to-b from-background/25 to-background backdrop-blur-[0.5px]",
           )}
         ></div>
       </div>
@@ -42,7 +42,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
       <div
         className={cn(
           "flex gap-4 h-full pt-28 px-4 md:pl-8 lg:pl-12",
-          "md:pr-[calc(32px+var(--sidebar-width-icon))] lg:pr-[calc(48px+var(--sidebar-width-icon))]"
+          "md:pr-[calc(32px+var(--sidebar-width-icon))] lg:pr-[calc(48px+var(--sidebar-width-icon))]",
         )}
       >
         <NoPrefetchLink href={`/manga/${manga.id}/${slug}`}>
@@ -81,7 +81,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
 
           <div className="hidden md:block min-h-0 relative overflow-auto">
             <div className="relative overflow-hidden">
-              <Streamdown className="text-sm">
+              <Streamdown controls={{ table: false }} className="text-sm">
                 {manga.description.content}
               </Streamdown>
             </div>
