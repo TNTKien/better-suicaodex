@@ -43,7 +43,7 @@ export default function LatestUpdate() {
       return (res as getChapterUpdatesResponseSuccess).data.data ?? [];
     },
     refetchInterval: 1000 * 60 * 10,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
   if (!isMounted() || isLoading)
