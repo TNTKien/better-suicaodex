@@ -9,6 +9,9 @@ import { useConfig } from "@/hooks/use-config";
 import { GetChapterUpdatesContentRatingItem } from "@/lib/weebdex/model";
 import LatestMangaCard from "./latest-manga-card";
 import LatestSkeletonCard from "./latest-skeleton-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const LIMIT = 36;
 
@@ -57,8 +60,18 @@ export default function LatestUpdate() {
 
   return (
     <div className="flex flex-col">
-      <hr className="w-9 h-1 bg-primary border-none" />
-      <h1 className="text-2xl font-black uppercase">Mới cập nhật</h1>
+      <div className="flex justify-between">
+        <div>
+          <hr className="w-9 h-1 bg-primary border-none" />
+          <h1 className="text-2xl font-black uppercase">Mới cập nhật</h1>
+        </div>
+
+        <Button asChild size="icon" variant="secondary" className="[&_svg]:size-5">
+          <Link href={`/weebdex/latest`} prefetch={false}>
+            <ArrowRight className="size-5" />
+          </Link>
+        </Button>
+      </div>
 
       <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
         {data.map((chapter) => (
