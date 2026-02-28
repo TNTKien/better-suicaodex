@@ -49,7 +49,7 @@ export default function MangaCover({
         )}
       >
         <img
-          src="/images/xidoco.webp"
+          src="/images/shutup.webp"
           className={cn("h-auto w-full rounded-sm block", className)}
         />
       </div>

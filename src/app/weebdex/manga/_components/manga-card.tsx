@@ -10,7 +10,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 interface MangaCardProps {
   manga_id: string;
   title: string;
-  cover: Cover;
+  cover?: Cover;
   className?: string;
 }
 
@@ -20,7 +20,9 @@ export default function MangaCard({
   cover,
   className,
 }: MangaCardProps) {
-  const cover_url = `${siteConfig.weebdex.proxyURL}/covers/${manga_id}/${cover.id}.512.webp`;
+  const cover_url = cover
+    ? `${siteConfig.weebdex.proxyURL}/covers/${manga_id}/${cover.id}.512.webp`
+    : "/images/shutup.webp";
 
   const [loaded, setLoaded] = useState(false);
 
