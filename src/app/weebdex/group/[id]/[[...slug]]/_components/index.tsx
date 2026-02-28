@@ -238,7 +238,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
                       height={16}
                       width={16}
                       alt="Website Favicon"
-                      className="size-4"
+                      className="size-4 rounded-full"
                     />
                     Website
                   </Link>
@@ -282,7 +282,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
                       width={16}
                       height={16}
                       alt="MangaUpdates Favicon"
-                      className="size-4"
+                      className="size-4 rounded-full"
                     />
                     MangaUpdates
                   </Link>

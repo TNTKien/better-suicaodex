@@ -79,10 +79,7 @@ const MangaDescription = ({
       >
         <div ref={contentRef}>
           {!!content && (
-            <Streamdown
-              controls={{ table: false }}
-              className="flex flex-col gap-3"
-            >
+            <Streamdown controls={{ table: false }}>
               {state.translated && state.translatedDesc
                 ? state.translatedDesc
                 : content}

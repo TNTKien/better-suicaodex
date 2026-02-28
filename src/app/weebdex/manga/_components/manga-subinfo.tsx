@@ -97,6 +97,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
                 width={16}
                 height={16}
                 alt="WeebDex Favicon"
+                className="rounded-full"
               />
               WeebDex
             </Link>
@@ -113,6 +114,7 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
                         width={16}
                         height={16}
                         alt={`${link.siteName} Favicon`}
+                        className="rounded-full"
                       />
                     )}
                     {link.name}
