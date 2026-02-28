@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { CacheFirst, ExpirationPlugin, Serwist } from "serwist";
+import { CacheFirst, ExpirationPlugin, NetworkOnly, Serwist } from "serwist";
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -17,16 +17,33 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
-    // Cache ảnh cover từ weebdex proxy
+    // Không cache API calls từ weebdex (phải luôn fetch mới)
+    {
+      matcher: ({ url }) =>
+        url.hostname === "wd.memaydex.online" &&
+        !url.pathname.startsWith("/covers/"),
+      handler: new NetworkOnly(),
+    },
+    // Không cache các internal API routes (comments, auth, v.v.)
+    {
+      matcher: ({ url, sameOrigin }) =>
+        sameOrigin && url.pathname.startsWith("/api/"),
+      handler: new NetworkOnly(),
+    },
+    // Cache ảnh cover từ weebdex proxy (CacheFirst, 7 ngày, tối đa 1000 ảnh)
     {
       matcher: ({ url }) =>
         url.hostname === "wd.memaydex.online" &&
         url.pathname.startsWith("/covers/"),
       handler: new CacheFirst({
         cacheName: "weebdex-covers",
+        // Force CORS mode để tránh opaque response (status 0) từ no-cors requests
+        fetchOptions: {
+          mode: "cors",
+          credentials: "omit",
+        },
         plugins: [
           new ExpirationPlugin({
-            // Tối đa 1000 ảnh, hết hạn sau 7 ngày
             maxEntries: 1000,
             maxAgeSeconds: 60 * 60 * 24 * 7,
             purgeOnQuotaError: true,
