@@ -1,16 +1,16 @@
 "use client";
 
 import { Chapter } from "@/types/types";
-import { ChapterTitle } from "../Chapter/chapter-info";
+import { ChapterTitle } from "../../../src/components/Chapter/chapter-info";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatTimeToNow } from "@/lib/utils";
 import { GB, VN } from "country-flag-icons/react/3x2";
 import { Check, Clock, Users } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../../src/components/ui/button";
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import MangaCover from "../Manga/manga-cover";
-import NoPrefetchLink from "../Custom/no-prefetch-link";
+import NoPrefetchLink from "../../../src/components/Custom/no-prefetch-link";
 
 interface UnreadCardProps {
   chapter: Chapter;

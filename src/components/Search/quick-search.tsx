@@ -6,7 +6,6 @@ import { ArrowRight, Search, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { useConfig } from "@/hooks/use-config";
-import CompactCardWeebdex from "./Result/compact-card-weebdex";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
 import {
@@ -23,6 +22,7 @@ import { Badge } from "../ui/badge";
 import { useGetManga } from "@/lib/weebdex/hooks/manga/manga";
 import { useDebounceValue } from "usehooks-ts";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
+import CompactCardWeebdex from "./compact-card-weebdex";
 
 export default function QuickSearch() {
   const [expanded, setExpanded] = useState(false);

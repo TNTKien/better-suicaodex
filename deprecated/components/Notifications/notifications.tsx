@@ -3,9 +3,9 @@
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import { getUnreadChapters } from "@/lib/notifications";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "../ui/button";
+import { Button } from "../../../src/components/ui/button";
 import { BellOff, CheckCheck, Loader2 } from "lucide-react";
-import { Alert, AlertDescription } from "../ui/alert";
+import { Alert, AlertDescription } from "../../../src/components/ui/alert";
 import { Chapter } from "@/types/types";
 import UnreadCard from "./unread-card";
 import {
