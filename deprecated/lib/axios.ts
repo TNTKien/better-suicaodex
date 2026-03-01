@@ -13,7 +13,7 @@
 
 // axios.ts
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import { setCurrentApiUrl, getCurrentImageProxyUrl, setCurrentImageProxyUrl } from "./utils";
+import { setCurrentApiUrl, getCurrentImageProxyUrl, setCurrentImageProxyUrl } from "../../src/lib/utils";
 
 const proxyGroup1 = [
   "https://api2.suicaodex.com",

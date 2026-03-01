@@ -8,16 +8,6 @@ export const siteConfig = {
     github: "https://github.com/TNTKien/better-suicaodex",
     facebook: "https://facebook.com/suicaodex",
   },
-  mangadexAPI: {
-    webURL: "https://mangadex.org",
-    baseURL: "https://api.mangadex.org",
-    coverURL: "https://uploads.mangadex.org/covers",
-    imgURL: "https://uploads.mangadex.org",
-    ogURL: "https://og.mangadex.org/og-image",
-    staffPickList: "805ba886-dd99-4aa4-b460-4bd7c7b71352",
-    seasonalList: "68ab4f4e-6f01-4898-9038-c5eee066be27",
-    matoSeiheiID: "e1e38166-20e4-4468-9370-187f985c550e",
-  },
   suicaodex: {
     domain: "https://suicaodex.com",
     mato_domain: "https://mato.suicaodex.com",
