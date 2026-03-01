@@ -1,6 +1,6 @@
 import { useLocalLibraryV2 } from "@/hooks/use-local-library-v2";
 import { useLocalNotification } from "@/hooks/use-local-notification";
-import { getMangaCategory, updateMangaCategory } from "@/lib/suicaodex/db";
+import { getMangaCategory } from "@/lib/suicaodex/db";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,21 +15,16 @@ import {
   BookmarkCheck,
   ChevronDown,
   CircleUser,
-  CloudOff,
   ListCheck,
   ListPlus,
   NotebookPen,
-  Phone,
   Smartphone,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-} from "@/components/ui/button-group";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Spinner } from "@/components/ui/spinner";
 
 type StorageMode = "local" | "account";
@@ -86,7 +81,11 @@ const storageModeOptions = [
   },
 ];
 
-export function MangaAddToLibBtn({ mangaId, title, coverId }: MangaAddToLibBtnProps) {
+export function MangaAddToLibBtn({
+  mangaId,
+  title,
+  coverId,
+}: MangaAddToLibBtnProps) {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [storageMode, setStorageMode] = useState<StorageMode>("local");
@@ -97,12 +96,8 @@ export function MangaAddToLibBtn({ mangaId, title, coverId }: MangaAddToLibBtnPr
   const [isFetchingAccount, setIsFetchingAccount] = useState(false);
   const [hasFetchedAccount, setHasFetchedAccount] = useState(false);
 
-  const {
-    library,
-    addToLibrary,
-    removeFromLibrary,
-    getCategoryOfId,
-  } = useLocalLibraryV2();
+  const { library, addToLibrary, removeFromLibrary, getCategoryOfId } =
+    useLocalLibraryV2();
 
   const {
     localNotification,
@@ -166,25 +161,28 @@ export function MangaAddToLibBtn({ mangaId, title, coverId }: MangaAddToLibBtnPr
       toast.info("Bạn cần đăng nhập để sử dụng chức năng này!");
       return;
     }
-    setIsLoading(true);
-    try {
-      const res = await updateMangaCategory(
-        session.user.id,
-        mangaId,
-        v.toUpperCase() as any,
-        "none", // đếch nhớ sao lại code như này 😳
-      );
-      if (res.status === 200 || res.status === 201) {
-        toast.success(res.message);
-      } else {
-        toast.error(res.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-    } finally {
-      setIsLoading(false);
-    }
+    return toast.warning("Chức năng đang bảo trì", {
+      description: "Dùng tạm trên thiết bị nhé 🤪",
+    });
+    // setIsLoading(true);
+    // try {
+    //   const res = await updateMangaCategory(
+    //     session.user.id,
+    //     mangaId,
+    //     v.toUpperCase() as any,
+    //     "none", // đếch nhớ sao lại code như này 😳
+    //   );
+    //   if (res.status === 200 || res.status === 201) {
+    //     toast.success(res.message);
+    //   } else {
+    //     toast.error(res.message);
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   const handleCategoryChange = async (v: string) => {
@@ -193,8 +191,11 @@ export function MangaAddToLibBtn({ mangaId, title, coverId }: MangaAddToLibBtnPr
       setLocalValue(newValue);
       handleLocalLibraryAdd(newValue);
     } else {
-      setAccountValue(newValue);
-      await handleLibraryAdd(newValue);
+      toast.warning("Chức năng đang bảo trì", {
+        description: "Dùng tạm trên thiết bị nhé 🤪",
+      });
+      // setAccountValue(newValue);
+      // await handleLibraryAdd(newValue);
     }
   };
 
@@ -210,14 +211,15 @@ export function MangaAddToLibBtn({ mangaId, title, coverId }: MangaAddToLibBtnPr
   };
 
   const handleBellToggle = () => {
-    const newState = !isNotificationEnabled;
-    setIsNotificationEnabled(newState);
-    handleLocalNotificationToggle(value, newState);
-    if (newState) {
-      toast.success("Đã bật thông báo!");
-    } else {
-      toast.info("Đã tắt thông báo!");
-    }
+    return toast.warning("Chức năng đang bảo trì");
+    // const newState = !isNotificationEnabled;
+    // setIsNotificationEnabled(newState);
+    // handleLocalNotificationToggle(value, newState);
+    // if (newState) {
+    //   toast.success("Đã bật thông báo!");
+    // } else {
+    //   toast.info("Đã tắt thông báo!");
+    // }
   };
 
   const currentCategory = categoryOptions.find((opt) => opt.value === value);

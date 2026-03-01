@@ -37,8 +37,8 @@ Tuy vậy, SuicaoDex sẽ luôn:
 | `/random` | ☑️ | -- |
 | `/advanced-search` | ☑️ | -- |
 | `/history` | ☑️ | -- |
-| `/my-library` | ⬛ | -- |
-
+| `/my-library` | ☑️ | -- |
+| `/notifications` | ☑️ | -- |
 
 
 ☑️ Làm lại reader: cơ bản đã xong, cần thử nghiệm thêm để cải thiện UI/UX

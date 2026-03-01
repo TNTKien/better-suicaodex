@@ -7,7 +7,6 @@ import { ThemeSwitcher } from "@/components/Theme/theme-switcher";
 import { META_THEME_COLORS, siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { ImageProxyInitializer } from "@/components/image-proxy-initializer";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ServiceWorkerRegistrar } from "@/components/sw-registrar";
 
@@ -81,7 +80,6 @@ export default function RootLayout({
             enableColorScheme
             enableSystem
           >
-            <ImageProxyInitializer />
             <ServiceWorkerRegistrar />
             {children}
             <Toaster richColors position="top-center" closeButton={false} />
