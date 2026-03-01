@@ -26,7 +26,7 @@ Tuy vậy, SuicaoDex sẽ luôn:
 | --- | --- | --- |
 | `/` | ☑️ | -- |
 | `/manga/:id` | ☑️ | -- |
-| `/chapter/:id` | ⬛ | -- |
+| `/chapter/:id` | ☑️ | -- |
 | `/author/:id` | ☑️ | -- |
 | `/tag` | ☑️ | -- |
 | `/tag/:id` | ☑️ | -- |
