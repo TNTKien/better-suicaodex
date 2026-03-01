@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
-import History from "@/components/Pages/History";
+import HistoryList from "./_components/history-list";
 
 
 export function generateMetadata(): Metadata {
@@ -19,7 +19,7 @@ export default function Page() {
         <h1 className="text-2xl font-black uppercase">Lịch sử đọc</h1>
       </div>
 
-      <Alert className="mt-4 rounded-sm bg-secondary">
+      <Alert className="mt-4 rounded-sm">
         <Terminal size={18} />
         <AlertTitle>Có thể bạn cần biết:</AlertTitle>
         <AlertDescription>
@@ -29,7 +29,7 @@ export default function Page() {
       </Alert>
 
       <div className="mt-4">
-        <History />
+        <HistoryList />
       </div>
     </>
   );

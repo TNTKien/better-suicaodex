@@ -6,11 +6,14 @@ import { useGetChapterId } from "@/lib/weebdex/hooks/chapter/chapter";
 import ChapterNotFound from "./chapter-notfound";
 import MangaMaintain from "@/components/Manga/manga-maintain";
 import useReadingHistory from "@/hooks/use-reading-history";
+import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
 import { useEffect } from "react";
 import { type Chapter } from "@/lib/weebdex/model";
 import { ReaderSidebar } from "./reader-sidebar";
 import { ReaderHeader } from "./reader-header";
 import { siteConfig } from "@/config/site";
+import { useGetMangaId } from "@/lib/weebdex/hooks/manga/manga";
+import { parseMangaTitle } from "@/lib/weebdex/utils";
 
 interface ChapterProps {
   id: string;
@@ -19,6 +22,7 @@ interface ChapterProps {
 
 export default function ChapterPage({ id, initialData }: ChapterProps) {
   const { addHistory } = useReadingHistory();
+  const { addHistory: addHistoryV2 } = useReadingHistoryV2();
   const { data: res, isLoading, error } = useGetChapterId(id, {
     query: {
       initialData: initialData
@@ -35,20 +39,52 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
 
   const mangaId = data?.relationships?.manga?.id;
 
+  const { data: mangaRes } = useGetMangaId(mangaId ?? "", {
+    query: {
+      enabled: !!mangaId,
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  });
+  const mangaData = mangaRes?.status === 200 ? mangaRes.data : undefined;
+
   useEffect(() => {
     try {
       if (data && mangaId) {
+        const now = new Date().toISOString();
         addHistory(mangaId, {
           chapterId: id,
           chapter: data.chapter ?? null,
-          updatedAt: new Date().toISOString(),
+          updatedAt: now,
         });
+        const meta = mangaData
+          ? {
+              title: parseMangaTitle(mangaData).title,
+              coverId: mangaData.relationships?.cover?.id ?? null,
+            }
+          : undefined;
+        addHistoryV2(
+          mangaId,
+          {
+            chapterId: id,
+            chapter: data.chapter ?? null,
+            title: data.title ?? null,
+            language: data.language ?? null,
+            groups: (data.relationships?.groups ?? []).map((g) => ({
+              id: g.id ?? "",
+              name: g.name ?? "",
+            })),
+            readAt: now,
+          },
+          meta
+        );
       }
     } catch (error) {
       console.error(error);
       return;
     }
-  }, [addHistory, data, id, mangaId]);
+  }, [addHistory, addHistoryV2, data, id, mangaData, mangaId]);
 
   if (error) {
     if ((error as any).status === 404) return <ChapterNotFound />;

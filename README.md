@@ -36,7 +36,7 @@ Tuy vậy, SuicaoDex sẽ luôn:
 | `/recent` | ☑️ | -- |
 | `/random` | ☑️ | -- |
 | `/advanced-search` | ☑️ | -- |
-| `/history` | ⬛ | -- |
+| `/history` | ☑️ | -- |
 | `/my-library` | ⬛ | -- |
 
 
