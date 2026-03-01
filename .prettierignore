@@ -2,6 +2,7 @@
 build
 coverage
 node_modules
+deprecated
 
 # i dont know what is this, copied from vercel 👍
 # Build artifacts

@@ -21,6 +21,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "node_modules/**",
+    "deprecated/**",
   ]),
 
   // Đặt ở cuối để tự động tắt các rule xung đột và bật rule prettier
