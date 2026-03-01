@@ -39,7 +39,7 @@ export function ContentRatingTag({
     <NormalTag className={cn("uppercase text-white", colorClass)}>
       {isLink ? (
         <a
-          href={`/advanced-search?content=${rating}`}
+          href={`/advanced-search?contentRating=${rating}`}
           className="hover:underline"
         >
           {rating}
