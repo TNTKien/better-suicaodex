@@ -1,7 +1,7 @@
 "use client";
 
 import { useConfig } from "@/hooks/use-config";
-import useReadingHistory from "@/hooks/use-reading-history";
+import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
 import { Chapter } from "@/lib/weebdex/model";
 import { GetMangaIdChaptersOrder } from "@/lib/weebdex/model/getMangaIdChaptersOrder";
 import { GetMangaIdChaptersSort } from "@/lib/weebdex/model/getMangaIdChaptersSort";
@@ -35,8 +35,8 @@ export function MangaReadNowBtn({ id }: MangaReadNowBtnProps) {
   const [showDialog, setShowDialog] = useState(false);
   const router = useRouter();
 
-  const { history } = useReadingHistory();
-  const readingHistory = history[id];
+  const { history } = useReadingHistoryV2();
+  const readingHistory = history[id]?.chapters[0];
 
   const { data: chapters, isLoading } = useQuery({
     queryKey: [`wd-readnow-${id}`, config.translatedLanguage],

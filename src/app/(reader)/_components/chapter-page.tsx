@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetChapterId } from "@/lib/weebdex/hooks/chapter/chapter";
 import ChapterNotFound from "./chapter-notfound";
 import MangaMaintain from "@/components/Manga/manga-maintain";
-import useReadingHistory from "@/hooks/use-reading-history";
 import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
 import { useEffect } from "react";
 import { type Chapter } from "@/lib/weebdex/model";
@@ -21,7 +20,6 @@ interface ChapterProps {
 }
 
 export default function ChapterPage({ id, initialData }: ChapterProps) {
-  const { addHistory } = useReadingHistory();
   const { addHistory: addHistoryV2 } = useReadingHistoryV2();
   const { data: res, isLoading, error } = useGetChapterId(id, {
     query: {
@@ -53,11 +51,6 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     try {
       if (data && mangaId) {
         const now = new Date().toISOString();
-        addHistory(mangaId, {
-          chapterId: id,
-          chapter: data.chapter ?? null,
-          updatedAt: now,
-        });
         const meta = mangaData
           ? {
               title: parseMangaTitle(mangaData).title,
@@ -84,7 +77,7 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
       console.error(error);
       return;
     }
-  }, [addHistory, addHistoryV2, data, id, mangaData, mangaId]);
+  }, [addHistoryV2, data, id, mangaData, mangaId]);
 
   if (error) {
     if ((error as any).status === 404) return <ChapterNotFound />;
