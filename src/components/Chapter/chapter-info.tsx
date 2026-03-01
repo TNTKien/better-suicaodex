@@ -53,7 +53,10 @@ export default function ChapterInfo({ chapter }: ChapterInfoProps) {
   );
 }
 
-export function ChapterTitle(chapter: Chapter) {
+export function ChapterTitle(chapter: {
+  chapter?: string | null;
+  title?: string | null;
+}) {
   if (!chapter.chapter) {
     return "Oneshot";
   }

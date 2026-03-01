@@ -1,4 +1,4 @@
-import { Chapter } from "@/types/types";
+import { Chapter } from "@/lib/weebdex/model";
 import {
   HomeIcon,
   MessageSquareTextIcon,
@@ -86,7 +86,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
           <Collapsible asChild defaultOpen className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={chapter.manga.title}>
+                <SidebarMenuButton tooltip={chapter.relationships?.manga?.title ?? ""}>
                   <NotebookTextIcon />
                   <span>Đang đọc</span>
                 </SidebarMenuButton>
@@ -99,9 +99,9 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
                       className="h-auto text-pretty text-primary hover:bg-transparent hover:text-primary hover:underline"
                     >
                       <NoPrefetchLink
-                        href={`/manga/${chapter.manga.id}/${generateSlug(chapter.manga.title || "")}`}
+                        href={`/manga/${chapter.relationships?.manga?.id}/${generateSlug(chapter.relationships?.manga?.title || "")}`}
                       >
-                        {chapter.manga.title}
+                        {chapter.relationships?.manga?.title}
                       </NoPrefetchLink>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
@@ -126,10 +126,10 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  tooltip={chapter.manga.title}
-                  disabled={chapter.group.length === 0}
+                  tooltip={chapter.relationships?.manga?.title ?? ""}
+                  disabled={(chapter.relationships?.groups?.length ?? 0) === 0}
                 >
-                  {chapter.group.length === 0 ? (
+                  {(chapter.relationships?.groups?.length ?? 0) === 0 ? (
                     <>
                       <UserXIcon />
                       <span>No Group</span>
@@ -142,17 +142,17 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
                   )}
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              {chapter.group.length > 0 && (
+              {(chapter.relationships?.groups?.length ?? 0) > 0 && (
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    {chapter.group.map((gr) => (
+                    {(chapter.relationships?.groups ?? []).map((gr) => (
                       <SidebarMenuSubItem key={gr.id}>
                         <SidebarMenuSubButton
                           asChild
                           className="w-fit h-auto line-clamp-1 whitespace-normal! text-primary hover:bg-transparent hover:text-primary hover:underline"
                         >
                           <NoPrefetchLink
-                            href={`/group/${gr.id}/${generateSlug(gr.name)}`}
+                            href={`/group/${gr.id}/${generateSlug(gr.name ?? "")}`}
                           >
                             {gr.name}
                           </NoPrefetchLink>
@@ -177,7 +177,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
       >
         <SidebarGroup className="py-0">
           <SidebarGroupContent>
-            <CommentList id={chapter.id} type="chapter" ref={commentListRef} inSidebar/>
+            <CommentList id={chapter.id ?? ""} type="chapter" ref={commentListRef} inSidebar/>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -186,8 +186,8 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
         className={cn(state === "collapsed" && !isMobile && "hidden")}
       >
         <CommentFormSimple
-          id={chapter.id}
-          title={chapter.manga.title || ""}
+          id={chapter.id ?? ""}
+          title={chapter.relationships?.manga?.title || ""}
           type="chapter"
           onCommentPosted={handleCommentPosted}
           chapterNumber={formatChapterTitle(chapter, false)}

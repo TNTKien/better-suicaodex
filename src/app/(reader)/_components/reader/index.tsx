@@ -2,10 +2,10 @@
 
 import useKeyDown from "@/hooks/use-keydown";
 import { useReaderImages } from "@/hooks/use-reader-images";
-import { getChapterAggregate } from "@/lib/mangadex/chapter";
+import { useGetMangaIdAggregate } from "@/lib/weebdex/hooks/chapter/chapter";
 import { cn } from "@/lib/utils";
 import { useReaderStore } from "@/store/reader-store";
-import { Chapter } from "@/types/types";
+import { Chapter as WeebdexChapter } from "@/lib/weebdex/model";
 import { useRouter } from "@bprogress/next";
 import {
   ArrowLeft,
@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -26,14 +25,14 @@ import ChapterNav from "./chapter-nav";
 import DoublePage from "./double-page";
 import LongStrip from "./long-strip";
 import SinglePage from "./single-page";
-import { SiPiped } from "@icons-pack/react-simple-icons";
+import { toReaderAggregate } from "@/lib/weebdex/utils";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type SpreadPages = [number] | [number, number];
 
 interface ReaderProps {
   images: string[];
-  chapterData: Chapter;
+  chapterData: WeebdexChapter;
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -93,36 +92,34 @@ export default function Reader({ images, chapterData }: ReaderProps) {
   const [retryCount, setRetryCount] = useState(0);
   const [reachedMaxRetries, setReachedMaxRetries] = useState(false);
 
+  const mangaId = chapterData.relationships?.manga?.id ?? "";
+  const language = chapterData.language ?? "";
+
   const {
-    data: chapterAggregate,
+    data: aggregateRes,
     isFetching: isMutating,
     error,
     refetch: trigger,
-  } = useQuery({
-    queryKey: [
-      `chapter-aggregate-${chapterData.id}`,
-      chapterData.manga.id,
-      [chapterData.language],
-      chapterData.group.map((g) => g.id),
-    ],
-    queryFn: () =>
-      getChapterAggregate(
-        chapterData.manga.id,
-        [chapterData.language],
-        chapterData.group.map((g) => g.id),
-      ),
-    enabled: false,
+  } = useGetMangaIdAggregate(mangaId, { tlang: language ? [language] : undefined }, {
+    query: {
+      enabled: !!mangaId,
+      refetchOnWindowFocus: false,
+    },
   });
+
+  const chapterAggregate = useMemo(
+    () => (aggregateRes?.data ? toReaderAggregate(aggregateRes.data, chapterData.id) : undefined),
+    [aggregateRes, chapterData.id],
+  );
 
   const chapterExists = chapterAggregate?.some((vol) =>
     vol.chapters.some(
-      (ch) => ch.id === chapterData.id || ch.other?.includes(chapterData.id),
+      (ch) => ch.id === chapterData.id || ch.other?.includes(chapterData.id ?? ""),
     ),
   );
 
   useEffect(() => {
     if (!chapterAggregate) {
-      trigger();
       return;
     }
     if (!chapterExists && retryCount < MAX_RETRIES) {
@@ -151,16 +148,17 @@ export default function Reader({ images, chapterData }: ReaderProps) {
   const { prevChapterId, nextChapterId } = useMemo(() => {
     if (!chapterAggregate || !chapterExists)
       return { prevChapterId: undefined, nextChapterId: undefined };
+    const chId = chapterData.id ?? "";
     let volIdx = chapterAggregate.findIndex((v) =>
-      v.chapters.some((c) => c.id === chapterData.id),
+      v.chapters.some((c) => c.id === chId),
     );
     if (volIdx === -1)
       volIdx = chapterAggregate.findIndex((v) =>
-        v.chapters.some((c) => c.other?.includes(chapterData.id)),
+        v.chapters.some((c) => c.other?.includes(chId)),
       );
     const chIdx =
       chapterAggregate[volIdx]?.chapters.findIndex(
-        (c) => c.id === chapterData.id,
+        (c) => c.id === chId,
       ) ?? -1;
     const prev =
       chapterAggregate[volIdx]?.chapters[chIdx + 1]?.id ??

@@ -1,6 +1,7 @@
 import ChapterPage from "../../_components/chapter-page";
 import { siteConfig } from "@/config/site";
-import { getChapterDetail } from "@/lib/mangadex/chapter";
+import { getChapterId } from "@/lib/weebdex/hooks/chapter/chapter";
+import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { Metadata } from "next";
 import { cache } from "react";
 
@@ -13,7 +14,9 @@ interface PageProps {
 //TODO: slug
 
 const getCachedChapterData = cache(async (id: string) => {
-  return await getChapterDetail(id);
+  const res = await getChapterId(id);
+  if (res.status !== 200) throw new Error(`Chapter fetch failed: ${res.status}`);
+  return res.data;
 });
 
 export async function generateMetadata({
@@ -22,10 +25,12 @@ export async function generateMetadata({
   const { id } = await params;
 
   try {
-    const res = await getCachedChapterData(id);
+    const chapter = await getCachedChapterData(id);
+    const manga = chapter.relationships?.manga;
+    const mangaTitle = manga ? parseMangaTitle(manga).title : undefined;
 
-    const chapterInx = res.chapter ? `Ch. ${res.chapter}` : "Oneshot";
-    const title = [res.manga?.title, chapterInx, res.title, "SuicaoDex"]
+    const chapterInx = chapter.chapter ? `Ch. ${chapter.chapter}` : "Oneshot";
+    const title = [mangaTitle, chapterInx, chapter.title, "SuicaoDex"]
       .filter((x) => x)
       .join(" - ");
 
@@ -36,7 +41,7 @@ export async function generateMetadata({
         title: title,
         siteName: "SuicaoDex",
         description: `Đọc ngay ${title}`,
-        images: `${siteConfig.mangadexAPI.ogURL}/chapter/${id}`,
+        images: `${siteConfig.weebdex.ogURL}/chapter/${id}`,
       },
     };
   } catch (error: any) {
@@ -56,3 +61,4 @@ export default async function Page({ params }: PageProps) {
     return <ChapterPage id={id} />;
   }
 }
+

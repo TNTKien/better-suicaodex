@@ -24,8 +24,10 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { useConfig } from "@/hooks/use-config";
 import useScrollOffset from "@/hooks/use-scroll-offset";
-import { getChapterAggregate } from "@/lib/mangadex/chapter";
+import { useGetMangaIdAggregate } from "@/lib/weebdex/hooks/chapter/chapter";
 import { cn, formatChapterTitle } from "@/lib/utils";
+import { toReaderAggregate } from "@/lib/weebdex/utils";
+import { Chapter } from "@/lib/weebdex/model";
 import {
   IMAGE_SCALE_LABELS,
   READER_MODE_LABELS,
@@ -33,7 +35,6 @@ import {
   type ReaderMode,
   useReaderStore,
 } from "@/store/reader-store";
-import { Chapter } from "@/types/types";
 import { useRouter } from "@bprogress/next";
 import {
   ArrowLeft,
@@ -55,8 +56,7 @@ import {
   Wallpaper,
 } from "lucide-react";
 import Link from "next/link";
-import { ReactElement, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 
 interface ChapterNavProps {
   chapter: Chapter;
@@ -152,7 +152,10 @@ function ReaderSettingsDialog() {
       <DialogContent className="border-none [&>button]:hidden max-w-full">
         <DialogHeader>
           <DialogTitle>Tùy chỉnh Reader (Beta)</DialogTitle>
-          <DialogDescription>Các tùy chỉnh đang trong quá trình thử nghiệm, có thể lỗi hoặc mang lại trải nghiệm không mong muốn</DialogDescription>
+          <DialogDescription>
+            Các tùy chỉnh đang trong quá trình thử nghiệm, có thể lỗi hoặc mang
+            lại trải nghiệm không mong muốn
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-1 gap-3 transition-all duration-300">
@@ -295,32 +298,39 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
   const [retryCount, setRetryCount] = useState(0);
   const [reachedMaxRetries, setReachedMaxRetries] = useState(false);
 
+  const mangaId = chapter.relationships?.manga?.id ?? "";
+  const language = chapter.language ?? "";
+
   const {
-    data: chapterAggregate,
+    data: aggregateRes,
     isLoading,
     isFetching: isValidating,
     error,
     refetch: mutate,
-  } = useQuery({
-    queryKey: [
-      `chapter-aggregate-${chapter.id}`,
-      chapter.manga.id,
-      chapter.language,
-      chapter.group.map((group) => group.id),
-    ],
-    queryFn: () =>
-      getChapterAggregate(
-        chapter.manga.id,
-        [chapter.language],
-        chapter.group.map((group) => group.id),
-      ),
-    refetchOnWindowFocus: false,
-  });
+  } = useGetMangaIdAggregate(
+    mangaId,
+    { tlang: language ? [language] : undefined },
+    {
+      query: {
+        enabled: !!mangaId,
+        refetchOnWindowFocus: false,
+      },
+    },
+  );
+
+  const chapterAggregate = useMemo(
+    () =>
+      aggregateRes?.data
+        ? toReaderAggregate(aggregateRes.data, chapter.id)
+        : undefined,
+    [aggregateRes, chapter.id],
+  );
 
   // Check if current chapter exists in the aggregate data
+  const chapterId = chapter.id ?? "";
   const chapterExists = chapterAggregate?.some((volume) =>
     volume.chapters.some(
-      (ch) => ch.id === chapter.id || ch.other?.some((id) => id === chapter.id),
+      (ch) => ch.id === chapterId || ch.other?.some((id) => id === chapterId),
     ),
   );
 
@@ -403,20 +413,18 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
   if (!chapterAggregate) return null;
 
   let currentVolIndex = chapterAggregate.findIndex((aggregate) =>
-    aggregate.chapters.some((ch) => ch.id === chapter.id),
+    aggregate.chapters.some((ch) => ch.id === chapterId),
   );
 
   if (currentVolIndex === -1) {
     currentVolIndex = chapterAggregate.findIndex((aggregate) =>
-      aggregate.chapters.some((ch) =>
-        ch.other?.some((id) => id === chapter.id),
-      ),
+      aggregate.chapters.some((ch) => ch.other?.some((id) => id === chapterId)),
     );
   }
 
   const currentChapterIndex = chapterAggregate[
     currentVolIndex
-  ].chapters.findIndex((ch) => ch.id === chapter.id);
+  ].chapters.findIndex((ch) => ch.id === chapterId);
 
   const prevChapter =
     chapterAggregate[currentVolIndex].chapters[currentChapterIndex + 1]?.id ??
@@ -449,6 +457,7 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
             <SelectValue placeholder={formatChapterTitle(chapter)} />
           </SelectTrigger>
           <SelectContent
+            position="popper"
             className={cn("max-h-[350px]", `theme-${config.theme}`)}
           >
             {chapterAggregate.map((vol) => (
@@ -464,7 +473,7 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
                   <SelectItem
                     key={ch.id}
                     value={ch.id}
-                    disabled={ch.id === chapter.id}
+                    disabled={ch.id === chapterId}
                   >
                     {ch.chapter !== "none" ? `Ch. ${ch.chapter}` : "Oneshot"}
                   </SelectItem>

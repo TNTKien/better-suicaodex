@@ -6,7 +6,6 @@ import * as cheerio from "cheerio";
 import { defaultSchema } from "hast-util-sanitize";
 import { siteConfig } from "@/config/site";
 import slugify from "slugify";
-import { Chapter } from "@/types/types";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -256,7 +255,7 @@ export function generateSlug(title: string): string {
 }
 
 export function formatChapterTitle(
-  chapter: Chapter,
+  chapter: { chapter?: string | null; title?: string | null },
   includeTitle: boolean = true,
 ): string {
   if (!chapter.chapter) {

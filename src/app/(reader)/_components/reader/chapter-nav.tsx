@@ -14,7 +14,8 @@ import {
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 import { cn } from "@/lib/utils";
-import { Chapter, ChapterAggregate } from "@/types/types";
+import { Chapter as WeebdexChapter, } from "@/lib/weebdex/model";
+import { ChapterAggregate } from "@/types/types";
 import {
   ArrowLeft,
   ArrowRight,
@@ -27,7 +28,7 @@ import { useConfig } from "@/hooks/use-config";
 import { useSidebar } from "@/components/ui/sidebar-2-reader";
 
 interface ChapterNavProps {
-  chapterData: Chapter;
+  chapterData: WeebdexChapter;
   chapterAggregate: ChapterAggregate[];
   /** Pre-computed bởi Reader/index - dùng trực tiếp, bỏ qua tính toán nội bộ */
   prevChapterId?: string;
@@ -173,7 +174,7 @@ export default function ChapterNav({
   );
 }
 
-function ChapterTitle(chapter: Chapter) {
+function ChapterTitle(chapter: { chapter?: string | null }) {
   if (!chapter.chapter) {
     return "Oneshot";
   }
