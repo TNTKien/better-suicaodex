@@ -16,7 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import MyLibrary from "@/components/Pages/MyLibrary";
+import LibraryList from "./_components/library-list";
 import { auth } from "@/auth";
 import SyncLib from "@/components/Library/sync-lib";
 
@@ -92,7 +92,7 @@ export default async function Page() {
 
             {tabValues.map((tab) => (
               <TabsContent key={tab.value} value={tab.value} className="w-full">
-                <MyLibrary category={tab.value} />
+                <LibraryList category={tab.value as any} />
               </TabsContent>
             ))}
           </Tabs>

@@ -1,4 +1,4 @@
-import { useLocalLibrary } from "@/hooks/use-local-library";
+import { useLocalLibraryV2 } from "@/hooks/use-local-library-v2";
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import { getMangaCategory, updateMangaCategory } from "@/lib/suicaodex/db";
 import {
@@ -36,6 +36,8 @@ type StorageMode = "local" | "account";
 
 interface MangaAddToLibBtnProps {
   mangaId: string;
+  title: string;
+  coverId: string | null;
 }
 
 const categoryOptions = [
@@ -84,7 +86,7 @@ const storageModeOptions = [
   },
 ];
 
-export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
+export function MangaAddToLibBtn({ mangaId, title, coverId }: MangaAddToLibBtnProps) {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [storageMode, setStorageMode] = useState<StorageMode>("local");
@@ -96,11 +98,11 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
   const [hasFetchedAccount, setHasFetchedAccount] = useState(false);
 
   const {
-    localLibrary,
-    addToLocalCategory,
-    removeFromLocalLibrary,
-    getLocalCategoryOfId,
-  } = useLocalLibrary();
+    library,
+    addToLibrary,
+    removeFromLibrary,
+    getCategoryOfId,
+  } = useLocalLibraryV2();
 
   const {
     localNotification,
@@ -110,13 +112,13 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
   } = useLocalNotification();
 
   const [localValue, setLocalValue] = useState<LibraryType | "none">(
-    getLocalCategoryOfId(mangaId) || "none",
+    getCategoryOfId(mangaId) || "none",
   );
 
   // Sync local value when library changes
   useEffect(() => {
-    setLocalValue(getLocalCategoryOfId(mangaId) || "none");
-  }, [mangaId, localLibrary]);
+    setLocalValue(getCategoryOfId(mangaId) || "none");
+  }, [mangaId, library]);
 
   useEffect(() => {
     setIsNotificationEnabled(isInLocalNotification(mangaId));
@@ -150,10 +152,10 @@ export function MangaAddToLibBtn({ mangaId }: MangaAddToLibBtnProps) {
 
   const handleLocalLibraryAdd = (v: LibraryType | "none") => {
     if (v === "none") {
-      removeFromLocalLibrary(mangaId);
+      removeFromLibrary(mangaId);
       return toast.success(`Đã xóa truyện khỏi thư viện!`);
     }
-    addToLocalCategory(mangaId, v);
+    addToLibrary(mangaId, v, { title, coverId });
     return toast.success(
       `Đã thêm truyện vào: ${categoryOptions.find((opt) => opt.value === v)?.label}!`,
     );

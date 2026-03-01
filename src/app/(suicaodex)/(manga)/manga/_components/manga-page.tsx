@@ -238,7 +238,7 @@ export default function MangaPage({ id, initData }: PageProps) {
 
             <div className="pt-[0.85rem] flex flex-col gap-[0.85rem]">
               <div className="flex flex-wrap gap-2">
-                <MangaAddToLibBtn mangaId={id} />
+                <MangaAddToLibBtn mangaId={id} title={title} coverId={manga.relationships?.cover?.id ?? null} />
 
                 <MangaReadNowBtn id={id} />
                 <Button variant="secondary" asChild>
@@ -303,7 +303,7 @@ export default function MangaPage({ id, initData }: PageProps) {
         </div>
 
         <div className="flex md:hidden flex-wrap gap-2 w-full">
-          <MangaAddToLibBtn mangaId={id} />
+          <MangaAddToLibBtn mangaId={id} title={title} coverId={manga.relationships?.cover?.id ?? null} />
 
           <ButtonGroup className="flex-1">
             <MangaReadNowBtn id={id} />
