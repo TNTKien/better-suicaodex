@@ -107,10 +107,10 @@ export function toReaderAggregate(
     volumeMap.get(vol)!.push({ chapter, ids: entryIds });
   }
 
-  // Sort volumes descending (numeric, "none" treated as 0)
+  // Sort volumes descending (numeric, "none" treated as Infinity → appears first)
   const sortedVols = Array.from(volumeMap.entries()).sort(([a], [b]) => {
-    const na = a === "none" ? 0 : parseFloat(a);
-    const nb = b === "none" ? 0 : parseFloat(b);
+    const na = a === "none" ? Infinity : parseFloat(a);
+    const nb = b === "none" ? Infinity : parseFloat(b);
     return nb - na;
   });
 
