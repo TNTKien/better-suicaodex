@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Đăng nhập - SuicaoDex",
+    title: "Đăng nhập",
   };
 }
 

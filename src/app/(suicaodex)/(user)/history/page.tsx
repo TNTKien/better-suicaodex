@@ -6,7 +6,7 @@ import HistoryList from "./_components/history-list";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Lịch sử đọc truyện - SuicaoDex",
+    title: "Lịch sử đọc truyện",
     description: "Lịch sử đọc truyện",
     keywords: ["Lịch sử", "History", "SuicaoDex"],
   };

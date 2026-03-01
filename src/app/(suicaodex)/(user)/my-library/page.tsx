@@ -30,7 +30,7 @@ import {
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Thư viện - SuicaoDex",
+    title: "Thư viện",
     // description: "Thư viện",
     // keywords: ["Lịch sử", "History", "SuicaoDex"],
   };

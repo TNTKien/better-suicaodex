@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Gacha Simulator - SuicaoDex",
+    title: "Gacha Simulator",
     description: "SuicaoDex88 - Nhà cái đầu hàng Vi En",
     keywords: ["Gacha", "SuicaoDex", "Blue Archive", "Pokemon TCG", "Honkai Star Rail"],
   };

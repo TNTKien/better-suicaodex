@@ -16,8 +16,8 @@ export async function generateMetadata({
   return {
     title:
       page === 1
-        ? "Mồn lèo - SuicaoDex"
-        : `Trang ${page} - Mồn lèo - SuicaoDex`,
+        ? "Mồn lèo"
+        : `Trang ${page} - Mồn lèo`,
     keywords: ["Mồn lèo", "Mèo", "Car", "SuicaoDex"],
   };
 }

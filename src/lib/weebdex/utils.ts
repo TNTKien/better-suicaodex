@@ -63,7 +63,7 @@ export const parseRelationTitle = (
 export const generateJsonLd = (manga: Manga) => {
   const { title } = parseMangaTitle(manga);
   const description =
-    manga.description || `Đọc truyện ${manga.title} - SuicaoDex`;
+    manga.description || `Đọc truyện ${manga.title}`;
   return {
     "@context": "https://schema.org",
     "@type": "Article",
