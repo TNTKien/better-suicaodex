@@ -14,6 +14,10 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Tôn trọng nguồn dịch.
 - Thân thiện với độc giả Việt Nam (cụ thể là tôi).
 
+## BREAKING CHANGES - 01/03/2026
+- Chuyển sang dùng [WeebDex API](https://api.weebdex.org/docs), đa phần các config, code...liên quan đến MangaDex đã bị xóa hoặc đưa vào thư mục `deprecated`.
+- Mapping giữa WeebDex và MangaDex chưa hoàn chỉnh ~~(thực ra là lười chưa làm 🐧)~~, dẫn đến 1 số chức năng bị ảnh hưởng (Thư viện, Lịch sử đọc...) → Tạm tắt hoặc sử dụng bị hạn chế, sẽ khắc phục trong tương lai.
+
 ## Vài lỗi đã biết
 - ~~Thông báo bị đần, ngoài ra chưa có chỗ để xem danh sách các truyện đã đăng ký nhận thông báo~~ Tạm thời tắt chức năng này
 - Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
