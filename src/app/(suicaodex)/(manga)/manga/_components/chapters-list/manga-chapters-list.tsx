@@ -29,6 +29,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { useIsMounted } from "usehooks-ts";
+import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
 
 const LIMIT = 100;
 
@@ -73,6 +74,10 @@ export function MangaChaptersList({
   onPageChange,
 }: MangaChaptersListProps) {
   const [config] = useConfig();
+  const { history } = useReadingHistoryV2();
+  const readChapterIds = new Set(
+    (history[mangaId]?.chapters ?? []).map((e) => e.chapterId),
+  );
   const currentPage = page;
   const setCurrentPage = onPageChange;
   const [volumes, setVolumes] = useState<VolumeGroup[]>([]);
@@ -152,6 +157,7 @@ export function MangaChaptersList({
             key={vol.vol ?? "__no_vol__"}
             volume={vol}
             finalChapter={finalChapter}
+            readChapterIds={readChapterIds}
           />
         ))}
       </div>

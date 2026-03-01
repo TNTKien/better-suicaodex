@@ -1,7 +1,7 @@
 "use client";
 
 import { Chapter } from "@/lib/weebdex/model";
-import { Clock, Eye, MessagesSquare, User, UserRound, Users } from "lucide-react";
+import { Clock, Eye, EyeOff, MessagesSquare, User, UserRound, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn, formatNumber, formatTimeToNow } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -29,15 +29,17 @@ export interface ChapterGroup {
 interface ChapterCardProps {
   chapters: ChapterGroup;
   finalChapter?: string;
+  readChapterIds?: Set<string>;
 }
 
 interface SingleCardProps {
   chapter: Chapter;
   finalChapter?: string;
   className?: string;
+  readChapterIds?: Set<string>;
 }
 
-export const ChapterCard = ({ chapters, finalChapter }: ChapterCardProps) => {
+export const ChapterCard = ({ chapters, finalChapter, readChapterIds }: ChapterCardProps) => {
   if (chapters.group.length > 1)
     return (
       <Accordion type="multiple" className="w-full" defaultValue={["chapter"]}>
@@ -70,6 +72,7 @@ export const ChapterCard = ({ chapters, finalChapter }: ChapterCardProps) => {
                     chapter={chapter}
                     finalChapter={finalChapter}
                     className="shadow-xs"
+                    readChapterIds={readChapterIds}
                   />
                 </div>
               ))}
@@ -79,15 +82,17 @@ export const ChapterCard = ({ chapters, finalChapter }: ChapterCardProps) => {
       </Accordion>
     );
 
-  return <SingleCard chapter={chapters.group[0]} finalChapter={finalChapter} />;
+  return <SingleCard chapter={chapters.group[0]} finalChapter={finalChapter} readChapterIds={readChapterIds} />;
 };
 
 export const SingleCard = ({
   chapter,
   finalChapter,
   className,
+  readChapterIds,
 }: SingleCardProps) => {
   const router = useRouter();
+  const isRead = readChapterIds?.has(chapter.id ?? "") ?? false;
   const isUnavailable = Boolean(chapter.is_unavailable);
   const groups = chapter.relationships?.groups ?? [];
   const uploader = chapter.relationships?.uploader;
@@ -98,20 +103,26 @@ export const SingleCard = ({
     <Card
       aria-disabled={isUnavailable}
       className={cn(
-        "flex flex-col justify-between rounded-xs px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent/50",
+        "flex flex-col justify-between rounded-md px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent/50",
         isUnavailable && "opacity-90 cursor-not-allowed text-muted-foreground",
+        !isRead && "border-l-2 border-l-primary",
         className,
       )}
     >
       <div className="flex items-center gap-2">
-        <div className="flex flex-auto items-center space-x-1 min-w-0">
+        <div className="flex flex-auto items-center space-x-2 min-w-0">
+          {isRead ? (
+            <EyeOff className="size-4 shrink-0 text-muted-foreground" />
+          ) : (
+            <Eye className="size-4 shrink-0" />
+          )}
           {chapter.language === "vi" && (
             <VN className="inline-block select-none shrink-0 size-4!" />
           )}
           {chapter.language === "en" && (
             <GB className="inline-block select-none shrink-0 size-4!" />
           )}
-          <p className="font-semibold text-sm md:text-base line-clamp-1 break-all px-1">
+          <p className="font-semibold text-sm md:text-base line-clamp-1 break-all">
             {chapter.chapter
               ? `Ch. ${chapter.chapter}${chapter.title ? ` - ${chapter.title}` : ""}`
               : "Oneshot"}

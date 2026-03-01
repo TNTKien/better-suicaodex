@@ -15,6 +15,7 @@ export interface VolumeGroup {
 interface VolumeCardProps {
   volume: VolumeGroup;
   finalChapter?: string;
+  readChapterIds?: Set<string>;
 }
 
 const getVolumeRange = (chapters: ChapterGroup[]): string => {
@@ -30,7 +31,7 @@ const getVolumeRange = (chapters: ChapterGroup[]): string => {
   return `Ch. ${lastChapter} - ${firstChapter}`;
 };
 
-export const VolumeCard = ({ volume, finalChapter }: VolumeCardProps) => {
+export const VolumeCard = ({ volume, finalChapter, readChapterIds }: VolumeCardProps) => {
   const volumeLabel = volume.vol ? `Volume ${volume.vol}` : "No Volume";
   const volumeRange = getVolumeRange(volume.chapters);
 
@@ -51,7 +52,11 @@ export const VolumeCard = ({ volume, finalChapter }: VolumeCardProps) => {
 
         {volume.chapters.map((chapter) => (
           <AccordionContent key={chapter.chapter ?? "oneshot"} className="pb-2">
-            <ChapterCard chapters={chapter} finalChapter={finalChapter} />
+            <ChapterCard
+              chapters={chapter}
+              finalChapter={finalChapter}
+              readChapterIds={readChapterIds}
+            />
           </AccordionContent>
         ))}
       </AccordionItem>
