@@ -1,29 +1,54 @@
 import { Metadata } from "next";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MonitorCog, NotepadText, ServerOffIcon } from "lucide-react";
+// import Notifications from "@/components/Notifications/notifications";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleHelp, MonitorCog, NotepadText } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import Notifications from "@/components/Notifications/notifications";
+import { Streamdown } from "streamdown";
+const items = [
+  {
+    value: "data_src_change",
+    trigger: "01/03/2026 - Thay đổi nguồn dữ liệu",
+    content:
+      "Vì nhiều lý do, từ giờ SuicaoDex sẽ sử dụng [WeebDex API](https://api.weebdex.org/docs).\n\nDù sao thì, xin được gửi lời cảm ơn cuối cùng đến đội ngũ MangaDex. Ai cũng liêm cho đến khi liêms 🥀",
+  },
+  {
+    value: "user_data",
+    trigger: "01/03/2026 - Tài khoản và dữ liệu người dùng",
+    content:
+      "Về lý thuyết, tài khoản và dữ liệu người dùng của SuicaoDex là riêng biệt với MangaDex, vì vậy việc đổi API kể trên đúng ra phải ~~không ảnh hưởng gì~~.\n\nNhưng vì tôi code đần nên dữ liệu về truyện đã lưu của bạn sẽ tạm không thể sử dụng được, cụ thể vui lòng xem bên dưới.",
+  },
+  {
+    value: "what_affected",
+    trigger: "01/03/2026 - Vậy có những gì bị ảnh hưởng?",
+    content:
+      "Tôi sẽ cố gắng khắc phục các vấn đề bên dưới trong tương lai, còn tương lai cần hay xa thì chưa biết 🐧 \n\n| Chức năng | Trạng thái | Chi tiết |\n|---|---|---|\n| Link | ❌ Không khả dụng | Các đường dẫn sử dụng uuid của MangaDex (vd: `https://suicaodex.com/manga/56958579-6d1b-4db0-be4f-dd17b828fcf`) sẽ không thể truy cập được. |\n| Thư viện & Lịch sử đọc | ⚠️ Hạn chế | Truyện đã lưu vào tài khoản/thiết bị và lịch sử đọc trước ngày **02/03/2026** sẽ không hiển thị; chức năng Lưu truyện vào tài khoản tạm thời bị tắt. |\n| Thông báo chương mới | 🔕 Tạm tắt | Vốn dĩ từ trước đã không ổn, tiện thể tắt luôn để tìm giải pháp tối ưu hơn. |\n| Truyện đề cử & Bảng xếp hạng | 📴 Tạm ẩn | WeebDex chỉ mới đi vào hoạt động gần đây, dữ liệu chưa có quá nhiều nên chưa thể tính toán được. |\n| Bình luận | ⚠️ Hạn chế | Bình luận trước **02/03/2026** vẫn hiển thị ở mục `Bình luận gần đây`, nhưng sẽ không có trong các đầu truyện dùng API mới. Bình luận mới từ sau **02/03/2026** thì bình thường. |",
+  },
+];
 
-interface pageProps {
-  searchParams: Promise<{
-    [key: string]: string | undefined;
-  }>;
-}
+// interface pageProps {
+//   searchParams: Promise<{
+//     [key: string]: string | undefined;
+//   }>;
+// }
 
-export function generateMetadata(): Metadata {
-  return {
-    title: "Thông báo - SuicaoDex",
-  };
-}
+export const metadata: Metadata = {
+  title: "Thông báo",
+};
 
-export default async function Page({ searchParams }: pageProps) {
-  const { page } = await getSearchParams({ searchParams });
+export default async function Page() {
+  // const { page } = await getSearchParams({ searchParams });
   const tabValues = [
     {
       value: "noti",
@@ -43,7 +68,7 @@ export default async function Page({ searchParams }: pageProps) {
         <h1 className="text-2xl font-black uppercase">Thông báo</h1>
       </div>
 
-      <Tabs defaultValue="noti" className="mt-4">
+      <Tabs defaultValue="system" className="mt-4">
         <TabsList className="w-full">
           {tabValues.map((tab) => (
             <TabsTrigger
@@ -57,7 +82,18 @@ export default async function Page({ searchParams }: pageProps) {
           ))}
         </TabsList>
         <TabsContent value="noti">
-          <Accordion
+          <Empty className="bg-muted/30 h-full mt-2">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <ServerOffIcon />
+              </EmptyMedia>
+              <EmptyTitle>Chức năng tạm thời không khả dụng</EmptyTitle>
+              <EmptyDescription className="max-w-xs text-pretty">
+                Tạm tắt cái này để bảo trì, chịu khó đợi nhé 🤪
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+          {/* <Accordion
             type="single"
             collapsible
             className="bg-secondary rounded-md px-2 mb-2"
@@ -73,27 +109,45 @@ export default async function Page({ searchParams }: pageProps) {
                 xóa dữ liệu trình duyệt, thông báo cũng sẽ bị xóa theo.
                 <br />
                 Chính vì hạn chế trên, đôi khi sẽ không có thông báo dù truyện
-                có chương mới (sẽ khắc phục khi nhóm chức năng tài khoản được
-                triển khai, chắc thế 🐧)
+                có chương mới
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <Notifications page={page} />
+          <Notifications page={page} /> */}
         </TabsContent>
         <TabsContent value="system">
-          <Alert className="rounded-sm bg-secondary justify-center text-center">
-            <AlertDescription className="text-center justify-items-center"> Không có thông báo nào!</AlertDescription>
-          </Alert>
+          <Accordion
+            type="multiple"
+            className=""
+            defaultValue={["data_src_change", "user_data", "what_affected"]}
+          >
+            {items.map((item) => (
+              <AccordionItem key={item.value} value={item.value}>
+                <AccordionTrigger className="font-semibold uppercase">
+                  {item.trigger}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <Streamdown
+                    controls={{ table: false }}
+                    linkSafety={{ enabled: false }}
+                    className="**:data-[streamdown='table-wrapper']:grid!"
+                  >
+                    {item.content}
+                  </Streamdown>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </TabsContent>
       </Tabs>
     </>
   );
 }
 
-const getSearchParams = async ({ searchParams }: pageProps) => {
-  const params = await searchParams;
-  let page = params["page"] ? parseInt(params["page"]) : 1;
-  if (page < 1) page = 1;
+// const getSearchParams = async ({ searchParams }: pageProps) => {
+//   const params = await searchParams;
+//   let page = params["page"] ? parseInt(params["page"]) : 1;
+//   if (page < 1) page = 1;
 
-  return { page };
-};
+//   return { page };
+// };

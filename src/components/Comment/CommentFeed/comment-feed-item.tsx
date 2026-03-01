@@ -1,10 +1,7 @@
 // "use client";
 import { Card } from "@/components/ui/card";
 import { CommentWithUser } from "@/lib/suicaodex/serializers";
-import remarkGfm from "remark-gfm";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize from "rehype-sanitize";
+import { Streamdown } from "streamdown";
 import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatShortTime } from "@/lib/utils";
@@ -30,7 +27,7 @@ const isHTML = (str: string): boolean => {
 const parseCommentContent = (content: string) => {
   // If it's HTML (old format), return as is without parsing stickers
   if (isHTML(content)) {
-    return { text: content, stickers: [], isLegacyHTML: true };
+    return { text: content, stickers: [] };
   }
 
   const regex = /:([a-zA-Z0-9-]+):/g;
@@ -56,7 +53,7 @@ const parseCommentContent = (content: string) => {
   });
   textContent = textContent.trim();
 
-  return { text: textContent, stickers, isLegacyHTML: false };
+  return { text: textContent, stickers };
 };
 
 export default function CommentFeedItem({
@@ -68,7 +65,7 @@ export default function CommentFeedItem({
       ? `/manga/${comment.mangaId}`
       : `/chapter/${comment.chapterId}`;
 
-  const { text, stickers, isLegacyHTML } = parseCommentContent(comment.content);
+  const { text, stickers } = parseCommentContent(comment.content);
 
   return (
     <Card className="rounded-sm p-3 h-full bg-transparent shadow-none border-none">
@@ -99,51 +96,9 @@ export default function CommentFeedItem({
           </div>
           {text && (
             <div className="bg-muted rounded-2xl px-3 py-2 mt-1 inline-block max-w-full">
-              <ReactMarkdown
-                className="prose prose-sm prose-img:my-1 prose-img:max-w-[120px] dark:prose-invert max-w-full"
-                remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-                rehypePlugins={
-                  isLegacyHTML ? [rehypeRaw, [rehypeSanitize]] : undefined
-                }
-                components={{
-                  a: ({ href, children }) => (
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      {children}
-                    </a>
-                  ),
-                  table: ({ children }) => (
-                    <table className="table-auto border-collapse border border-secondary rounded-md w-fit">
-                      {children}
-                    </table>
-                  ),
-                  thead: ({ children }) => (
-                    <thead className="border-b border-secondary">
-                      {children}
-                    </thead>
-                  ),
-                  tr: ({ children }) => (
-                    <tr className="even:bg-secondary">{children}</tr>
-                  ),
-                  th: ({ children }) => (
-                    <th className="px-2 py-1 text-left">{children}</th>
-                  ),
-                  td: ({ children }) => (
-                    <td className="px-2 py-1">{children}</td>
-                  ),
-                  p: ({ children }) => (
-                    <p className="whitespace-pre-wrap wrap-break-word">
-                      {children}
-                    </p>
-                  ),
-                }}
-              >
+              <Streamdown>
                 {text}
-              </ReactMarkdown>
+              </Streamdown>
             </div>
           )}
           {stickers.length > 0 && (

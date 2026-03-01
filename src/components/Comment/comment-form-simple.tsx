@@ -15,16 +15,16 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import { Loader2, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { toast } from "sonner";
 import { StickerPicker } from "./sticker-picker";
-import { ButtonGroup } from "../ui/button-group";
+import { ButtonGroup, ButtonGroupSeparator } from "../ui/button-group";
 import { Spinner } from "../ui/spinner";
 
 const FormSchema = z.object({
   comment: z
     .string()
-    .min(1, { message: "Bình luận phải dài ít nhất 1 ký tự!" })
+    .min(3, { message: "Bình luận phải dài ít nhất 3 ký tự!" })
     .max(2000, { message: "Bình luận không được dài hơn 2000 ký tự!" }),
 });
 
@@ -133,23 +133,23 @@ export default function CommentFormSimple({
                     disabled={loading}
                     {...field}
                   />
-                  <div className="absolute bottom-2 right-2">
+                  <div className="absolute bottom-3 right-3">
                     <ButtonGroup>
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="text-xs"
+                        className="text-sm dark:bg-secondary dark:hover:bg-secondary"
                         size="sm"
                         variant="outline"
                       >
-                        {!!loading ? (
-                          <Spinner />
-                        ) : (
-                          <Send />
-                        )}
+                        {!!loading ? <Spinner /> : <Send />}
                         Gửi bình luận
                       </Button>
-                      <StickerPicker onSelectSticker={insertSticker} />
+                      <ButtonGroupSeparator />
+                      <StickerPicker
+                        onSelectSticker={insertSticker}
+                        buttonClassName="dark:bg-secondary dark:hover:bg-secondary"
+                      />
                     </ButtonGroup>
                   </div>
                 </div>

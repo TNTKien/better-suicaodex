@@ -1,4 +1,4 @@
-const url = process.env.SITEMAP_URL || 'https://suicaodex.net';
+const url = process.env.SITEMAP_URL || 'https://suicaodex.com';
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {

@@ -10,7 +10,6 @@ import {
   Progress,
   AppProgressProvider as ProgressProvider,
 } from "@bprogress/next";
-import { NotificationProvider } from "./notification-provider";
 import { SessionProvider } from "next-auth/react";
 import {
   QueryClient,
@@ -44,7 +43,7 @@ export function ThemeProvider({
               </Progress>
               <TooltipProvider delayDuration={0}>
                 <SessionProvider>
-                  <NotificationProvider>{children}</NotificationProvider>
+                  {children}
                 </SessionProvider>
               </TooltipProvider>
             </ProgressProvider>

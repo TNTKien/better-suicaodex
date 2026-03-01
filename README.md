@@ -20,7 +20,26 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
 
 ## Dự kiến
-⬛ Chuyển sang Weebdex API
+⬛ Chuyển sang Weebdex API:
+
+| Route | Status | Note |
+| --- | --- | --- |
+| `/` | ☑️ | -- |
+| `/manga/:id` | ☑️ | -- |
+| `/chapter/:id` | ☑️ | -- |
+| `/author/:id` | ☑️ | -- |
+| `/tag` | ☑️ | -- |
+| `/tag/:id` | ☑️ | -- |
+| `/group/:id` | ☑️ | -- |
+| `/groups` | ☑️ | -- |
+| `/latest` | ☑️ | -- |
+| `/recent` | ☑️ | -- |
+| `/random` | ☑️ | -- |
+| `/advanced-search` | ☑️ | -- |
+| `/history` | ☑️ | -- |
+| `/my-library` | ☑️ | tạm tắt phần thư viện theo tài khoản |
+| `/notifications` | ☑️ | tạm tắt |
+
 
 ☑️ Làm lại reader: cơ bản đã xong, cần thử nghiệm thêm để cải thiện UI/UX
 

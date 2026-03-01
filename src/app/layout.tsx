@@ -7,7 +7,8 @@ import { ThemeSwitcher } from "@/components/Theme/theme-switcher";
 import { META_THEME_COLORS, siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { ImageProxyInitializer } from "@/components/image-proxy-initializer";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { ServiceWorkerRegistrar } from "@/components/sw-registrar";
 
 const inter = Inter({
   preload: true,
@@ -20,7 +21,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://suicaodex.com"),
-  title: siteConfig.name,
+  title: {
+    template: "%s - SuicaoDex",
+    default: siteConfig.name,
+  },
   description: siteConfig.description,
   openGraph: {
     type: "website",
@@ -68,22 +72,20 @@ export default function RootLayout({
       </head>
       {/* <body className={`${leagueSpartan.className} antialiased`}> */}
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          disableTransitionOnChange
-          enableColorScheme
-          enableSystem
-        >
-          <ImageProxyInitializer />
-          {children}
-          <Toaster
-            richColors
-            position="top-center"
-            closeButton
-          />
-          <ThemeSwitcher />
-        </ThemeProvider>
+        <NuqsAdapter>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+            enableColorScheme
+            enableSystem
+          >
+            <ServiceWorkerRegistrar />
+            {children}
+            <Toaster richColors position="top-center" closeButton={false} />
+            <ThemeSwitcher />
+          </ThemeProvider>
+        </NuqsAdapter>
       </body>
       <GoogleAnalytics gaId="G-GHG1HN9493" />
     </html>

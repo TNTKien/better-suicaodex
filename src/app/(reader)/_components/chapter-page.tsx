@@ -2,15 +2,17 @@
 
 import Reader from "./reader";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getChapterDetail } from "@/lib/mangadex/chapter";
-import { useQuery } from "@tanstack/react-query";
+import { useGetChapterId } from "@/lib/weebdex/hooks/chapter/chapter";
 import ChapterNotFound from "./chapter-notfound";
 import MangaMaintain from "@/components/Manga/manga-maintain";
-import useReadingHistory from "@/hooks/use-reading-history";
+import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
 import { useEffect } from "react";
-import { type Chapter } from "@/types/types";
+import { type Chapter } from "@/lib/weebdex/model";
 import { ReaderSidebar } from "./reader-sidebar";
 import { ReaderHeader } from "./reader-header";
+import { siteConfig } from "@/config/site";
+import { useGetMangaId } from "@/lib/weebdex/hooks/manga/manga";
+import { parseMangaTitle } from "@/lib/weebdex/utils";
 
 interface ChapterProps {
   id: string;
@@ -18,31 +20,64 @@ interface ChapterProps {
 }
 
 export default function ChapterPage({ id, initialData }: ChapterProps) {
-  const { addHistory } = useReadingHistory();
-  const { data, isLoading, error } = useQuery({
-    queryKey: [`chapter-${id}`, id],
-    queryFn: () => getChapterDetail(id),
-    initialData: initialData,
-    refetchOnMount: !initialData,
-    refetchInterval: 1000 * 60 * 30,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+  const { addHistory: addHistoryV2 } = useReadingHistoryV2();
+  const { data: res, isLoading, error } = useGetChapterId(id, {
+    query: {
+      initialData: initialData
+        ? { data: initialData, status: 200 as const, headers: new Headers() }
+        : undefined,
+      refetchOnMount: !initialData,
+      refetchInterval: 1000 * 60 * 30,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   });
+
+  const data = res?.data;
+
+  const mangaId = data?.relationships?.manga?.id;
+
+  const { data: mangaRes } = useGetMangaId(mangaId ?? "", {
+    query: {
+      enabled: !!mangaId,
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  });
+  const mangaData = mangaRes?.status === 200 ? mangaRes.data : undefined;
 
   useEffect(() => {
     try {
-      if (data && data.manga) {
-        addHistory(data.manga.id, {
-          chapterId: id,
-          chapter: data.chapter,
-          updatedAt: new Date().toISOString(),
-        });
+      if (data && mangaId) {
+        const now = new Date().toISOString();
+        const meta = mangaData
+          ? {
+              title: parseMangaTitle(mangaData).title,
+              coverId: mangaData.relationships?.cover?.id ?? null,
+            }
+          : undefined;
+        addHistoryV2(
+          mangaId,
+          {
+            chapterId: id,
+            chapter: data.chapter ?? null,
+            title: data.title ?? null,
+            language: data.language ?? null,
+            groups: (data.relationships?.groups ?? []).map((g) => ({
+              id: g.id ?? "",
+              name: g.name ?? "",
+            })),
+            readAt: now,
+          },
+          meta
+        );
       }
     } catch (error) {
       console.error(error);
       return;
     }
-  }, [addHistory, data, id]);
+  }, [addHistoryV2, data, id, mangaData, mangaId]);
 
   if (error) {
     if ((error as any).status === 404) return <ChapterNotFound />;
@@ -59,13 +94,18 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
       </div>
     );
 
+  const pages = (data.data ?? [])
+    .filter((p) => p.name)
+    .map((p) => `${siteConfig.weebdex.proxyURL}/data/${id}/${p.name}`);
+
   return (
     <>
       <div className="border-grid flex flex-1 flex-col">
         <ReaderHeader />
-        {!!data.pages && <Reader key={data.id} images={data.pages} chapterData={data} />}
+        {pages.length > 0 && <Reader key={data.id} images={pages} chapterData={data} />}
       </div>
       <ReaderSidebar chapter={data} side="right"/>
     </>
   );
 }
+

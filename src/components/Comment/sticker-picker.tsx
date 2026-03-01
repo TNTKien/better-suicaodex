@@ -22,6 +22,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { stickers, getCategories, getCategoryName } from "@/lib/stickers-fn";
+import { cn } from "@/lib/utils";
 
 interface StickerPickerProps {
   onSelectSticker: (stickerName: string) => void;
@@ -118,7 +119,7 @@ export function StickerPicker({
             type="button"
             variant="outline"
             size="icon"
-            className={buttonClassName || "h-8 w-8"}
+            className={cn("h-8 w-8", buttonClassName)}
           >
             <Smile className="h-4 w-4" />
           </Button>
@@ -151,7 +152,7 @@ export function StickerPicker({
           type="button"
           variant="outline"
           size="icon"
-          className={buttonClassName || "h-8 w-8"}
+          className={cn("h-8 w-8", buttonClassName)}
         >
           <Smile className="h-4 w-4" />
         </Button>

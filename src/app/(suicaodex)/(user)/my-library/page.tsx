@@ -1,13 +1,14 @@
 import { Metadata } from "next";
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import {
   Album,
   BookmarkCheck,
+  BookOpen,
   CircleHelp,
   CircleUser,
   CloudOff,
   ListCheck,
   NotebookPen,
+  ServerOffIcon,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -16,9 +17,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import MyLibrary from "@/components/Pages/MyLibrary";
-import { auth } from "@/auth";
-import SyncLib from "@/components/Library/sync-lib";
+import LibraryList from "./_components/library-list";
+// import { auth } from "@/auth";
+// import SyncLib from "@/components/Library/sync-lib";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 export function generateMetadata(): Metadata {
   return {
@@ -28,7 +36,7 @@ export function generateMetadata(): Metadata {
   };
 }
 export default async function Page() {
-  const session = await auth();
+  // const session = await auth();
   // console.log(session);
   const tabValues = [
     { value: "following", icon: <BookmarkCheck /> },
@@ -92,19 +100,30 @@ export default async function Page() {
 
             {tabValues.map((tab) => (
               <TabsContent key={tab.value} value={tab.value} className="w-full">
-                <MyLibrary category={tab.value} />
+                <LibraryList category={tab.value as any} />
               </TabsContent>
             ))}
           </Tabs>
         </TabsContent>
         <TabsContent value="cloud">
-          {!!session ? (
+          <Empty className="bg-muted/30 h-full mt-2">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <ServerOffIcon />
+              </EmptyMedia>
+              <EmptyTitle>Chức năng tạm thời không khả dụng</EmptyTitle>
+              <EmptyDescription className="max-w-xs text-pretty">
+                Tạm tắt cái này để bảo trì, dùng tạm cái bên kia nhé 🤪
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+          {/* {!!session ? (
             <SyncLib session={session} />
           ) : (
             <Alert className="rounded-sm justify-center text-center">
               <AlertTitle>Bạn cần đăng nhập để dùng chức năng này!</AlertTitle>
             </Alert>
-          )}
+          )} */}
         </TabsContent>
       </Tabs>
     </>

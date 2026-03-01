@@ -1,11 +1,16 @@
-import { getTotalMangas } from "@/lib/mangadex/manga";
+import { getManga } from "@/lib/weebdex/hooks/manga/manga";
 import { getServerSideSitemapIndex } from "next-sitemap";
 
 export async function GET(req: Request) {
-  const count = await getTotalMangas();
+  const res = await getManga({
+    limit: 1,
+    page: 1,
+    availableTranslatedLang: ["vi"],
+  });
+  const count = res.status === 200 ? (res.data.total ?? 0) : 0;
 
   const context = Array.from(Array(Math.ceil(count / 100)).keys()).map(
-    (_, index) => `${process.env.SITEMAP_URL}/manga-sitemap-${index}.xml`
+    (_, index) => `${process.env.SITEMAP_URL}/manga-sitemap-${index}.xml`,
   );
 
   const siteMap = await (
