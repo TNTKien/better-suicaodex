@@ -125,7 +125,7 @@ export default function TagsPageWeebdex() {
             {group.tags.map((tag) => (
               <Button asChild key={tag.id} variant="secondary" size="sm">
                 <NoPrefetchLink
-                  href={`/weebdex/tag/${tag.id}/${generateSlug(tag.name ?? "")}`}
+                  href={`/tag/${tag.id}/${generateSlug(tag.name ?? "")}`}
                 >
                   {tag.name}
                 </NoPrefetchLink>

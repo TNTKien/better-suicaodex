@@ -144,7 +144,7 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
           {(data.data ?? []).map((manga) => (
             <Link
               key={manga.id}
-              href={`/weebdex/manga/${manga.id}/${generateSlug(manga.title ?? "")}`}
+              href={`/manga/${manga.id}/${generateSlug(manga.title ?? "")}`}
               prefetch={false}
             >
               <MangaCard
@@ -161,7 +161,7 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
             currentPage={page}
             totalPages={totalPages}
             createHref={(p) =>
-              `/weebdex/author/${id}/${generateSlug(author?.name ?? "")}?page=${p}`
+              `/author/${id}/${generateSlug(author?.name ?? "")}?page=${p}`
             }
             className="mt-4"
           />

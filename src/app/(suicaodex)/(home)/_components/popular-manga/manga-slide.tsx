@@ -62,7 +62,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
           "md:pr-[calc(32px+var(--sidebar-width-icon))] lg:pr-[calc(48px+var(--sidebar-width-icon))]",
         )}
       >
-        <Link href={`/weebdex/manga/${manga.id}/${slug}`} prefetch={false}>
+        <Link href={`/manga/${manga.id}/${slug}`} prefetch={false}>
           <MangaCover
             manga_id={manga.id || ""}
             cover={manga.relationships?.cover}
@@ -83,7 +83,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
               : "max-content min-content auto max-content",
           }}
         >
-          <Link href={`/weebdex/manga/${manga.id}/${slug}`}>
+          <Link href={`/manga/${manga.id}/${slug}`}>
             <p className="drop-shadow-md font-black text-xl line-clamp-5 sm:line-clamp-2 lg:text-4xl overflow-hidden lg:leading-11!">
               {title}
             </p>

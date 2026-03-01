@@ -811,7 +811,7 @@ export default function WeebdexAdvancedSearch() {
               {mangaData.data.map((manga) => (
                 <Link
                   key={manga.id}
-                  href={`/weebdex/manga/${manga.id}`}
+                  href={`/manga/${manga.id}`}
                   prefetch={false}
                 >
                   <MangaCard

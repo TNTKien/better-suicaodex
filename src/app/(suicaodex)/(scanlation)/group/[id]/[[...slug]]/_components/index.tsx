@@ -141,7 +141,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
           {(data.data ?? []).map((manga) => (
             <Link
               key={manga.id}
-              href={`/weebdex/manga/${manga.id}/${generateSlug(manga.title ?? "")}`}
+              href={`/manga/${manga.id}/${generateSlug(manga.title ?? "")}`}
               prefetch={false}
             >
               <MangaCard
@@ -158,7 +158,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
             currentPage={page}
             totalPages={totalPages}
             createHref={(p) =>
-              `/weebdex/group/${id}/${generateSlug(group?.name ?? "")}?page=${p}`
+              `/group/${id}/${generateSlug(group?.name ?? "")}?page=${p}`
             }
             className="mt-4"
           />

@@ -75,7 +75,7 @@ export default function LatestUpdate() {
           variant="secondary"
           className="[&_svg]:size-5"
         >
-          <Link href={`/weebdex/latest`} prefetch={false}>
+          <Link href={`/latest`} prefetch={false}>
             <ArrowRight className="size-5" />
           </Link>
         </Button>

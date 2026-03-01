@@ -74,7 +74,7 @@ export default function Recently() {
           variant="secondary"
           className="[&_svg]:size-5"
         >
-          <Link href="/weebdex/recent" prefetch={false}>
+          <Link href="/recent" prefetch={false}>
             <ArrowRight className="size-5" />
           </Link>
         </Button>
@@ -84,7 +84,7 @@ export default function Recently() {
         {data.map((manga) => (
           <Link
             key={manga.id}
-            href={`/weebdex/manga/${manga.id}`}
+            href={`/manga/${manga.id}`}
             prefetch={false}
           >
             <MangaCard

@@ -89,7 +89,7 @@ export default function CompletedManga() {
           className="[&_svg]:size-5"
         >
           <Link
-            href="/weebdex/advanced-search?status=completed"
+            href="/advanced-search?status=completed"
             prefetch={false}
           >
             <ArrowRight className="size-5" />
@@ -102,7 +102,7 @@ export default function CompletedManga() {
           {firstRow.map((manga) => (
             <Link
               key={manga.id}
-              href={`/weebdex/manga/${manga.id}`}
+              href={`/manga/${manga.id}`}
               prefetch={false}
             >
               <MangaCard
@@ -119,7 +119,7 @@ export default function CompletedManga() {
           {secondRow.map((manga) => (
             <Link
               key={manga.id}
-              href={`/weebdex/manga/${manga.id}`}
+              href={`/manga/${manga.id}`}
               prefetch={false}
             >
               <MangaCard

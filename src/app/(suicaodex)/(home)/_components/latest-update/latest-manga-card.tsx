@@ -35,7 +35,7 @@ export default function LatestMangaCard({ chapter }: LatestMangaCardProps) {
 
   return (
     <Card className="rounded-sm shadow-xs transition-colors duration-200 overflow-hidden border-none">
-      <Link href={`/weebdex/manga/${manga.id}/${slug}`} prefetch={false}>
+      <Link href={`/manga/${manga.id}/${slug}`} prefetch={false}>
         <div className="relative w-full aspect-5/7 overflow-hidden rounded-t-sm">
           <LazyLoadImage
             wrapperClassName="block! w-full h-full absolute inset-0"
@@ -57,7 +57,7 @@ export default function LatestMangaCard({ chapter }: LatestMangaCardProps) {
 
       <CardContent className="flex flex-col gap-1 px-2 py-1.5">
         <Link
-          href={`/weebdex/chapter/${chapter.id}`}
+          href={`/chapter/${chapter.id}`}
           prefetch={false}
           className="hover:underline flex items-center gap-1"
         >
@@ -83,7 +83,7 @@ export default function LatestMangaCard({ chapter }: LatestMangaCardProps) {
                 size="sm"
               >
                 <Link
-                  href={`/weebdex/group/${groups[0].id}/${generateSlug(groups[0].name ?? "")}`}
+                  href={`/group/${groups[0].id}/${generateSlug(groups[0].name ?? "")}`}
                   prefetch={false}
                   className="truncate"
                 >

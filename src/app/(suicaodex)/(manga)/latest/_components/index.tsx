@@ -94,7 +94,7 @@ export default function Latest({ page }: LatestProps) {
       <PaginationControl
         currentPage={page}
         totalPages={totalPages}
-        createHref={(p) => `/weebdex/latest?page=${p}`}
+        createHref={(p) => `/latest?page=${p}`}
         className="mt-4"
       />
     </>

@@ -115,7 +115,7 @@ export default function GroupsSearch() {
             size="lg"
           >
             <NoPrefetchLink
-              href={`/weebdex/group/${group.id}/${generateSlug(group.name ?? "")}`}
+              href={`/group/${group.id}/${generateSlug(group.name ?? "")}`}
             >
               <Users />
               <span className="line-clamp-1 break-all">{group.name}</span>
@@ -159,7 +159,7 @@ export default function GroupsSearch() {
             const params = new URLSearchParams();
             if (debouncedQuery) params.set("q", debouncedQuery);
             if (p > 1) params.set("page", String(p));
-            return `/weebdex/groups${params.size ? `?${params}` : ""}`;
+            return `/groups${params.size ? `?${params}` : ""}`;  
           }}
           className="mt-4"
         />

@@ -92,7 +92,7 @@ export default function TagMangaPage({ id, page }: TagMangaPageProps) {
         {(data.data ?? []).map((manga) => (
           <Link
             key={manga.id}
-            href={`/weebdex/manga/${manga.id}`}
+            href={`/manga/${manga.id}`}
             prefetch={false}
           >
             <MangaCard
@@ -107,7 +107,7 @@ export default function TagMangaPage({ id, page }: TagMangaPageProps) {
       <PaginationControl
         currentPage={page}
         totalPages={totalPages}
-        createHref={(p) => `/weebdex/tag/${id}?page=${p}`}
+        createHref={(p) => `/tag/${id}?page=${p}`}
         className="mt-4"
       />
     </>

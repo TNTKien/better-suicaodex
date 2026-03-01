@@ -31,7 +31,7 @@ export default function RandomManga() {
 
   useEffect(() => {
     if (data?.id) {
-      router.replace(`/weebdex/manga/${data.id}`);
+      router.replace(`/manga/${data.id}`);
     }
   }, [data, router]);
 

@@ -60,7 +60,7 @@ export default function MangaRelated({ relations }: MangaRelatedProps) {
                 return (
                   <Link
                     key={rel.id}
-                    href={`/weebdex/manga/${rel.id}/${generateSlug(title)}`}
+                    href={`/manga/${rel.id}/${generateSlug(title)}`}
                     prefetch={false}
                     className="flex items-center justify-center aspect-5/7 bg-muted rounded-sm text-sm text-center p-2"
                   >
@@ -71,7 +71,7 @@ export default function MangaRelated({ relations }: MangaRelatedProps) {
               return (
                 <Link
                   key={rel.id}
-                  href={`/weebdex/manga/${rel.id}/${generateSlug(title)}`}
+                  href={`/manga/${rel.id}/${generateSlug(title)}`}
                   prefetch={false}
                 >
                   <MangaCard

@@ -77,7 +77,7 @@ export default function MangaRcms({ id }: MangaRcmsProps) {
         return (
           <Link
             key={manga.id}
-            href={`/weebdex/manga/${manga.id}/${generateSlug(title)}`}
+            href={`/manga/${manga.id}/${generateSlug(title)}`}
             prefetch={false}
           >
             <MangaCard

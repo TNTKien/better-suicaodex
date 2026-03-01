@@ -95,7 +95,7 @@ export default function Recent({ page }: RecentProps) {
         {(data.data ?? []).map((manga) => (
           <Link
             key={manga.id}
-            href={`/weebdex/manga/${manga.id}`}
+            href={`/manga/${manga.id}`}
             prefetch={false}
           >
             <MangaCard
@@ -110,7 +110,7 @@ export default function Recent({ page }: RecentProps) {
       <PaginationControl
         currentPage={page}
         totalPages={totalPages}
-        createHref={(p) => `/weebdex/recent?page=${p}`}
+        createHref={(p) => `/recent?page=${p}`}
         className="mt-4"
       />
     </>
