@@ -22,22 +22,22 @@ Tuy vậy, SuicaoDex sẽ luôn:
 ## Dự kiến
 ⬛ Chuyển sang Weebdex API:
 
-| Route | Status | Temp Route | Note |
-| --- | --- | --- | --- |
-| `/` | ☑️ | `/weebdex` | -- |
-| `/manga/:id` | ☑️ | `/weebdex/manga/:id` | -- |
-| `/chapter/:id` | ⬛ | -- | -- |
-| `/author/:id` | ☑️ | `/weebdex/author/:id` | -- |
-| `/tag` | ☑️ | `/weebdex/tag` | -- |
-| `/tag/:id` | ☑️ | `/weebdex/tag/:id` | -- |
-| `/group/:id` | ☑️ | `/weebdex/group/:id` | -- |
-| `/groups` | ☑️ | `/weebdex/groups` | -- |
-| `/latest` | ☑️ | `/weebdex/latest` | -- |
-| `/recent` | ☑️ | `/weebdex/recent` | -- |
-| `/random` | ☑️ | `/weebdex/random` | -- |
-| `/advanced-search` | ☑️ | `/weebdex/advanced-search` | -- |
-| `/history` | ⬛ | -- | -- |
-| `/my-library` | ⬛ | -- | -- |
+| Route | Status | Note |
+| --- | --- | --- |
+| `/` | ☑️ | -- |
+| `/manga/:id` | ☑️ | -- |
+| `/chapter/:id` | ⬛ | -- |
+| `/author/:id` | ☑️ | -- |
+| `/tag` | ☑️ | -- |
+| `/tag/:id` | ☑️ | -- |
+| `/group/:id` | ☑️ | -- |
+| `/groups` | ☑️ | -- |
+| `/latest` | ☑️ | -- |
+| `/recent` | ☑️ | -- |
+| `/random` | ☑️ | -- |
+| `/advanced-search` | ☑️ | -- |
+| `/history` | ⬛ | -- |
+| `/my-library` | ⬛ | -- |
 
 
 
