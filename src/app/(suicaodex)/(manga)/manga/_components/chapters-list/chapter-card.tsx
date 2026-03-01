@@ -103,7 +103,7 @@ export const SingleCard = ({
     <Card
       aria-disabled={isUnavailable}
       className={cn(
-        "flex flex-col justify-between rounded-md px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent/50",
+        "flex flex-col justify-between rounded-none px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent/50",
         isUnavailable && "opacity-90 cursor-not-allowed text-muted-foreground",
         !isRead && "border-l-2 border-l-primary",
         className,

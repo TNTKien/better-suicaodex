@@ -31,16 +31,24 @@ const getVolumeRange = (chapters: ChapterGroup[]): string => {
   return `Ch. ${lastChapter} - ${firstChapter}`;
 };
 
-export const VolumeCard = ({ volume, finalChapter, readChapterIds }: VolumeCardProps) => {
+export const VolumeCard = ({
+  volume,
+  finalChapter,
+  readChapterIds,
+}: VolumeCardProps) => {
   const volumeLabel = volume.vol ? `Volume ${volume.vol}` : "No Volume";
   const volumeRange = getVolumeRange(volume.chapters);
 
   return (
     <Accordion type="multiple" defaultValue={["vol"]}>
       <AccordionItem value="vol" className="border-none">
-        <AccordionTrigger className="[&>svg]:w-5 [&>svg]:h-5 hover:no-underline">
+        <AccordionTrigger className="hover:no-underline">
           <div className="flex gap-0.5 items-center text-base">
-            {volumeLabel === "No Volume" ? <ListX /> : <ListTree />}
+            {volumeLabel === "No Volume" ? (
+              <ListX className="size-5" />
+            ) : (
+              <ListTree className="size-5" />
+            )}
             {volumeLabel}
           </div>
           {!!volumeRange && (
