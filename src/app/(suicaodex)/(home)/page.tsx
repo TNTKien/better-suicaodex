@@ -4,6 +4,9 @@ import LatestUpdate from "./_components/latest-update";
 import Recently from "./_components/recently-manga";
 import CompletedManga from "./_components/completed-manga";
 import CommentsFeed from "./_components/comments-feed";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { OctagonAlert } from "lucide-react";
+import { Streamdown } from "streamdown";
 
 function breadcrumbJsonLd() {
   return {
@@ -82,6 +85,26 @@ export default function Page() {
         </section>
 
         <section className="-mt-4 md:-mt-8 lg:-mt-3">
+          <Alert className="border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
+            <OctagonAlert strokeWidth={3} />
+            <AlertTitle className="font-semibold uppercase">
+              Thông báo quan trọng
+            </AlertTitle>
+            <AlertDescription>
+              <Streamdown
+                linkSafety={{ enabled: false }}
+                className="font-medium"
+              >
+                V/v: Thay đổi nguồn dữ liệu và 1 số tính năng tạm thời không
+                hoạt động. Xem chi tiết [tại đây](/notifications).
+              </Streamdown>
+              <span className="text-xs font-medium">01/03/2026</span>
+            </AlertDescription>
+          </Alert>
+        </section>
+
+        {/* <section className="-mt-4 md:-mt-8 lg:-mt-3"> */}
+        <section className="mt-9">
           <LatestUpdate />
         </section>
 
