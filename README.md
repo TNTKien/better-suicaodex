@@ -5,7 +5,7 @@
 
 > [suicaodex](https://github.com/TNTKien/suicaodex) vốn dĩ là 1 đống hổ lốn, better-suicaodex sinh ra để giải quyết đống hổ lốn đó (hoặc không 🐧).
 
-> SuicaoDex chỉ xây dựng giao diện, trừ một số chức năng liên quan đến tài khoản, mọi dữ liệu khác đều thuộc về MangaDex.
+> SuicaoDex chỉ xây dựng giao diện, trừ một số chức năng liên quan đến tài khoản, mọi dữ liệu khác đều thuộc về ~~MangaDex~~ WeebDex.
 
 Như đã nói, SuicaoDex chỉ là 1 dự án "cho vui", phục vụ sở thích của cá nhân tôi, và tôi cũng chả cao siêu gì, nên nó sẽ không thể trọn vẹn như các web truyện chuyên nghiệp khác.
 
@@ -15,12 +15,11 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Thân thiện với độc giả Việt Nam (cụ thể là tôi).
 
 ## Vài lỗi đã biết
-- Thứ tự truyện trong lịch sử đọc đang sắp xếp theo mốc thời gian của chính chương truyện, không phải theo thời điểm đọc truyện
-- Thông báo bị đần, ngoài ra chưa có chỗ để xem danh sách các truyện đã đăng ký nhận thông báo
+- ~~Thông báo bị đần, ngoài ra chưa có chỗ để xem danh sách các truyện đã đăng ký nhận thông báo~~ Tạm thời tắt chức năng này
 - Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
 
 ## Dự kiến
-⬛ Chuyển sang Weebdex API:
+☑️ Chuyển sang Weebdex API:
 
 | Route | Status | Note |
 | --- | --- | --- |
@@ -72,34 +71,25 @@ Tôi rất hoan nghênh và thậm chí là khuyến khích cmn luôn, làm mộ
 
 ## Cài đặt
 
-> Lưu ý: MangaDex API yêu cầu proxy, hãy tự tạo proxy mà dùng vì nếu bạn dùng của tôi thì tôi bị tốn thêm tiền.
+> Lưu ý: [WeebDex API](https://api.weebdex.org/docs) tuy không cần proxy, nhưng vẫn có 1 số yêu cầu riêng, nói chung là vẫn cứ có proxy cho chăc.
 
->Bạn có thể tham khảo [simple-proxy](https://github.com/TNTKien/simple-proxy), [suicaodex-api](https://github.com/TNTKien/suicaodex-api) hoặc proxy tích hợp sẵn trong [suicaodex cũ](https://github.com/TNTKien/suicaodex/blob/main/app/api/mangadex/%5B...path%5D/route.ts) (không khuyến khích lắm).
+>Bạn có thể tham khảo [simple-proxy](https://github.com/TNTKien/simple-proxy), [weebdex-api](https://github.com/TNTKien/weebdex-api). Khi đã có proxy, hãy chỉnh sửa lại `src/config/site.ts` và `.env` cho phù hợp.
 
-> Khi đã có proxy, hãy chỉnh sửa lại `src/config/site.ts` và `src/lib/axios.ts` cho phù hợp (ngoài ra sẽ cần sửa thêm 1 số url ảnh truyện, ảnh  bìa).
-
-> `.env`: SuicaoDex sử dụng [AuthJS](https://authjs.dev/), nhớ đọc kỹ docs để biết đường mà config, có thể tham khảo `example.env`.
+> `.env`: SuicaoDex sử dụng [AuthJS](https://authjs.dev/), nhớ đọc kỹ docs để biết đường mà config. Ngoài ra còn 1 số biến môn trường khác, hãy xem trong `example.env`.
 
 
 Cài đặt các package cần thiết:
 ```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-# or
 bun install
+```
+
+Gen API client:
+```bash
+bun run gen:api
 ```
 
 Chạy server dev:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
 bun dev
 ```
 

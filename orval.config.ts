@@ -1,10 +1,9 @@
-import { siteConfig } from '@/config/site';
 import { defineConfig } from 'orval';
 
 export default defineConfig({
   weebdex: {
     output: {
-      baseUrl: siteConfig.weebdex.proxyURL,
+      baseUrl: process.env.API_URL || 'https://wd.memaydex.online',
       mode: 'tags-split',
       target: './src/lib/weebdex/hooks',
       schemas: './src/lib/weebdex/model',
