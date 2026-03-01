@@ -1,11 +1,11 @@
-import TagsPage from "@/components/Pages/Tags";
 import { Metadata } from "next";
+import TagsPageWeebdex from "./_components";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Thể loại - SuicaoDex",
-    description: "Truyện theo thể loại",
-    keywords: ["Thể loại", "Genre", "SuicaoDex"],
+    title: "Thể loại",
+    description: "Manga theo thể loại",
+    keywords: ["Thể loại", "Genre", "WeebDex"],
   };
 }
 
@@ -18,7 +18,7 @@ export default function Page() {
       </div>
 
       <div className="w-full mt-4">
-        <TagsPage />
+        <TagsPageWeebdex />
       </div>
     </>
   );

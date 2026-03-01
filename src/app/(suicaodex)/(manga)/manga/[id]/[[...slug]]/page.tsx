@@ -1,12 +1,12 @@
-import MangaNotFound from "@/components/Manga/manga-notfound";
-import MangaDetails from "@/components/Pages/MangaDetails/manga-details";
 import { siteConfig } from "@/config/site";
-import { fetchMangaDetail } from "@/lib/mangadex/manga";
-import { Manga } from "@/types/types";
+import { getMangaId } from "@/lib/weebdex/hooks/manga/manga";
+import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { Metadata } from "next";
-import { validate as isValidUUID } from "uuid";
 import { cache } from "react";
-import { generateSlug } from "@/lib/utils";
+import ErrorPage from "@/components/error-page";
+import type { SearchParams } from "nuqs/server";
+// import { loadSearchParams } from "./searchParams";
+import MangaPage from "../../_components/manga-page";
 
 // Revalidate the page every 24 hours (86400 seconds)
 export const revalidate = 86400;
@@ -15,102 +15,66 @@ interface PageProps {
   params: Promise<{
     id: string;
   }>;
+  // searchParams: Promise<SearchParams>;
 }
 
 const getCachedMangaData = cache(async (id: string) => {
-  return await fetchMangaDetail(id);
+  return await getMangaId(id);
 });
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { id, slug = [] } = (await params) as { id: string; slug?: string[] };
-  if (!isValidUUID(id)) return { title: "Suicaodex" };
-
   const path = `/manga/${id}${
     Array.isArray(slug) && slug.length ? `/${slug.join("/")}` : ""
   }`;
 
-  try {
-    const manga = await getCachedMangaData(id);
-    const description =
-      manga.description.content || `Đọc truyện ${manga.title} - SuicaoDex`;
+  const { data: manga, status } = await getCachedMangaData(id);
+  if (status !== 200 || !manga) return { title: "Ehe! 🤪" };
 
-    return {
-      title: `${manga.title} - SuicaoDex`,
-      description,
-      keywords: [`Manga`, manga.title, "SuicaoDex", manga.altTitle || ""],
-      openGraph: {
-        title: `${manga.title} - SuicaoDex`,
-        url: path,
-        siteName: "SuicaoDex",
-        description,
-        images: [
-          {
-            url: `${siteConfig.mangadexAPI.ogURL}/manga/${manga.id}`,
-            width: 1200,
-            height: 630,
-            alt: "SuicaoDex",
-          },
-        ],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: `${manga.title} - SuicaoDex`,
-        description,
-        images: [`${siteConfig.mangadexAPI.ogURL}/manga/${manga.id}`],
-      },
-    };
-  } catch (error) {
-    return { title: "Suicaodex" };
-  }
-}
+  const { title, altTitles } = parseMangaTitle(manga);
+  const description = manga.description || `Đọc truyện ${title}`;
+  const keywords = [`Manga`, title, "SuicaoDex", ...altTitles].join(", ");
 
-export default async function Page({ params }: PageProps) {
-  const { id } = await params;
-  if (!isValidUUID(id)) {
-    return <MangaNotFound />;
-  }
-
-  try {
-    const manga = await getCachedMangaData(id);
-    return (
-      <>
-        {!!manga && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(generateJsonLd(manga)),
-            }}
-          ></script>
-        )}
-        <MangaDetails id={id} initialData={manga}/>
-      </>
-    );
-  } catch (error: any) {
-    console.log("Error loading manga", error);
-    return <MangaDetails id={id} />
-  }
-}
-
-function generateJsonLd(
-  manga: Pick<Manga, "id" | "title" | "cover" | "description">,
-) {
-  const description =
-    manga.description.content || `Đọc truyện ${manga.title} - SuicaoDex`;
   return {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    mainEntityOfPage: `${process.env.SITE_URL}/manga/${manga.id}/${generateSlug(
-      manga.title,
-    )}`,
-    headline: `${manga.title}`,
-    description: description,
-    image: {
-      "@type": "ImageObject",
-      url: `${siteConfig.mangadexAPI.ogURL}/manga/${manga.id}`,
-      width: 1280,
-      height: 960,
+    title: `${title}`,
+    description,
+    keywords,
+    openGraph: {
+      title: `${title}`,
+      url: path,
+      siteName: "SuicaoDex",
+      description,
+      images: [
+        {
+          url: `${siteConfig.weebdex.ogURL}/og-image/manga/${manga.id}`,
+          width: 1200,
+          height: 630,
+          alt: "SuicaoDex",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title}`,
+      description,
+      images: [`${siteConfig.weebdex.ogURL}/og-image/manga/${manga.id}`],
     },
   };
+}
+
+export default async function Page({
+  params,
+  // , searchParams
+}: PageProps) {
+  const { id } = await params;
+  const res = await getCachedMangaData(id);
+  // const { page, tab } = await loadSearchParams(searchParams);
+
+  if (res.status !== 200) {
+    return <ErrorPage statusCode={res.status} />;
+  }
+
+  return <MangaPage id={id} initData={res} />;
 }

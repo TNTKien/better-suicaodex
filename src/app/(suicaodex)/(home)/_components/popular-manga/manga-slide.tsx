@@ -7,12 +7,8 @@ import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { Streamdown } from "streamdown";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Link from "next/link";
-import MangaCover from "@/app/weebdex/manga/_components/manga-cover";
-import {
-  ContentRatingTag,
-  NormalTag,
-  StatusTag,
-} from "@/app/weebdex/manga/_components/manga-tags";
+import MangaCover from "@/app/(suicaodex)/(manga)/manga/_components/manga-cover";
+import { ContentRatingTag, NormalTag, StatusTag } from "@/app/(suicaodex)/(manga)/manga/_components/manga-tags";
 
 interface MangaSlideProps {
   manga: Manga;

@@ -1,22 +1,16 @@
 import { Metadata } from "next";
-import GroupsSearch from "@/components/Groups/groups-search";
-
-interface pageProps {
-  searchParams: Promise<{
-    [key: string]: string | undefined;
-  }>;
-}
+import { Suspense } from "react";
+import GroupsSearch from "./_components";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Nhóm dịch - SuicaoDex",
-    // description: "Nhóm dịch",
-    // keywords: ["Nhóm dịch", "SuicaoDex"],
+    title: "Nhóm dịch",
+    description: "Danh sách nhóm dịch trên WeebDex",
+    keywords: ["Nhóm dịch", "Scanlation", "WeebDex"],
   };
 }
-export default async function Page({ searchParams }: pageProps) {
-  const { page, q } = await getSearchParams({ searchParams });
 
+export default function Page() {
   return (
     <>
       <div>
@@ -25,19 +19,10 @@ export default async function Page({ searchParams }: pageProps) {
       </div>
 
       <div className="mt-4">
-        <GroupsSearch page={page} q={q} />
+        <Suspense>
+          <GroupsSearch />
+        </Suspense>
       </div>
     </>
   );
 }
-
-const getSearchParams = async ({ searchParams }: pageProps) => {
-  const params = await searchParams;
-
-   let page = params["page"] ? parseInt(params["page"]) : 1;
-  const q = params["q"] || "";
-
-  if (page < 1) page = 1;
-
-  return { page, q };
-};

@@ -1,29 +1,29 @@
-import Latest from "@/components/Pages/Latest";
+import type { SearchParams } from "nuqs/server";
+import { loadSearchParams } from "./searchParams";
 import { Metadata } from "next";
+import Latest from "./_components";
 
-interface pageProps {
-  searchParams: Promise<{
-    [key: string]: string | undefined;
-  }>;
+interface PageProps {
+  searchParams: Promise<SearchParams>;
 }
 
 export async function generateMetadata({
   searchParams,
-}: pageProps): Promise<Metadata> {
-  const { page } = await getSearchParams({ searchParams });
+}: PageProps): Promise<Metadata> {
+  let { page } = await loadSearchParams(searchParams);
+  if (page < 1 || isNaN(page)) page = 1;
 
   return {
-    title:
-      page === 1
-        ? "Mới cập nhật - SuicaoDex"
-        : `Trang ${page} - Mới cập nhật - SuicaoDex`,
+    title: page === 1 ? "Mới cập nhật" : `Trang ${page} - Mới cập nhật`,
     description: "Manga mới cập nhật",
     keywords: ["Mới cập nhật", "Manga"],
   };
 }
 
-export default async function Page({ searchParams }: pageProps) {
-  const { page, limit } = await getSearchParams({ searchParams });
+export default async function Page({ searchParams }: PageProps) {
+  let { page } = await loadSearchParams(searchParams);
+  if (page < 1 || isNaN(page)) page = 1;
+
   return (
     <>
       <div>
@@ -31,23 +31,8 @@ export default async function Page({ searchParams }: pageProps) {
         <h1 className="text-2xl font-black uppercase">mới cập nhật</h1>
       </div>
       <div className="mt-4">
-        <Latest page={page} limit={limit} />
+        <Latest page={page} />
       </div>
     </>
   );
 }
-
-const getSearchParams = async ({ searchParams }: pageProps) => {
-  const params = await searchParams;
-
-  let page = params["page"] ? parseInt(params["page"]) : 1;
-  let limit = params["limit"] ? parseInt(params["limit"]) : 32;
-  //Non-feed limit query param may not be >100
-  if (limit > 100) limit = 100;
-  if (page < 1) page = 1;
-
-  return {
-    page,
-    limit,
-  };
-};

@@ -1,45 +1,38 @@
-import Recent from "@/components/Pages/Recent";
+import type { SearchParams } from "nuqs/server";
+import { loadSearchParams } from "./searchParams";
 import { Metadata } from "next";
+import Recent from "./_components";
 
-interface pageProps {
-  searchParams: Promise<{
-    [key: string]: string | undefined;
-  }>;
+interface PageProps {
+  searchParams: Promise<SearchParams>;
 }
 
 export async function generateMetadata({
   searchParams,
-}: pageProps): Promise<Metadata> {
-  const { page } = await getSearchParams({ searchParams });
+}: PageProps): Promise<Metadata> {
+  let { page } = await loadSearchParams(searchParams);
+  if (page < 1 || isNaN(page)) page = 1;
+
   return {
-    title:
-      page === 1
-        ? "Truyện mới - SuicaoDex"
-        : `Trang ${page} - Truyện mới - SuicaoDex`,
-    description: "Truyện mới, Manga mới nhất, Manga mới cập nhật",
-    keywords: ["Truyện mới", "Manga", "SuicaoDex"],
+    title: page === 1 ? "Truyện mới" : `Trang ${page} - Truyện mới`,
+    description: "Manga mới được thêm vào",
+    keywords: ["Truyện mới", "Manga mới", "Manga"],
   };
 }
-export default async function Page({ searchParams }: pageProps) {
-  const { page } = await getSearchParams({ searchParams });
+
+export default async function Page({ searchParams }: PageProps) {
+  let { page } = await loadSearchParams(searchParams);
+  if (page < 1 || isNaN(page)) page = 1;
 
   return (
     <>
       <div>
         <hr className="w-9 h-1 bg-primary border-none" />
-        <h1 className="text-2xl font-black uppercase">Truyện mới</h1>
+        <h1 className="text-2xl font-black uppercase">truyện mới</h1>
       </div>
-
-      <Recent page={page} />
+      <div className="mt-4">
+        <Recent page={page} />
+      </div>
     </>
   );
 }
-
-const getSearchParams = async ({ searchParams }: pageProps) => {
-  const params = await searchParams;
-
-  let page = params["page"] ? parseInt(params["page"]) : 1;
-  if (page < 1) page = 1;
-
-  return { page };
-};

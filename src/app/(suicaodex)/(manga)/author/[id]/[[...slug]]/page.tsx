@@ -1,38 +1,51 @@
-import Author from "@/components/Pages/Author";
-import { GetAuthor } from "@/lib/mangadex/author";
+import {
+  getAuthorId,
+  getAuthorIdResponseSuccess,
+} from "@/lib/weebdex/hooks/author/author";
 import { Metadata } from "next";
+import type { SearchParams } from "nuqs/server";
+import { loadSearchParams } from "./searchParams";
 import { cache } from "react";
+import AuthorPage from "./_components";
 
 interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
+  searchParams: Promise<SearchParams>;
 }
 
-const getCachedAuthorData = cache(async (id: string) => {
-  return await GetAuthor(id);
+const getCachedAuthor = cache(async (id: string) => {
+  const res = await getAuthorId(id);
+  if (res.status !== 200) return null;
+  return (res as getAuthorIdResponseSuccess).data ?? null;
 });
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
+  const { page } = await loadSearchParams(searchParams);
   try {
-    const author = await getCachedAuthorData(id);
-    return { title: `${author.name} - SuicaoDex` };
-  } catch (error) {
-    console.error("Error fetching author:", error);
-    return { title: "SuicaoDex" };
+    const author = await getCachedAuthor(id);
+    if (!author) return { title: "404 Not Found" };
+    const title =
+      page > 1 ? `Trang ${page} - ${author.name}` : `${author.name}`;
+    return {
+      title,
+      description: author.description
+        ? author.description.slice(0, 160)
+        : `Tác giả ${author.name} trên WeebDex`,
+      keywords: ["Tác giả", "Author", author.name ?? "", "WeebDex"],
+    };
+  } catch {
+    return { title: "Lỗi mất rồi 😭" };
   }
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
-  try {
-    const initialData = await getCachedAuthorData(id);
-    return <Author id={id} initialData={initialData} />;
-  } catch (error) {
-    console.log("Error loading author", error);
-    return <Author id={id} />;
-  }
+  let { page } = await loadSearchParams(searchParams);
+  if (page < 1 || isNaN(page)) page = 1;
+
+  return <AuthorPage id={id} page={page} />;
 }

@@ -61,7 +61,6 @@ import {
 
 import { cn } from "@/lib/utils";
 import useContentHeight from "@/hooks/use-content-height";
-import MangaCard from "@/app/weebdex/manga/_components/manga-card";
 import {
   type TagStates,
   type TagOption,
@@ -74,6 +73,7 @@ import TagsPanel from "./tags-panel";
 import { AuthorsSelector } from "./authors-selector";
 
 import { CN, GB, JP, VN } from "country-flag-icons/react/3x2";
+import MangaCard from "../../manga/_components/manga-card";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 

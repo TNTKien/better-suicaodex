@@ -5,15 +5,9 @@ import {
   getManga,
   getMangaResponseSuccess,
 } from "@/lib/weebdex/hooks/manga/manga";
-import {
-  GetMangaContentRatingItem,
-  GetMangaOrder,
-  GetMangaSort,
-} from "@/lib/weebdex/model";
+import { GetMangaContentRatingItem } from "@/lib/weebdex/model";
 import { useQuery } from "@tanstack/react-query";
 import { useIsMounted } from "usehooks-ts";
-import MangaCard from "@/app/weebdex/manga/_components/manga-card";
-import RecentlySkeletonCard from "../../(home)/_components/recently-manga/recently-skeleton-card";
 import Link from "next/link";
 import {
   Empty,
@@ -24,13 +18,17 @@ import {
 } from "@/components/ui/empty";
 import { BugIcon } from "lucide-react";
 import PaginationControl from "@/components/Custom/pagination-control";
+import RecentlySkeletonCard from "@/app/(suicaodex)/(home)/_components/recently-manga/recently-skeleton-card";
+import MangaCard from "@/app/(suicaodex)/(manga)/manga/_components/manga-card";
 
-interface RecentProps {
+interface TagMangaPageProps {
+  id: string;
   page: number;
 }
+
 const LIMIT = 36;
 
-export default function Recent({ page }: RecentProps) {
+export default function TagMangaPage({ id, page }: TagMangaPageProps) {
   const isMounted = useIsMounted();
   const [config] = useConfig();
   const contentRating = config.r18
@@ -42,7 +40,8 @@ export default function Recent({ page }: RecentProps) {
     queryKey: [
       "weebdex",
       "manga",
-      "recent",
+      "tag",
+      id,
       config.r18,
       config.translatedLanguage,
       page,
@@ -50,16 +49,14 @@ export default function Recent({ page }: RecentProps) {
     queryFn: async () => {
       const res = await getManga({
         limit: LIMIT,
-        sort: GetMangaSort.createdAt,
-        order: GetMangaOrder.desc,
+        tag: [id],
         availableTranslatedLang: config.translatedLanguage,
         contentRating,
         page,
       });
-      if (res.status !== 200) throw new Error("Failed to fetch recent manga");
+      if (res.status !== 200) throw new Error("Failed to fetch manga by tag");
       return (res as getMangaResponseSuccess).data;
     },
-    refetchInterval: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
   });
 
@@ -110,7 +107,7 @@ export default function Recent({ page }: RecentProps) {
       <PaginationControl
         currentPage={page}
         totalPages={totalPages}
-        createHref={(p) => `/weebdex/recent?page=${p}`}
+        createHref={(p) => `/weebdex/tag/${id}?page=${p}`}
         className="mt-4"
       />
     </>

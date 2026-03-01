@@ -13,8 +13,6 @@ import { GetMangaContentRatingItem } from "@/lib/weebdex/model";
 import { useQuery } from "@tanstack/react-query";
 import { useIsMounted } from "usehooks-ts";
 import { Skeleton } from "@/components/ui/skeleton";
-import MangaCard from "@/app/weebdex/manga/_components/manga-card";
-import RecentlySkeletonCard from "@/app/weebdex/(home)/_components/recently-manga/recently-skeleton-card";
 import Link from "next/link";
 import {
   Empty,
@@ -31,6 +29,8 @@ import { SiX, SiPixiv, SiYoutube } from "@icons-pack/react-simple-icons";
 import { Label } from "@/components/ui/label";
 import { generateSlug } from "@/lib/utils";
 import { generateFaviconURL } from "@/lib/weebdex/utils";
+import RecentlySkeletonCard from "@/app/(suicaodex)/(home)/_components/recently-manga/recently-skeleton-card";
+import MangaCard from "@/app/(suicaodex)/(manga)/manga/_components/manga-card";
 
 interface AuthorPageProps {
   id: string;

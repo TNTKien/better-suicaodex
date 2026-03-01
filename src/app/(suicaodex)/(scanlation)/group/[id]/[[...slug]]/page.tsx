@@ -1,53 +1,51 @@
-import GroupInfo from "@/components/Groups/group-info";
-import { siteConfig } from "@/config/site";
-import { getGroup } from "@/lib/mangadex/group";
+import {
+  getGroupId,
+  getGroupIdResponseSuccess,
+} from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
 import { Metadata } from "next";
+import type { SearchParams } from "nuqs/server";
+import { loadSearchParams } from "./searchParams";
 import { cache } from "react";
+import GroupPage from "./_components";
 
 interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
+  searchParams: Promise<SearchParams>;
 }
 
-const getCachedGroupData = cache(async (id: string) => {
-  return await getGroup(id);
+const getCachedGroup = cache(async (id: string) => {
+  const res = await getGroupId(id);
+  if (res.status !== 200) return null;
+  return (res as getGroupIdResponseSuccess).data ?? null;
 });
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
+  const { page } = await loadSearchParams(searchParams);
   try {
-    const group = await getCachedGroupData(id);
+    const group = await getCachedGroup(id);
+    if (!group) return { title: "404 Not Found" };
+    const title =
+      page > 1 ? `Trang ${page} - ${group.name}` : `${group.name}`;
     return {
-      title: `${group.name} - SuicaoDex`,
+      title,
       description: group.description
-        ? group.description
-        : `Thông tin nhóm dịch ${group.name} - SuicaoDex`,
-      keywords: [`Manga`, `${group.name}`, "SuicaoDex"],
-
-      openGraph: {
-        title: `${group.name} - SuicaoDex`,
-        siteName: "SuicaoDex",
-        description: group.description
-          ? group.description
-          : `Thông tin nhóm dịch ${group.name} - SuicaoDex`,
-        images: `${siteConfig.mangadexAPI.ogURL}/group/${group.id}`,
-      },
+        ? group.description.slice(0, 160)
+        : `Nhóm dịch ${group.name} trên WeebDex`,
+      keywords: ["Nhóm dịch", "Scanlation", group.name ?? "", "WeebDex"],
     };
-  } catch (error) {
-    return { title: "SuicaoDex" };
+  } catch {
+    return { title: "Lỗi mất rồi 😭" };
   }
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
-  try {
-    const initialData = await getCachedGroupData(id);
-    return <GroupInfo id={id} initialData={initialData} />;
-  } catch (error) {
-    console.log("Error loading group", error);
-    return <GroupInfo id={id} />;
-  }
+  let { page } = await loadSearchParams(searchParams);
+  if (page < 1 || isNaN(page)) page = 1;
+
+  return <GroupPage id={id} page={page} />;
 }

@@ -2,14 +2,17 @@
 
 import { useConfig } from "@/hooks/use-config";
 import {
-  getChapterUpdates,
-  getChapterUpdatesResponseSuccess,
-} from "@/lib/weebdex/hooks/chapter/chapter";
-import { GetChapterUpdatesContentRatingItem } from "@/lib/weebdex/model";
+  getManga,
+  getMangaResponseSuccess,
+} from "@/lib/weebdex/hooks/manga/manga";
+import {
+  GetMangaContentRatingItem,
+  GetMangaOrder,
+  GetMangaSort,
+} from "@/lib/weebdex/model";
 import { useQuery } from "@tanstack/react-query";
 import { useIsMounted } from "usehooks-ts";
-import LatestSkeletonCard from "../../(home)/_components/latest-update/latest-skeleton-card";
-import LatestMangaCard from "../../(home)/_components/latest-update/latest-manga-card";
+import Link from "next/link";
 import {
   Empty,
   EmptyDescription,
@@ -19,39 +22,42 @@ import {
 } from "@/components/ui/empty";
 import { BugIcon } from "lucide-react";
 import PaginationControl from "@/components/Custom/pagination-control";
+import RecentlySkeletonCard from "@/app/(suicaodex)/(home)/_components/recently-manga/recently-skeleton-card";
+import MangaCard from "../../manga/_components/manga-card";
 
-interface LatestProps {
+interface RecentProps {
   page: number;
 }
 const LIMIT = 36;
 
-export default function Latest({ page }: LatestProps) {
+export default function Recent({ page }: RecentProps) {
   const isMounted = useIsMounted();
   const [config] = useConfig();
   const contentRating = config.r18
-    ? Object.values(GetChapterUpdatesContentRatingItem)
+    ? Object.values(GetMangaContentRatingItem)
     : undefined;
 
   const { data, isLoading, error } = useQuery({
     enabled: isMounted(),
     queryKey: [
       "weebdex",
-      "chapter",
-      "updates",
+      "manga",
+      "recent",
       config.r18,
       config.translatedLanguage,
       page,
     ],
     queryFn: async () => {
-      const res = await getChapterUpdates({
+      const res = await getManga({
         limit: LIMIT,
-        tlang: config.translatedLanguage,
+        sort: GetMangaSort.createdAt,
+        order: GetMangaOrder.desc,
+        availableTranslatedLang: config.translatedLanguage,
         contentRating,
         page,
       });
-      if (res.status !== 200)
-        throw new Error("Failed to fetch chapter updates");
-      return (res as getChapterUpdatesResponseSuccess).data;
+      if (res.status !== 200) throw new Error("Failed to fetch recent manga");
+      return (res as getMangaResponseSuccess).data;
     },
     refetchInterval: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
@@ -61,7 +67,7 @@ export default function Latest({ page }: LatestProps) {
     return (
       <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
         {[...Array(LIMIT)].map((_, i) => (
-          <LatestSkeletonCard key={i} />
+          <RecentlySkeletonCard key={i} />
         ))}
       </div>
     );
@@ -86,15 +92,25 @@ export default function Latest({ page }: LatestProps) {
   return (
     <>
       <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
-        {(data.data ?? []).map((chapter) => (
-          <LatestMangaCard key={chapter.id} chapter={chapter} />
+        {(data.data ?? []).map((manga) => (
+          <Link
+            key={manga.id}
+            href={`/weebdex/manga/${manga.id}`}
+            prefetch={false}
+          >
+            <MangaCard
+              manga_id={manga.id!}
+              title={manga.title ?? ""}
+              cover={manga.relationships?.cover!}
+            />
+          </Link>
         ))}
       </div>
 
       <PaginationControl
         currentPage={page}
         totalPages={totalPages}
-        createHref={(p) => `/weebdex/latest?page=${p}`}
+        createHref={(p) => `/weebdex/recent?page=${p}`}
         className="mt-4"
       />
     </>

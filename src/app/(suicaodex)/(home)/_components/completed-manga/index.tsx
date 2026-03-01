@@ -13,12 +13,12 @@ import {
   GetMangaStatusItem,
 } from "@/lib/weebdex/model";
 import { Marquee } from "@/components/ui/marquee";
-import MangaCard from "@/app/weebdex/manga/_components/manga-card";
 import CompletedSkeletonCard from "./completed-skeleton-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useIsMounted } from "usehooks-ts";
+import MangaCard from "@/app/(suicaodex)/(manga)/manga/_components/manga-card";
 
 const LIMIT = 40;
 

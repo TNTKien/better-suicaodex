@@ -11,12 +11,12 @@ import {
   GetMangaOrder,
   GetMangaSort,
 } from "@/lib/weebdex/model";
-import MangaCard from "@/app/weebdex/manga/_components/manga-card";
 import RecentlySkeletonCard from "./recently-skeleton-card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useIsMounted } from "usehooks-ts";
+import MangaCard from "@/app/(suicaodex)/(manga)/manga/_components/manga-card";
 
 const LIMIT = 18;
 
