@@ -149,7 +149,7 @@ function ReaderSettingsDialog() {
           <Settings />
         </Button>
       </DialogTrigger>
-      <DialogContent className="border-none [&>button]:hidden max-w-full">
+      <DialogContent className="border-none max-w-full md:min-w-lg">
         <DialogHeader>
           <DialogTitle>Tùy chỉnh Reader (Beta)</DialogTitle>
           <DialogDescription>
