@@ -90,8 +90,10 @@ model Library {
 }
 
 model Manga {
-  id              String @id @map("mangadexId")
+  id              String  @id @map("mangadexId")
   latestChapterId String?
+  title           String? @db.VarChar(512)
+  coverId         String? @db.VarChar(255)
 
   libraries LibraryManga[]
   comments  MangaComment[]
