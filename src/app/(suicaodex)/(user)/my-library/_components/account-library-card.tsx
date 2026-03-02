@@ -4,7 +4,10 @@ import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import type { MangaLibraryEntry } from "@/lib/suicaodex/db";
-import { updateMangaCategory, refreshMangaMetadata } from "@/lib/suicaodex/db";
+import { saveMangaMetadata, updateMangaCategory } from "@/lib/suicaodex/db";
+import { getGetMangaIdUrl } from "@/lib/weebdex/hooks/manga/manga";
+import type { Manga } from "@/lib/weebdex/model";
+import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { generateSlug } from "@/lib/utils";
 import { RefreshCw, X } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -15,15 +18,15 @@ import { toast } from "sonner";
 interface AccountLibraryCardProps {
   entry: MangaLibraryEntry;
   onRemoved?: (mangaId: string) => void;
+  onRefreshed?: (mangaId: string, title: string, coverId: string | null) => void;
 }
 
 export default function AccountLibraryCard({
   entry,
   onRemoved,
+  onRefreshed,
 }: AccountLibraryCardProps) {
-  const { id } = entry;
-  const [title, setTitle] = useState(entry.title);
-  const [coverId, setCoverId] = useState(entry.coverId);
+  const { id, title, coverId } = entry;
 
   const displayTitle = title ?? id;
   const coverUrl = coverId
@@ -39,14 +42,21 @@ export default function AccountLibraryCard({
     if (!session?.user?.id) return;
     setIsRefreshing(true);
     try {
-      const res = await refreshMangaMetadata(session.user.id, id);
-      if ("error" in res) {
-        toast.error(res.error);
-      } else {
-        setTitle(res.title);
-        setCoverId(res.coverId);
-        toast.success("Đã cập nhật thông tin truyện!");
+      // Fetch trực tiếp từ client để tránh overhead server action
+      const res = await fetch(getGetMangaIdUrl(id));
+      if (!res.ok) {
+        toast.error(`Lỗi API: ${res.status}`);
+        return;
       }
+      const manga: Manga = await res.json();
+      const { title: newTitle } = parseMangaTitle(manga);
+      const newCoverId = (manga as any).relationships?.cover?.id ?? null;
+
+      // Lưu vào DB (background, không cần await để UI phản hồi ngay)
+      saveMangaMetadata(session.user.id, id, newTitle, newCoverId);
+
+      onRefreshed?.(id, newTitle, newCoverId);
+      toast.success("Đã cập nhật thông tin truyện!");
     } catch {
       toast.error("Đã có lỗi xảy ra!");
     } finally {

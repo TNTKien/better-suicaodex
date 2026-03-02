@@ -208,3 +208,35 @@ export async function refreshMangaMetadata(
     return { error: "Có lỗi xảy ra, vui lòng thử lại sau!" };
   }
 }
+
+/**
+ * Chỉ lưu metadata vào DB — việc fetch API được thực hiện ở client.
+ */
+export async function saveMangaMetadata(
+  userId: string,
+  mangaId: string,
+  title: string,
+  coverId: string | null,
+): Promise<{ message: string; status: number }> {
+  try {
+    if (!(await checkAuth(userId)))
+      return { message: "Vui lòng đăng nhập lại!", status: 401 };
+
+    const inLibrary = await prisma.libraryManga.findFirst({
+      where: { mangaId, library: { userId } },
+      select: { id: true },
+    });
+    if (!inLibrary)
+      return { message: "Manga không có trong thư viện.", status: 404 };
+
+    await prisma.manga.update({
+      where: { id: mangaId },
+      data: { title, coverId },
+    });
+
+    return { message: "Đã cập nhật!", status: 200 };
+  } catch (error) {
+    console.error("Error saving manga metadata:", error);
+    return { message: "Có lỗi xảy ra, vui lòng thử lại sau!", status: 500 };
+  }
+}

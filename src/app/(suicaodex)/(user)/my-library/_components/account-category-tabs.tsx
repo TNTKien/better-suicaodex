@@ -51,6 +51,20 @@ export default function AccountCategoryTabs({
     }));
   };
 
+  const handleRefreshed = (
+    category: Category,
+    mangaId: string,
+    title: string,
+    coverId: string | null,
+  ) => {
+    setLibrary((prev) => ({
+      ...prev,
+      [category]: prev[category].map((e) =>
+        e.id === mangaId ? { ...e, title, coverId } : e,
+      ),
+    }));
+  };
+
   return (
     <Tabs
       value={tab}
@@ -89,6 +103,9 @@ export default function AccountCategoryTabs({
                     key={entry.id}
                     entry={entry}
                     onRemoved={(id) => handleRemoved(category, id)}
+                    onRefreshed={(id, title, coverId) =>
+                      handleRefreshed(category, id, title, coverId)
+                    }
                   />
                 ))}
               </div>
