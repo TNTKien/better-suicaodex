@@ -22,7 +22,7 @@ export default function LibraryMangaCard({
   const { title, coverId } = meta;
   const coverUrl = coverId
     ? `${siteConfig.weebdex.proxyURL}/covers/${mangaId}/${coverId}.512.webp`
-    : "/images/shutup.webp";
+    : "/images/no-cover.webp";
   const slug = generateSlug(title);
 
   return (

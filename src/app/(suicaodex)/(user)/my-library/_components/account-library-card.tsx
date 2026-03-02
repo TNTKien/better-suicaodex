@@ -25,7 +25,7 @@ export default function AccountLibraryCard({
   const displayTitle = title ?? id;
   const coverUrl = coverId
     ? `${siteConfig.weebdex.proxyURL}/covers/${id}/${coverId}.512.webp`
-    : "/images/shutup.webp";
+    : "/images/no-cover.webp";
   const slug = generateSlug(displayTitle);
   const { data: session } = useSession();
   const [isRemoving, setIsRemoving] = useState(false);
