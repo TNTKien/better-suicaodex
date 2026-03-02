@@ -135,11 +135,11 @@ export const SingleCard = ({
         </div>
 
         {!!timestamp && (
-          <div className="w-52 flex shrink-0 items-center justify-end gap-2">
+          <div className="w-40 sm:w-48 md:w-52 flex shrink-0 items-center justify-end gap-2">
             <div className="flex flex-auto items-center gap-1">
               <Clock size={16} className="shrink-0" />
               <time
-                className="text-sm font-light line-clamp-1"
+                className="text-sm font-light line-clamp-1 break-all"
                 dateTime={new Date(timestamp).toDateString()}
               >
                 {formatTimeToNow(new Date(timestamp))}
@@ -187,10 +187,10 @@ export const SingleCard = ({
         </div>
 
         {!!uploader?.name && (
-          <div className="w-52 flex shrink-0 items-center justify-end gap-2">
+          <div className="w-40 sm:w-48 md:w-52 flex shrink-0 items-center justify-end gap-2">
             <div className="flex flex-auto items-center gap-1">
               <User size={16} className="shrink-0" />
-              <span className="text-sm font-light line-clamp-1">
+              <span className="text-sm font-light line-clamp-1 break-all">
                 {uploader.name}
               </span>
             </div>
