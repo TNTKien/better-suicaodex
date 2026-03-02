@@ -12,7 +12,9 @@
     "upgrade": "next upgrade",
     "analyze": "next experimental-analyze",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "migrate:weebdex": "bun run scripts/migrate-manga-ids-to-weebdex.mjs",
+    "migrate:weebdex:execute": "bun run scripts/migrate-manga-ids-to-weebdex.mjs --execute"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
