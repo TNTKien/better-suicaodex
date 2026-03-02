@@ -1,6 +1,6 @@
 import { useLocalLibraryV2 } from "@/hooks/use-local-library-v2";
 import { useLocalNotification } from "@/hooks/use-local-notification";
-import { getMangaCategory } from "@/lib/suicaodex/db";
+import { getMangaCategory, updateMangaCategory } from "@/lib/suicaodex/db";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -161,28 +161,27 @@ export function MangaAddToLibBtn({
       toast.info("Bạn cần đăng nhập để sử dụng chức năng này!");
       return;
     }
-    return toast.warning("Chức năng đang bảo trì", {
-      description: "Dùng tạm trên thiết bị nhé 🤪",
-    });
-    // setIsLoading(true);
-    // try {
-    //   const res = await updateMangaCategory(
-    //     session.user.id,
-    //     mangaId,
-    //     v.toUpperCase() as any,
-    //     "none", // đếch nhớ sao lại code như này 😳
-    //   );
-    //   if (res.status === 200 || res.status === 201) {
-    //     toast.success(res.message);
-    //   } else {
-    //     toast.error(res.message);
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    //   toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    setIsLoading(true);
+    try {
+      const res = await updateMangaCategory(
+        session.user.id,
+        mangaId,
+        v.toUpperCase() as Parameters<typeof updateMangaCategory>[2],
+        undefined,
+        title,
+        coverId,
+      );
+      if (res.status === 200 || res.status === 201) {
+        toast.success(res.message);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCategoryChange = async (v: string) => {
@@ -191,11 +190,8 @@ export function MangaAddToLibBtn({
       setLocalValue(newValue);
       handleLocalLibraryAdd(newValue);
     } else {
-      toast.warning("Chức năng đang bảo trì", {
-        description: "Dùng tạm trên thiết bị nhé 🤪",
-      });
-      // setAccountValue(newValue);
-      // await handleLibraryAdd(newValue);
+      setAccountValue(newValue);
+      await handleLibraryAdd(newValue);
     }
   };
 

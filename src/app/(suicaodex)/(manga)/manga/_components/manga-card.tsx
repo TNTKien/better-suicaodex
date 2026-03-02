@@ -22,7 +22,7 @@ export default function MangaCard({
 }: MangaCardProps) {
   const cover_url = cover
     ? `${siteConfig.weebdex.proxyURL}/covers/${manga_id}/${cover.id}.512.webp`
-    : "/images/shutup.webp";
+    : "/images/no-cover.webp";
 
   const [loaded, setLoaded] = useState(false);
 

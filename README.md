@@ -28,7 +28,8 @@ Tuy vậy, SuicaoDex sẽ luôn:
 | Chức năng | Trạng thái | Chi tiết |
 |---|---|---|
 | Link | Không khả dụng | Các đường dẫn sử dụng uuid của MangaDex (vd: `https://suicaodex.com/manga/56958579-6d1b-4db0-be4f-dd17b828fcf`) sẽ không thể truy cập được. |
-| Thư viện & Lịch sử đọc | Hạn chế | Truyện đã lưu vào tài khoản/thiết bị và lịch sử đọc trước ngày **02/03/2026** sẽ không hiển thị; chức năng Lưu truyện vào tài khoản tạm thời bị tắt. |
+| Thư viện | Tạm khắc phục | Đối với thư viện lưu trên thiết bị trước ngày **02/03/2026** sẽ không hiển thị; Đã khắc phục thư viện trong tài khoản, chức năng này hiện đã hoạt động bình thường, tuy vậy người dùng sẽ cần đồng bộ thủ công các truyện cũ (data MangaDex), 1 số đầu truyện không có trên WeebDex thì chịu, có thể đợi có hoặc xóa cho rảnh nợ. |
+| Lịch sử đọc | Hạn chế | Lịch sử đọc trước ngày **02/03/2026** sẽ không hiển thị. |
 | Thông báo chương mới | Tạm tắt | Vốn dĩ từ trước đã không ổn, tiện thể tắt luôn để tìm giải pháp tối ưu hơn. |
 | Truyện đề cử & Bảng xếp hạng | Tạm ẩn | WeebDex chỉ mới đi vào hoạt động gần đây, dữ liệu chưa có quá nhiều nên chưa thể tính toán được. |
 | Bình luận | Tạm khắc phục | Trừ 1 số tựa truyện không/chưa có trên WeebDex, các bình luận **tại truyện** sẽ hiển thị bình thường. Bình luận trong chapter thì chịu, tạm chưa có giải pháp (vẫn sẽ hiển thị trong mục `Bình luận gần đây` cho đến khi nó trôi mất). |",

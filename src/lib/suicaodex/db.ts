@@ -1,6 +1,8 @@
 "use server";
 
 import { auth } from "@/auth";
+import { getMangaId } from "@/lib/weebdex/hooks/manga/manga";
+import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { prisma } from "../prisma";
 import { Category } from "../../../prisma/generated/enums";
 
@@ -37,7 +39,9 @@ export async function updateMangaCategory(
   userId: string,
   mangaId: string,
   category: Category | "NONE",
-  latestChapterId: string,
+  latestChapterId?: string | null,
+  title?: string,
+  coverId?: string | null,
 ): Promise<{ message: string; status: number }> {
   try {
     // Kiểm tra xác thực
@@ -67,8 +71,12 @@ export async function updateMangaCategory(
       // Tìm hoặc tạo Manga
       await prisma.manga.upsert({
         where: { id: mangaId },
-        update: { latestChapterId }, // Cập nhật nếu đã tồn tại
-        create: { id: mangaId, latestChapterId }, // Tạo mới nếu chưa tồn tại
+        update: {
+          ...(latestChapterId !== undefined && { latestChapterId }),
+          ...(title !== undefined && { title }),
+          ...(coverId !== undefined && { coverId }),
+        },
+        create: { id: mangaId, latestChapterId: latestChapterId ?? null, title, coverId },
       });
 
       // Thêm hoặc cập nhật Manga trong thư viện
@@ -97,26 +105,33 @@ export async function updateMangaCategory(
   }
 }
 
+export type MangaLibraryEntry = {
+  id: string;
+  title: string | null;
+  coverId: string | null;
+  addedAt: Date;
+};
+
 export async function getUserLibrary(userId: string): Promise<{
-  FOLLOWING: string[];
-  READING: string[];
-  PLAN: string[];
-  COMPLETED: string[];
-  DROPPED: string[];
-  RE_READING: string[];
+  FOLLOWING: MangaLibraryEntry[];
+  READING: MangaLibraryEntry[];
+  PLAN: MangaLibraryEntry[];
+  COMPLETED: MangaLibraryEntry[];
+  DROPPED: MangaLibraryEntry[];
+  RE_READING: MangaLibraryEntry[];
 }> {
+  const emptyResult = {
+    FOLLOWING: [],
+    READING: [],
+    PLAN: [],
+    COMPLETED: [],
+    DROPPED: [],
+    RE_READING: [],
+  };
+
   try {
     // Kiểm tra xác thực
-    if (!(await checkAuth(userId))) {
-      return {
-        FOLLOWING: [],
-        READING: [],
-        PLAN: [],
-        COMPLETED: [],
-        DROPPED: [],
-        RE_READING: [],
-      };
-    }
+    if (!(await checkAuth(userId))) return emptyResult;
 
     // Tìm ID thư viện của người dùng
     const library = await prisma.library.findUnique({
@@ -124,41 +139,72 @@ export async function getUserLibrary(userId: string): Promise<{
       select: { id: true },
     });
 
-    if (!library)
-      return {
-        FOLLOWING: [],
-        READING: [],
-        PLAN: [],
-        COMPLETED: [],
-        DROPPED: [],
-        RE_READING: [],
-      };
+    if (!library) return emptyResult;
 
-    // Lấy tất cả Manga trong thư viện và phân loại
+    // Lấy tất cả Manga trong thư viện, kèm metadata và sắp xếp mới nhất trước
     const libraryMangas = await prisma.libraryManga.findMany({
       where: { libraryId: library.id },
-      select: { mangaId: true, category: true },
+      select: {
+        mangaId: true,
+        category: true,
+        createdAt: true,
+        manga: { select: { title: true, coverId: true } },
+      },
+      orderBy: { createdAt: "desc" },
     });
 
-    // Sử dụng reduce để phân loại Manga
+    // Phân loại Manga theo category
     const result = libraryMangas.reduce(
-      (acc: Record<Category, string[]>, { mangaId, category }) => {
-        acc[category].push(mangaId);
+      (acc: Record<Category, MangaLibraryEntry[]>, { mangaId, category, createdAt, manga }) => {
+        acc[category].push({
+          id: mangaId,
+          title: manga?.title ?? null,
+          coverId: manga?.coverId ?? null,
+          addedAt: createdAt,
+        });
         return acc;
       },
-      {
-        FOLLOWING: [],
-        READING: [],
-        PLAN: [],
-        COMPLETED: [],
-        DROPPED: [],
-        RE_READING: [],
-      } as Record<Category, string[]>,
+      emptyResult as Record<Category, MangaLibraryEntry[]>,
     );
 
     return result;
   } catch (error) {
     console.error("Error fetching user library:", error);
     throw new Error("Failed to fetch user library.");
+  }
+}
+
+export async function refreshMangaMetadata(
+  userId: string,
+  mangaId: string,
+): Promise<{ title: string; coverId: string | null } | { error: string }> {
+  try {
+    if (!(await checkAuth(userId))) return { error: "Vui lòng đăng nhập lại!" };
+
+    // Kiểm tra manga thuộc thư viện user
+    const inLibrary = await prisma.libraryManga.findFirst({
+      where: { mangaId, library: { userId } },
+      select: { id: true },
+    });
+    if (!inLibrary) return { error: "Manga không có trong thư viện." };
+
+    // Fetch từ WeebDex API
+    const res = await getMangaId(mangaId);
+    if (res.status !== 200 || !res.data) return { error: `Lỗi API: ${res.status}` };
+
+    const manga = res.data;
+    const { title } = parseMangaTitle(manga);
+    const coverId = (manga as any).relationships?.cover?.id ?? null;
+
+    // Cập nhật DB
+    await prisma.manga.update({
+      where: { id: mangaId },
+      data: { title, coverId },
+    });
+
+    return { title, coverId };
+  } catch (error) {
+    console.error("Error refreshing manga metadata:", error);
+    return { error: "Có lỗi xảy ra, vui lòng thử lại sau!" };
   }
 }

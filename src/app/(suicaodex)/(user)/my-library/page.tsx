@@ -1,49 +1,25 @@
 import { Metadata } from "next";
-import {
-  Album,
-  BookmarkCheck,
-  BookOpen,
-  CircleHelp,
-  CircleUser,
-  CloudOff,
-  ListCheck,
-  NotebookPen,
-  ServerOffIcon,
-} from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import LibraryList from "./_components/library-list";
-// import { auth } from "@/auth";
-// import SyncLib from "@/components/Library/sync-lib";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
+import { CircleHelp } from "lucide-react";
+import LibraryStorageTabs from "./_components/library-storage-tabs";
+import LocalCategoryTabs from "./_components/local-category-tabs";
+import AccountLibraryList from "./_components/account-library-list";
+import type { SearchParams } from "nuqs/server";
+import { loadLibrarySearchParams } from "./searchParams";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export function generateMetadata(): Metadata {
   return {
     title: "Thư viện",
-    // description: "Thư viện",
-    // keywords: ["Lịch sử", "History", "SuicaoDex"],
   };
 }
-export default async function Page() {
-  // const session = await auth();
-  // console.log(session);
-  const tabValues = [
-    { value: "following", icon: <BookmarkCheck /> },
-    { value: "reading", icon: <Album /> },
-    { value: "plan", icon: <NotebookPen /> },
-    { value: "completed", icon: <ListCheck /> },
-  ];
+
+interface PageProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function Page({ searchParams }: PageProps) {
+  await loadLibrarySearchParams(searchParams); // warm-up for nuqs SSR
+
   return (
     <>
       <div>
@@ -51,81 +27,44 @@ export default async function Page() {
         <h1 className="text-2xl font-black uppercase">Thư viện</h1>
       </div>
 
-      <Tabs defaultValue="local" className="mt-4">
-        <TabsList className="w-full">
-          <TabsTrigger className="w-full flex items-center" value="local">
-            <CloudOff size={16} className="mr-1" />
-            Từ thiết bị
-          </TabsTrigger>
-          <TabsTrigger className="w-full flex items-center" value="cloud">
-            <CircleUser size={16} className="mr-1" />
-            Từ tài khoản
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="local">
-          <Accordion
-            type="single"
-            collapsible
-            className="bg-secondary rounded-md px-2"
-          >
-            <AccordionItem value="item-1" className="border-none">
-              <AccordionTrigger className="py-2">
-                <div className="flex items-center gap-1.5">
-                  <CircleHelp size={18} /> Có thể bạn cần biết:
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-2">
+      <LibraryStorageTabs
+        localContent={
+          <>
+            <Alert>
+              <CircleHelp strokeWidth={3} />
+              <AlertTitle className="font-semibold">
+                Có thể bạn cần biết:
+              </AlertTitle>
+              <AlertDescription>
                 Đây là thư viện được lưu trên chính thiết bị của bạn, nó không
                 đồng bộ với thư viện lưu trên tài khoản. Nếu bạn xóa dữ liệu
                 trình duyệt, thư viện này cũng sẽ bị xóa theo.
                 <br />
-                Ngoài ra, mỗi danh mục chỉ lưu tối đa 500 truyện, khi lưu thêm
+                Ngoài ra, mỗi mục chỉ lưu tối đa 500 truyện, khi lưu thêm
                 sẽ tự động xóa truyện cũ nhất.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          <Tabs defaultValue="following" className="mt-2">
-            <TabsList className="rounded-sm gap-1 h-10">
-              {tabValues.map((tab) => (
-                <TabsTrigger
-                  key={tab.value}
-                  className="rounded-sm"
-                  value={tab.value}
-                >
-                  {tab.icon}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-
-            {tabValues.map((tab) => (
-              <TabsContent key={tab.value} value={tab.value} className="w-full">
-                <LibraryList category={tab.value as any} />
-              </TabsContent>
-            ))}
-          </Tabs>
-        </TabsContent>
-        <TabsContent value="cloud">
-          <Empty className="bg-muted/30 h-full mt-2">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <ServerOffIcon />
-              </EmptyMedia>
-              <EmptyTitle>Chức năng tạm thời không khả dụng</EmptyTitle>
-              <EmptyDescription className="max-w-xs text-pretty">
-                Tạm tắt cái này để bảo trì, dùng tạm cái bên kia nhé 🤪
-              </EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-          {/* {!!session ? (
-            <SyncLib session={session} />
-          ) : (
-            <Alert className="rounded-sm justify-center text-center">
-              <AlertTitle>Bạn cần đăng nhập để dùng chức năng này!</AlertTitle>
+              </AlertDescription>
             </Alert>
-          )} */}
-        </TabsContent>
-      </Tabs>
+
+            <LocalCategoryTabs />
+          </>
+        }
+        cloudContent={
+          <>
+            <Alert>
+              <CircleHelp strokeWidth={3} />
+              <AlertTitle className="font-semibold">
+                Có thể bạn cần biết:
+              </AlertTitle>
+              <AlertDescription className="text-pretty">
+                Nếu bạn thấy truyện nào tựa chỉ có ID, không có bìa, hãy thử bấm nút ↺ ở góc trái của truyện để đồng bộ lại dữ liệu nhé. <br/>
+                Còn nếu ID là 1 chuỗi dài (uuid của MangaDex, vd: 56958579-6d1b-4db0-be4f-dd17b828fcf7), thì thôi bấm xóa đi cho nhanh 🐧
+              </AlertDescription>
+            </Alert>
+
+            <AccountLibraryList />
+          </>
+        }
+      />
     </>
   );
 }

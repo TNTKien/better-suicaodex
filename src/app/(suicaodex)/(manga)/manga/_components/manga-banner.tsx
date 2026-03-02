@@ -17,7 +17,7 @@ export default function MangaBanner({
   const cover_ext = ext ? `.${ext}` : cover?.ext || ".webp";
   const cover_url = cover
     ? `${siteConfig.weebdex.proxyURL}/covers/${manga_id}/${cover.id}${cover_ext}`
-    : "/images/shutup.webp";
+    : "/images/no-cover.webp";
 
   return (
     <div className="absolute h-70 z-[-2] w-auto left-0 right-0 top-0 block">

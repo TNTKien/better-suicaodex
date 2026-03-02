@@ -18,7 +18,7 @@ export default function CompactCardWeebdex({ manga }: CompactCardWeebdexProps) {
   const cover = manga.relationships?.cover;
   const coverUrl = cover
     ? `${siteConfig.weebdex.proxyURL}/covers/${manga.id}/${cover.id}.256.webp`
-    : "/images/shutup.webp";
+    : "/images/no-cover.webp";
 
   return (
     <Card className="rounded-md shadow-xs hover:bg-accent transition-colors duration-200">
