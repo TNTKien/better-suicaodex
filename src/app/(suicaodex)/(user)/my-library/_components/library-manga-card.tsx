@@ -41,7 +41,7 @@ export default function LibraryMangaCard({
           />
           {/* Gradient title overlay */}
           <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-linear-to-t from-black rounded-b-sm flex items-end p-2">
-            <p className="text-sm font-semibold line-clamp-2 text-white drop-shadow-xs">
+            <p className="text-base font-semibold line-clamp-2 text-white drop-shadow-xs">
               {title}
             </p>
           </div>
@@ -52,7 +52,7 @@ export default function LibraryMangaCard({
       <Button
         variant="destructive"
         size="icon-sm"
-        className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-1 right-1 size-6"
         onClick={(e) => {
           e.preventDefault();
           onRemove(mangaId);

@@ -1,6 +1,8 @@
 "use server";
 
 import { auth } from "@/auth";
+import { getMangaId } from "@/lib/weebdex/hooks/manga/manga";
+import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { prisma } from "../prisma";
 import { Category } from "../../../prisma/generated/enums";
 
@@ -169,5 +171,40 @@ export async function getUserLibrary(userId: string): Promise<{
   } catch (error) {
     console.error("Error fetching user library:", error);
     throw new Error("Failed to fetch user library.");
+  }
+}
+
+export async function refreshMangaMetadata(
+  userId: string,
+  mangaId: string,
+): Promise<{ title: string; coverId: string | null } | { error: string }> {
+  try {
+    if (!(await checkAuth(userId))) return { error: "Vui lòng đăng nhập lại!" };
+
+    // Kiểm tra manga thuộc thư viện user
+    const inLibrary = await prisma.libraryManga.findFirst({
+      where: { mangaId, library: { userId } },
+      select: { id: true },
+    });
+    if (!inLibrary) return { error: "Manga không có trong thư viện." };
+
+    // Fetch từ WeebDex API
+    const res = await getMangaId(mangaId);
+    if (res.status !== 200 || !res.data) return { error: `Lỗi API: ${res.status}` };
+
+    const manga = res.data;
+    const { title } = parseMangaTitle(manga);
+    const coverId = (manga as any).relationships?.cover?.id ?? null;
+
+    // Cập nhật DB
+    await prisma.manga.update({
+      where: { id: mangaId },
+      data: { title, coverId },
+    });
+
+    return { title, coverId };
+  } catch (error) {
+    console.error("Error refreshing manga metadata:", error);
+    return { error: "Có lỗi xảy ra, vui lòng thử lại sau!" };
   }
 }

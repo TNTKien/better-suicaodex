@@ -8,10 +8,10 @@ import { LIBRARY_TAB_OPTIONS, type LibraryTab } from "../searchParams";
 import LibraryList from "./library-list";
 
 const TAB_VALUES: { value: LibraryTab; icon: React.ReactNode }[] = [
-  { value: "following", icon: <BookmarkCheck /> },
-  { value: "reading", icon: <Album /> },
-  { value: "plan", icon: <NotebookPen /> },
-  { value: "completed", icon: <ListCheck /> },
+  { value: "following", icon: <BookmarkCheck className="size-5" /> },
+  { value: "reading", icon: <Album className="size-5" /> },
+  { value: "plan", icon: <NotebookPen className="size-5" /> },
+  { value: "completed", icon: <ListCheck className="size-5" /> },
 ];
 
 export default function LocalCategoryTabs() {
@@ -26,9 +26,9 @@ export default function LocalCategoryTabs() {
       onValueChange={(v) => setTab(v as LibraryTab)}
       className="mt-2"
     >
-      <TabsList className="rounded-sm gap-1 h-10">
+      <TabsList className="rounded-md gap-1">
         {TAB_VALUES.map((t) => (
-          <TabsTrigger key={t.value} className="rounded-sm" value={t.value}>
+          <TabsTrigger key={t.value} className="rounded-md" value={t.value}>
             {t.icon}
           </TabsTrigger>
         ))}
