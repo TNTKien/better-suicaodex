@@ -90,7 +90,7 @@ model Library {
 }
 
 model Manga {
-  mangadexId      String @id
+  id              String @id @map("mangadexId")
   latestChapterId String?
 
   libraries LibraryManga[]
@@ -98,8 +98,6 @@ model Manga {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([mangadexId])
 }
 
 model LibraryManga {
@@ -109,7 +107,7 @@ model LibraryManga {
   category  Category
 
   library Library @relation(fields: [libraryId], references: [id], onDelete: Cascade, map: "fk_library_manga_library_cascade")
-  manga   Manga   @relation(fields: [mangaId], references: [mangadexId], onDelete: Cascade, map: "fk_library_manga_manga_cascade")
+  manga   Manga   @relation(fields: [mangaId], references: [id], onDelete: Cascade, map: "fk_library_manga_manga_cascade")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -141,7 +139,7 @@ model MangaComment {
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   mangaId String
-  manga   Manga  @relation(fields: [mangaId], references: [mangadexId], onDelete: Cascade)
+  manga   Manga  @relation(fields: [mangaId], references: [id], onDelete: Cascade)
 
   parentId String?
   parent   MangaComment?  @relation("MangaCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
@@ -157,14 +155,12 @@ model MangaComment {
 }
 
 model Chapter {
-  mangadexId String   @id
+  id         String   @id @map("mangadexId")
 
   comments   ChapterComment[]
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  @@index([mangadexId])
 }
 
 model ChapterComment {
@@ -179,7 +175,7 @@ model ChapterComment {
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   chapterId String
-  chapter   Chapter @relation(fields: [chapterId], references: [mangadexId], onDelete: Cascade)
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   parentId String?
   parent   ChapterComment?  @relation("ChapterCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
