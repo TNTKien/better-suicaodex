@@ -4,6 +4,8 @@ import { getChapterId } from "@/lib/weebdex/hooks/chapter/chapter";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { Metadata } from "next";
 import { cache } from "react";
+import ErrorPage from "@/components/error-page";
+import { validate as isValidUUID } from "uuid";
 
 interface PageProps {
   params: Promise<{
@@ -23,6 +25,9 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
+  if (isValidUUID(id)) {
+    return { title: "404 Not Found" };
+  }
 
   try {
     const chapter = await getCachedChapterData(id);
@@ -53,6 +58,9 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
+  if (isValidUUID(id)) {
+    return <ErrorPage statusCode={404} message="Có vẻ bạn đang dùng link chứa uuid của MangaDex (không còn hỗ trợ nữa)" />;
+  }
   try {
     const initialData = await getCachedChapterData(id);
     return <ChapterPage id={id} initialData={initialData} />;

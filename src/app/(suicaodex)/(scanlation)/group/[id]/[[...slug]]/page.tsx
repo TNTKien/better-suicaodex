@@ -7,6 +7,8 @@ import type { SearchParams } from "nuqs/server";
 import { loadSearchParams } from "./searchParams";
 import { cache } from "react";
 import GroupPage from "./_components";
+import ErrorPage from "@/components/error-page";
+import { validate as isValidUUID } from "uuid";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -24,6 +26,9 @@ export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
+  if (isValidUUID(id)) {
+    return { title: "404 Not Found" };
+  }
   const { page } = await loadSearchParams(searchParams);
   try {
     const group = await getCachedGroup(id);
@@ -44,6 +49,9 @@ export async function generateMetadata({
 
 export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
+  if (isValidUUID(id)) {
+    return <ErrorPage statusCode={404} message="Có vẻ bạn đang dùng link chứa uuid của MangaDex (không còn hỗ trợ nữa)" />;
+  }
   let { page } = await loadSearchParams(searchParams);
   if (page < 1 || isNaN(page)) page = 1;
 
