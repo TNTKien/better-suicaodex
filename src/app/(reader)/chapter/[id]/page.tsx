@@ -46,7 +46,7 @@ export async function generateMetadata({
     };
   } catch (error: any) {
     return {
-      title: "SuicaoDex",
+      title: "Ehe! 🤪",
     };
   }
 }

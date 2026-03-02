@@ -23,25 +23,15 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
 
 ## Dự kiến
-☑️ Chuyển sang Weebdex API:
+☑️ Chuyển sang Weebdex API: Đã hoàn thành, tuy nhiên do sự khác biệt về dữ liệu giữa 2 API, một số chức năng sẽ bị ảnh hưởng, cụ thể như sau:
 
-| Route | Status | Note |
-| --- | --- | --- |
-| `/` | ☑️ | -- |
-| `/manga/:id` | ☑️ | -- |
-| `/chapter/:id` | ☑️ | -- |
-| `/author/:id` | ☑️ | -- |
-| `/tag` | ☑️ | -- |
-| `/tag/:id` | ☑️ | -- |
-| `/group/:id` | ☑️ | -- |
-| `/groups` | ☑️ | -- |
-| `/latest` | ☑️ | -- |
-| `/recent` | ☑️ | -- |
-| `/random` | ☑️ | -- |
-| `/advanced-search` | ☑️ | -- |
-| `/history` | ☑️ | -- |
-| `/my-library` | ☑️ | tạm tắt phần thư viện theo tài khoản |
-| `/notifications` | ☑️ | tạm tắt |
+| Chức năng | Trạng thái | Chi tiết |
+|---|---|---|
+| Link | Không khả dụng | Các đường dẫn sử dụng uuid của MangaDex (vd: `https://suicaodex.com/manga/56958579-6d1b-4db0-be4f-dd17b828fcf`) sẽ không thể truy cập được. |
+| Thư viện & Lịch sử đọc | Hạn chế | Truyện đã lưu vào tài khoản/thiết bị và lịch sử đọc trước ngày **02/03/2026** sẽ không hiển thị; chức năng Lưu truyện vào tài khoản tạm thời bị tắt. |
+| Thông báo chương mới | Tạm tắt | Vốn dĩ từ trước đã không ổn, tiện thể tắt luôn để tìm giải pháp tối ưu hơn. |
+| Truyện đề cử & Bảng xếp hạng | Tạm ẩn | WeebDex chỉ mới đi vào hoạt động gần đây, dữ liệu chưa có quá nhiều nên chưa thể tính toán được. |
+| Bình luận | Tạm khắc phục | Trừ 1 số tựa truyện không/chưa có trên WeebDex, các bình luận **tại truyện** sẽ hiển thị bình thường. Bình luận trong chapter thì chịu, tạm chưa có giải pháp (vẫn sẽ hiển thị trong mục `Bình luận gần đây` cho đến khi nó trôi mất). |",
 
 
 ☑️ Làm lại reader: cơ bản đã xong, cần thử nghiệm thêm để cải thiện UI/UX

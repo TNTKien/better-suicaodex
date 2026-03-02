@@ -4,7 +4,7 @@ import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { Metadata } from "next";
 import { cache } from "react";
 import ErrorPage from "@/components/error-page";
-import type { SearchParams } from "nuqs/server";
+// import type { SearchParams } from "nuqs/server";
 // import { loadSearchParams } from "./searchParams";
 import MangaPage from "../../_components/manga-page";
 

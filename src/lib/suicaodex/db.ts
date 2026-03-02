@@ -66,9 +66,9 @@ export async function updateMangaCategory(
     } else {
       // Tìm hoặc tạo Manga
       await prisma.manga.upsert({
-        where: { mangadexId: mangaId },
+        where: { id: mangaId },
         update: { latestChapterId }, // Cập nhật nếu đã tồn tại
-        create: { mangadexId: mangaId, latestChapterId }, // Tạo mới nếu chưa tồn tại
+        create: { id: mangaId, latestChapterId }, // Tạo mới nếu chưa tồn tại
       });
 
       // Thêm hoặc cập nhật Manga trong thư viện
