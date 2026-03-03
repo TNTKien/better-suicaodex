@@ -5,8 +5,8 @@
   "scripts": {
     "gen:api": "bunx --bun orval --config ./orval.config.ts && node scripts/patch-orval.mjs",
     "postinstall": "bun prisma generate",
-    "dev": "next dev --webpack",
-    "build": "NEXT_DEPLOYMENT_ID=$(node -e \"console.log(Date.now())\") next build --webpack",
+    "dev": "next dev",
+    "build": "NEXT_DEPLOYMENT_ID=$(node -e \"console.log(Date.now())\") next build && serwist build",
     "postbuild": "next-sitemap",
     "start": "next start -p 3636",
     "upgrade": "next upgrade",
@@ -84,6 +84,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@serwist/cli": "^9.5.6",
     "@tailwindcss/postcss": "^4.1.17",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/eslint-plugin-query": "^5.91.4",
@@ -94,6 +95,8 @@
     "@types/react-lazy-load-image-component": "^1.6.5",
     "ajv": "^8.18.0",
     "babel-plugin-react-compiler": "^1.0.0",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.27.3",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",

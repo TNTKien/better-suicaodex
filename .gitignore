@@ -47,7 +47,7 @@ next-env.d.ts
 /public/robots.txt
 
 # serwist generated service worker
-/public/sw.js
+/public/sw*
 /public/sw.js.map
 /public/workbox-*.js
 /public/workbox-*.js.map
