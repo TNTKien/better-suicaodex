@@ -96,10 +96,6 @@ const data = {
       icon: Gamepad2,
       items: [
         {
-          title: "Gacha",
-          url: "/gacha",
-        },
-        {
           title: "Mồn lèo",
           url: "/meo",
         },
