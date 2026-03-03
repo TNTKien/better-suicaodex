@@ -49,7 +49,6 @@ Tuy vậy, SuicaoDex sẽ luôn:
 4. ✅ Sticker...
 5. ~~✅ Richtext editor~~ bỏ đi vì không cần thiết
 
-~~⬛ Giả lập Gacha (tại sao lại không nhỉ? 🐧)~~ Đã thử làm và quá lười để làm tiếp
 
 ## Góp ý/Báo lỗi
 Cần góp ý, thêm chức năng mới, báo lỗi hoặc bất cứ lý do gì bạn nghĩ ra được, hãy tìm tôi tại:
