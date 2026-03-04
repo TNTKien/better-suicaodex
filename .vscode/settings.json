@@ -1,0 +1,9 @@
+{
+    // if ur using vscode, remove below settings to see the deprecated folder
+    "files.exclude": {
+        "deprecated/": true
+    },
+    "search.exclude": {
+        "deprecated/": true
+    }
+}
