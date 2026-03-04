@@ -39,11 +39,26 @@ export default function DoublePage({
     ? `${spreadPages[0] + 1}-${(spreadPages as [number, number])[1] + 1}`
     : `${spreadPages[0] + 1}`;
 
+  // Preload các trang ở spread trước/sau để browser decode sẵn
+  const firstIdxInSpread = spreadPages[0];
+  const lastIdxInSpread = spreadPages[spreadPages.length - 1] as number;
+  const prevSpreadBlob = pages[firstIdxInSpread - 1]?.blob;
+  const nextSpreadBlob = pages[lastIdxInSpread + 1]?.blob;
+
   return (
     <div
       className="flex-1 flex flex-col items-center justify-center min-h-dvh cursor-pointer select-none"
       onClick={handleClick}
     >
+      {/* Hidden preload imgs */}
+      {prevSpreadBlob && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={prevSpreadBlob} alt="" aria-hidden className="absolute w-px h-px opacity-0 pointer-events-none" />
+      )}
+      {nextSpreadBlob && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={nextSpreadBlob} alt="" aria-hidden className="absolute w-px h-px opacity-0 pointer-events-none" />
+      )}
       {/* page index */}
       <span className="absolute top-2 text-xs text-muted-foreground z-10 bg-primary px-1 rounded opacity-25">
         {pageLabel} / {pages.length}
