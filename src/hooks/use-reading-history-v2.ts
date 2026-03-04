@@ -1,7 +1,6 @@
-"use client";
-
-import { useCallback, useMemo } from "react";
-import useLocalStorage from "@/hooks/use-local-storage";
+import { useMemo } from "react";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export type ChapterHistoryEntry = {
   chapterId: string;
@@ -26,78 +25,76 @@ export type MangaHistoryRecord = {
 /** key = mangaId */
 export type HistoryV2 = Record<string, MangaHistoryRecord>;
 
-const STORAGE_KEY = "reading_history_v2";
+const STORAGE_KEY = "reading_history_v3";
 const MAX_MANGA = 200;
 const MAX_CHAPTERS_PER_MANGA = 20;
 
+const useReadingHistoryV2Store = create<HistoryV2>()(
+  persist(
+    () => ({} as HistoryV2),
+    {
+      name: STORAGE_KEY,
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
+
+const setHistory = useReadingHistoryV2Store.setState;
+
+/**
+ * Add or update a chapter entry for a manga.
+ * - `meta` is saved/updated whenever provided (title + coverId from manga fetch).
+ * - If chapterId already exists it is moved to front (re-read).
+ * - Trims per-manga list to MAX_CHAPTERS_PER_MANGA.
+ * - Trims oldest manga when total exceeds MAX_MANGA.
+ */
+export const addHistory = (mangaId: string, entry: ChapterHistoryEntry, meta?: MangaMeta) => {
+  setHistory((prev) => {
+    const existing = prev[mangaId];
+    const existingChapters = existing?.chapters ?? [];
+
+    const filtered = existingChapters.filter(
+      (e) => e.chapterId !== entry.chapterId
+    );
+    const updatedChapters = [entry, ...filtered].slice(0, MAX_CHAPTERS_PER_MANGA);
+
+    const updatedMeta: MangaMeta =
+      meta ?? existing?.meta ?? { title: mangaId, coverId: null };
+
+    const next: HistoryV2 = {
+      ...prev,
+      [mangaId]: { meta: updatedMeta, chapters: updatedChapters },
+    };
+
+    const mangaIds = Object.keys(next);
+    if (mangaIds.length > MAX_MANGA) {
+      const sorted = mangaIds.sort((a, b) => {
+        const aTime = next[a]?.chapters[0]?.readAt ?? "";
+        const bTime = next[b]?.chapters[0]?.readAt ?? "";
+        return aTime < bTime ? -1 : 1;
+      });
+      const toRemove = sorted.slice(0, mangaIds.length - MAX_MANGA);
+      toRemove.forEach((id) => delete next[id]);
+    }
+
+    return next;
+  }, true);
+};
+
+/** Remove all history entries for a manga. */
+export const removeHistory = (mangaId: string) => {
+  setHistory((prev) => {
+    const next = { ...prev };
+    delete next[mangaId];
+    return next;
+  }, true);
+};
+
+/** Clear all history. */
+export const clearHistory = () => setHistory({} as HistoryV2, true);
+
 export default function useReadingHistoryV2() {
-  const [history, setHistory] = useLocalStorage<HistoryV2>(STORAGE_KEY, {});
-
-  /**
-   * Add or update a chapter entry for a manga.
-   * - `meta` is saved/updated whenever provided (title + coverId from manga fetch).
-   * - If chapterId already exists it is moved to front (re-read).
-   * - Trims per-manga list to MAX_CHAPTERS_PER_MANGA.
-   * - Trims oldest manga when total exceeds MAX_MANGA.
-   */
-  const addHistory = useCallback(
-    (mangaId: string, entry: ChapterHistoryEntry, meta?: MangaMeta) => {
-      setHistory((prev) => {
-        const existing = prev[mangaId];
-        const existingChapters = existing?.chapters ?? [];
-
-        // Remove duplicate chapterId (in case re-read)
-        const filtered = existingChapters.filter(
-          (e) => e.chapterId !== entry.chapterId
-        );
-        const updatedChapters = [entry, ...filtered].slice(
-          0,
-          MAX_CHAPTERS_PER_MANGA
-        );
-
-        // Use freshly provided meta, fall back to stored, then bare minimum
-        const updatedMeta: MangaMeta =
-          meta ?? existing?.meta ?? { title: mangaId, coverId: null };
-
-        const next: HistoryV2 = {
-          ...prev,
-          [mangaId]: { meta: updatedMeta, chapters: updatedChapters },
-        };
-
-        // If exceeded max manga, remove the oldest entries
-        const mangaIds = Object.keys(next);
-        if (mangaIds.length > MAX_MANGA) {
-          const sorted = mangaIds.sort((a, b) => {
-            const aTime = next[a]?.chapters[0]?.readAt ?? "";
-            const bTime = next[b]?.chapters[0]?.readAt ?? "";
-            return aTime < bTime ? -1 : 1;
-          });
-          const toRemove = sorted.slice(0, mangaIds.length - MAX_MANGA);
-          toRemove.forEach((id) => delete next[id]);
-        }
-
-        return next;
-      });
-    },
-    [setHistory]
-  );
-
-  /** Remove all history entries for a manga. */
-  const removeHistory = useCallback(
-    (mangaId: string) => {
-      setHistory((prev) => {
-        const next = { ...prev };
-        delete next[mangaId];
-        return next;
-      });
-    },
-    [setHistory]
-  );
-
-  /** Clear all history. */
-  const clearHistory = useCallback(() => {
-    setHistory({});
-  }, [setHistory]);
+  const history = useReadingHistoryV2Store();
 
   /**
    * Sorted entries: [mangaId, MangaHistoryRecord][] DESC by chapters[0].readAt

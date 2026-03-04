@@ -18,7 +18,7 @@ import {
   getGroupResponseSuccess,
 } from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
 import { useQuery } from "@tanstack/react-query";
-import { useDebounceValue } from "usehooks-ts";
+import { useDebouncedValue } from "@mantine/hooks";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useEffect } from "react";
 import { ArrowRight, BugIcon, Search, Users, X } from "lucide-react";
@@ -38,7 +38,7 @@ export default function GroupsSearch() {
   );
   const safePage = Math.max(1, page);
 
-  const [debouncedQuery] = useDebounceValue(inputValue, 500);
+  const [debouncedQuery] = useDebouncedValue(inputValue, 500);
 
   useEffect(() => {
     if (page < 1) setPage(1);

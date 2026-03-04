@@ -11,7 +11,7 @@ import {
 } from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
 import { GetMangaContentRatingItem } from "@/lib/weebdex/model";
 import { useQuery } from "@tanstack/react-query";
-import { useIsMounted } from "usehooks-ts";
+import { useMounted } from "@mantine/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import {
@@ -40,7 +40,7 @@ interface GroupPageProps {
 const LIMIT = 36;
 
 export default function GroupPage({ id, page }: GroupPageProps) {
-  const isMounted = useIsMounted();
+  const isMounted = useMounted();
   const [config] = useConfig();
   const contentRating = config.r18
     ? Object.values(GetMangaContentRatingItem)
@@ -51,7 +51,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
     isLoading: groupLoading,
     error: groupError,
   } = useQuery({
-    enabled: isMounted(),
+    enabled: isMounted,
     queryKey: ["weebdex", "group", id],
     queryFn: async () => {
       const res = await getGroupId(id);
@@ -62,7 +62,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
   });
 
   const { data, isLoading, error } = useQuery({
-    enabled: isMounted(),
+    enabled: isMounted,
     queryKey: [
       "weebdex",
       "manga",
@@ -96,7 +96,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
   const totalPages = Math.ceil((data?.total ?? 0) / LIMIT);
 
   function renderMangaResults() {
-    if (!isMounted() || isLoading)
+    if (!isMounted || isLoading)
       return (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
           {[...Array(LIMIT)].map((_, i) => (
@@ -168,7 +168,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
   }
 
   function renderGroupInfo() {
-    if (!isMounted() || groupLoading)
+    if (!isMounted || groupLoading)
       return (
         <div className="flex flex-col gap-3">
           <Skeleton className="h-8 w-48" />

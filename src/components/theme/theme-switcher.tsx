@@ -19,7 +19,7 @@ export function ThemeSwitcher() {
     if (theme) {
       return document.body.classList.add(`theme-${theme}`);
     }
-  }, [segment, config]);
+  }, [segment, config.theme]);
 
   return null;
 }

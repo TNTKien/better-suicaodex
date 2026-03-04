@@ -13,15 +13,29 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { BookOpen } from "lucide-react";
+import { useMounted } from "@mantine/hooks";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 interface LibraryListProps {
   category: LocalLibraryCategory;
 }
 
 export default function LibraryList({ category }: LibraryListProps) {
+  const mounted = useMounted();
   const { getByCategory, removeFromLibrary } = useLocalLibraryV2();
 
   const entries = getByCategory(category);
+
+  if (!mounted)
+    return (
+      <div className="flex items-center justify-center">
+        <Button variant="ghost" disabled size="lg">
+          <Spinner />
+          Loaing...
+        </Button>
+      </div>
+    );
 
   if (entries.length === 0) {
     return (

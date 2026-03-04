@@ -4,7 +4,7 @@ import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
 import HistoryMangaCard from "./history-manga-card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Trash2 } from "lucide-react";
-import { useIsMounted } from "usehooks-ts";
+import { useMounted } from "@mantine/hooks";
 import {
   Empty,
   EmptyDescription,
@@ -15,10 +15,10 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 
 export default function HistoryList() {
-  const isMounted = useIsMounted();
+  const isMounted = useMounted();
   const { sortedEntries, removeHistory, clearHistory } = useReadingHistoryV2();
 
-  if (!isMounted()) {
+  if (!isMounted) {
     return (
       <div className="flex items-center justify-center">
         <Button variant="ghost" disabled size="lg">

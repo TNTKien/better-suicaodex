@@ -15,20 +15,20 @@ import RecentlySkeletonCard from "./recently-skeleton-card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useIsMounted } from "usehooks-ts";
+import { useMounted } from "@mantine/hooks";
 import MangaCard from "@/app/(suicaodex)/(manga)/manga/_components/manga-card";
 
 const LIMIT = 18;
 
 export default function Recently() {
-  const isMounted = useIsMounted();
+  const isMounted = useMounted();
   const [config] = useConfig();
   const contentRating = config.r18
     ? Object.values(GetMangaContentRatingItem)
     : undefined;
 
   const { data, isLoading, error } = useQuery({
-    enabled: isMounted(),
+    enabled: isMounted,
     queryKey: ["weebdex", "manga", "recently", config.r18, config.translatedLanguage],
     queryFn: async () => {
       const res = await getManga({
@@ -45,7 +45,7 @@ export default function Recently() {
     refetchOnWindowFocus: false,
   });
 
-  if (!isMounted() || isLoading)
+  if (!isMounted || isLoading)
     return (
       <div className="flex flex-col">
         <hr className="w-9 h-1 bg-primary border-none" />

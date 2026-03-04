@@ -12,19 +12,19 @@ import LatestSkeletonCard from "./latest-skeleton-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { useIsMounted } from "usehooks-ts";
+import { useMounted } from "@mantine/hooks";
 
 const LIMIT = 36;
 
 export default function LatestUpdate() {
-  const isMounted = useIsMounted();
+  const isMounted = useMounted();
   const [config] = useConfig();
   const contentRating = config.r18
     ? Object.values(GetChapterUpdatesContentRatingItem)
     : undefined;
 
   const { data, isLoading, error } = useQuery({
-    enabled: isMounted(),
+    enabled: isMounted,
     queryKey: [
       "weebdex",
       "chapter",
@@ -46,7 +46,7 @@ export default function LatestUpdate() {
     refetchOnWindowFocus: false,
   });
 
-  if (!isMounted() || isLoading)
+  if (!isMounted || isLoading)
     return (
       <div className="flex flex-col">
         <hr className="w-9 h-1 bg-primary border-none" />

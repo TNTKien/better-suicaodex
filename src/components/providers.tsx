@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Provider as JotaiProvider } from "jotai";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { TooltipProvider } from "./ui/tooltip";
 import {
@@ -29,27 +28,25 @@ export function ThemeProvider({
   ...props
 }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
-    <JotaiProvider>
-      <QueryClientProvider client={queryClient}>
-        <NextThemesProvider {...props}>
-          <ThemeWrapper>
-            <ProgressProvider
-              height="3px"
-              options={{ showSpinner: false, template: null }}
-              shallowRouting
-            >
-              <Progress>
-                <Bar className="bg-primary!" />
-              </Progress>
-              <TooltipProvider delayDuration={0}>
-                <SessionProvider>
-                  {children}
-                </SessionProvider>
-              </TooltipProvider>
-            </ProgressProvider>
-          </ThemeWrapper>
-        </NextThemesProvider>
-      </QueryClientProvider>
-    </JotaiProvider>
+    <QueryClientProvider client={queryClient}>
+      <NextThemesProvider {...props}>
+        <ThemeWrapper>
+          <ProgressProvider
+            height="3px"
+            options={{ showSpinner: false, template: null }}
+            shallowRouting
+          >
+            <Progress>
+              <Bar className="bg-primary!" />
+            </Progress>
+            <TooltipProvider delayDuration={0}>
+              <SessionProvider>
+                {children}
+              </SessionProvider>
+            </TooltipProvider>
+          </ProgressProvider>
+        </ThemeWrapper>
+      </NextThemesProvider>
+    </QueryClientProvider>
   );
 }
