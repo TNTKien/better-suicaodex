@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/empty";
 import { BookX, BugIcon, Mail } from "lucide-react";
 import { Streamdown } from "streamdown";
-import PaginationControl from "@/components/Custom/pagination-control";
+import PaginationControl from "@/components/common/pagination-control";
 import { Button } from "@/components/ui/button";
 import { SiDiscord, SiX } from "@icons-pack/react-simple-icons";
 import { Label } from "@/components/ui/label";

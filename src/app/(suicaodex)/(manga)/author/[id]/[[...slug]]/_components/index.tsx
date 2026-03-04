@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/empty";
 import { BookX, BugIcon, Globe } from "lucide-react";
 import { Streamdown } from "streamdown";
-import PaginationControl from "@/components/Custom/pagination-control";
+import PaginationControl from "@/components/common/pagination-control";
 import { Button } from "@/components/ui/button";
 import { SiX, SiPixiv, SiYoutube } from "@icons-pack/react-simple-icons";
 import { Label } from "@/components/ui/label";

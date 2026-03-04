@@ -55,7 +55,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MangaChaptersList } from "./chapters-list/manga-chapters-list";
-import CommentSection from "@/components/Comment/comment-section";
+import CommentSection from "@/components/comment/comment-section";
 import MangaCoversTab from "./manga-covers-tab";
 import MangaRcms from "./manga-rcms";
 import MangaRelated from "./manga-related";

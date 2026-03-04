@@ -3,8 +3,6 @@
 import Reader from "./reader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetChapterId } from "@/lib/weebdex/hooks/chapter/chapter";
-import ChapterNotFound from "./chapter-notfound";
-import MangaMaintain from "@/components/Manga/manga-maintain";
 import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
 import { useEffect } from "react";
 import { type Chapter } from "@/lib/weebdex/model";
@@ -13,6 +11,7 @@ import { ReaderHeader } from "./reader-header";
 import { siteConfig } from "@/config/site";
 import { useGetMangaId } from "@/lib/weebdex/hooks/manga/manga";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
+import ErrorPage from "@/components/error-page";
 
 interface ChapterProps {
   id: string;
@@ -21,7 +20,11 @@ interface ChapterProps {
 
 export default function ChapterPage({ id, initialData }: ChapterProps) {
   const { addHistory: addHistoryV2 } = useReadingHistoryV2();
-  const { data: res, isLoading, error } = useGetChapterId(id, {
+  const {
+    data: res,
+    isLoading,
+    error,
+  } = useGetChapterId(id, {
     query: {
       initialData: initialData
         ? { data: initialData, status: 200 as const, headers: new Headers() }
@@ -70,7 +73,7 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
             })),
             readAt: now,
           },
-          meta
+          meta,
         );
       }
     } catch (error) {
@@ -80,8 +83,8 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
   }, [addHistoryV2, data, id, mangaData, mangaId]);
 
   if (error) {
-    if ((error as any).status === 404) return <ChapterNotFound />;
-    if ((error as any).status === 503) return <MangaMaintain />;
+    if ((error as any).status === 404) return <ErrorPage statusCode={404} />;
+    if ((error as any).status === 503) return <ErrorPage statusCode={503} />;
     return <div>Lỗi mất rồi 😭</div>;
   }
 
@@ -102,10 +105,11 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     <>
       <div className="border-grid flex flex-1 flex-col">
         <ReaderHeader />
-        {pages.length > 0 && <Reader key={data.id} images={pages} chapterData={data} />}
+        {pages.length > 0 && (
+          <Reader key={data.id} images={pages} chapterData={data} />
+        )}
       </div>
-      <ReaderSidebar chapter={data} side="right"/>
+      <ReaderSidebar chapter={data} side="right" />
     </>
   );
 }
-

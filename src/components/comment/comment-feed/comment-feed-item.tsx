@@ -2,7 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { CommentWithUser } from "@/lib/suicaodex/serializers";
 import { Streamdown } from "streamdown";
-import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatShortTime } from "@/lib/utils";
 import { getStickerByName } from "@/lib/stickers-fn";

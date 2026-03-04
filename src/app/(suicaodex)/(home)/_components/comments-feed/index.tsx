@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Marquee } from "@/components/ui/marquee";
 import { Skeleton } from "@/components/ui/skeleton";
-import CommentFeedItem from "@/components/Comment/CommentFeed/comment-feed-item";
+import CommentFeedItem from "@/components/comment/comment-feed/comment-feed-item";
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);

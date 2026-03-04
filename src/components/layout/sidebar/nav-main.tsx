@@ -18,8 +18,8 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { ThemeCustomizer } from "../Theme/theme-customizer";
-import NoPrefetchLink from "../Custom/no-prefetch-link";
+import { ThemeCustomizer } from "@/components/theme/theme-customizer";
+import NoPrefetchLink from "@/components/common/no-prefetch-link";
 
 export function NavMain({
   items,

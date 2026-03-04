@@ -1,10 +1,10 @@
 "use client";
-import { MainNav } from "@/components/Navbar/main-nav";
+import { MainNav } from "@/components/layout/navbar/main-nav";
 import { cn } from "@/lib/utils";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 import { useReaderStore } from "@/store/reader-store";
-import QuickSearch from "@/components/Search/quick-search";
-import { ModeSwitcher } from "@/components/Navbar/mode-switcher";
+import QuickSearch from "@/components/search/quick-search";
+import { ModeSwitcher } from "@/components/layout/navbar/mode-switcher";
 
 export function ReaderHeader() {
   const { isAtTop } = useScrollOffset();

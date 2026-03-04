@@ -4,7 +4,6 @@ import * as React from "react";
 import { Provider as JotaiProvider } from "jotai";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { TooltipProvider } from "./ui/tooltip";
-import { ThemeWrapper } from "./Theme/theme-wrapper";
 import {
   Bar,
   Progress,
@@ -15,6 +14,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { ThemeWrapper } from "./theme/theme-wrapper";
 
 const queryClient = new QueryClient({
   defaultOptions: {

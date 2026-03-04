@@ -1,17 +1,17 @@
-import MeoPage from "@/components/Pages/Meo";
-import { TotalCatAlert } from "@/components/Pages/Meo/total-cat-alert";
+import MeoPage from "./_components";
+import { TotalCatAlert } from "./_components/total-cat-alert";
+import { loadSearchParams } from "./searchParams";
 import { Metadata } from "next";
+import type { SearchParams } from "nuqs/server";
 
 interface pageProps {
-  searchParams: Promise<{
-    [key: string]: string | undefined;
-  }>;
+  searchParams: Promise<SearchParams>;
 }
 
 export async function generateMetadata({
   searchParams,
 }: pageProps): Promise<Metadata> {
-  const { page } = await getSearchParams({ searchParams });
+  const { page } = await loadSearchParams(searchParams);
 
   return {
     title:
@@ -23,7 +23,10 @@ export async function generateMetadata({
 }
 
 export default async function Page({ searchParams }: pageProps) {
-  const { page, limit } = await getSearchParams({ searchParams });
+  const { page, limit: rawLimit } = await loadSearchParams(searchParams);
+  // Non-feed limit query param may not be >100
+  const limit = rawLimit > 100 ? 100 : rawLimit;
+
   return (
     <div className="flex flex-col gap-4">
       <TotalCatAlert />
@@ -31,18 +34,3 @@ export default async function Page({ searchParams }: pageProps) {
     </div>
   );
 }
-
-const getSearchParams = async ({ searchParams }: pageProps) => {
-  const params = await searchParams;
-
-  let page = params["page"] ? parseInt(params["page"]) : 1;
-  let limit = params["limit"] ? parseInt(params["limit"]) : 20;
-  //Non-feed limit query param may not be >100
-  if (limit > 100) limit = 100;
-  if (page < 1) page = 1;
-
-  return {
-    page,
-    limit,
-  };
-};

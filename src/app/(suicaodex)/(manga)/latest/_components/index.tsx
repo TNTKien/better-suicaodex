@@ -16,7 +16,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { BugIcon } from "lucide-react";
-import PaginationControl from "@/components/Custom/pagination-control";
+import PaginationControl from "@/components/common/pagination-control";
 import LatestSkeletonCard from "@/app/(suicaodex)/(home)/_components/latest-update/latest-skeleton-card";
 import LatestMangaCard from "@/app/(suicaodex)/(home)/_components/latest-update/latest-manga-card";
 

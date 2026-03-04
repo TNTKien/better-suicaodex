@@ -10,8 +10,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
-import PaginationControl from "@/components/Custom/pagination-control";
+import NoPrefetchLink from "@/components/common/no-prefetch-link";
+import PaginationControl from "@/components/common/pagination-control";
 import { generateSlug } from "@/lib/utils";
 import {
   getGroup,
