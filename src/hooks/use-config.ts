@@ -1,8 +1,7 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { BaseColor } from "@/config/base-colors";
 import { PresetTheme } from "@/config/preset-themes";
-import { createMigratingStorage } from "@/lib/zustand-migrate-storage";
 
 type Config = {
   style: "new-york";
@@ -15,7 +14,7 @@ type Config = {
 
 const defaultConfig: Config = {
   style: "new-york",
-  theme: "zinc",
+  theme: "blue",
   radius: 0.5,
   packageManager: "bun",
   translatedLanguage: ["vi"],
@@ -33,8 +32,8 @@ const useConfigStore = create<ConfigStore>()(
       setConfig: (config: Config) => set(config),
     }),
     {
-      name: "config",
-      storage: createMigratingStorage<Config>(),
+      name: "config-v2",
+      storage: createJSONStorage(() => localStorage),
       // Không persist phương thức setConfig
       partialize: ({ setConfig: _, ...config }) => config,
     },

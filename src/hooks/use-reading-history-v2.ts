@@ -41,6 +41,75 @@ const useReadingHistoryV2Store = create<HistoryV2>()(
 
 const setHistory = useReadingHistoryV2Store.setState;
 
+/** Migrate data from old reading_history_v2 (plain JSON) into v3 store. Returns number of manga merged. */
+export const migrateFromV2 = (): number => {
+  try {
+    const raw = localStorage.getItem("reading_history_v2");
+    if (!raw) return 0;
+    const old = JSON.parse(raw) as HistoryV2;
+    const current = useReadingHistoryV2Store.getState();
+    const merged: HistoryV2 = { ...old };
+    // Merge current v3 on top: keep whichever has a more recent latest chapter
+    for (const [mangaId, record] of Object.entries(current)) {
+      const oldRecord = merged[mangaId];
+      if (!oldRecord) {
+        merged[mangaId] = record;
+      } else {
+        const oldTime = oldRecord.chapters[0]?.readAt ?? "";
+        const newTime = record.chapters[0]?.readAt ?? "";
+        merged[mangaId] = newTime >= oldTime ? record : oldRecord;
+      }
+    }
+    setHistory(merged, true);
+    localStorage.removeItem("reading_history_v2");
+    return Object.keys(old).length;
+  } catch {
+    return 0;
+  }
+};
+
+/* Migrate from legacy dev_history key (old format: Record<mangaId, {chapterId, chapter, updatedAt}>). Returns number of manga merged.
+export const migrateFromDevHistory = (): number => {
+  try {
+    const raw = localStorage.getItem("dev_history");
+    if (!raw) return 0;
+    type DevEntry = { chapterId: string; chapter: string | null; updatedAt: string };
+    const old = JSON.parse(raw) as Record<string, DevEntry>;
+    const current = useReadingHistoryV2Store.getState();
+    const merged: HistoryV2 = { ...current };
+    for (const [mangaId, entry] of Object.entries(old)) {
+      const converted: MangaHistoryRecord = {
+        meta: { title: mangaId, coverId: null },
+        chapters: [{
+          chapterId: entry.chapterId,
+          chapter: entry.chapter,
+          title: null,
+          language: null,
+          groups: [],
+          readAt: entry.updatedAt,
+        }],
+      };
+      const existing = merged[mangaId];
+      if (!existing) {
+        merged[mangaId] = converted;
+      } else {
+        const existingTime = existing.chapters[0]?.readAt ?? "";
+        if (entry.updatedAt > existingTime) {
+          // Keep existing meta/chapters but don't downgrade
+          merged[mangaId] = existing;
+        }
+      }
+    }
+    setHistory(merged, true);
+    return Object.keys(old).length;
+  } catch {
+    return 0;
+  }
+};
+*/
+//   }
+// };
+
 /**
  * Add or update a chapter entry for a manga.
  * - `meta` is saved/updated whenever provided (title + coverId from manga fetch).
