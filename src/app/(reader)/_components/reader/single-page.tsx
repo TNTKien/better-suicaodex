@@ -33,11 +33,24 @@ export default function SinglePage({
     else onNavigatePrev();
   };
 
+  // Preload trang trước/sau
+  const prevBlob = pages[currentIndex - 1]?.blob;
+  const nextBlob = pages[currentIndex + 1]?.blob;
+
   return (
     <div
       className="flex-1 flex flex-col items-center justify-center min-h-dvh cursor-pointer select-none"
       onClick={handleClick}
     >
+      {/* Hidden preload imgs */}
+      {prevBlob && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={prevBlob} alt="" aria-hidden className="absolute w-px h-px opacity-0 pointer-events-none" />
+      )}
+      {nextBlob && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={nextBlob} alt="" aria-hidden className="absolute w-px h-px opacity-0 pointer-events-none" />
+      )}
       <span className="absolute top-2 text-xs text-muted-foreground z-10 bg-primary px-1 rounded opacity-25">
         {currentIndex + 1} / {pages.length}
       </span>

@@ -17,20 +17,20 @@ import CompletedSkeletonCard from "./completed-skeleton-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { useIsMounted } from "usehooks-ts";
+import { useMounted } from "@mantine/hooks";
 import MangaCard from "@/app/(suicaodex)/(manga)/manga/_components/manga-card";
 
 const LIMIT = 40;
 
 export default function CompletedManga() {
-  const isMounted = useIsMounted();
+  const isMounted = useMounted();
   const [config] = useConfig();
   const contentRating = config.r18
     ? Object.values(GetMangaContentRatingItem)
     : undefined;
 
   const { data, isLoading, error } = useQuery({
-    enabled: isMounted(),
+    enabled: isMounted,
     queryKey: ["weebdex", "manga", "completed", config.r18],
     queryFn: async () => {
       const res = await getManga({
@@ -48,7 +48,7 @@ export default function CompletedManga() {
     refetchOnWindowFocus: false,
   });
 
-  if (!isMounted() || isLoading)
+  if (!isMounted || isLoading)
     return (
       <div className="flex flex-col gap-4">
         <div>

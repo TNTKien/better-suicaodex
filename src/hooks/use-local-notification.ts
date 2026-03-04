@@ -1,5 +1,6 @@
-import { useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { createMigratingStorage } from "@/lib/zustand-migrate-storage";
 
 type LocalNotification = {
   ids: string[];
@@ -17,50 +18,33 @@ const limitArraySize = <T>(array: T[], maxSize: number = MAX_ITEMS): T[] => {
   return array;
 };
 
-const localNotificationAtom = atomWithStorage<LocalNotification>(
-  "local-notification",
-  {
-    ids: [],
-    shown: [],
-    unread: [],
-  },
-  {
-    getItem: (key, initialValue) => {
-      const storedValue = localStorage.getItem(key);
-      if (!storedValue) return initialValue;
-
-      try {
-        const parsedValue = JSON.parse(storedValue) as LocalNotification;
-        // Giới hạn kích thước của mảng khi lấy từ storage
-        return {
-          ids: limitArraySize(parsedValue.ids || []),
-          shown: limitArraySize(parsedValue.shown || [], MAX_SHOWN_ITEMS),
-          unread: limitArraySize(parsedValue.unread || []),
-        };
-      } catch {
-        return initialValue;
-      }
+const useLocalNotificationStore = create<LocalNotification>()(
+  persist(
+    (): LocalNotification => ({ ids: [], shown: [], unread: [] }),
+    {
+      name: "local-notification",
+      storage: createMigratingStorage<LocalNotification>(),
+      // Giới hạn kích thước mảng sau mỗi lần persist
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        useLocalNotificationStore.setState({
+          ids: limitArraySize(state.ids || []),
+          shown: limitArraySize(state.shown || [], MAX_SHOWN_ITEMS),
+          unread: limitArraySize(state.unread || []),
+        });
+      },
     },
-    setItem: (key, value) => {
-      // Giới hạn kích thước của mảng trước khi lưu vào storage
-      const limitedValue = {
-        ids: limitArraySize(value.ids),
-        shown: limitArraySize(value.shown, MAX_SHOWN_ITEMS),
-        unread: limitArraySize(value.unread),
-      };
-
-      localStorage.setItem(key, JSON.stringify(limitedValue));
-    },
-    removeItem: (key) => localStorage.removeItem(key),
-  }
+  ),
 );
 
+const setState = useLocalNotificationStore.setState;
+
 export function useLocalNotification() {
-  const [localNotification, setLocalNotification] = useAtom(localNotificationAtom);
+  const localNotification = useLocalNotificationStore();
 
   // Thêm ID vào danh sách thông báo
   const addToLocalNotification = (id: string) => {
-    setLocalNotification(current => {
+    setState(current => {
       if (current.ids.includes(id)) return current;
       return {
         ...current,
@@ -72,7 +56,7 @@ export function useLocalNotification() {
 
   // Xóa ID khỏi danh sách thông báo
   const removeFromLocalNotification = (id: string) => {
-    setLocalNotification(current => ({
+    setState(current => ({
       ...current,
       ids: current.ids.filter(notificationId => notificationId !== id),
       // Giữ nguyên unread list vì ID trong unread list là chapter ID, không phải manga ID
@@ -81,7 +65,7 @@ export function useLocalNotification() {
 
   // Đánh dấu ID là đã xem
   const markAsShown = (id: string) => {
-    setLocalNotification(current => {
+    setState(current => {
       if (current.shown.includes(id)) return current;
       return {
         ...current,
@@ -92,7 +76,7 @@ export function useLocalNotification() {
 
   // Đánh dấu ID là đã đọc (bỏ khỏi unread)
   const markAsRead = (id: string) => {
-    setLocalNotification(current => ({
+    setState(current => ({
       ...current,
       unread: current.unread.filter(notificationId => notificationId !== id),
     }));
@@ -100,7 +84,7 @@ export function useLocalNotification() {
 
   // Đánh dấu ID là chưa đọc (thêm vào unread)
   const markAsUnread = (id: string) => {
-    setLocalNotification(current => {
+    setState(current => {
       if (current.unread.includes(id)) return current;
       return {
         ...current,
@@ -126,12 +110,12 @@ export function useLocalNotification() {
 
   // Xóa tất cả thông báo
   const clearAllLocalNotifications = () => {
-    setLocalNotification({ ids: [], shown: [], unread: [] });
+    setState({ ids: [], shown: [], unread: [] });
   };
 
   // Xóa tất cả trạng thái đã xem
   const clearAllShownStatus = () => {
-    setLocalNotification(current => ({
+    setState(current => ({
       ...current,
       shown: [],
     }));
@@ -139,7 +123,7 @@ export function useLocalNotification() {
 
   // Đánh dấu tất cả thông báo là đã đọc
   const markAllAsRead = () => {
-    setLocalNotification(current => ({
+    setState(current => ({
       ...current,
       unread: [],
     }));
@@ -158,6 +142,6 @@ export function useLocalNotification() {
     clearAllLocalNotifications,
     clearAllShownStatus,
     markAllAsRead,
-    rawSetLocalNotification: setLocalNotification
+    rawSetLocalNotification: setState
   };
 }

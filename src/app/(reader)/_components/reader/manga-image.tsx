@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { RotateCcw } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 interface MangaImageProps {
   /** Trạng thái tải của trang này từ useReaderImages */
@@ -19,6 +20,10 @@ interface MangaImageProps {
 export default function MangaImage({ page, alt, onRetry, isDouble }: MangaImageProps) {
   const scale = useReaderStore((s) => s.scale);
   const imgClasses = getImageScaleClasses(scale);
+  const [imgVisible, setImgVisible] = useState(false);
+  useEffect(() => {
+    setImgVisible(false);
+  }, [page.blob]);
 
   return (
     <div
@@ -30,21 +35,22 @@ export default function MangaImage({ page, alt, onRetry, isDouble }: MangaImageP
         page.isFailed && "flex items-center justify-center",
       )}
     >
-      {/* Ảnh chính - chỉ hiển thị khi blob đã sẵn sàng */}
       {page.blob && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={page.blob}
           alt={alt}
           className={cn(
-            "object-contain block",
+            "object-contain block transition-opacity duration-150 ease-in-out",
             imgClasses,
-            !page.isLoaded && "opacity-0",
+            !imgVisible && "opacity-0",
             isDouble && "mx-auto",
           )}
           loading="eager"
+          onLoad={() => setImgVisible(true)}
           onError={(e) => {
             e.currentTarget.src = "/images/xidoco.webp";
+            setImgVisible(true);
           }}
         />
       )}

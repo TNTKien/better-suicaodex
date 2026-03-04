@@ -1,5 +1,6 @@
-import { useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { createMigratingStorage } from "@/lib/zustand-migrate-storage";
 
 export type LocalLibraryCategory = "following" | "plan" | "reading" | "completed";
 
@@ -27,38 +28,30 @@ function limitLibrarySize(library: LocalLibraryV2): LocalLibraryV2 {
   return Object.fromEntries(sorted.slice(0, MAX_ITEMS));
 }
 
-const localLibraryV2Atom = atomWithStorage<LocalLibraryV2>(
-  STORAGE_KEY,
-  {},
-  {
-    getItem: (key, initialValue) => {
-      const stored = localStorage.getItem(key);
-      if (!stored) return initialValue;
-      try {
-        return JSON.parse(stored) as LocalLibraryV2;
-      } catch {
-        return initialValue;
-      }
+const useLocalLibraryV2Store = create<LocalLibraryV2>()(
+  persist(
+    () => ({} as LocalLibraryV2),
+    {
+      name: STORAGE_KEY,
+      storage: createMigratingStorage<LocalLibraryV2>(),
     },
-    setItem: (key, value) => {
-      localStorage.setItem(key, JSON.stringify(limitLibrarySize(value)));
-    },
-    removeItem: (key) => localStorage.removeItem(key),
-  },
+  ),
 );
 
+const setLibrary = useLocalLibraryV2Store.setState;
+
 export function useLocalLibraryV2() {
-  const [library, setLibrary] = useAtom(localLibraryV2Atom);
+  const library = useLocalLibraryV2Store();
 
   const addToLibrary = (
     mangaId: string,
     category: LocalLibraryCategory,
     meta: MangaLibraryMeta,
   ) => {
-    setLibrary((current) => ({
-      ...current,
-      [mangaId]: { category, meta, addedAt: Date.now() },
-    }));
+    setLibrary(
+      (current) => limitLibrarySize({ ...current, [mangaId]: { category, meta, addedAt: Date.now() } }),
+      true,
+    );
   };
 
   const removeFromLibrary = (mangaId: string) => {
@@ -66,7 +59,7 @@ export function useLocalLibraryV2() {
       const next = { ...current };
       delete next[mangaId];
       return next;
-    });
+    }, true);
   };
 
   const getCategoryOfId = (mangaId: string): LocalLibraryCategory | null =>
@@ -77,7 +70,7 @@ export function useLocalLibraryV2() {
       .filter(([, entry]) => entry.category === category)
       .sort((a, b) => b[1].addedAt - a[1].addedAt);
 
-  const clearLibrary = () => setLibrary({});
+  const clearLibrary = () => setLibrary({} as LocalLibraryV2, true);
 
   return {
     library,

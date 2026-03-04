@@ -9,7 +9,8 @@ import type {
 } from "@/hooks/use-reading-history-v2";
 import { formatTimeToNow, generateSlug } from "@/lib/utils";
 import { GB, VN } from "country-flag-icons/react/3x2";
-import { BookOpen, Trash2, Users } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { BookMarked, BookOpenCheck, Clock, Trash2, Users } from "lucide-react";
 import Image from "next/image";
 
 const MAX_CHAPTERS_SHOWN = 3;
@@ -91,32 +92,35 @@ export default function HistoryMangaCard({
             <NoPrefetchLink
               key={entry.chapterId}
               href={`/chapter/${entry.chapterId}`}
-              className="group flex flex-col gap-0.5 rounded-sm px-1.5 py-1 hover:bg-secondary transition-colors"
             >
-              {/* Row 1: flag + chapter label */}
-              <div className="flex items-center gap-1.5 min-w-0">
-                <FlagIcon language={entry.language} />
-                <span className="text-base font-medium line-clamp-1 group-hover:text-primary transition-colors">
-                  {chapterLabel(entry)}
-                </span>
-              </div>
+              <Card className="flex flex-col gap-1 justify-between rounded-none px-1.5 py-1 shadow-xs relative hover:bg-accent/50 transition-colors">
+                {/* Row 1: flag + chapter label */}
+                <div className="flex flex-auto items-center gap-1.5 min-w-0">
+                  <FlagIcon language={entry.language} />
+                  <span className="font-semibold text-sm line-clamp-1 break-all">
+                    {chapterLabel(entry)}
+                  </span>
+                </div>
 
-              {/* Row 2: time + group */}
-              <div className="flex items-center gap-2 text-sm font-light text-muted-foreground">
-                <BookOpen className="shrink-0 size-4" />
-                <span className="line-clamp-1 break-all">
-                  {formatTimeToNow(new Date(entry.readAt))}
-                </span>
-                {entry.groups.length > 0 && (
-                  <>
-                    <span className="shrink-0">·</span>
+                {/* Row 2: time + groups */}
+                <div className="flex items-center gap-1 text-xs font-light text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <BookOpenCheck className="shrink-0 size-4" />
+                    <time className="line-clamp-1 break-all" dateTime={new Date(entry.readAt).toISOString()}>
+                      {formatTimeToNow(new Date(entry.readAt))}
+                    </time>
+                  </div>
+                  <span className="shrink-0">•</span>
+                  <div className="flex items-center gap-1.5">
                     <Users className="shrink-0 size-4" />
                     <span className="line-clamp-1 break-all">
-                      {entry.groups.map((g) => g.name).join(", ")}
+                      {entry.groups.length === 0
+                        ? "No Group"
+                        : entry.groups[0].name}
                     </span>
-                  </>
-                )}
-              </div>
+                  </div>
+                </div>
+              </Card>
             </NoPrefetchLink>
           ))}
         </div>

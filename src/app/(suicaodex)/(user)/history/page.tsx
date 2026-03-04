@@ -23,8 +23,10 @@ export default function Page() {
         <Terminal size={18} />
         <AlertTitle>Có thể bạn cần biết:</AlertTitle>
         <AlertDescription>
-          Lịch sử đọc được lưu trên chính thiết bị của bạn, nên nếu bạn xóa dữ
+          - Lịch sử đọc được lưu trên chính thiết bị của bạn, nên nếu bạn xóa dữ
           liệu trình duyệt, lịch sử cũng sẽ bị xóa theo.
+          <br/>
+          - Nếu bị mất lịch sử đọc từ 02/03/2026 - 04/03/2026, hãy thử nhấn nút [Đồng bộ] bên dưới để khôi phục.
         </AlertDescription>
       </Alert>
 

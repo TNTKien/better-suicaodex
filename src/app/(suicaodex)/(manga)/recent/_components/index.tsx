@@ -11,7 +11,7 @@ import {
   GetMangaSort,
 } from "@/lib/weebdex/model";
 import { useQuery } from "@tanstack/react-query";
-import { useIsMounted } from "usehooks-ts";
+import { useMounted } from "@mantine/hooks";
 import Link from "next/link";
 import {
   Empty,
@@ -31,14 +31,14 @@ interface RecentProps {
 const LIMIT = 36;
 
 export default function Recent({ page }: RecentProps) {
-  const isMounted = useIsMounted();
+  const isMounted = useMounted();
   const [config] = useConfig();
   const contentRating = config.r18
     ? Object.values(GetMangaContentRatingItem)
     : undefined;
 
   const { data, isLoading, error } = useQuery({
-    enabled: isMounted(),
+    enabled: isMounted,
     queryKey: [
       "weebdex",
       "manga",
@@ -63,7 +63,7 @@ export default function Recent({ page }: RecentProps) {
     refetchOnWindowFocus: false,
   });
 
-  if (!isMounted() || isLoading)
+  if (!isMounted || isLoading)
     return (
       <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
         {[...Array(LIMIT)].map((_, i) => (

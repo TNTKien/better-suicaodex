@@ -20,7 +20,7 @@ import {
 import useKeyDown from "@/hooks/use-keydown";
 import { Badge } from "../ui/badge";
 import { useGetManga } from "@/lib/weebdex/hooks/manga/manga";
-import { useDebounceValue } from "usehooks-ts";
+import { useDebouncedValue } from "@mantine/hooks";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import CompactCardWeebdex from "./compact-card-weebdex";
 
@@ -28,7 +28,7 @@ export default function QuickSearch() {
   const [expanded, setExpanded] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedTerm] = useDebounceValue(searchTerm, 500);
+  const [debouncedTerm] = useDebouncedValue(searchTerm, 500);
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const [config] = useConfig();
