@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

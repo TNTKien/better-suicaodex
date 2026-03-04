@@ -1,12 +1,12 @@
 "use client";
-import { MainNav } from "@/components/Navbar/main-nav";
-import { SidebarTrigger } from "../ui/sidebar";
+import { MainNav } from "@/components/layout/navbar/main-nav";
 import { cn } from "@/lib/utils";
 import { ModeSwitcher } from "./mode-switcher";
 import useScrollOffset from "@/hooks/use-scroll-offset";
-import QuickSearch from "../Search/quick-search";
+import QuickSearch from "@/components/search/quick-search";
 import { usePathname } from "next/navigation";
 import { useReaderStore } from "@/store/reader-store";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function SiteHeader() {
   const { isAtTop } = useScrollOffset();

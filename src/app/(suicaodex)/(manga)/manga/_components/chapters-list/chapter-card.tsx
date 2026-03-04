@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { GB, VN } from "country-flag-icons/react/3x2";
-import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import {
   Tooltip,
   TooltipContent,

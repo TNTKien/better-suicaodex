@@ -7,9 +7,9 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ThemeCustomizer } from "../Theme/theme-customizer";
-import { ContentCustomizer } from "../Theme/content-customizer";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { ThemeCustomizer } from "@/components/theme/theme-customizer";
+import { ContentCustomizer } from "@/components/theme/content-customizer";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function NavSettings() {
   return (

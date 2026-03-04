@@ -10,7 +10,7 @@ import { memo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import {
   Dialog,
   DialogContent,

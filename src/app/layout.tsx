@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import "@/styles/themes.css";
 import { ThemeProvider } from "@/components/providers";
-import { ThemeSwitcher } from "@/components/Theme/theme-switcher";
+import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { META_THEME_COLORS, siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";

@@ -30,11 +30,10 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import { cn, formatChapterTitle, generateSlug } from "@/lib/utils";
-import { ChapterTitle } from "@/components/Chapter/chapter-info";
-import CommentList from "@/components/Comment/comment-list";
-import CommentFormSimple from "@/components/Comment/comment-form-simple";
+import CommentList from "@/components/comment/comment-list";
+import CommentFormSimple from "@/components/comment/comment-form-simple";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import ChapterNavSidebar from "./chapter-nav-sidebar";
@@ -196,4 +195,14 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
       <SidebarRail />
     </Sidebar>
   );
+}
+
+function ChapterTitle(chapter: {
+  chapter?: string | null;
+  title?: string | null;
+}) {
+  if (!chapter.chapter) return "Oneshot";
+  return chapter.title
+    ? `Ch. ${chapter.chapter} - ${chapter.title}`
+    : `Ch. ${chapter.chapter}`;
 }

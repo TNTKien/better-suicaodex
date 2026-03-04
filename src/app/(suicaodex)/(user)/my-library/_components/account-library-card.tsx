@@ -1,6 +1,6 @@
 "use client";
 
-import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import type { MangaLibraryEntry } from "@/lib/suicaodex/db";

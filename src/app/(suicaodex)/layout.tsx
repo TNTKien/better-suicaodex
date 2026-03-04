@@ -1,5 +1,5 @@
-import { SiteHeader } from "@/components/Navbar/site-header";
-import { AppSidebar } from "@/components/Sidebar/app-sidebar";
+import { SiteHeader } from "@/components/layout/navbar/site-header";
+import { AppSidebar } from "@/components/layout/sidebar/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function MainLayout({

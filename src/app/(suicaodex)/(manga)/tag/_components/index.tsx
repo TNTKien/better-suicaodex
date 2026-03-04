@@ -11,7 +11,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { BugIcon } from "lucide-react";
-import NoPrefetchLink from "@/components/Custom/no-prefetch-link";
+import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import { generateSlug } from "@/lib/utils";
 import {
   getMangaTag,
