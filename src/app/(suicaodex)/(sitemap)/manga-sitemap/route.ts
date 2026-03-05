@@ -20,7 +20,7 @@ export async function GET() {
   });
 
   const siteUrl =
-    process.env.SITEMAP_URL ?? process.env.SITE_URL ?? "https://suicaodex.com";
+    process.env.SITEMAP_URL ?? process.env.SITE_URL ?? "https://vinext.suicaodex.com";
   const count = res.status === 200 ? (res.data.total ?? 0) : 0;
 
   const urls = Array.from(Array(Math.ceil(count / 100)).keys()).map(

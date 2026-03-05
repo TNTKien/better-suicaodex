@@ -16,7 +16,7 @@
     "migrate:weebdex:execute": "bun run scripts/migrate-manga-ids-to-weebdex.mjs --execute",
     "dev:vinext": "vite dev --port 3001",
     "build:vinext": "vite build",
-    "build:vinext:pwa": "NEXT_PUBLIC_ENABLE_PWA=true vite build"
+    "build:vinext:pwa": "vite build"
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "^1.5.3",

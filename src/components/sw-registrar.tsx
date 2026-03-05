@@ -3,18 +3,38 @@
 import { useEffect } from "react";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
-const ENABLE_PWA = process.env.NEXT_PUBLIC_ENABLE_PWA === "true";
+
+const browser = globalThis as {
+  window?: unknown;
+  navigator?: {
+    serviceWorker?: {
+      getRegistrations(): Promise<Array<{ unregister(): Promise<boolean> }>>;
+      register(
+        scriptURL: string,
+        options?: { scope?: string },
+      ): Promise<unknown>;
+    };
+  };
+  caches?: {
+    keys(): Promise<string[]>;
+    delete(key: string): Promise<boolean>;
+  };
+};
 
 async function cleanupServiceWorkers() {
   try {
-    const registrations = await navigator.serviceWorker.getRegistrations();
+    const serviceWorker = browser.navigator?.serviceWorker;
+    if (!serviceWorker) return;
+
+    const registrations = await serviceWorker.getRegistrations();
     await Promise.all(
       registrations.map((registration) => registration.unregister()),
     );
 
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map((key) => caches.delete(key)));
+    const cacheStorage = browser.caches;
+    if (cacheStorage) {
+      const keys = await cacheStorage.keys();
+      await Promise.all(keys.map((key) => cacheStorage.delete(key)));
     }
   } catch {
     // Ignore cleanup errors.
@@ -23,15 +43,15 @@ async function cleanupServiceWorkers() {
 
 export function ServiceWorkerRegistrar() {
   useEffect(() => {
-    if (typeof window === "undefined" || !("serviceWorker" in navigator))
-      return;
+    const serviceWorker = browser.navigator?.serviceWorker;
+    if (!browser.window || !serviceWorker) return;
 
-    if (!IS_PRODUCTION || !ENABLE_PWA) {
+    if (!IS_PRODUCTION) {
       void cleanupServiceWorkers();
       return;
     }
 
-    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {});
+    serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {});
   }, []);
 
   return null;

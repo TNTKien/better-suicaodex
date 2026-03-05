@@ -26,7 +26,7 @@ export async function GET(
     availableTranslatedLang: ["vi"],
   });
   const siteUrl =
-    process.env.SITEMAP_URL ?? process.env.SITE_URL ?? "https://suicaodex.com";
+    process.env.SITEMAP_URL ?? process.env.SITE_URL ?? "https://vinext.suicaodex.com";
 
   const mangas = res.status === 200 ? (res.data.data ?? []) : [];
   const now = new Date().toISOString();

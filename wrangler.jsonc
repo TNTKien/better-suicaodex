@@ -2,9 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "vinext-suicaodex",
   "compatibility_date": "2026-03-05",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "main": "./worker/index.ts",
   "assets": {
     "directory": "./dist/client",
@@ -25,6 +23,5 @@
     "BETTER_AUTH_URL": "https://vinext.suicaodex.com",
     "SITE_URL": "https://vinext.suicaodex.com",
     "SITEMAP_URL": "https://vinext.suicaodex.com",
-    "NEXT_PUBLIC_ENABLE_PWA": true
-  }
+  },
 }

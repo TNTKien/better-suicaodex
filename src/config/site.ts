@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "SuicaoDex",
-  url: "https://suicaodex.com",
-  ogImage: "https://suicaodex.com/og-image.png",
+  url: "https://vinext.suicaodex.com",
+  ogImage: "https://vinext.suicaodex.com/og-image.png",
   description: "SuicaoDex - Trang web truyện tranh đầu hàng VN",
   links: {
     discord: "https://discord.gg/dongmoe",
@@ -9,7 +9,7 @@ export const siteConfig = {
     facebook: "https://facebook.com/suicaodex",
   },
   suicaodex: {
-    domain: "https://suicaodex.com",
+    domain: "https://vinext.suicaodex.com",
     mato_domain: "https://mato.suicaodex.com",
     apiURL: "https://api2.suicaodex.com", //pls use your own proxy server; or use built-in proxy, see /lib/axios.ts
   },

@@ -19,7 +19,7 @@ const inter = Inter({
 // });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://suicaodex.com"),
+  metadataBase: new URL("https://vinext.suicaodex.com"),
   title: {
     template: "%s - SuicaoDex",
     default: siteConfig.name,
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   openGraph: {
     type: "website",
-    url: "https://suicaodex.com/",
+    url: "https://vinext.suicaodex.com/",
     siteName: "SuicaoDex",
     title: siteConfig.name,
     description: siteConfig.description,
