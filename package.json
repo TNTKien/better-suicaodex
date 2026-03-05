@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "gen:api": "bunx --bun orval --config ./orval.config.ts && node scripts/patch-orval.mjs",
-    "postinstall": "bun prisma generate && node scripts/patch-prisma-generated.mjs",
+    "postinstall": "bun prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start -p 3636",
