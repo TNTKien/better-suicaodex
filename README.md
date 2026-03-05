@@ -72,6 +72,8 @@ Tôi rất hoan nghênh và thậm chí là khuyến khích cmn luôn, làm mộ
 
 > `.env`: SuicaoDex sử dụng [AuthJS](https://authjs.dev/), nhớ đọc kỹ docs để biết đường mà config. Ngoài ra còn 1 số biến môn trường khác, hãy xem trong `example.env`.
 
+> Database: project hiện dùng **Neon Postgres** qua Prisma. Trong `.env`, cần cấu hình `DATABASE_URL` (pooled URL, có `-pooler`) và `DIRECT_URL` (direct URL cho Prisma CLI). Lần đầu setup database có thể chạy `bun prisma db push`.
+
 
 Cài đặt các package cần thiết:
 ```bash

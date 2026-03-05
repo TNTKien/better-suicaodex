@@ -1,18 +1,14 @@
 import { PrismaClient } from "../../prisma/generated/client";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-
+import { PrismaNeon } from "@prisma/adapter-neon";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-const adapter = new PrismaMariaDb({
-  host: process.env.MYSQL_DATABASE_HOST,
-  user: process.env.MYSQL_DATABASE_USER,
-  password: process.env.MYSQL_DATABASE_PASSWORD,
-  database: process.env.MYSQL_DATABASE_NAME,
-  connectionLimit: 5,
-  // ssl: {
-  //   rejectUnauthorized: true,
-  // },
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is required for Prisma + Neon");
+}
+
+const adapter = new PrismaNeon({
+  connectionString: process.env.DATABASE_URL,
 });
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
