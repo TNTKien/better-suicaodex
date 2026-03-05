@@ -32,6 +32,10 @@ export const proxy = auth((req) => {
   return;
 });
 
+export const middleware = proxy;
+
+export default proxy;
+
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|icon|avatars|sitemap.xml|.well-known|robots.txt|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",

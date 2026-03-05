@@ -4,7 +4,6 @@ import Link from "next/link";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 import { cn } from "@/lib/utils";
 // import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { logos } from "@/components/logos";
 
 export function MainNav() {
@@ -16,40 +15,40 @@ export function MainNav() {
       href="/"
       className="mr-4 flex items-center gap-0.5 justify-start lg:mr-6"
     >
-      <Image
+      <img
         src={logos.gehenna}
         alt="SuicaoDex's logo"
         className={cn(
           "max-h-8 w-auto grayscale contrast-150 dark:invert",
           // pathname.includes("/manga") && "invert",
-          !isAtTop && "invert-0 md:invert-0"
+          !isAtTop && "invert-0 md:invert-0",
         )}
-        quality={100}
-        priority
+        loading="eager"
+        decoding="async"
       />
-      <Image
+      <img
         src={logos.scdex}
         alt="SuicaoDex's logo"
-        quality={100}
-        priority
         className={cn(
           "max-h-[22px] w-auto drop-shadow-md dark:invert xs:hidden",
           // pathname.includes("/manga") && "invert",
           // pathname.includes("/group/") && "md:invert",
-          !isAtTop && "filter-none md:filter-none"
+          !isAtTop && "filter-none md:filter-none",
         )}
+        loading="eager"
+        decoding="async"
       />
-      <Image
+      <img
         src={logos.suicaodex}
         alt="SuicaoDex's logo"
-        quality={100}
-        priority
         className={cn(
           "max-h-[22px] w-auto drop-shadow-md dark:invert hidden xs:flex",
           // pathname.includes("/manga") && "invert",
           // pathname.includes("/group/") && "md:invert",
-          !isAtTop && "filter-none md:filter-none"
+          !isAtTop && "filter-none md:filter-none",
         )}
+        loading="eager"
+        decoding="async"
       />
     </Link>
   );

@@ -7,15 +7,15 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-import Image from "next/image";
-import DoroLoading from "#/images/doro-loading.gif";
 import { Marquee } from "@/components/ui/marquee";
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: res.statusText }));
-    throw Object.assign(new Error(error.error || "Có lỗi xảy ra"), { status: res.status });
+    throw Object.assign(new Error(error.error || "Có lỗi xảy ra"), {
+      status: res.status,
+    });
   }
   return res.json();
 };
@@ -39,12 +39,12 @@ export default function CommentFeed() {
         </div>
         <Alert className="rounded-sm border-none mt-4">
           <AlertDescription className="flex justify-center">
-            <Image
-              src={DoroLoading}
+            <img
+              src="/images/doro-loading.gif"
               alt="Loading..."
-              unoptimized
-              priority
               className="w-20 h-auto"
+              loading="eager"
+              decoding="async"
             />
           </AlertDescription>
         </Alert>

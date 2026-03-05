@@ -35,7 +35,7 @@ import {
   type ReaderMode,
   useReaderStore,
 } from "@/store/reader-store";
-import { useRouter } from "@bprogress/next";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,

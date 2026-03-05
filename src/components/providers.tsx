@@ -9,11 +9,9 @@ import {
   AppProgressProvider as ProgressProvider,
 } from "@bprogress/next";
 import { SessionProvider } from "next-auth/react";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeWrapper } from "./theme/theme-wrapper";
+import { RuntimeErrorReporter } from "./runtime-error-reporter";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +27,7 @@ export function ThemeProvider({
 }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
     <QueryClientProvider client={queryClient}>
+      <RuntimeErrorReporter />
       <NextThemesProvider {...props}>
         <ThemeWrapper>
           <ProgressProvider
@@ -40,9 +39,7 @@ export function ThemeProvider({
               <Bar className="bg-primary!" />
             </Progress>
             <TooltipProvider delayDuration={0}>
-              <SessionProvider>
-                {children}
-              </SessionProvider>
+              <SessionProvider>{children}</SessionProvider>
             </TooltipProvider>
           </ProgressProvider>
         </ThemeWrapper>

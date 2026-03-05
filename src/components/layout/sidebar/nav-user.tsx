@@ -23,8 +23,7 @@ import { useLocalNotification } from "@/hooks/use-local-notification";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
-import { useRouter } from "@bprogress/next";
+import { usePathname, useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
 
 export function NavUser() {
@@ -143,7 +142,7 @@ export function NavUser() {
                 <Link href={"/notifications"}>
                   <Bell
                     className={cn(
-                      !!localNotification.unread.length && "animate-bell-shake"
+                      !!localNotification.unread.length && "animate-bell-shake",
                     )}
                   />
                   Thông báo
@@ -168,8 +167,8 @@ export function NavUser() {
                 onClick={() => {
                   router.push(
                     `${process.env.NEXT_PUBLIC_BASE_URL}/login?callback=${encodeURIComponent(
-                      pathname
-                    )}`
+                      pathname,
+                    )}`,
                   );
                 }}
               >

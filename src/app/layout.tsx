@@ -6,8 +6,7 @@ import { ThemeProvider } from "@/components/providers";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { META_THEME_COLORS, siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { NuqsAdapter } from "nuqs/adapters/react";
 import { ServiceWorkerRegistrar } from "@/components/sw-registrar";
 
 const inter = Inter({
@@ -68,11 +67,25 @@ export default function RootLayout({
             `,
           }}
         />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-GHG1HN9493"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-GHG1HN9493');
+            `,
+          }}
+        />
         <meta name="theme-color" content={META_THEME_COLORS.dark} />
       </head>
       {/* <body className={`${leagueSpartan.className} antialiased`}> */}
       <body className={`${inter.className} antialiased`}>
-        <NuqsAdapter>
+        <NuqsAdapter fullPageNavigationOnShallowFalseUpdates>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
@@ -87,7 +100,6 @@ export default function RootLayout({
           </ThemeProvider>
         </NuqsAdapter>
       </body>
-      <GoogleAnalytics gaId="G-GHG1HN9493" />
     </html>
   );
 }

@@ -66,3 +66,4 @@ migrate-manga-ids-to-weebdex.mjs
 opencode.json
 
 prisma/generated
+/dist/

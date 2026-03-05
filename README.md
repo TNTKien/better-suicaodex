@@ -74,6 +74,8 @@ Tôi rất hoan nghênh và thậm chí là khuyến khích cmn luôn, làm mộ
 
 > Database: project hiện dùng **Neon Postgres** qua Prisma. Trong `.env`, cần cấu hình `DATABASE_URL` (pooled URL, có `-pooler`) và `DIRECT_URL` (direct URL cho Prisma CLI). Lần đầu setup database có thể chạy `bun prisma db push`.
 
+> PWA: khi dùng vinext, Serwist chạy qua `@serwist/vite`. Mặc định để `NEXT_PUBLIC_ENABLE_PWA="false"` trong dev. Khi build PWA thì dùng `bun run build:vinext:pwa`.
+
 
 Cài đặt các package cần thiết:
 ```bash

@@ -1,27 +1,15 @@
-import Abydos from "#/images/logo/abydos.webp";
-import Arius from "#/images/logo/arius.webp";
-import Gehenna from "#/images/logo/gehenna.webp";
-import Millennium from "#/images/logo/millennium.webp";
-import RedWinter from "#/images/logo/redwinter.webp";
-import ShanHaiJing from "#/images/logo/shanhaijing.webp";
-import SRT from "#/images/logo/srt.webp";
-import Trinity from "#/images/logo/trinity.webp";
-import Valkyrie from "#/images/logo/valkyrie.webp";
-import SuicaoDex from "#/suicaodex.webp";
-import SCDex from "#/SCDex-lite.webp";
-
 export const logos = {
-  abydos: Abydos,
-  arius: Arius,
-  gehenna: Gehenna,
-  millennium: Millennium,
-  redwinter: RedWinter,
-  shanhaijing: ShanHaiJing,
-  srt: SRT,
-  trinity: Trinity,
-  valkyrie: Valkyrie,
-  suicaodex: SuicaoDex,
-  scdex: SCDex,
+  abydos: "/images/logo/abydos.webp",
+  arius: "/images/logo/arius.webp",
+  gehenna: "/images/logo/gehenna.webp",
+  millennium: "/images/logo/millennium.webp",
+  redwinter: "/images/logo/redwinter.webp",
+  shanhaijing: "/images/logo/shanhaijing.webp",
+  srt: "/images/logo/srt.webp",
+  trinity: "/images/logo/trinity.webp",
+  valkyrie: "/images/logo/valkyrie.webp",
+  suicaodex: "/suicaodex.webp",
+  scdex: "/SCDex-lite.webp",
 };
 
 export const getLogo = (name: string) => {
