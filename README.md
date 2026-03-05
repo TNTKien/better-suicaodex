@@ -7,6 +7,8 @@
 
 > SuicaoDex chỉ xây dựng giao diện, trừ một số chức năng liên quan đến tài khoản, mọi dữ liệu khác đều thuộc về ~~MangaDex~~ WeebDex.
 
+> Nghịch thử [@cloudflare/vinext](https://github.com/TNTKien/better-suicaodex/tree/vinext) nếu bạn quá rảnh, 100% vibe coding 🤖
+
 Như đã nói, SuicaoDex chỉ là 1 dự án "cho vui", phục vụ sở thích của cá nhân tôi, và tôi cũng chả cao siêu gì, nên nó sẽ không thể trọn vẹn như các web truyện chuyên nghiệp khác.
 
 Tuy vậy, SuicaoDex sẽ luôn:
