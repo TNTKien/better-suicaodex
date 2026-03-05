@@ -79,9 +79,6 @@ export default defineConfig(({ mode }) => {
       nitro(),
       ...createSerwistPlugins(enablePwa),
     ],
-    nitro: {
-      serverDir: "./",
-    },
     optimizeDeps: {
       exclude: ["@tanstack/react-query", "@tanstack/query-core"],
     },
