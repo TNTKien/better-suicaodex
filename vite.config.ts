@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { copyFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 // import { cloudflare } from "@cloudflare/vite-plugin";
 import { serwist } from "@serwist/vite";
@@ -11,56 +11,74 @@ const SOURCEMAP_REPORTING_WARNING =
 
 function createSerwistPlugins(enablePwa: boolean): Plugin[] {
   const buildStartedAt = Date.now();
-  const plugins = serwist({
-    disable: !enablePwa,
-    swSrc: "src/sw.ts",
-    swDest: "client/sw.js",
-    globDirectory: "dist/client",
-    rollupFormat: "iife",
+  let hasGeneratedServiceWorker = false;
+
+  const variants = [
+    {
+      globDirectory: "dist/client",
+      assetsDir: "dist/client/assets",
+    },
+    {
+      globDirectory: ".output/public",
+      assetsDir: ".output/public/assets",
+    },
+  ];
+
+  return variants.flatMap(({ globDirectory, assetsDir }) => {
+    const plugins = serwist({
+      disable: !enablePwa,
+      swSrc: "src/sw.ts",
+      swDest: "sw.js",
+      globDirectory,
+      rollupFormat: "iife",
+    });
+
+    const serwistBuildPlugin = plugins.find(
+      (plugin) => plugin.name === "@serwist/vite:build",
+    );
+
+    if (
+      serwistBuildPlugin &&
+      serwistBuildPlugin.closeBundle &&
+      typeof serwistBuildPlugin.closeBundle === "object" &&
+      "handler" in serwistBuildPlugin.closeBundle &&
+      typeof serwistBuildPlugin.closeBundle.handler === "function"
+    ) {
+      const originalHandler = serwistBuildPlugin.closeBundle.handler;
+
+      serwistBuildPlugin.closeBundle = {
+        ...serwistBuildPlugin.closeBundle,
+        async handler(...args) {
+          if (hasGeneratedServiceWorker) return;
+
+          const clientAssetsDir = resolve(process.cwd(), assetsDir);
+          const hasFreshClientBundle =
+            existsSync(clientAssetsDir) &&
+            readdirSync(clientAssetsDir)
+              .filter((file) => file.endsWith(".js"))
+              .some(
+                (file) =>
+                  statSync(resolve(clientAssetsDir, file)).mtimeMs >=
+                  buildStartedAt,
+              );
+
+          if (!hasFreshClientBundle) return;
+
+          hasGeneratedServiceWorker = true;
+          await originalHandler.apply(this, args);
+
+          const generatedSw = resolve(process.cwd(), "dist/sw.js");
+          const finalSw = resolve(process.cwd(), assetsDir, "..", "sw.js");
+
+          if (existsSync(generatedSw)) {
+            copyFileSync(generatedSw, finalSw);
+          }
+        },
+      };
+    }
+
+    return plugins;
   });
-
-  const serwistBuildPlugin = plugins.find(
-    (plugin) => plugin.name === "@serwist/vite:build",
-  );
-
-  if (
-    serwistBuildPlugin &&
-    serwistBuildPlugin.closeBundle &&
-    typeof serwistBuildPlugin.closeBundle === "object" &&
-    "handler" in serwistBuildPlugin.closeBundle &&
-    typeof serwistBuildPlugin.closeBundle.handler === "function"
-  ) {
-    const originalHandler = serwistBuildPlugin.closeBundle.handler;
-    let hasGeneratedServiceWorker = false;
-
-    serwistBuildPlugin.closeBundle = {
-      ...serwistBuildPlugin.closeBundle,
-      async handler(...args) {
-        if (hasGeneratedServiceWorker) return;
-
-        const environmentName = (this as { environment?: { name?: string } })
-          .environment?.name;
-        const isSsrPhase = environmentName === "ssr";
-        const clientAssetsDir = resolve(process.cwd(), "dist/client/assets");
-        const hasFreshClientBundle =
-          existsSync(clientAssetsDir) &&
-          readdirSync(clientAssetsDir)
-            .filter((file) => file.endsWith(".js"))
-            .some(
-              (file) =>
-                statSync(resolve(clientAssetsDir, file)).mtimeMs >=
-                buildStartedAt,
-            );
-
-        if (!isSsrPhase || !hasFreshClientBundle) return;
-
-        hasGeneratedServiceWorker = true;
-        await originalHandler.apply(this, args);
-      },
-    };
-  }
-
-  return plugins;
 }
 
 export default defineConfig(({ mode }) => {

@@ -15,7 +15,7 @@
     "migrate:weebdex": "bun run scripts/migrate-manga-ids-to-weebdex.mjs",
     "migrate:weebdex:execute": "bun run scripts/migrate-manga-ids-to-weebdex.mjs --execute",
     "dev:vinext": "vite dev --port 3001",
-    "build:vinext": "vite build && serwist build",
+    "build:vinext": "vite build",
     "build:vinext:pwa": "NEXT_PUBLIC_ENABLE_PWA=true vite build"
   },
   "dependencies": {
