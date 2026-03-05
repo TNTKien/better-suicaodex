@@ -40,8 +40,8 @@ export default async function Page({ searchParams }: PageProps) {
                 đồng bộ với thư viện lưu trên tài khoản. Nếu bạn xóa dữ liệu
                 trình duyệt, thư viện này cũng sẽ bị xóa theo.
                 <br />
-                Ngoài ra, mỗi mục chỉ lưu tối đa 500 truyện, khi lưu thêm
-                sẽ tự động xóa truyện cũ nhất.
+                Ngoài ra, mỗi mục chỉ lưu tối đa 500 truyện, khi lưu thêm sẽ tự
+                động xóa truyện cũ nhất.
               </AlertDescription>
             </Alert>
 
@@ -56,8 +56,9 @@ export default async function Page({ searchParams }: PageProps) {
                 Có thể bạn cần biết:
               </AlertTitle>
               <AlertDescription className="text-pretty">
-                Nếu bạn thấy truyện nào tựa chỉ có ID, không có bìa, hãy thử bấm nút ↺ ở góc trái của truyện để đồng bộ lại dữ liệu nhé. <br/>
-                Còn nếu ID là 1 chuỗi dài (uuid của MangaDex, vd: 56958579-6d1b-4db0-be4f-dd17b828fcf7), thì thôi bấm xóa đi cho nhanh 🐧
+                Nếu bạn thấy truyện nào chỉ hiện ID và không có bìa, khả năng
+                cao đó là dữ liệu cũ trước khi đồng bộ metadata. Bạn có thể xóa
+                rồi thêm lại truyện để làm mới dữ liệu.
               </AlertDescription>
             </Alert>
 

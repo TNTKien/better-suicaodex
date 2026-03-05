@@ -18,6 +18,7 @@
     "build:vinext": "vite build"
   },
   "dependencies": {
+    "@better-auth/infra": "^0.1.8",
     "@better-auth/prisma-adapter": "^1.5.3",
     "@bprogress/next": "^3.2.4",
     "@hookform/resolvers": "^5.2.2",

@@ -1,7 +1,13 @@
 "use client";
 
 import type { MangaLibraryEntry } from "@/lib/suicaodex/db";
-import { Album, BookmarkCheck, BookOpen, ListCheck, NotebookPen } from "lucide-react";
+import {
+  Album,
+  BookmarkCheck,
+  BookOpen,
+  ListCheck,
+  NotebookPen,
+} from "lucide-react";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -29,7 +35,7 @@ interface AccountCategoryTabsProps {
 }
 
 const TAB_VALUES: { value: LibraryTab; icon: React.ReactNode }[] = [
-  { value: "following", icon: <BookmarkCheck className="size-5"/> },
+  { value: "following", icon: <BookmarkCheck className="size-5" /> },
   { value: "reading", icon: <Album className="size-5" /> },
   { value: "plan", icon: <NotebookPen className="size-5" /> },
   { value: "completed", icon: <ListCheck className="size-5" /> },
@@ -48,20 +54,6 @@ export default function AccountCategoryTabs({
     setLibrary((prev) => ({
       ...prev,
       [category]: prev[category].filter((e) => e.id !== mangaId),
-    }));
-  };
-
-  const handleRefreshed = (
-    category: Category,
-    mangaId: string,
-    title: string,
-    coverId: string | null,
-  ) => {
-    setLibrary((prev) => ({
-      ...prev,
-      [category]: prev[category].map((e) =>
-        e.id === mangaId ? { ...e, title, coverId } : e,
-      ),
     }));
   };
 
@@ -103,9 +95,6 @@ export default function AccountCategoryTabs({
                     key={entry.id}
                     entry={entry}
                     onRemoved={(id) => handleRemoved(category, id)}
-                    onRefreshed={(id, title, coverId) =>
-                      handleRefreshed(category, id, title, coverId)
-                    }
                   />
                 ))}
               </div>

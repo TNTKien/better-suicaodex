@@ -3,6 +3,7 @@ import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { dash } from "@better-auth/infra";
 
 const DEFAULT_USER_AVATAR = "/avatars/default-user-avatar.webp";
 
@@ -34,7 +35,7 @@ export const authInstance = betterAuth({
       },
     },
   },
-  plugins: [nextCookies()],
+  plugins: [nextCookies(), dash()],
 });
 
 export async function auth() {
