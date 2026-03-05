@@ -8,6 +8,12 @@ import { dash } from "@better-auth/infra";
 const DEFAULT_USER_AVATAR = "/avatars/default-user-avatar.webp";
 
 export const authInstance = betterAuth({
+  appName: "vinext-suicaodex",
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["x-vercel-forwarded-for", "x-forwarded-for"],
+    },
+  },
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
