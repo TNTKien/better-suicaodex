@@ -2,13 +2,39 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { InputGroup, InputGroupAddon } from "@/components/ui/input-group";
 import { signUp } from "@/lib/auth-client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const SignUpSchema = z
+  .object({
+    name: z.string().min(2, "Tên hiển thị phải có ít nhất 2 ký tự"),
+    email: z.string().email("Email không hợp lệ"),
+    password: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+    confirmPassword: z.string().min(1, "Vui lòng nhập lại mật khẩu"),
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    message: "Mật khẩu nhập lại không khớp",
+    path: ["confirmPassword"],
+  });
+
+type SignUpValues = z.infer<typeof SignUpSchema>;
 
 interface SignupFormProps extends React.HTMLAttributes<HTMLDivElement> {
   callback: string;
@@ -16,14 +42,22 @@ interface SignupFormProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function SignupForm({ className, callback, ...props }: SignupFormProps) {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const form = useForm<SignUpValues>({
+    resolver: zodResolver(SignUpSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
+  const isLoading = form.formState.isSubmitting;
+
+  const onSubmit = async (values: SignUpValues) => {
+    const { name, email, password } = values;
 
     const { error } = await signUp.email({
       name,
@@ -31,8 +65,6 @@ export function SignupForm({ className, callback, ...props }: SignupFormProps) {
       password,
       callbackURL: callback,
     });
-
-    setIsLoading(false);
 
     if (error) {
       toast.error(error.message ?? "Đăng ký thất bại");
@@ -48,48 +80,119 @@ export function SignupForm({ className, callback, ...props }: SignupFormProps) {
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Đăng ký</h1>
       </div>
-      <form className="grid gap-4" onSubmit={handleSubmit}>
-        <div className="grid gap-2">
-          <Label htmlFor="name">Tên hiển thị</Label>
-          <Input
-            id="name"
-            type="text"
-            autoComplete="name"
-            value={name}
-            onChange={(event) => setName(event.currentTarget.value)}
-            required
-            disabled={isLoading}
+      <Form {...form}>
+        <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tên hiển thị</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    autoComplete="name"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(event) => setEmail(event.currentTarget.value)}
-            required
-            disabled={isLoading}
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    autoComplete="email"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Mật khẩu</Label>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="new-password"
-            minLength={8}
-            value={password}
-            onChange={(event) => setPassword(event.currentTarget.value)}
-            required
-            disabled={isLoading}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mật khẩu</FormLabel>
+                <FormControl>
+                  <InputGroup>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      className="pr-11"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                    <InputGroupAddon>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => setShowPassword((current) => !current)}
+                        aria-label={
+                          showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
+                        }
+                      >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </Button>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
-        </Button>
-      </form>
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nhập lại mật khẩu</FormLabel>
+                <FormControl>
+                  <InputGroup>
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      className="pr-11"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                    <InputGroupAddon>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() =>
+                          setShowConfirmPassword((current) => !current)
+                        }
+                        aria-label={
+                          showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
+                        }
+                      >
+                        {showConfirmPassword ? <EyeOff /> : <Eye />}
+                      </Button>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
+          </Button>
+        </form>
+      </Form>
       <span className="text-center text-sm">
         Đã có tài khoản?{" "}
         <Link

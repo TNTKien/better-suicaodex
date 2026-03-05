@@ -102,31 +102,25 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   const contentLength = getContentLength(content || "");
 
   if (!id || !content) {
-    return NextResponse.json(
-      { error: "Missing data" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   // Top-level comments require a title, replies do not
   if (!parentId && !title) {
-    return NextResponse.json(
-      { error: "Missing data" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   if (contentLength < 1) {
     return NextResponse.json(
       { error: "Comment must be at least 1 character" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (contentLength > 2000) {
     return NextResponse.json(
       { error: "Comment must not exceed 2000 characters" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -139,36 +133,44 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     if (!parent) {
       return NextResponse.json(
         { error: "Parent comment not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     if (parent.mangaId !== id) {
       return NextResponse.json(
         { error: "Parent comment does not belong to this manga" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (parent.parentId !== null) {
       return NextResponse.json(
         { error: "Cannot reply to a reply" },
-        { status: 400 }
+        { status: 400 },
       );
     }
   }
 
-  const comment = await prisma.mangaComment.create({
-    data: {
-      content,
-      title: parentId ? "" : title,
-      mangaId: id,
-      userId: session.user.id,
-      ...(parentId ? { parentId } : {}),
-    },
-    include: {
-      user: true,
-    },
+  const comment = await prisma.$transaction(async (tx) => {
+    await tx.manga.upsert({
+      where: { id },
+      update: {},
+      create: { id },
+    });
+
+    return tx.mangaComment.create({
+      data: {
+        content,
+        title: parentId ? "" : title,
+        mangaId: id,
+        userId: session.user.id,
+        ...(parentId ? { parentId } : {}),
+      },
+      include: {
+        user: true,
+      },
+    });
   });
 
   return NextResponse.json(serializeComment(comment));

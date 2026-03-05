@@ -4,6 +4,8 @@ import { nextCookies } from "better-auth/next-js";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 
+const DEFAULT_USER_AVATAR = "/avatars/default-user-avatar.webp";
+
 export const authInstance = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -13,6 +15,24 @@ export const authInstance = betterAuth({
   },
   verification: {
     modelName: "verificationToken",
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          if (user.image && user.image.trim().length > 0) {
+            return;
+          }
+
+          return {
+            data: {
+              ...user,
+              image: DEFAULT_USER_AVATAR,
+            },
+          };
+        },
+      },
+    },
   },
   plugins: [nextCookies()],
 });

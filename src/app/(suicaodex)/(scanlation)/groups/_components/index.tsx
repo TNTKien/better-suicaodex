@@ -28,14 +28,9 @@ const LIMIT = 100;
 export default function GroupsSearch() {
   const [inputValue, setInputValue] = useQueryState(
     "q",
-    parseAsString
-      .withDefault("")
-      .withOptions({ shallow: false, throttleMs: 500 }),
+    parseAsString.withDefault("").withOptions({ throttleMs: 500 }),
   );
-  const [page, setPage] = useQueryState(
-    "page",
-    parseAsInteger.withDefault(1).withOptions({ shallow: false }),
-  );
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
   const safePage = Math.max(1, page);
 
   const [debouncedQuery] = useDebouncedValue(inputValue, 500);
@@ -136,7 +131,8 @@ export default function GroupsSearch() {
           autoComplete="off"
           value={inputValue}
           onChange={(e) => {
-            setInputValue(e.target.value || null);
+            const value = (e.currentTarget as { value?: string }).value ?? "";
+            setInputValue(value || null);
             setPage(null);
           }}
         />
@@ -159,7 +155,7 @@ export default function GroupsSearch() {
             const params = new URLSearchParams();
             if (debouncedQuery) params.set("q", debouncedQuery);
             if (p > 1) params.set("page", String(p));
-            return `/groups${params.size ? `?${params}` : ""}`;  
+            return `/groups${params.size ? `?${params}` : ""}`;
           }}
           className="mt-4"
         />
