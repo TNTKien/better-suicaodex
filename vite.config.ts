@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
-import { cloudflare } from "@cloudflare/vite-plugin";
+// import { cloudflare } from "@cloudflare/vite-plugin";
 import { serwist } from "@serwist/vite";
 import vinext from "vinext";
 import { defineConfig, loadEnv, type Plugin } from "vite";
@@ -70,12 +70,12 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       vinext(),
-      cloudflare({
-        viteEnvironment: {
-          name: "rsc",
-          childEnvironments: ["ssr"],
-        },
-      }),
+      // cloudflare({
+      //   viteEnvironment: {
+      //     name: "rsc",
+      //     childEnvironments: ["ssr"],
+      //   },
+      // }),
       nitro(),
       ...createSerwistPlugins(enablePwa),
     ],
