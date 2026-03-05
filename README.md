@@ -5,6 +5,8 @@
 
 > Đây là nhánh dùng [@cloudflare/vinext](https://github.com/cloudflare/vinext), mục đích để nghịch là chính, nhiều khả năng sẽ không được duy trì lâu dài, nên ai rảnh bẹn thì có thể nghịch thử.
 
+> Live Demo: https://vinext.suicaodex.com
+
 ## Cài đặt
 > Lưu ý: [WeebDex API](https://api.weebdex.org/docs) tuy không cần proxy, nhưng vẫn có 1 số yêu cầu riêng, nói chung là vẫn cứ có proxy cho chăc.
 
