@@ -12,11 +12,11 @@ function createSerwistPlugins(): Plugin[] {
   return serwist({
     swSrc: "src/sw.ts",
     swDest: "sw.js",
-    globDirectory: ".output/public",
+    globDirectory: "public",
     rollupFormat: "iife",
     integration: {
       beforeBuildServiceWorker(options) {
-        const publicDir = resolve(process.cwd(), ".output/public");
+        const publicDir = resolve(process.cwd(), "public");
         options.injectManifest.globDirectory = publicDir;
         options.injectManifest.swDest = resolve(publicDir, "sw.js");
       },
