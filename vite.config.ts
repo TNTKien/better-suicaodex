@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
+import { cloudflare } from "@cloudflare/vite-plugin";
 import { serwist } from "@serwist/vite";
 import vinext from "vinext";
 import { defineConfig, loadEnv, type Plugin } from "vite";
@@ -66,7 +67,16 @@ export default defineConfig(({ mode }) => {
   const enablePwa = env.NEXT_PUBLIC_ENABLE_PWA === "true";
 
   return {
-    plugins: [vinext(), ...createSerwistPlugins(enablePwa)],
+    plugins: [
+      vinext(),
+      cloudflare({
+        viteEnvironment: {
+          name: "rsc",
+          childEnvironments: ["ssr"],
+        },
+      }),
+      ...createSerwistPlugins(enablePwa),
+    ],
     optimizeDeps: {
       exclude: ["@tanstack/react-query", "@tanstack/query-core"],
     },
