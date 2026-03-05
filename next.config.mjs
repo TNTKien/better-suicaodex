@@ -1,12 +1,7 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts'],
-    // webpackMemoryOptimizations: true,
+    optimizePackageImports: ["lucide-react", "recharts"],
   },
-  // cacheComponents: true,
   images: {
     qualities: [25, 50, 75, 100],
     remotePatterns: [
@@ -50,7 +45,7 @@ const nextConfig: NextConfig = {
       source: "/manga-sitemap-:page.xml",
       destination: "/manga-sitemap/:page",
     },
-  ]
+  ],
 };
 
 export default nextConfig;
