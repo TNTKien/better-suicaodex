@@ -1,22 +1,22 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "better-suicaodex",
+  "name": "vinext-suicaodex",
   "compatibility_date": "2026-03-05",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "main": "./worker/index.ts",
   "assets": {
+    "directory": "./dist/client",
     "not_found_handling": "none",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
   "images": {
-    "binding": "IMAGES"
+    "binding": "IMAGES",
   },
   "kv_namespaces": [
     {
       "binding": "VINEXT_CACHE",
-      "id": "<your-kv-namespace-id>"
-    }
-  ]
+      "id": "2398447c4f714e78b57fa2b65eea539d",
+      "preview_id": "8eaf6a856ef9452eb854b66f6a4346ac",
+    },
+  ],
 }
