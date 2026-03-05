@@ -4,6 +4,7 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 import { serwist } from "@serwist/vite";
 import vinext from "vinext";
 import { defineConfig, loadEnv, type Plugin } from "vite";
+import { nitro } from "nitro/vite";
 
 const SOURCEMAP_REPORTING_WARNING =
   "Error when using sourcemap for reporting an error";
@@ -75,8 +76,12 @@ export default defineConfig(({ mode }) => {
           childEnvironments: ["ssr"],
         },
       }),
+      nitro(),
       ...createSerwistPlugins(enablePwa),
     ],
+    nitro: {
+      serverDir: "./",
+    },
     optimizeDeps: {
       exclude: ["@tanstack/react-query", "@tanstack/query-core"],
     },
