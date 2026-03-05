@@ -7,6 +7,13 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "wd.memaydex.online",
+        port: "",
+        pathname: "/covers/**",
+        search: "",
+      },
+      {
+        protocol: "https",
         hostname: "api.suicaodex.com",
         port: "",
         pathname: "/covers/**",
