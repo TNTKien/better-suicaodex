@@ -60,9 +60,9 @@ migrate-manga-ids-to-weebdex.mjs
 
 # AI config files
 /.cursor
-/.opencode
-/.agents
+# /.opencode
+# /.agents
 /.codex
-opencode.json
+# opencode.json
 
 prisma/generated
