@@ -4,18 +4,19 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/auth-client";
+import { signUp } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SignupFormProps extends React.HTMLAttributes<HTMLDivElement> {
   callback: string;
 }
 
-export function LoginForm({ className, callback, ...props }: LoginFormProps) {
+export function SignupForm({ className, callback, ...props }: SignupFormProps) {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +25,8 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
     event.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signIn.email({
+    const { error } = await signUp.email({
+      name,
       email,
       password,
       callbackURL: callback,
@@ -33,7 +35,7 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
     setIsLoading(false);
 
     if (error) {
-      toast.error(error.message ?? "Đăng nhập thất bại");
+      toast.error(error.message ?? "Đăng ký thất bại");
       return;
     }
 
@@ -44,9 +46,21 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Đăng nhập</h1>
+        <h1 className="text-2xl font-bold">Đăng ký</h1>
       </div>
       <form className="grid gap-4" onSubmit={handleSubmit}>
+        <div className="grid gap-2">
+          <Label htmlFor="name">Tên hiển thị</Label>
+          <Input
+            id="name"
+            type="text"
+            autoComplete="name"
+            value={name}
+            onChange={(event) => setName(event.currentTarget.value)}
+            required
+            disabled={isLoading}
+          />
+        </div>
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -64,7 +78,8 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
           <Input
             id="password"
             type="password"
-            autoComplete="current-password"
+            autoComplete="new-password"
+            minLength={8}
             value={password}
             onChange={(event) => setPassword(event.currentTarget.value)}
             required
@@ -72,16 +87,16 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
           />
         </div>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+          {isLoading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
         </Button>
       </form>
       <span className="text-center text-sm">
-        Chưa có tài khoản?{" "}
+        Đã có tài khoản?{" "}
         <Link
-          href={`/auth/signup?callback=${encodeURIComponent(callback)}`}
+          href={`/auth/signin?callback=${encodeURIComponent(callback)}`}
           className="underline"
         >
-          Đăng ký ngay
+          Đăng nhập
         </Link>
       </span>
     </div>

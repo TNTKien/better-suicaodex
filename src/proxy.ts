@@ -1,14 +1,11 @@
-import NextAuth from "next-auth";
-import authConfig from "./auth.config";
+import type { NextRequest } from "next/server";
 
-const { auth } = NextAuth(authConfig);
-
-const authRoutes = ["/login"];
+const authRoutes = ["/auth/signin", "/auth/signup", "/login"];
 const protectedRoutes = ["/user", "/settings"];
 
-export const proxy = auth((req) => {
+export const proxy = (req: NextRequest) => {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const isLoggedIn = !!req.cookies.get("better-auth.session_token")?.value;
   const path = nextUrl.pathname;
 
   // login rồi và vẫn vào auth route thì redirect home page
@@ -24,13 +21,13 @@ export const proxy = auth((req) => {
 
     const encodedCallbackUrl = encodeURIComponent(callbackUrl);
     return Response.redirect(
-      new URL(`/login?callback=${encodedCallbackUrl}`, nextUrl),
+      new URL(`/auth/signin?callback=${encodedCallbackUrl}`, nextUrl),
     );
   }
 
   // để thằng bé đó yên
   return;
-});
+};
 
 export const middleware = proxy;
 

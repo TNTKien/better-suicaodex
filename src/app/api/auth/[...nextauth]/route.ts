@@ -1,18 +1,4 @@
-import { handlers } from "@/auth";
-import type { NextRequest } from "next/server";
+import { toNextJsHandler } from "better-auth/next-js";
+import { authInstance } from "@/auth";
 
-function withNextUrl(request: Request): NextRequest {
-  const nextRequest = request as Request & { nextUrl?: URL };
-  if (!nextRequest.nextUrl) {
-    nextRequest.nextUrl = new URL(request.url);
-  }
-  return nextRequest as NextRequest;
-}
-
-export async function GET(request: Request) {
-  return handlers.GET(withNextUrl(request));
-}
-
-export async function POST(request: Request) {
-  return handlers.POST(withNextUrl(request));
-}
+export const { GET, POST, PATCH, PUT, DELETE } = toNextJsHandler(authInstance);

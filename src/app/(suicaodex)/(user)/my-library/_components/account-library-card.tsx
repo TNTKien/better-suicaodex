@@ -10,7 +10,7 @@ import type { Manga } from "@/lib/weebdex/model";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { generateSlug } from "@/lib/utils";
 import { RefreshCw, X } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth-client";
 import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { toast } from "sonner";
@@ -18,7 +18,11 @@ import { toast } from "sonner";
 interface AccountLibraryCardProps {
   entry: MangaLibraryEntry;
   onRemoved?: (mangaId: string) => void;
-  onRefreshed?: (mangaId: string, title: string, coverId: string | null) => void;
+  onRefreshed?: (
+    mangaId: string,
+    title: string,
+    coverId: string | null,
+  ) => void;
 }
 
 export default function AccountLibraryCard({
@@ -115,7 +119,9 @@ export default function AccountLibraryCard({
         disabled={isRefreshing}
         aria-label="Cập nhật thông tin truyện"
       >
-        <RefreshCw className={`size-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+        <RefreshCw
+          className={`size-3.5 ${isRefreshing ? "animate-spin" : ""}`}
+        />
       </Button>
 
       {/* Remove button */}

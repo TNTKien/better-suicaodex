@@ -22,9 +22,8 @@ import { Badge } from "@/components/ui/badge";
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "@/lib/auth-client";
 import { usePathname, useRouter } from "next/navigation";
-import { siteConfig } from "@/config/site";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -166,9 +165,7 @@ export function NavUser() {
                 className="text-blue-500 focus:bg-blue-500/20 focus:text-blue-500"
                 onClick={() => {
                   router.push(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/login?callback=${encodeURIComponent(
-                      pathname,
-                    )}`,
+                    `/auth/signin?callback=${encodeURIComponent(pathname)}`,
                   );
                 }}
               >
@@ -178,7 +175,11 @@ export function NavUser() {
             ) : (
               <DropdownMenuItem
                 className="text-red-500 focus:bg-red-500/20 focus:text-red-500"
-                onClick={() => signOut()}
+                onClick={async () => {
+                  await signOut();
+                  router.push("/");
+                  router.refresh();
+                }}
               >
                 <LogOut />
                 Đăng xuất
