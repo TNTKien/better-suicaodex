@@ -166,7 +166,7 @@ export function NavUser() {
                 className="text-blue-500 focus:bg-blue-500/20 focus:text-blue-500"
                 onClick={() => {
                   router.push(
-                    process.env.BETTER_AUTH_URL +
+                    process.env.NEXT_PUBLIC_BASE_URL +
                       `/login?callback=${encodeURIComponent(pathname)}`,
                   );
                 }}
