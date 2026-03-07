@@ -4,15 +4,11 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 import { toNextJsHandler } from "better-auth/next-js";
 
-const baseURL =
-  process.env.BETTER_AUTH_URL ??
-  process.env.NEXT_PUBLIC_BASE_URL ??
-  process.env.AUTH_URL ??
-  "http://localhost:3000";
+const baseURL = process.env.BETTER_AUTH_URL;
 
 export const authServer = betterAuth({
   baseURL,
-  secret: process.env.BETTER_AUTH_SECRET ?? process.env.AUTH_SECRET,
+  secret: process.env.BETTER_AUTH_SECRET,
   database: prismaAdapter(prisma, {
     provider: "mysql",
   }),
@@ -28,11 +24,7 @@ export const authServer = betterAuth({
     github: {
       clientId: process.env.AUTH_GITHUB_ID as string,
       clientSecret: process.env.AUTH_GITHUB_SECRET as string,
-    },
-    facebook: {
-      clientId: process.env.AUTH_FACEBOOK_ID as string,
-      clientSecret: process.env.AUTH_FACEBOOK_SECRET as string,
-    },
+    }
   },
   user: {
     modelName: "user",
@@ -62,7 +54,7 @@ export const authServer = betterAuth({
     },
     accountLinking: {
       enabled: true,
-      trustedProviders: ["discord", "google", "github", "facebook"],
+      trustedProviders: ["discord", "google", "github"],
     },
   },
   verification: {

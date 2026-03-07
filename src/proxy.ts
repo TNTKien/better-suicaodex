@@ -26,8 +26,7 @@ export function proxy(req: NextRequest) {
       new URL(`/login?callback=${encodedCallbackUrl}`, nextUrl),
     );
   }
-
-  // để thằng bé đó yên
+  
   return NextResponse.next();
 }
 
