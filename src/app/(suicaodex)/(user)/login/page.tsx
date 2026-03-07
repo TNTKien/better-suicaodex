@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getAuthSession } from "@/auth";
 import { LoginForm } from "@/components/login-form";
 import { WarpBackground } from "@/components/ui/warp-background";
 import { Metadata } from "next";
@@ -16,7 +16,7 @@ interface pageProps {
 }
 
 export default async function LoginPage({ searchParams }: pageProps) {
-  const session = await auth();
+  const session = await getAuthSession();
   const { callback } = await getSearchParams({ searchParams });
 
   if (session) {
@@ -51,7 +51,12 @@ export default async function LoginPage({ searchParams }: pageProps) {
 
 const getSearchParams = async ({ searchParams }: pageProps) => {
   const params = await searchParams;
-  const callback = params.callback ?? "/";
+  const unsafeCallback = params.callback ?? "/";
+
+  const callback =
+    unsafeCallback.startsWith("/") && !unsafeCallback.startsWith("//")
+      ? unsafeCallback
+      : "/";
 
   return {
     callback,

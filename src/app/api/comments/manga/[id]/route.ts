@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { serializeComment } from "@/lib/suicaodex/serializers";
-import { auth } from "@/auth";
+import { getAuthSession } from "@/auth";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
 import { getContentLength } from "@/lib/utils";
 
@@ -77,7 +77,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
 // POST /api/comments/manga/[id]
 export async function POST(req: NextRequest, { params }: RouteParams) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -102,31 +102,25 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   const contentLength = getContentLength(content || "");
 
   if (!id || !content) {
-    return NextResponse.json(
-      { error: "Missing data" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   // Top-level comments require a title, replies do not
   if (!parentId && !title) {
-    return NextResponse.json(
-      { error: "Missing data" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
   if (contentLength < 1) {
     return NextResponse.json(
       { error: "Comment must be at least 1 character" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (contentLength > 2000) {
     return NextResponse.json(
       { error: "Comment must not exceed 2000 characters" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -139,21 +133,21 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     if (!parent) {
       return NextResponse.json(
         { error: "Parent comment not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     if (parent.mangaId !== id) {
       return NextResponse.json(
         { error: "Parent comment does not belong to this manga" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (parent.parentId !== null) {
       return NextResponse.json(
         { error: "Cannot reply to a reply" },
-        { status: 400 }
+        { status: 400 },
       );
     }
   }

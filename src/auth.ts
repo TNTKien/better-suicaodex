@@ -2,13 +2,35 @@ import { headers } from "next/headers";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
-import { toNextJsHandler } from "better-auth/next-js";
 
-const baseURL = process.env.BETTER_AUTH_URL;
+const baseURL =
+  process.env.BETTER_AUTH_URL ??
+  process.env.NEXT_PUBLIC_BASE_URL ??
+  process.env.AUTH_URL ??
+  "http://localhost:3000";
 
-export const authServer = betterAuth({
+const secret = process.env.BETTER_AUTH_SECRET;
+
+if (!secret) {
+  throw new Error("BETTER_AUTH_SECRET is required");
+}
+
+const trustedOrigins = [
+  process.env.BETTER_AUTH_URL,
+  process.env.NEXT_PUBLIC_BASE_URL,
+  process.env.AUTH_URL,
+].filter((origin): origin is string => Boolean(origin));
+
+const dedupedTrustedOrigins = [baseURL, ...trustedOrigins].filter(
+  (origin, index, list) => list.indexOf(origin) === index,
+);
+
+export const auth = betterAuth({
   baseURL,
-  secret: process.env.BETTER_AUTH_SECRET,
+  secret,
+  advanced: {
+    useSecureCookies: baseURL.startsWith("https://"),
+  },
   database: prismaAdapter(prisma, {
     provider: "mysql",
   }),
@@ -24,7 +46,7 @@ export const authServer = betterAuth({
     github: {
       clientId: process.env.AUTH_GITHUB_ID as string,
       clientSecret: process.env.AUTH_GITHUB_SECRET as string,
-    }
+    },
   },
   user: {
     modelName: "user",
@@ -60,19 +82,13 @@ export const authServer = betterAuth({
   verification: {
     modelName: "verification",
   },
-  trustedOrigins: [
-    process.env.BETTER_AUTH_URL,
-    process.env.NEXT_PUBLIC_BASE_URL,
-    process.env.AUTH_URL,
-  ].filter((origin): origin is string => Boolean(origin)),
+  trustedOrigins: dedupedTrustedOrigins,
 });
 
-export const handlers = toNextJsHandler(authServer);
-
-export async function auth() {
-  return authServer.api.getSession({
+export async function getAuthSession() {
+  return auth.api.getSession({
     headers: await headers(),
   });
 }
 
-export type AuthSession = typeof authServer.$Infer.Session;
+export type AuthSession = typeof auth.$Infer.Session;

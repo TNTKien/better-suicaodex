@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getAuthSession } from "@/auth";
 import { getUserLibrary } from "@/lib/suicaodex/db";
 import {
   Empty,
@@ -11,7 +11,7 @@ import { BookOpen } from "lucide-react";
 import AccountCategoryTabs from "./account-category-tabs";
 
 export default async function AccountLibraryList() {
-  const session = await auth();
+  const session = await getAuthSession();
 
   if (!session?.user?.id) {
     return (
@@ -42,4 +42,3 @@ export default async function AccountLibraryList() {
     />
   );
 }
-
