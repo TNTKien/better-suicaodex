@@ -22,15 +22,14 @@ import { Badge } from "@/components/ui/badge";
 import { useLocalNotification } from "@/hooks/use-local-notification";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "@bprogress/next";
-import { siteConfig } from "@/config/site";
+import { authClient } from "@/lib/auth-client";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { localNotification } = useLocalNotification();
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
   const user = session?.user;
   const pathname = usePathname();
   const router = useRouter();
@@ -143,7 +142,7 @@ export function NavUser() {
                 <Link href={"/notifications"}>
                   <Bell
                     className={cn(
-                      !!localNotification.unread.length && "animate-bell-shake"
+                      !!localNotification.unread.length && "animate-bell-shake",
                     )}
                   />
                   Thông báo
@@ -167,9 +166,7 @@ export function NavUser() {
                 className="text-blue-500 focus:bg-blue-500/20 focus:text-blue-500"
                 onClick={() => {
                   router.push(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/login?callback=${encodeURIComponent(
-                      pathname
-                    )}`
+                    `/login?callback=${encodeURIComponent(pathname)}`,
                   );
                 }}
               >
@@ -179,7 +176,9 @@ export function NavUser() {
             ) : (
               <DropdownMenuItem
                 className="text-red-500 focus:bg-red-500/20 focus:text-red-500"
-                onClick={() => signOut()}
+                onClick={() => {
+                  void authClient.signOut();
+                }}
               >
                 <LogOut />
                 Đăng xuất

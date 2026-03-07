@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { Alert, AlertTitle } from "../ui/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,6 +19,7 @@ import { toast } from "sonner";
 import { StickerPicker } from "./sticker-picker";
 import { ButtonGroup, ButtonGroupSeparator } from "../ui/button-group";
 import { Spinner } from "../ui/spinner";
+import { authClient } from "@/lib/auth-client";
 
 const FormSchema = z.object({
   comment: z
@@ -43,7 +43,7 @@ export default function CommentFormSimple({
   chapterNumber,
   onCommentPosted,
 }: CommentFormSimpleProps) {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {

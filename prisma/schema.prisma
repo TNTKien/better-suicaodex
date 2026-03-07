@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider   = "prisma-client"
   output     = "./generated"
   engineType = "client"
 }
@@ -9,19 +9,21 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  username      String?   @unique
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
+  id                  String    @id @default(cuid())
+  name                String?
+  displayName         String    @default("")
+  username            String?   @unique
+  email               String    @unique
+  emailVerified       DateTime?
+  betterEmailVerified Boolean   @default(false)
+  image               String?
 
-  accounts      Account[]
-  sessions      Session[]
+  accounts Account[]
+  sessions Session[]
 
-  library       Library?
+  library Library?
 
-  notifications Notify[]  @relation("toUser")
+  notifications Notify[] @relation("toUser")
 
   mangaComments   MangaComment[]
   chapterComments ChapterComment[]
@@ -31,17 +33,20 @@ model User {
 }
 
 model Account {
-  id                       String  @id @default(cuid())
+  id                       String    @id @default(cuid())
   userId                   String
   type                     String
   provider                 String
   providerAccountId        String
-  refresh_token            String? @db.Text
-  access_token             String? @db.Text
+  refresh_token            String?   @db.Text
+  access_token             String?   @db.Text
   expires_at               Int?
+  accessTokenExpiresAt     DateTime?
+  refreshTokenExpiresAt    DateTime?
   token_type               String?
   scope                    String?
-  id_token                 String? @db.Text
+  id_token                 String?   @db.Text
+  password                 String?
   session_state            String?
   refresh_token_expires_in Int?
 
@@ -59,6 +64,8 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  ipAddress    String?
+  userAgent    String?  @db.Text
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -76,11 +83,22 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+}
+
 model Library {
   id     String @id @default(cuid())
   userId String @unique
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   mangas LibraryManga[]
 
   createdAt DateTime @default(now())
@@ -131,14 +149,14 @@ enum Category {
 }
 
 model MangaComment {
-  id        String   @id @default(cuid())
-  title     String   @default("") @db.VarChar(255)
-  content   String   @db.Text
-  isEdited  Boolean  @default(false)
-  reactions Int      @default(0)
+  id        String  @id @default(cuid())
+  title     String  @default("") @db.VarChar(255)
+  content   String  @db.Text
+  isEdited  Boolean @default(false)
+  reactions Int     @default(0)
 
-  userId  String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   mangaId String
   manga   Manga  @relation(fields: [mangaId], references: [id], onDelete: Cascade)
@@ -157,24 +175,24 @@ model MangaComment {
 }
 
 model Chapter {
-  id         String   @id @map("mangadexId")
+  id String @id @map("mangadexId")
 
-  comments   ChapterComment[]
+  comments ChapterComment[]
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ChapterComment {
-  id            String   @id @default(cuid())
-  title         String   @default("") @db.VarChar(255)
-  content       String   @db.Text
-  isEdited      Boolean  @default(false)
-  reactions     Int      @default(0)
-  chapterNumber String   @default("Oneshot")
+  id            String  @id @default(cuid())
+  title         String  @default("") @db.VarChar(255)
+  content       String  @db.Text
+  isEdited      Boolean @default(false)
+  reactions     Int     @default(0)
+  chapterNumber String  @default("Oneshot")
 
-  userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   chapterId String
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
@@ -193,19 +211,18 @@ model ChapterComment {
 }
 
 model Notify {
-  id        Int      @id @default(autoincrement())
-  toUserId  String
-  content   String   @db.Text
-  isRead    Boolean  @default(false)
+  id       Int     @id @default(autoincrement())
+  toUserId String
+  content  String  @db.Text
+  isRead   Boolean @default(false)
 
-  toUser    User     @relation("toUser", fields: [toUserId], references: [id], onDelete: Cascade)
+  toUser User @relation("toUser", fields: [toUserId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
   // Đếm số thông báo chưa đọc (Count Unread)
   // Query: SELECT count(*) WHERE toUserId = ? AND isRead = false
   @@index([toUserId, isRead])
-
   // load list thông báo theo thời gian:
   @@index([toUserId, createdAt(sort: Desc)])
 }

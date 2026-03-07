@@ -72,7 +72,9 @@ Tôi rất hoan nghênh và thậm chí là khuyến khích cmn luôn, làm mộ
 
 >Bạn có thể tham khảo [simple-proxy](https://github.com/TNTKien/simple-proxy), [weebdex-api](https://github.com/TNTKien/weebdex-api). Khi đã có proxy, hãy chỉnh sửa lại `src/config/site.ts` và `.env` cho phù hợp.
 
-> `.env`: SuicaoDex sử dụng [AuthJS](https://authjs.dev/), nhớ đọc kỹ docs để biết đường mà config. Ngoài ra còn 1 số biến môn trường khác, hãy xem trong `example.env`.
+> `.env`: SuicaoDex sử dụng [Better Auth](https://better-auth.com/docs), nhớ đọc kỹ docs để biết đường mà config. Ngoài ra còn 1 số biến môi trường khác, hãy xem trong `example.env`.
+
+> Nếu bạn nâng cấp từ Auth.js sang Better Auth: hãy backup DB trước, chạy migration Prisma, rồi chạy `bun run verify:auth-migration` để kiểm tra dữ liệu auth đã được map an toàn.
 
 
 Cài đặt các package cần thiết:

@@ -3,7 +3,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Streamdown } from "streamdown";
-import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { formatShortTime } from "@/lib/utils";
 import { getStickerByName } from "@/lib/stickers-fn";
@@ -15,6 +14,7 @@ import { X, Send } from "lucide-react";
 import { StickerPicker } from "./sticker-picker";
 import { ButtonGroup } from "../ui/button-group";
 import { Spinner } from "../ui/spinner";
+import { authClient } from "@/lib/auth-client";
 
 interface SerializedComment {
   id: string;
@@ -87,7 +87,7 @@ export default function CommentCard({
   isReply = false,
   onMutate,
 }: CommentCardProps) {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
   const [editMode, setEditMode] = useState(false);
   const [replyMode, setReplyMode] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
@@ -200,13 +200,13 @@ export default function CommentCard({
 
   const insertStickerToEdit = (stickerName: string) => {
     setEditContent((prev) =>
-      prev ? `${prev} :${stickerName}:` : `:${stickerName}:`
+      prev ? `${prev} :${stickerName}:` : `:${stickerName}:`,
     );
   };
 
   const insertStickerToReply = (stickerName: string) => {
     setReplyContent((prev) =>
-      prev ? `${prev} :${stickerName}:` : `:${stickerName}:`
+      prev ? `${prev} :${stickerName}:` : `:${stickerName}:`,
     );
   };
 
@@ -235,9 +235,7 @@ export default function CommentCard({
             <>
               {text && (
                 <div className="bg-muted rounded-2xl px-3 py-2 mt-1 inline-block max-w-full">
-                  <Streamdown>
-                    {text}
-                  </Streamdown>
+                  <Streamdown>{text}</Streamdown>
                 </div>
               )}
               {stickers.length > 0 && (
@@ -292,7 +290,7 @@ export default function CommentCard({
                 size="sm"
                 onClick={() => setEditMode(false)}
               >
-                <X/>
+                <X />
                 Hủy
               </Button>
             </div>
@@ -307,17 +305,16 @@ export default function CommentCard({
 
             {!!session?.user?.id && !editMode && (
               <div className="flex items-center gap-2">
-                {session?.user?.id === comment.user.id &&
-                  !comment.isEdited && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-auto py-0 px-1 text-xs font-semibold hover:underline"
-                      onClick={handleEditOpen}
-                    >
-                      Sửa
-                    </Button>
-                  )}
+                {session?.user?.id === comment.user.id && !comment.isEdited && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto py-0 px-1 text-xs font-semibold hover:underline"
+                    onClick={handleEditOpen}
+                  >
+                    Sửa
+                  </Button>
+                )}
                 {/* Only allow reply on top-level comments (1-level nesting) */}
                 {!isReply && (
                   <Button
