@@ -16,7 +16,12 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Tôn trọng nguồn dịch.
 - Thân thiện với độc giả Việt Nam (cụ thể là tôi).
 
-## BREAKING CHANGES - 01/03/2026
+## BREAKING CHANGES
+
+### 07/03/2026
+- Migrate từ authjs sang better-auth, xem `MIGRATE_TO_BETTER_AUTH.md` để biết thêm chi tiết. Còn không thì cứ để nguyên cho lành.
+
+### 01/03/2026
 - Chuyển sang dùng [WeebDex API](https://api.weebdex.org/docs), đa phần các config, code...liên quan đến MangaDex đã bị xóa hoặc đưa vào thư mục `deprecated`.
 - Mapping giữa WeebDex và MangaDex chưa hoàn chỉnh ~~(thực ra là lười chưa làm 🐧)~~, dẫn đến 1 số chức năng bị ảnh hưởng (Thư viện, Lịch sử đọc...) → Tạm tắt hoặc sử dụng bị hạn chế, sẽ khắc phục trong tương lai.
 
@@ -72,7 +77,9 @@ Tôi rất hoan nghênh và thậm chí là khuyến khích cmn luôn, làm mộ
 
 >Bạn có thể tham khảo [simple-proxy](https://github.com/TNTKien/simple-proxy), [weebdex-api](https://github.com/TNTKien/weebdex-api). Khi đã có proxy, hãy chỉnh sửa lại `src/config/site.ts` và `.env` cho phù hợp.
 
-> `.env`: SuicaoDex sử dụng [AuthJS](https://authjs.dev/), nhớ đọc kỹ docs để biết đường mà config. Ngoài ra còn 1 số biến môn trường khác, hãy xem trong `example.env`.
+> `.env`: SuicaoDex sử dụng [Better Auth](https://better-auth.com/docs), nhớ đọc kỹ docs để biết đường mà config. Ngoài ra còn 1 số biến môi trường khác, hãy xem trong `example.env`.
+
+
 
 
 Cài đặt các package cần thiết:

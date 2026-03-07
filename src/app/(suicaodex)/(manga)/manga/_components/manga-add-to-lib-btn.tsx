@@ -20,12 +20,12 @@ import {
   NotebookPen,
   Smartphone,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth-client";
 
 type StorageMode = "local" | "account";
 
@@ -86,7 +86,7 @@ export function MangaAddToLibBtn({
   title,
   coverId,
 }: MangaAddToLibBtnProps) {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [storageMode, setStorageMode] = useState<StorageMode>("local");
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);

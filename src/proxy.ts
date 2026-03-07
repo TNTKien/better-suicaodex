@@ -1,19 +1,18 @@
-import NextAuth from "next-auth";
-import authConfig from "./auth.config";
-
-const { auth } = NextAuth(authConfig);
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getSessionCookie } from "better-auth/cookies";
 
 const authRoutes = ["/login"];
 const protectedRoutes = ["/user", "/settings"];
 
-export const proxy = auth((req) => {
+export function proxy(req: NextRequest) {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const isLoggedIn = !!getSessionCookie(req);
   const path = nextUrl.pathname;
 
   // login rồi và vẫn vào auth route thì redirect home page
   if (isLoggedIn && authRoutes.includes(path))
-    return Response.redirect(new URL("/", nextUrl));
+    return NextResponse.redirect(new URL("/", nextUrl));
 
   const isProtected = protectedRoutes.some((route) => path.startsWith(route));
 
@@ -23,14 +22,13 @@ export const proxy = auth((req) => {
     if (nextUrl.search) callbackUrl += nextUrl.search;
 
     const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-    return Response.redirect(
+    return NextResponse.redirect(
       new URL(`/login?callback=${encodedCallbackUrl}`, nextUrl),
     );
   }
-
-  // để thằng bé đó yên
-  return;
-});
+  
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [

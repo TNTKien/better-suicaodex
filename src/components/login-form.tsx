@@ -3,13 +3,20 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SiDiscord, SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
-import { signIn } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {
   callback: string;
 }
 
 export function LoginForm({ className, callback, ...props }: LoginFormProps) {
+  const signInWithProvider = (provider: "discord" | "google" | "github") => {
+    void authClient.signIn.social({
+      provider,
+      callbackURL: callback,
+    });
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
@@ -18,33 +25,21 @@ export function LoginForm({ className, callback, ...props }: LoginFormProps) {
       <div className="grid gap-4">
         <Button
           className="bg-[#5865F2] text-white hover:bg-[#5865F2]/80"
-          onClick={() =>
-            void signIn("discord", {
-              redirectTo: callback,
-            })
-          }
+          onClick={() => signInWithProvider("discord")}
         >
           <SiDiscord /> Discord
         </Button>
 
         <Button
           className="text-white bg-stone-800  hover:bg-stone-800/80"
-          onClick={() =>
-            void signIn("google", {
-              redirectTo: callback,
-            })
-          }
+          onClick={() => signInWithProvider("google")}
         >
           <SiGoogle /> Google
         </Button>
 
         <Button
           className="bg-slate-700  text-white hover:bg-slate-700/80"
-          onClick={() =>
-            void signIn("github", {
-              redirectTo: callback,
-            })
-          }
+          onClick={() => signInWithProvider("github")}
         >
           <SiGithub /> Github
         </Button>

@@ -84,7 +84,9 @@ export default function ErrorPage({
 
   const handleCopyError = () => {
     if (error) {
-      navigator.clipboard.writeText(error.message);
+      // navigator.clipboard.writeText(error.message);
+      window.navigator["clipboard"].writeText(error.message);
+
       setHasCopied(true);
       toast.success("Đã sao chép chi tiết lỗi vào clipboard");
       setTimeout(() => setHasCopied(false), 2000);

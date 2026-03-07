@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { serializeComment } from "@/lib/suicaodex/serializers";
-import { auth } from "@/auth";
+import { getAuthSession } from "@/auth";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
 import { getContentLength } from "@/lib/utils";
 import { Prisma } from "../../../../../prisma/generated/client";
@@ -14,7 +14,7 @@ interface RouteParams {
 
 // PATCH /api/comments/[commentId] - Edit a comment
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -44,14 +44,14 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   if (contentLength < 1) {
     return NextResponse.json(
       { error: "Comment must be at least 1 character" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (contentLength > 2000) {
     return NextResponse.json(
       { error: "Comment must not exceed 2000 characters" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -85,7 +85,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       ) {
         return NextResponse.json(
           { error: "Comment can only be edited once" },
-          { status: 403 }
+          { status: 403 },
         );
       }
       throw err;
@@ -120,7 +120,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       ) {
         return NextResponse.json(
           { error: "Comment can only be edited once" },
-          { status: 403 }
+          { status: 403 },
         );
       }
       throw err;

@@ -1,13 +1,13 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getAuthSession } from "@/auth";
 import { getMangaId } from "@/lib/weebdex/hooks/manga/manga";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { prisma } from "../prisma";
 import { Category } from "../../../prisma/generated/enums";
 
 async function checkAuth(userID: string): Promise<boolean> {
-  const session = await auth();
+  const session = await getAuthSession();
   return session?.user?.id === userID || false;
 }
 
@@ -76,7 +76,12 @@ export async function updateMangaCategory(
           ...(title !== undefined && { title }),
           ...(coverId !== undefined && { coverId }),
         },
-        create: { id: mangaId, latestChapterId: latestChapterId ?? null, title, coverId },
+        create: {
+          id: mangaId,
+          latestChapterId: latestChapterId ?? null,
+          title,
+          coverId,
+        },
       });
 
       // Thêm hoặc cập nhật Manga trong thư viện
@@ -155,7 +160,10 @@ export async function getUserLibrary(userId: string): Promise<{
 
     // Phân loại Manga theo category
     const result = libraryMangas.reduce(
-      (acc: Record<Category, MangaLibraryEntry[]>, { mangaId, category, createdAt, manga }) => {
+      (
+        acc: Record<Category, MangaLibraryEntry[]>,
+        { mangaId, category, createdAt, manga },
+      ) => {
         acc[category].push({
           id: mangaId,
           title: manga?.title ?? null,
@@ -190,7 +198,8 @@ export async function refreshMangaMetadata(
 
     // Fetch từ WeebDex API
     const res = await getMangaId(mangaId);
-    if (res.status !== 200 || !res.data) return { error: `Lỗi API: ${res.status}` };
+    if (res.status !== 200 || !res.data)
+      return { error: `Lỗi API: ${res.status}` };
 
     const manga = res.data;
     const { title } = parseMangaTitle(manga);
