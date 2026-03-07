@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
+import { dash } from "@better-auth/infra";
 
 const baseURL =
   process.env.BETTER_AUTH_URL ??
@@ -26,10 +27,15 @@ const dedupedTrustedOrigins = [baseURL, ...trustedOrigins].filter(
 );
 
 export const auth = betterAuth({
+  appName: "Suicaodex",
   baseURL,
   secret,
+  plugins: [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })],
   advanced: {
     useSecureCookies: baseURL.startsWith("https://"),
+    ipAddress: {
+      ipAddressHeaders: ["x-forwarded-for"],
+    },
   },
   database: prismaAdapter(prisma, {
     provider: "mysql",
