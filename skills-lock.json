@@ -26,6 +26,11 @@
       "sourceType": "github",
       "computedHash": "fa7a76e45a1f9632e6d63e92b476cf566e64f6e93a2c8ee00bc77b4a74008fbd"
     },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "computedHash": "b1cc1defe03f0e8f78652b7d20e4d4e6421babc2b45835d4f361afe684dc47a2"
+    },
     "two-factor-authentication-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
