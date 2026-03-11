@@ -6,7 +6,9 @@ const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 const DEFAULT_CONNECTION_LIMIT = 5;
 const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
+const DEFAULT_ACQUIRE_TIMEOUT_MS = 10_000;
 const DEFAULT_MYSQL_PORT = 3306;
+const ENABLE_DB_DIAGNOSTICS = process.env.MYSQL_DATABASE_DEBUG === "true";
 
 const parsePositiveInteger = (
   value: string | undefined,
@@ -30,42 +32,102 @@ const createAdapter = () => {
     process.env.MYSQL_DATABASE_CONNECT_TIMEOUT_MS,
     DEFAULT_CONNECT_TIMEOUT_MS,
   );
+  const acquireTimeout = Math.max(
+    connectTimeout,
+    parsePositiveInteger(
+      process.env.MYSQL_DATABASE_ACQUIRE_TIMEOUT_MS,
+      DEFAULT_ACQUIRE_TIMEOUT_MS,
+    ),
+  );
   const host = process.env.MYSQL_DATABASE_HOST?.trim();
   const user = process.env.MYSQL_DATABASE_USER?.trim();
   const database = process.env.MYSQL_DATABASE_NAME?.trim();
   const connectionUrl = process.env.MYSQL_DATABASE_URL?.trim();
+  const adapterOptions = {
+    onConnectionError: (error: {
+      code?: string | null;
+      errno?: number;
+      sqlState?: string | null;
+      address?: string | null;
+      port?: number;
+      fatal?: boolean;
+      message: string;
+    }) => {
+      if (!ENABLE_DB_DIAGNOSTICS) {
+        return;
+      }
+
+      console.error(
+        "[db-connection-error]",
+        JSON.stringify({
+          code: error.code,
+          errno: error.errno,
+          sqlState: error.sqlState,
+          address: error.address,
+          port: error.port,
+          fatal: error.fatal,
+          message: error.message,
+        }),
+      );
+    },
+  };
+
+  if (ENABLE_DB_DIAGNOSTICS) {
+    console.info(
+      "[db-config]",
+      JSON.stringify({
+        host,
+        user,
+        database,
+        port: parsePositiveInteger(
+          process.env.MYSQL_DATABASE_PORT,
+          DEFAULT_MYSQL_PORT,
+        ),
+        connectionLimit,
+        acquireTimeout,
+        connectTimeout,
+        usingConnectionUrl: Boolean(connectionUrl),
+        usingDiscreteConfig: Boolean(host && user && database),
+        hasPassword: Boolean(process.env.MYSQL_DATABASE_PASSWORD),
+      }),
+    );
+  }
 
   if (host && user && database) {
-    return new PrismaMariaDb({
-      host,
-      user,
-      password: process.env.MYSQL_DATABASE_PASSWORD ?? "",
-      database,
-      port: parsePositiveInteger(
-        process.env.MYSQL_DATABASE_PORT,
-        DEFAULT_MYSQL_PORT,
-      ),
-      connectionLimit,
-      connectTimeout,
-      // allowPublicKeyRetrieval: true,
-      // ssl: {
-      //   rejectUnauthorized: false,
-      // },
-      // logger: {
-      //   network: (info) => {
-      //     console.log("PrismaAdapterNetwork", info);
-      //   },
-      //   query: (info) => {
-      //     console.log("PrismaAdapterQuery", info);
-      //   },
-      //   error: (error) => {
-      //     console.error("PrismaAdapterError", error);
-      //   },
-      //   warning: (info) => {
-      //     console.warn("PrismaAdapterWarning", info);
-      //   },
-      // },
-    });
+    return new PrismaMariaDb(
+      {
+        host,
+        user,
+        password: process.env.MYSQL_DATABASE_PASSWORD ?? "",
+        database,
+        port: parsePositiveInteger(
+          process.env.MYSQL_DATABASE_PORT,
+          DEFAULT_MYSQL_PORT,
+        ),
+        connectionLimit,
+        acquireTimeout,
+        connectTimeout,
+        // allowPublicKeyRetrieval: true,
+        // ssl: {
+        //   rejectUnauthorized: false,
+        // },
+        // logger: {
+        //   network: (info) => {
+        //     console.log("PrismaAdapterNetwork", info);
+        //   },
+        //   query: (info) => {
+        //     console.log("PrismaAdapterQuery", info);
+        //   },
+        //   error: (error) => {
+        //     console.error("PrismaAdapterError", error);
+        //   },
+        //   warning: (info) => {
+        //     console.warn("PrismaAdapterWarning", info);
+        //   },
+        // },
+      },
+      adapterOptions,
+    );
   }
 
   if (connectionUrl) {
@@ -87,7 +149,7 @@ const createAdapter = () => {
       normalizedUrl.searchParams.set("connectTimeout", String(connectTimeout));
     }
 
-    return new PrismaMariaDb(normalizedUrl.toString());
+    return new PrismaMariaDb(normalizedUrl.toString(), adapterOptions);
   }
 
   throw new Error(

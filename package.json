@@ -15,7 +15,8 @@
     "lint:fix": "eslint . --fix",
     "migrate:weebdex": "bun run scripts/migrate-manga-ids-to-weebdex.mjs",
     "migrate:weebdex:execute": "bun run scripts/migrate-manga-ids-to-weebdex.mjs --execute",
-    "verify:auth-migration": "bun run scripts/verify-auth-migration-safety.mjs"
+    "verify:auth-migration": "bun run scripts/verify-auth-migration-safety.mjs",
+    "db:smoke": "bun run scripts/db-smoke.mjs"
   },
   "dependencies": {
     "@better-auth/infra": "^0.1.8",
