@@ -30,6 +30,7 @@ export const auth = betterAuth({
   appName: "Suicaodex",
   baseURL,
   secret,
+  experimental: { joins: true },
   plugins: [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })],
   advanced: {
     useSecureCookies: baseURL.startsWith("https://"),
@@ -38,7 +39,7 @@ export const auth = betterAuth({
     },
   },
   database: prismaAdapter(prisma, {
-    provider: "mysql",
+    provider: "postgresql",
   }),
   socialProviders: {
     discord: {
