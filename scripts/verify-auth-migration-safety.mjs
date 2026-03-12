@@ -1,13 +1,17 @@
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 import { PrismaClient } from "../prisma/generated/client";
 
-const adapter = new PrismaMariaDb({
-  host: process.env.MYSQL_DATABASE_HOST,
-  user: process.env.MYSQL_DATABASE_USER,
-  password: process.env.MYSQL_DATABASE_PASSWORD,
-  database: process.env.MYSQL_DATABASE_NAME,
-  connectionLimit: 5,
-});
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is required");
+}
+
+const adapter = new PrismaPg(
+  new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 5,
+  }),
+);
 
 const prisma = new PrismaClient({ adapter });
 

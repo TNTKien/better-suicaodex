@@ -18,6 +18,9 @@ Tuy vậy, SuicaoDex sẽ luôn:
 
 ## BREAKING CHANGES
 
+### 12/03/2026
+- Chuyển database sang PostgreSQL, xem [MIGRATE_TO_POSTGRES.md](https://github.com/TNTKien/better-suicaodex/blob/master/MIGRATE_TO_POSTGRES.md) để biết thêm chi tiết. Còn không thì cứ để nguyên cho lành.
+
 ### 07/03/2026
 - Migrate từ authjs sang better-auth, xem [MIGRATE_TO_BETTER_AUTH.md](https://github.com/TNTKien/better-suicaodex/blob/master/MIGRATE_TO_BETTER_AUTH.md) để biết thêm chi tiết. Còn không thì cứ để nguyên cho lành.
 

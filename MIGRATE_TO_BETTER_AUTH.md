@@ -88,13 +88,13 @@ Do additive changes first. Do not drop legacy Auth.js fields/tables during cutov
 
 Implemented migrations:
 
-1. `prisma/migrations/20260307000000_authjs_to_better_auth_safe/`
+1. `prisma/mysql-migrations-archive/20260307000000_authjs_to_better_auth_safe/`
    - add compatibility columns
    - backfill data
    - create `Verification` table
    - copy legacy `VerificationToken` rows to `Verification`
 
-2. `prisma/migrations/20260307000001_fix_verification_value_length/`
+2. `prisma/mysql-migrations-archive/20260307000001_fix_verification_value_length/`
    - set `Verification.value` to `TEXT`
    - remove composite unique index that depends on short varchar
    - keep index on `identifier`

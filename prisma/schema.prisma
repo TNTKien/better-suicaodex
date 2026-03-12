@@ -5,18 +5,18 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
 
 model User {
-  id                  String    @id @default(cuid())
-  name                String?
-  displayName         String    @default("")
-  username            String?   @unique
-  email               String    @unique
+  id                  String    @id @default(cuid()) @db.VarChar(191)
+  name                String?   @db.VarChar(191)
+  displayName         String    @default("") @db.VarChar(191)
+  username            String?   @unique @db.VarChar(191)
+  email               String    @unique @db.VarChar(191)
   emailVerified       DateTime?
   betterEmailVerified Boolean   @default(false)
-  image               String?
+  image               String?   @db.VarChar(191)
 
   accounts Account[]
   sessions Session[]
@@ -33,21 +33,21 @@ model User {
 }
 
 model Account {
-  id                       String    @id @default(cuid())
-  userId                   String
-  type                     String
-  provider                 String
-  providerAccountId        String
+  id                       String    @id @default(cuid()) @db.VarChar(191)
+  userId                   String    @db.VarChar(191)
+  type                     String    @db.VarChar(191)
+  provider                 String    @db.VarChar(191)
+  providerAccountId        String    @db.VarChar(191)
   refresh_token            String?   @db.Text
   access_token             String?   @db.Text
   expires_at               Int?
   accessTokenExpiresAt     DateTime?
   refreshTokenExpiresAt    DateTime?
-  token_type               String?
-  scope                    String?
+  token_type               String?   @db.VarChar(191)
+  scope                    String?   @db.VarChar(191)
   id_token                 String?   @db.Text
-  password                 String?
-  session_state            String?
+  password                 String?   @db.VarChar(191)
+  session_state            String?   @db.VarChar(191)
   refresh_token_expires_in Int?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -60,11 +60,11 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
+  id           String   @id @default(cuid()) @db.VarChar(191)
+  sessionToken String   @unique @db.VarChar(191)
+  userId       String   @db.VarChar(191)
   expires      DateTime
-  ipAddress    String?
+  ipAddress    String?  @db.VarChar(191)
   userAgent    String?  @db.Text
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -76,16 +76,16 @@ model Session {
 }
 
 model VerificationToken {
-  identifier String
-  token      String
+  identifier String   @db.VarChar(191)
+  token      String   @db.VarChar(191)
   expires    DateTime
 
   @@unique([identifier, token])
 }
 
 model Verification {
-  id         String   @id @default(cuid())
-  identifier String
+  id         String   @id @default(cuid()) @db.VarChar(191)
+  identifier String   @db.VarChar(191)
   value      String   @db.Text
   expiresAt  DateTime
   createdAt  DateTime @default(now())
@@ -95,8 +95,8 @@ model Verification {
 }
 
 model Library {
-  id     String @id @default(cuid())
-  userId String @unique
+  id     String @id @default(cuid()) @db.VarChar(191)
+  userId String @unique @db.VarChar(191)
 
   user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   mangas LibraryManga[]
@@ -108,8 +108,8 @@ model Library {
 }
 
 model Manga {
-  id              String  @id @map("mangadexId")
-  latestChapterId String?
+  id              String  @id @map("mangadexId") @db.VarChar(191)
+  latestChapterId String? @db.VarChar(191)
   title           String? @db.VarChar(512)
   coverId         String? @db.VarChar(255)
 
@@ -121,9 +121,9 @@ model Manga {
 }
 
 model LibraryManga {
-  id        String   @id @default(cuid())
-  libraryId String
-  mangaId   String
+  id        String   @id @default(cuid()) @db.VarChar(191)
+  libraryId String   @db.VarChar(191)
+  mangaId   String   @db.VarChar(191)
   category  Category
 
   library Library @relation(fields: [libraryId], references: [id], onDelete: Cascade, map: "fk_library_manga_library_cascade")
@@ -137,6 +137,7 @@ model LibraryManga {
   // Lọc theo Category + Sắp xếp mới nhất
   // Giúp query: "Lấy list Đang Đọc của user X, xếp theo ngày update" chạy O(1)
   @@index([libraryId, category, updatedAt(sort: Desc)], map: "idx_library_category_time")
+  @@index([mangaId], map: "fk_library_manga_manga_cascade_idx")
 }
 
 enum Category {
@@ -149,19 +150,19 @@ enum Category {
 }
 
 model MangaComment {
-  id        String  @id @default(cuid())
+  id        String  @id @default(cuid()) @db.VarChar(191)
   title     String  @default("") @db.VarChar(255)
   content   String  @db.Text
   isEdited  Boolean @default(false)
   reactions Int     @default(0)
 
-  userId String
+  userId String @db.VarChar(191)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  mangaId String
+  mangaId String @db.VarChar(191)
   manga   Manga  @relation(fields: [mangaId], references: [id], onDelete: Cascade)
 
-  parentId String?
+  parentId String?        @db.VarChar(191)
   parent   MangaComment?  @relation("MangaCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies  MangaComment[] @relation("MangaCommentReplies")
 
@@ -175,7 +176,7 @@ model MangaComment {
 }
 
 model Chapter {
-  id String @id @map("mangadexId")
+  id String @id @map("mangadexId") @db.VarChar(191)
 
   comments ChapterComment[]
 
@@ -184,20 +185,20 @@ model Chapter {
 }
 
 model ChapterComment {
-  id            String  @id @default(cuid())
+  id            String  @id @default(cuid()) @db.VarChar(191)
   title         String  @default("") @db.VarChar(255)
   content       String  @db.Text
   isEdited      Boolean @default(false)
   reactions     Int     @default(0)
-  chapterNumber String  @default("Oneshot")
+  chapterNumber String  @default("Oneshot") @db.VarChar(191)
 
-  userId String
+  userId String @db.VarChar(191)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  chapterId String
+  chapterId String @db.VarChar(191)
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
-  parentId String?
+  parentId String?          @db.VarChar(191)
   parent   ChapterComment?  @relation("ChapterCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies  ChapterComment[] @relation("ChapterCommentReplies")
 
@@ -212,7 +213,7 @@ model ChapterComment {
 
 model Notify {
   id       Int     @id @default(autoincrement())
-  toUserId String
+  toUserId String  @db.VarChar(191)
   content  String  @db.Text
   isRead   Boolean @default(false)
 
