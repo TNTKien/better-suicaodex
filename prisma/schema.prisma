@@ -35,7 +35,7 @@ model User {
 model Account {
   id                       String    @id @default(cuid()) @db.VarChar(191)
   userId                   String    @db.VarChar(191)
-  type                     String    @db.VarChar(191)
+  type                     String?   @db.VarChar(191)
   provider                 String    @db.VarChar(191)
   providerAccountId        String    @db.VarChar(191)
   refresh_token            String?   @db.Text
