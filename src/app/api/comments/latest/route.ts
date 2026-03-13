@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { serializeComment } from "@/lib/suicaodex/serializers";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
 

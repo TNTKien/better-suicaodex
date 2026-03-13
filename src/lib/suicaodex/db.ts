@@ -3,8 +3,8 @@
 import { getAuthSession } from "@/auth";
 import { getMangaId } from "@/lib/weebdex/hooks/manga/manga";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
-import { prisma } from "../prisma";
 import { Category } from "../../../prisma/generated/enums";
+import prisma from "../prisma";
 
 async function checkAuth(userID: string): Promise<boolean> {
   const session = await getAuthSession();

@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { dash } from "@better-auth/infra";
 
 const baseURL =
