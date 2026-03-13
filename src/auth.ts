@@ -35,7 +35,7 @@ export const auth = betterAuth({
   advanced: {
     useSecureCookies: baseURL.startsWith("https://"),
     ipAddress: {
-      ipAddressHeaders: ['x-real-ip', 'x-forwarded-for', 'cf-connecting-ip'],
+      ipAddressHeaders: ["x-real-ip", "x-forwarded-for", "cf-connecting-ip"],
     },
   },
   database: prismaAdapter(prisma, {
@@ -64,6 +64,10 @@ export const auth = betterAuth({
   },
   session: {
     modelName: "session",
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // Cache duration in seconds
+    },
     fields: {
       token: "sessionToken",
       expiresAt: "expires",
