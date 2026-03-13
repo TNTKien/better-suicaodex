@@ -26,6 +26,36 @@
       "sourceType": "github",
       "computedHash": "fa7a76e45a1f9632e6d63e92b476cf566e64f6e93a2c8ee00bc77b4a74008fbd"
     },
+    "prisma-cli": {
+      "source": "prisma/skills",
+      "sourceType": "github",
+      "computedHash": "0f613c8d46027714ec40300d2ece024a31f9d17b1a380eb408d40ef7b8c53849"
+    },
+    "prisma-client-api": {
+      "source": "prisma/skills",
+      "sourceType": "github",
+      "computedHash": "a982b2a15dc9d4223be7844f082e6481e1e24df1f379fbcf66b82d5b58e80bec"
+    },
+    "prisma-database-setup": {
+      "source": "prisma/skills",
+      "sourceType": "github",
+      "computedHash": "72e2360923e949261a15ca1dbcfac5662ec5e851f6045ffb13163a55a083bcea"
+    },
+    "prisma-driver-adapter-implementation": {
+      "source": "prisma/skills",
+      "sourceType": "github",
+      "computedHash": "c4dd750d1e0629d9def6719330b773917b3f6649e4ed954100907275a1bb98ad"
+    },
+    "prisma-postgres": {
+      "source": "prisma/skills",
+      "sourceType": "github",
+      "computedHash": "072f06690854c4db5dfc0e812105d83dadf2dfcbe2949a2e8af84d9174a018ea"
+    },
+    "prisma-upgrade-v7": {
+      "source": "prisma/skills",
+      "sourceType": "github",
+      "computedHash": "c849747348f37b3a63db4b663b85358d0d1ac8a45ec8f860c1b8ed95334d84a8"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",
