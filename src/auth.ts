@@ -30,7 +30,7 @@ export const auth = betterAuth({
   appName: "Suicaodex",
   baseURL,
   secret,
-  experimental: { joins: true },
+  // experimental: { joins: true },
   plugins: [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })],
   advanced: {
     useSecureCookies: baseURL.startsWith("https://"),
