@@ -104,7 +104,7 @@ const createSchemaStatements = [
     CREATE TABLE "Account" (
       "id" VARCHAR(191) PRIMARY KEY,
       "userId" VARCHAR(191) NOT NULL,
-      "type" VARCHAR(191) NOT NULL,
+      "type" VARCHAR(191),
       "provider" VARCHAR(191) NOT NULL,
       "providerAccountId" VARCHAR(191) NOT NULL,
       "refresh_token" TEXT,

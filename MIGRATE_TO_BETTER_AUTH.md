@@ -199,6 +199,16 @@ Check provider callback URL config:
 
 - `https://your-domain.com/api/auth/callback/<provider>`
 
+### Error: `unable_to_create_user` with `Argument type is missing` on `Account`
+
+Cause:
+
+- legacy `Account.type` is still `NOT NULL` (Auth.js shape), but Better Auth does not write this column.
+
+Fix:
+
+- make `Account.type` nullable in Prisma schema and DB migration (`ALTER TABLE "Account" ALTER COLUMN "type" DROP NOT NULL`).
+
 ---
 
 ## 9) Post-cutover cleanup policy
