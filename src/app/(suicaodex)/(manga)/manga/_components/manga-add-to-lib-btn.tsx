@@ -4,14 +4,13 @@ import { getMangaCategory, updateMangaCategory } from "@/lib/suicaodex/db";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LibraryType } from "@/types/types";
 import {
   Album,
-  BellOff,
-  BellRing,
   BookmarkCheck,
   ChevronDown,
   CircleUser,
@@ -89,7 +88,7 @@ export function MangaAddToLibBtn({
   const { data: session } = authClient.useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [storageMode, setStorageMode] = useState<StorageMode>("local");
-  const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
+  // const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
   const [accountValue, setAccountValue] = useState<LibraryType | "none">(
     "none",
   );
@@ -99,12 +98,12 @@ export function MangaAddToLibBtn({
   const { library, addToLibrary, removeFromLibrary, getCategoryOfId } =
     useLocalLibraryV2();
 
-  const {
-    localNotification,
-    addToLocalNotification,
-    removeFromLocalNotification,
-    isInLocalNotification,
-  } = useLocalNotification();
+  // const {
+  //   localNotification,
+  //   addToLocalNotification,
+  //   removeFromLocalNotification,
+  //   isInLocalNotification,
+  // } = useLocalNotification();
 
   const [localValue, setLocalValue] = useState<LibraryType | "none">(
     getCategoryOfId(mangaId) || "none",
@@ -115,9 +114,9 @@ export function MangaAddToLibBtn({
     setLocalValue(getCategoryOfId(mangaId) || "none");
   }, [mangaId, library]);
 
-  useEffect(() => {
-    setIsNotificationEnabled(isInLocalNotification(mangaId));
-  }, [mangaId, localNotification]);
+  // useEffect(() => {
+  //   setIsNotificationEnabled(isInLocalNotification(mangaId));
+  // }, [mangaId, localNotification]);
 
   const value = storageMode === "local" ? localValue : accountValue;
 
@@ -135,15 +134,15 @@ export function MangaAddToLibBtn({
     }
   };
 
-  const handleLocalNotificationToggle = (
-    v: LibraryType | "none",
-    enabled: boolean,
-  ) => {
-    if (v === "none" || !enabled) {
-      return removeFromLocalNotification(mangaId);
-    }
-    addToLocalNotification(mangaId);
-  };
+  // const handleLocalNotificationToggle = (
+  //   v: LibraryType | "none",
+  //   enabled: boolean,
+  // ) => {
+  //   if (v === "none" || !enabled) {
+  //     return removeFromLocalNotification(mangaId);
+  //   }
+  //   addToLocalNotification(mangaId);
+  // };
 
   const handleLocalLibraryAdd = (v: LibraryType | "none") => {
     if (v === "none") {
@@ -206,17 +205,17 @@ export function MangaAddToLibBtn({
     }
   };
 
-  const handleBellToggle = () => {
-    return toast.warning("Chức năng đang bảo trì");
-    // const newState = !isNotificationEnabled;
-    // setIsNotificationEnabled(newState);
-    // handleLocalNotificationToggle(value, newState);
-    // if (newState) {
-    //   toast.success("Đã bật thông báo!");
-    // } else {
-    //   toast.info("Đã tắt thông báo!");
-    // }
-  };
+  // const handleBellToggle = () => {
+  //   return toast.warning("Chức năng đang bảo trì");
+  //   const newState = !isNotificationEnabled;
+  //   setIsNotificationEnabled(newState);
+  //   handleLocalNotificationToggle(value, newState);
+  //   if (newState) {
+  //     toast.success("Đã bật thông báo!");
+  //   } else {
+  //     toast.info("Đã tắt thông báo!");
+  //   }
+  // };
 
   const currentCategory = categoryOptions.find((opt) => opt.value === value);
   const currentStorage = storageModeOptions.find(
@@ -235,21 +234,22 @@ export function MangaAddToLibBtn({
             <ChevronDown className="size-3.5 hidden md:inline" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="space-y-1">
-          {categoryOptions.map((option) => (
-            <DropdownMenuItem
-              key={option.value}
-              onClick={() => handleCategoryChange(option.value)}
-              className={value === option.value ? "bg-accent" : ""}
-            >
-              {option.icon}
-              {option.label}
-            </DropdownMenuItem>
-          ))}
+        <DropdownMenuContent align="start" className="min-w-40!">
+          <DropdownMenuRadioGroup
+            value={localValue}
+            onValueChange={(v) => handleCategoryChange(v)}
+          >
+            {categoryOptions.map((option) => (
+              <DropdownMenuRadioItem key={option.value} value={option.value}>
+                {option.icon}
+                {option.label}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {value !== "none" && (
+      {/* {value !== "none" && (
         <Button
           variant={isNotificationEnabled ? "default" : "secondary"}
           size="icon"
@@ -262,7 +262,7 @@ export function MangaAddToLibBtn({
             <BellOff />
           )}
         </Button>
-      )}
+      )} */}
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild disabled={isLoading || isFetchingAccount}>
@@ -270,8 +270,22 @@ export function MangaAddToLibBtn({
             {isFetchingAccount ? <Spinner /> : <>{currentStorage?.icon}</>}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="space-y-1">
-          {storageModeOptions.map((option) => (
+        <DropdownMenuContent align="start" className="min-w-[134px]!">
+          <DropdownMenuRadioGroup
+            value={storageMode}
+            onValueChange={(v) => handleStorageModeChange(v as StorageMode)}
+          >
+            {storageModeOptions.map((option) => (
+              <DropdownMenuRadioItem
+                key={option.value}
+                value={option.value}
+              >
+                {option.icon}
+                {option.label}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+          {/* {storageModeOptions.map((option) => (
             <DropdownMenuItem
               key={option.value}
               onClick={() => handleStorageModeChange(option.value)}
@@ -280,7 +294,7 @@ export function MangaAddToLibBtn({
               {option.icon}
               {option.label}
             </DropdownMenuItem>
-          ))}
+          ))} */}
         </DropdownMenuContent>
       </DropdownMenu>
     </ButtonGroup>
