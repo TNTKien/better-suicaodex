@@ -166,6 +166,14 @@ export function resolveMangaLink(key: MangaLinkKey, value: string): string {
   return value;
 }
 
+function parseMangaLinkURL(url: string): URL | null {
+  try {
+    return new URL(url);
+  } catch {
+    return null;
+  }
+}
+
 /* ============================================================
    6. UI Ready Normalizer (with favicon)
 ============================================================ */
@@ -188,22 +196,27 @@ export function normalizeMangaLinks(
       const [key, value] = entry;
       return Boolean(value) && key in Manga_LINK_METADATA;
     })
-    .map(([key, value]) => {
+    .flatMap(([key, value]) => {
       const meta = Manga_LINK_METADATA[key];
 
       const url = resolveMangaLink(key, value);
+      const parsedUrl = parseMangaLinkURL(url);
 
-      const domain = meta.baseDomain || (url ? new URL(url).hostname : "");
+      if (!parsedUrl) return [];
 
-      return {
-        key,
-        name: meta.name,
-        siteName: meta.siteName,
-        type: meta.type,
-        url,
-        faviconUrl: domain
-          ? generateFaviconURL(domain, faviconSize)
-          : undefined,
-      };
+      const domain = meta.baseDomain || parsedUrl.hostname;
+
+      return [
+        {
+          key,
+          name: meta.name,
+          siteName: meta.siteName,
+          type: meta.type,
+          url,
+          faviconUrl: domain
+            ? generateFaviconURL(domain, faviconSize)
+            : undefined,
+        },
+      ];
     });
 }
