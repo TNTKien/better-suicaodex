@@ -146,10 +146,10 @@ export const SingleCard = ({
               </time>
             </div>
 
-            {views !== undefined && (
-              <div className="flex items-center gap-1 w-16">
-                <Eye size={16} className="shrink-0 ml-1" />
-                <span className="text-sm font-light">
+            {!!views && (
+              <div className="flex items-center gap-1 w-14 shrink-0">
+                <Eye size={16} className="shrink-0" />
+                <span className="text-sm font-light line-clamp-1 break-all">
                   {formatNumber(views)}
                 </span>
               </div>
@@ -195,8 +195,8 @@ export const SingleCard = ({
               </span>
             </div>
 
-            <div className="flex items-center gap-1 w-16 opacity-65">
-              <MessagesSquare size={16} className="shrink-0 ml-1" />
+            <div className="flex items-center gap-1 w-14 shrink-0 opacity-65">
+              <MessagesSquare size={16} className="shrink-0" />
               <span className="text-sm font-light">N/A</span>
             </div>
           </div>
