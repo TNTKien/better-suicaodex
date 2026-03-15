@@ -64,5 +64,6 @@ migrate-manga-ids-to-weebdex.mjs
 # /.agents
 /.codex
 # opencode.json
+/.sisyphus
 
 prisma/generated
