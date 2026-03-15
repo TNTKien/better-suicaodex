@@ -184,17 +184,19 @@ export function normalizeMangaLinks(
   faviconSize: number = 32,
 ): ResolvedMangaLink[] {
   return Object.entries(links)
-    .filter(([_, value]) => Boolean(value))
+    .filter((entry): entry is [MangaLinkKey, string] => {
+      const [key, value] = entry;
+      return Boolean(value) && key in Manga_LINK_METADATA;
+    })
     .map(([key, value]) => {
-      const typedKey = key as MangaLinkKey;
-      const meta = Manga_LINK_METADATA[typedKey];
+      const meta = Manga_LINK_METADATA[key];
 
-      const url = resolveMangaLink(typedKey, value!);
+      const url = resolveMangaLink(key, value);
 
       const domain = meta.baseDomain || (url ? new URL(url).hostname : "");
 
       return {
-        key: typedKey,
+        key,
         name: meta.name,
         siteName: meta.siteName,
         type: meta.type,
