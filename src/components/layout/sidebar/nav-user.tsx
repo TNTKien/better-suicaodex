@@ -18,9 +18,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Badge } from "@/components/ui/badge";
-import { useLocalNotification } from "@/hooks/use-local-notification";
-import { cn } from "@/lib/utils";
+// import { Badge } from "@/components/ui/badge";
+// import { useLocalNotification } from "@/hooks/use-local-notification";
+// import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "@bprogress/next";
@@ -28,7 +28,7 @@ import { authClient } from "@/lib/auth-client";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { localNotification } = useLocalNotification();
+  // const { localNotification } = useLocalNotification();
   const { data: session } = authClient.useSession();
   const user = session?.user;
   const pathname = usePathname();
@@ -46,9 +46,9 @@ export function NavUser() {
               {!!user ? (
                 <>
                   <div className="relative inline-block">
-                    {!!localNotification.unread.length && (
+                    {/* {!!localNotification.unread.length && (
                       <span className="absolute block rounded-full ring-2 ring-white top-0 left-0 bg-red-500 size-2.5 z-10 animate-bounce duration-250" />
-                    )}
+                    )} */}
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage
                         src={user.image || ""}
@@ -74,9 +74,9 @@ export function NavUser() {
               ) : (
                 <>
                   <div className="relative inline-block">
-                    {!!localNotification.unread.length && (
+                    {/* {!!localNotification.unread.length && (
                       <span className="z-10 absolute block rounded-full ring-2 ring-white top-0 left-0 bg-red-500 size-2.5 animate-bounce duration-250" />
-                    )}
+                    )} */}
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage
                         src="/avatars/doro_think.webp"
@@ -141,12 +141,12 @@ export function NavUser() {
               <DropdownMenuItem asChild>
                 <Link href={"/notifications"}>
                   <Bell
-                    className={cn(
-                      !!localNotification.unread.length && "animate-bell-shake",
-                    )}
+                    // className={cn(
+                    //   !!localNotification.unread.length && "animate-bell-shake",
+                    // )}
                   />
                   Thông báo
-                  {!!localNotification.unread.length && (
+                  {/* {!!localNotification.unread.length && (
                     <Badge
                       className="rounded-full ml-auto min-w-4 h-4 justify-center p-1 text-xs font-normal"
                       variant="destructive"
@@ -155,7 +155,7 @@ export function NavUser() {
                         ? localNotification.unread.length
                         : "10+"}
                     </Badge>
-                  )}
+                  )} */}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
