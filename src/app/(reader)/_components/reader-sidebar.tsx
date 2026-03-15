@@ -125,7 +125,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  tooltip={chapter.relationships?.manga?.title ?? ""}
+                  tooltip="Nhóm dịch"
                   disabled={(chapter.relationships?.groups?.length ?? 0) === 0}
                 >
                   {(chapter.relationships?.groups?.length ?? 0) === 0 ? (
