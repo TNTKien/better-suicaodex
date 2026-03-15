@@ -1,9 +1,10 @@
+import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts'],
+    optimizePackageImports: ["lucide-react", "recharts"],
     // webpackMemoryOptimizations: true,
   },
   // cacheComponents: true,
@@ -41,7 +42,7 @@ const nextConfig: NextConfig = {
     ],
   },
   allowedDevOrigins: ["*.suicaodex.com"],
-  rewrites: async () => [
+  rewrites: () => [
     {
       source: "/manga-sitemap.xml",
       destination: "/manga-sitemap",
@@ -50,7 +51,19 @@ const nextConfig: NextConfig = {
       source: "/manga-sitemap-:page.xml",
       destination: "/manga-sitemap/:page",
     },
-  ]
+  ],
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  silent: !process.env.CI,
+  telemetry: false,
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+      removeTracing: true,
+      excludeReplayCompressionWorker: true,
+      excludeReplayIframe: true,
+      excludeReplayShadowDOM: true,
+    },
+  },
+});
