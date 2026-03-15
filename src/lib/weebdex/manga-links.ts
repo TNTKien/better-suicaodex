@@ -166,6 +166,14 @@ export function resolveMangaLink(key: MangaLinkKey, value: string): string {
   return value;
 }
 
+function parseMangaLinkURL(url: string): URL | null {
+  try {
+    return new URL(url);
+  } catch {
+    return null;
+  }
+}
+
 /* ============================================================
    6. UI Ready Normalizer (with favicon)
 ============================================================ */
@@ -184,24 +192,31 @@ export function normalizeMangaLinks(
   faviconSize: number = 32,
 ): ResolvedMangaLink[] {
   return Object.entries(links)
-    .filter(([_, value]) => Boolean(value))
-    .map(([key, value]) => {
-      const typedKey = key as MangaLinkKey;
-      const meta = Manga_LINK_METADATA[typedKey];
+    .filter((entry): entry is [MangaLinkKey, string] => {
+      const [key, value] = entry;
+      return Boolean(value) && key in Manga_LINK_METADATA;
+    })
+    .flatMap(([key, value]) => {
+      const meta = Manga_LINK_METADATA[key];
 
-      const url = resolveMangaLink(typedKey, value!);
+      const url = resolveMangaLink(key, value);
+      const parsedUrl = parseMangaLinkURL(url);
 
-      const domain = meta.baseDomain || (url ? new URL(url).hostname : "");
+      if (!parsedUrl) return [];
 
-      return {
-        key: typedKey,
-        name: meta.name,
-        siteName: meta.siteName,
-        type: meta.type,
-        url,
-        faviconUrl: domain
-          ? generateFaviconURL(domain, faviconSize)
-          : undefined,
-      };
+      const domain = meta.baseDomain || parsedUrl.hostname;
+
+      return [
+        {
+          key,
+          name: meta.name,
+          siteName: meta.siteName,
+          type: meta.type,
+          url,
+          faviconUrl: domain
+            ? generateFaviconURL(domain, faviconSize)
+            : undefined,
+        },
+      ];
     });
 }
