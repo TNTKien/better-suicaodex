@@ -14,7 +14,7 @@ interface RouteParams {
 
 // PATCH /api/comments/[commentId] - Edit a comment
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
-  const session = await getAuthSession();
+  const session = await getAuthSession({ disableRefresh: true });
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

@@ -97,9 +97,16 @@ export const auth = betterAuth({
   trustedOrigins: dedupedTrustedOrigins,
 });
 
-export async function getAuthSession() {
+interface GetAuthSessionOptions {
+  disableRefresh?: boolean;
+}
+
+export async function getAuthSession(options: GetAuthSessionOptions = {}) {
   return auth.api.getSession({
     headers: await headers(),
+    query: {
+      disableRefresh: options.disableRefresh,
+    },
   });
 }
 
