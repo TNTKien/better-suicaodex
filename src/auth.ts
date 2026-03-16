@@ -1,7 +1,8 @@
 import { headers } from "next/headers";
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import prisma from "@/lib/prisma";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "@/lib/db";
+import { betterAuthSchema } from "@/lib/db/schema";
 import { dash } from "@better-auth/infra";
 
 const baseURL =
@@ -38,21 +39,22 @@ export const auth = betterAuth({
       ipAddressHeaders: ["x-real-ip", "x-forwarded-for", "cf-connecting-ip"],
     },
   },
-  database: prismaAdapter(prisma, {
-    provider: "postgresql",
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: betterAuthSchema,
   }),
   socialProviders: {
     discord: {
-      clientId: process.env.AUTH_DISCORD_ID as string,
-      clientSecret: process.env.AUTH_DISCORD_SECRET as string,
+      clientId: process.env.AUTH_DISCORD_ID!,
+      clientSecret: process.env.AUTH_DISCORD_SECRET!,
     },
     google: {
-      clientId: process.env.AUTH_GOOGLE_ID as string,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
     },
     github: {
-      clientId: process.env.AUTH_GITHUB_ID as string,
-      clientSecret: process.env.AUTH_GITHUB_SECRET as string,
+      clientId: process.env.AUTH_GITHUB_ID!,
+      clientSecret: process.env.AUTH_GITHUB_SECRET!,
     },
   },
   user: {

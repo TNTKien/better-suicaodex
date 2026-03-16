@@ -1,4 +1,6 @@
-import prisma from "@/lib/prisma";
+import { eq, sql } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { mangaComments } from "@/lib/db/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
 
@@ -19,7 +21,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   const headers = new Headers();
 
   try {
-    const identifier = req.headers.get("x-forwarded-for") || "anonymous";
+    const identifier = req.headers.get("x-forwarded-for") ?? "anonymous";
     await limiter.check(headers, 50, identifier); // 50 req/min
   } catch (err) {
     if (err instanceof RateLimitError) {
@@ -31,9 +33,10 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     throw err;
   }
 
-  const count = await prisma.mangaComment.count({
-    where: { mangaId: id },
-  });
+  const [{ count }] = await db
+    .select({ count: sql<number>`cast(count(*) as integer)` })
+    .from(mangaComments)
+    .where(eq(mangaComments.mangaId, id));
 
   return NextResponse.json({ count });
 }

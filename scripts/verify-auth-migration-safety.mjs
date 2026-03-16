@@ -1,19 +1,14 @@
-import { PrismaPg } from "@prisma/adapter-pg";
+import "dotenv/config";
 import { Pool } from "pg";
-import { PrismaClient } from "../prisma/generated/client";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required");
 }
 
-const adapter = new PrismaPg(
-  new Pool({
-    connectionString: process.env.DATABASE_URL,
-    max: 5,
-  }),
-);
-
-const prisma = new PrismaClient({ adapter });
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 5,
+});
 
 const formatMetric = (label, value) => `${label}: ${value}`;
 
@@ -30,6 +25,11 @@ const ok = (message) => {
   console.log(`\n[OK] ${message}`);
 };
 
+const countRows = async (query, params = []) => {
+  const result = await pool.query(query, params);
+  return Number(result.rows[0]?.count ?? 0);
+};
+
 try {
   const [
     userCount,
@@ -41,14 +41,24 @@ try {
     legacyAccountExpiryCount,
     mappedAccountExpiryCount,
   ] = await Promise.all([
-    prisma.user.count(),
-    prisma.user.count({ where: { displayName: "" } }),
-    prisma.user.count({ where: { emailVerified: { not: null } } }),
-    prisma.user.count({ where: { betterEmailVerified: true } }),
-    prisma.verificationToken.count(),
-    prisma.verification.count(),
-    prisma.account.count({ where: { expires_at: { not: null } } }),
-    prisma.account.count({ where: { accessTokenExpiresAt: { not: null } } }),
+    countRows('SELECT COUNT(*) AS count FROM "User"'),
+    countRows('SELECT COUNT(*) AS count FROM "User" WHERE "displayName" = $1', [
+      "",
+    ]),
+    countRows(
+      'SELECT COUNT(*) AS count FROM "User" WHERE "emailVerified" IS NOT NULL',
+    ),
+    countRows(
+      'SELECT COUNT(*) AS count FROM "User" WHERE "betterEmailVerified" = true',
+    ),
+    countRows('SELECT COUNT(*) AS count FROM "VerificationToken"'),
+    countRows('SELECT COUNT(*) AS count FROM "Verification"'),
+    countRows(
+      'SELECT COUNT(*) AS count FROM "Account" WHERE "expires_at" IS NOT NULL',
+    ),
+    countRows(
+      'SELECT COUNT(*) AS count FROM "Account" WHERE "accessTokenExpiresAt" IS NOT NULL',
+    ),
   ]);
 
   console.log("Auth migration integrity report");
@@ -119,5 +129,5 @@ try {
   console.error("Migration verification failed:", error);
   process.exitCode = 1;
 } finally {
-  await prisma.$disconnect();
+  await pool.end();
 }

@@ -1,14 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { serializeComment } from "@/lib/suicaodex/serializers";
+import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { getAuthSession } from "@/auth";
+import { db } from "@/lib/db";
+import { chapterComments, chapters, users } from "@/lib/db/schema";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
+import {
+  type ChapterCommentWithUser,
+  serializeComment,
+} from "@/lib/suicaodex/serializers";
 import { getContentLength } from "@/lib/utils";
 
 interface RouteParams {
   params: Promise<{
     id: string;
   }>;
+}
+
+interface ChapterCommentRequestBody {
+  content?: string;
+  title?: string;
+  chapterNumber?: string;
+  parentId?: string;
+}
+
+function isChapterCommentRequestBody(
+  value: unknown,
+): value is ChapterCommentRequestBody {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const record = value as Record<string, unknown>;
+
+  return (
+    (record.content === undefined || typeof record.content === "string") &&
+    (record.title === undefined || typeof record.title === "string") &&
+    (record.chapterNumber === undefined ||
+      typeof record.chapterNumber === "string") &&
+    (record.parentId === undefined || typeof record.parentId === "string")
+  );
 }
 
 // GET /api/comments/chapter/[id]
@@ -22,7 +52,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   const headers = new Headers();
 
   try {
-    const identifier = req.headers.get("x-forwarded-for") || "anonymous";
+    const identifier = req.headers.get("x-forwarded-for") ?? "anonymous";
     await limiter.check(headers, 50, identifier); // 50 req/min
   } catch (err) {
     if (err instanceof RateLimitError) {
@@ -44,24 +74,69 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     ? Math.max(Math.floor(offsetParam), 0)
     : 0;
 
-  const [totalCount, comments] = await Promise.all([
-    prisma.chapterComment.count({
-      where: { chapterId: id, parentId: null },
-    }),
-    prisma.chapterComment.findMany({
-      where: { chapterId: id, parentId: null },
-      include: {
-        user: true,
-        replies: {
-          include: { user: true },
-          orderBy: { createdAt: "asc" },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-      skip: offset,
-      take: limit,
-    }),
+  const [countRows, topLevelRows] = await Promise.all([
+    db
+      .select({ count: sql<number>`cast(count(*) as integer)` })
+      .from(chapterComments)
+      .where(
+        and(
+          eq(chapterComments.chapterId, id),
+          isNull(chapterComments.parentId),
+        ),
+      ),
+    db
+      .select({ comment: chapterComments, user: users })
+      .from(chapterComments)
+      .innerJoin(users, eq(chapterComments.userId, users.id))
+      .where(
+        and(
+          eq(chapterComments.chapterId, id),
+          isNull(chapterComments.parentId),
+        ),
+      )
+      .orderBy(desc(chapterComments.createdAt))
+      .offset(offset)
+      .limit(limit),
   ]);
+
+  const parentIds = topLevelRows.map(({ comment }) => comment.id);
+
+  const replyRows =
+    parentIds.length === 0
+      ? []
+      : await db
+          .select({ comment: chapterComments, user: users })
+          .from(chapterComments)
+          .innerJoin(users, eq(chapterComments.userId, users.id))
+          .where(
+            and(
+              eq(chapterComments.chapterId, id),
+              inArray(chapterComments.parentId, parentIds),
+            ),
+          )
+          .orderBy(asc(chapterComments.createdAt));
+
+  const repliesByParentId: Record<string, ChapterCommentWithUser[]> = {};
+
+  for (const { comment, user } of replyRows) {
+    if (!comment.parentId) {
+      continue;
+    }
+
+    const replies = repliesByParentId[comment.parentId] ?? [];
+    replies.push({ ...comment, user });
+    repliesByParentId[comment.parentId] = replies;
+  }
+
+  const comments: ChapterCommentWithUser[] = topLevelRows.map(
+    ({ comment, user }) => ({
+      ...comment,
+      user,
+      replies: repliesByParentId[comment.id] ?? [],
+    }),
+  );
+
+  const totalCount = countRows[0]?.count ?? 0;
 
   return NextResponse.json({
     comments: comments.map(serializeComment),
@@ -98,8 +173,14 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     throw err;
   }
 
-  const { content, title, chapterNumber, parentId } = await req.json();
-  const contentLength = getContentLength(content || "");
+  const body: unknown = await req.json();
+
+  if (!isChapterCommentRequestBody(body)) {
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
+  }
+
+  const { content, title, chapterNumber, parentId } = body;
+  const contentLength = getContentLength(content ?? "");
 
   if (!id || !content) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
@@ -125,10 +206,14 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   }
 
   if (parentId) {
-    const parent = await prisma.chapterComment.findUnique({
-      where: { id: parentId },
-      select: { chapterId: true, parentId: true },
-    });
+    const [parent] = await db
+      .select({
+        chapterId: chapterComments.chapterId,
+        parentId: chapterComments.parentId,
+      })
+      .from(chapterComments)
+      .where(eq(chapterComments.id, parentId))
+      .limit(1);
 
     if (!parent) {
       return NextResponse.json(
@@ -152,19 +237,34 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     }
   }
 
-  const comment = await prisma.chapterComment.create({
-    data: {
+  await db.insert(chapters).values({ id }).onConflictDoNothing({
+    target: chapters.id,
+  });
+
+  const [createdComment] = await db
+    .insert(chapterComments)
+    .values({
       content,
       title: parentId ? "" : title,
       chapterId: id,
       chapterNumber: parentId ? "" : chapterNumber,
       userId: session.user.id,
-      ...(parentId ? { parentId } : {}),
-    },
-    include: {
-      user: true,
-    },
-  });
+      parentId: parentId ?? null,
+    })
+    .returning({ id: chapterComments.id });
 
-  return NextResponse.json(serializeComment(comment));
+  const [comment] = await db
+    .select({ comment: chapterComments, user: users })
+    .from(chapterComments)
+    .innerJoin(users, eq(chapterComments.userId, users.id))
+    .where(eq(chapterComments.id, createdComment.id))
+    .limit(1);
+
+  if (!comment) {
+    throw new Error("Created comment could not be loaded.");
+  }
+
+  return NextResponse.json(
+    serializeComment({ ...comment.comment, user: comment.user }),
+  );
 }
