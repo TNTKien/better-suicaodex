@@ -141,7 +141,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
 // POST /api/comments/manga/[id]
 export async function POST(req: NextRequest, { params }: RouteParams) {
-  const session = await getAuthSession({ disableRefresh: true });
+  const session = await getAuthSession();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
