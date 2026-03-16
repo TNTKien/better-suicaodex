@@ -1,8 +1,8 @@
 import "dotenv/config";
 import net from "node:net";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { PrismaClient } from "../prisma/generated/client";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -11,7 +11,10 @@ if (!databaseUrl) {
 }
 
 const parsedUrl = new URL(databaseUrl);
-const connectTimeout = Number.parseInt(process.env.DATABASE_CONNECT_TIMEOUT_MS ?? "10000", 10);
+const connectTimeout = Number.parseInt(
+  process.env.DATABASE_CONNECT_TIMEOUT_MS ?? "10000",
+  10,
+);
 
 const printableConfig = {
   host: parsedUrl.hostname,
@@ -55,9 +58,7 @@ const pool = new Pool({
   max: 1,
   connectionTimeoutMillis: connectTimeout,
 });
-
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const db = drizzle(pool);
 
 const logStep = (label, detail) => {
   console.log(`[${label}] ${detail}`);
@@ -79,10 +80,9 @@ async function main() {
   }
 
   try {
-    const rows = await prisma.$queryRaw`SELECT 1 AS ok`;
-    logStep("prisma", JSON.stringify(rows));
+    const result = await db.execute(sql`SELECT 1 AS ok`);
+    logStep("drizzle", JSON.stringify("rows" in result ? result.rows : result));
   } finally {
-    await prisma.$disconnect();
     await pool.end();
   }
 }
