@@ -15,9 +15,9 @@ export async function generateMetadata({
   return {
     title:
       page === 1
-        ? "Tìm kiếm nâng cao - SuicaoDex"
-        : `Trang ${page} - Tìm kiếm nâng cao - SuicaoDex`,
-    description: "Công cụ tìm kiếm nâng cao SuicaoDex",
+        ? "Tìm kiếm nâng cao"
+        : `Trang ${page} - Tìm kiếm nâng cao`,
+    description: "Công cụ tìm kiếm nâng cao",
   };
 }
 
