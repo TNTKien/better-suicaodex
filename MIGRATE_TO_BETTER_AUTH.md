@@ -2,6 +2,8 @@
 
 This guide documents a safe migration path from Auth.js to Better Auth in this project.
 
+Note: this document captures the original Prisma-based cutover. The current runtime now uses the Drizzle adapter, and the old Prisma artifacts referenced here are archived under `deprecated/prisma/`.
+
 It is written for production safety first:
 
 - no destructive schema change during migration
@@ -39,7 +41,7 @@ Notes:
 
 ## 2) Dependency migration
 
-Remove Auth.js packages and use Better Auth adapter:
+Historical dependency migration during the original cutover:
 
 ```bash
 bun add @better-auth/prisma-adapter@1.5.3
@@ -57,7 +59,7 @@ Main auth config lives in `src/auth.ts`.
 Current structure:
 
 - export Better Auth instance as `auth`
-- use Prisma adapter
+- use Prisma adapter during the original cutover
 - map Better Auth fields to legacy Auth.js columns
 - provide `getAuthSession()` helper for server routes/pages
 
@@ -88,13 +90,13 @@ Do additive changes first. Do not drop legacy Auth.js fields/tables during cutov
 
 Implemented migrations:
 
-1. `prisma/mysql-migrations-archive/20260307000000_authjs_to_better_auth_safe/`
+1. `deprecated/prisma/mysql-migrations-archive/20260307000000_authjs_to_better_auth_safe/`
    - add compatibility columns
    - backfill data
    - create `Verification` table
    - copy legacy `VerificationToken` rows to `Verification`
 
-2. `prisma/mysql-migrations-archive/20260307000001_fix_verification_value_length/`
+2. `deprecated/prisma/mysql-migrations-archive/20260307000001_fix_verification_value_length/`
    - set `Verification.value` to `TEXT`
    - remove composite unique index that depends on short varchar
    - keep index on `identifier`
@@ -135,11 +137,13 @@ This mapping lets existing Auth.js data remain usable while moving runtime auth 
 ## 6) Production deploy order
 
 1. Deploy code changes.
-2. Apply migrations:
+2. Apply migrations if you are replaying the historical Prisma-based cutover:
 
 ```bash
 bunx prisma migrate deploy
 ```
+
+For the current Drizzle runtime, this Prisma deploy step is not part of normal application deploys.
 
 3. Run integrity check:
 

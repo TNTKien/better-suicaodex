@@ -2,6 +2,8 @@
 
 This branch moves the runtime database from MySQL/MariaDB to PostgreSQL.
 
+Note: the old Prisma migration artifacts referenced in this document are now archived under `deprecated/prisma/`. The current runtime uses Drizzle, and the old Prisma baseline commands are no longer part of the active workflow.
+
 The repo now contains a reproducible migration pipeline:
 
 1. Export the source MySQL database to `ndjson`
@@ -56,7 +58,7 @@ Import a snapshot into PostgreSQL:
 SOURCE_EXPORT_DIR=./temp/mysql-export-YYYYMMDD-HHMMSS bun run db:import:mysql-export
 ```
 
-Prepare Prisma migration metadata on an already-imported PostgreSQL DB:
+Historical Prisma-baseline commands on an already-imported PostgreSQL DB:
 
 ```bash
 bun run db:baseline:prepare
@@ -69,7 +71,7 @@ Or run both:
 bun run db:baseline
 ```
 
-## What `db:baseline:prepare` does
+## Historical `db:baseline:prepare` behavior
 
 - Backs up the current `_prisma_migrations` rows to `temp/prisma-migrations-backup/...json`
 - Copies those rows into `_prisma_migrations_mysql_backup`
@@ -77,15 +79,15 @@ bun run db:baseline
 
 This avoids losing migration metadata while preventing Prisma from treating archived MySQL migrations as active PostgreSQL migrations.
 
-## Prisma migrations
+## Archived Prisma migrations
 
-Active PostgreSQL migrations now live in:
+The archived PostgreSQL baseline now lives in:
 
-- `prisma/migrations/20260312000000_postgresql_baseline`
+- `deprecated/prisma/migrations/20260312000000_postgresql_baseline`
 
-Archived MySQL migrations were moved to:
+Archived MySQL migrations now live in:
 
-- `prisma/mysql-migrations-archive`
+- `deprecated/prisma/mysql-migrations-archive`
 
 Do not point `prisma migrate deploy` at the archived MySQL SQL files.
 
