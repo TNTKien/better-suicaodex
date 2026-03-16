@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import AdvancedSearchPage from "./_components/advanced-search";
+
+import WeebdexAdvancedSearch from "./_components/advanced-search";
 
 interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -15,16 +16,20 @@ export async function generateMetadata({
   return {
     title:
       page === 1
-        ? "Tìm kiếm nâng cao"
-        : `Trang ${page} - Tìm kiếm nâng cao`,
-    description: "Công cụ tìm kiếm nâng cao",
+        ? "Tìm kiếm nâng cao cũ (Deprecated) - WeebDex"
+        : `Trang ${page} - Tìm kiếm nâng cao cũ (Deprecated) - WeebDex`,
+    description: "Phiên bản tìm kiếm nâng cao cũ đã được deprecate.",
+    robots: {
+      index: false,
+      follow: false,
+    },
   };
 }
 
 export default function Page() {
   return (
     <Suspense>
-      <AdvancedSearchPage />
+      <WeebdexAdvancedSearch />
     </Suspense>
   );
 }

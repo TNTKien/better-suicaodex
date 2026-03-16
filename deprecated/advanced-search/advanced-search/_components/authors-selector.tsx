@@ -50,7 +50,7 @@ export function AuthorsSelector({
       }
       setReady(true);
     };
-    load();
+    void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
