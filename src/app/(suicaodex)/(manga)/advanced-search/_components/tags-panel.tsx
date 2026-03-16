@@ -4,7 +4,6 @@ import * as React from "react";
 import { Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { TagOption, TagStates } from "./tags-filter";
 
 // ── Group metadata ────────────────────────────────────────────────────────────
 
@@ -20,6 +19,14 @@ const GROUP_LABELS: Record<string, string> = {
 const GROUP_ORDER = ["format", "genre", "theme", "content", "tag", "author"];
 
 // ── Component ─────────────────────────────────────────────────────────────────
+
+export type TagState = "none" | "include" | "exclude";
+export type TagStates = Record<string, TagState>;
+export interface TagOption {
+  id: string;
+  name: string;
+  group: string;
+}
 
 interface TagsPanelProps {
   tags: TagOption[];
