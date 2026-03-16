@@ -1,14 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { serializeComment } from "@/lib/suicaodex/serializers";
+import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { getAuthSession } from "@/auth";
+import { db } from "@/lib/db";
+import { mangaComments, mangas, users } from "@/lib/db/schema";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
+import {
+  type MangaCommentWithUser,
+  serializeComment,
+} from "@/lib/suicaodex/serializers";
 import { getContentLength } from "@/lib/utils";
 
 interface RouteParams {
   params: Promise<{
     id: string;
   }>;
+}
+
+interface MangaCommentRequestBody {
+  content?: string;
+  title?: string;
+  parentId?: string;
+}
+
+function isMangaCommentRequestBody(
+  value: unknown,
+): value is MangaCommentRequestBody {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const record = value as Record<string, unknown>;
+
+  return (
+    (record.content === undefined || typeof record.content === "string") &&
+    (record.title === undefined || typeof record.title === "string") &&
+    (record.parentId === undefined || typeof record.parentId === "string")
+  );
 }
 
 // GET /api/comments/manga/[id]
@@ -22,7 +49,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   const headers = new Headers();
 
   try {
-    const identifier = req.headers.get("x-forwarded-for") || "anonymous";
+    const identifier = req.headers.get("x-forwarded-for") ?? "anonymous";
     await limiter.check(headers, 50, identifier); // 50 req/min
   } catch (err) {
     if (err instanceof RateLimitError) {
@@ -44,24 +71,61 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     ? Math.max(Math.floor(offsetParam), 0)
     : 0;
 
-  const [totalCount, comments] = await Promise.all([
-    prisma.mangaComment.count({
-      where: { mangaId: id, parentId: null },
-    }),
-    prisma.mangaComment.findMany({
-      where: { mangaId: id, parentId: null },
-      include: {
-        user: true,
-        replies: {
-          include: { user: true },
-          orderBy: { createdAt: "asc" },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-      skip: offset,
-      take: limit,
-    }),
+  const [countRows, topLevelRows] = await Promise.all([
+    db
+      .select({ count: sql<number>`cast(count(*) as integer)` })
+      .from(mangaComments)
+      .where(
+        and(eq(mangaComments.mangaId, id), isNull(mangaComments.parentId)),
+      ),
+    db
+      .select({ comment: mangaComments, user: users })
+      .from(mangaComments)
+      .innerJoin(users, eq(mangaComments.userId, users.id))
+      .where(and(eq(mangaComments.mangaId, id), isNull(mangaComments.parentId)))
+      .orderBy(desc(mangaComments.createdAt))
+      .offset(offset)
+      .limit(limit),
   ]);
+
+  const parentIds = topLevelRows.map(({ comment }) => comment.id);
+
+  const replyRows =
+    parentIds.length === 0
+      ? []
+      : await db
+          .select({ comment: mangaComments, user: users })
+          .from(mangaComments)
+          .innerJoin(users, eq(mangaComments.userId, users.id))
+          .where(
+            and(
+              eq(mangaComments.mangaId, id),
+              inArray(mangaComments.parentId, parentIds),
+            ),
+          )
+          .orderBy(asc(mangaComments.createdAt));
+
+  const repliesByParentId: Record<string, MangaCommentWithUser[]> = {};
+
+  for (const { comment, user } of replyRows) {
+    if (!comment.parentId) {
+      continue;
+    }
+
+    const replies = repliesByParentId[comment.parentId] ?? [];
+    replies.push({ ...comment, user });
+    repliesByParentId[comment.parentId] = replies;
+  }
+
+  const comments: MangaCommentWithUser[] = topLevelRows.map(
+    ({ comment, user }) => ({
+      ...comment,
+      user,
+      replies: repliesByParentId[comment.id] ?? [],
+    }),
+  );
+
+  const totalCount = countRows[0]?.count ?? 0;
 
   return NextResponse.json({
     comments: comments.map(serializeComment),
@@ -98,8 +162,14 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     throw err;
   }
 
-  const { content, title, parentId } = await req.json();
-  const contentLength = getContentLength(content || "");
+  const body: unknown = await req.json();
+
+  if (!isMangaCommentRequestBody(body)) {
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
+  }
+
+  const { content, title, parentId } = body;
+  const contentLength = getContentLength(content ?? "");
 
   if (!id || !content) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
@@ -125,10 +195,14 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   }
 
   if (parentId) {
-    const parent = await prisma.mangaComment.findUnique({
-      where: { id: parentId },
-      select: { mangaId: true, parentId: true },
-    });
+    const [parent] = await db
+      .select({
+        mangaId: mangaComments.mangaId,
+        parentId: mangaComments.parentId,
+      })
+      .from(mangaComments)
+      .where(eq(mangaComments.id, parentId))
+      .limit(1);
 
     if (!parent) {
       return NextResponse.json(
@@ -152,18 +226,33 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     }
   }
 
-  const comment = await prisma.mangaComment.create({
-    data: {
+  await db.insert(mangas).values({ id }).onConflictDoNothing({
+    target: mangas.id,
+  });
+
+  const [createdComment] = await db
+    .insert(mangaComments)
+    .values({
       content,
       title: parentId ? "" : title,
       mangaId: id,
       userId: session.user.id,
-      ...(parentId ? { parentId } : {}),
-    },
-    include: {
-      user: true,
-    },
-  });
+      parentId: parentId ?? null,
+    })
+    .returning({ id: mangaComments.id });
 
-  return NextResponse.json(serializeComment(comment));
+  const [comment] = await db
+    .select({ comment: mangaComments, user: users })
+    .from(mangaComments)
+    .innerJoin(users, eq(mangaComments.userId, users.id))
+    .where(eq(mangaComments.id, createdComment.id))
+    .limit(1);
+
+  if (!comment) {
+    throw new Error("Created comment could not be loaded.");
+  }
+
+  return NextResponse.json(
+    serializeComment({ ...comment.comment, user: comment.user }),
+  );
 }

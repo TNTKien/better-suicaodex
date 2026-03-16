@@ -1,15 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { serializeComment } from "@/lib/suicaodex/serializers";
+import { and, eq } from "drizzle-orm";
 import { getAuthSession } from "@/auth";
+import { db } from "@/lib/db";
+import { chapterComments, mangaComments, users } from "@/lib/db/schema";
 import { limiter, RateLimitError } from "@/lib/rate-limit";
+import { serializeComment } from "@/lib/suicaodex/serializers";
 import { getContentLength } from "@/lib/utils";
-import { Prisma } from "../../../../../prisma/generated/client";
 
 interface RouteParams {
   params: Promise<{
     commentId: string;
   }>;
+}
+
+interface EditCommentRequestBody {
+  content?: string;
+  type?: "manga" | "chapter";
+}
+
+function isEditCommentRequestBody(
+  value: unknown,
+): value is EditCommentRequestBody {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const record = value as Record<string, unknown>;
+  const type = record.type;
+
+  return (
+    (record.content === undefined || typeof record.content === "string") &&
+    (type === undefined || type === "manga" || type === "chapter")
+  );
 }
 
 // PATCH /api/comments/[commentId] - Edit a comment
@@ -34,8 +56,14 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
     throw err;
   }
 
-  const { content, type } = await req.json();
-  const contentLength = getContentLength(content || "");
+  const body: unknown = await req.json();
+
+  if (!isEditCommentRequestBody(body)) {
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
+  }
+
+  const { content, type } = body;
+  const contentLength = getContentLength(content ?? "");
 
   if (!commentId || !content || !type) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
@@ -56,9 +84,11 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   }
 
   if (type === "manga") {
-    const existing = await prisma.mangaComment.findUnique({
-      where: { id: commentId },
-    });
+    const [existing] = await db
+      .select({ userId: mangaComments.userId })
+      .from(mangaComments)
+      .where(eq(mangaComments.id, commentId))
+      .limit(1);
 
     if (!existing) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
@@ -67,33 +97,45 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    try {
-      const updated = await prisma.mangaComment.update({
-        where: { id: commentId, isEdited: false },
-        data: {
-          content,
-          isEdited: true,
-          updatedAt: new Date(),
-        },
-        include: { user: true },
-      });
-      return NextResponse.json(serializeComment(updated));
-    } catch (err) {
-      if (
-        err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === "P2025"
-      ) {
-        return NextResponse.json(
-          { error: "Comment can only be edited once" },
-          { status: 403 },
-        );
-      }
-      throw err;
+    const [updated] = await db
+      .update(mangaComments)
+      .set({
+        content,
+        isEdited: true,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(eq(mangaComments.id, commentId), eq(mangaComments.isEdited, false)),
+      )
+      .returning({ id: mangaComments.id });
+
+    if (!updated) {
+      return NextResponse.json(
+        { error: "Comment can only be edited once" },
+        { status: 403 },
+      );
     }
+
+    const [comment] = await db
+      .select({ comment: mangaComments, user: users })
+      .from(mangaComments)
+      .innerJoin(users, eq(mangaComments.userId, users.id))
+      .where(eq(mangaComments.id, commentId))
+      .limit(1);
+
+    if (!comment) {
+      throw new Error("Updated comment could not be loaded.");
+    }
+
+    return NextResponse.json(
+      serializeComment({ ...comment.comment, user: comment.user }),
+    );
   } else if (type === "chapter") {
-    const existing = await prisma.chapterComment.findUnique({
-      where: { id: commentId },
-    });
+    const [existing] = await db
+      .select({ userId: chapterComments.userId })
+      .from(chapterComments)
+      .where(eq(chapterComments.id, commentId))
+      .limit(1);
 
     if (!existing) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
@@ -102,29 +144,42 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    try {
-      const updated = await prisma.chapterComment.update({
-        where: { id: commentId, isEdited: false },
-        data: {
-          content,
-          isEdited: true,
-          updatedAt: new Date(),
-        },
-        include: { user: true },
-      });
-      return NextResponse.json(serializeComment(updated));
-    } catch (err) {
-      if (
-        err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === "P2025"
-      ) {
-        return NextResponse.json(
-          { error: "Comment can only be edited once" },
-          { status: 403 },
-        );
-      }
-      throw err;
+    const [updated] = await db
+      .update(chapterComments)
+      .set({
+        content,
+        isEdited: true,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(chapterComments.id, commentId),
+          eq(chapterComments.isEdited, false),
+        ),
+      )
+      .returning({ id: chapterComments.id });
+
+    if (!updated) {
+      return NextResponse.json(
+        { error: "Comment can only be edited once" },
+        { status: 403 },
+      );
     }
+
+    const [comment] = await db
+      .select({ comment: chapterComments, user: users })
+      .from(chapterComments)
+      .innerJoin(users, eq(chapterComments.userId, users.id))
+      .where(eq(chapterComments.id, commentId))
+      .limit(1);
+
+    if (!comment) {
+      throw new Error("Updated comment could not be loaded.");
+    }
+
+    return NextResponse.json(
+      serializeComment({ ...comment.comment, user: comment.user }),
+    );
   }
 
   return NextResponse.json({ error: "Invalid type" }, { status: 400 });

@@ -1,10 +1,12 @@
-import {
-  ChapterComment,
-  MangaComment,
-  User,
-} from "../../../prisma/generated/client";
+import type {
+  ChapterCommentRow,
+  MangaCommentRow,
+  UserRow,
+} from "@/lib/db/schema";
 
-export function serializeUser(user: User) {
+type CommentUser = Pick<UserRow, "id" | "name" | "image" | "createdAt">;
+
+export function serializeUser(user: CommentUser) {
   return {
     id: user.id,
     name: user.name,
@@ -13,17 +15,17 @@ export function serializeUser(user: User) {
   };
 }
 
-export type MangaCommentWithUser = MangaComment & {
-  user: User;
+export type MangaCommentWithUser = MangaCommentRow & {
+  user: CommentUser;
   replies?: MangaCommentWithUser[];
 };
-export type ChapterCommentWithUser = ChapterComment & {
-  user: User;
+export type ChapterCommentWithUser = ChapterCommentRow & {
+  user: CommentUser;
   replies?: ChapterCommentWithUser[];
 };
 export type CommentWithUser = MangaCommentWithUser | ChapterCommentWithUser;
 
-export type SerializedReply = {
+export interface SerializedReply {
   id: string;
   title: string;
   content: string;
@@ -38,18 +40,18 @@ export type SerializedReply = {
   mangaId?: string;
   chapterId?: string;
   chapterNumber?: string;
-};
+}
 
 export function serializeComment(comment: CommentWithUser): SerializedReply {
   const baseComment = {
     id: comment.id,
-    title: comment.title || "",
+    title: comment.title ?? "",
     content: comment.content,
-    parentId: comment.parentId || null,
+    parentId: comment.parentId ?? null,
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt,
     isEdited: comment.isEdited,
-    reactions: comment.reactions || 0,
+    reactions: comment.reactions ?? 0,
     user: serializeUser(comment.user),
   };
 
