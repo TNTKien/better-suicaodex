@@ -132,18 +132,20 @@ export function NavUser() {
 
             <DropdownMenuGroup>
               {!!user && (
-                <DropdownMenuItem>
-                  <BadgeCheck />
-                  Tài khoản
+                <DropdownMenuItem asChild>
+                  <Link href="/my-profile">
+                    <BadgeCheck />
+                    Tài khoản
+                  </Link>
                 </DropdownMenuItem>
               )}
 
               <DropdownMenuItem asChild>
                 <Link href={"/notifications"}>
                   <Bell
-                    // className={cn(
-                    //   !!localNotification.unread.length && "animate-bell-shake",
-                    // )}
+                  // className={cn(
+                  //   !!localNotification.unread.length && "animate-bell-shake",
+                  // )}
                   />
                   Thông báo
                   {/* {!!localNotification.unread.length && (
