@@ -33,6 +33,9 @@ export function NavUser() {
   const user = session?.user;
   const pathname = usePathname();
   const router = useRouter();
+  const signOutRedirect = pathname.startsWith("/my-profile")
+    ? `/login?callback=${encodeURIComponent(pathname)}`
+    : "/";
 
   return (
     <SidebarMenu>
@@ -43,7 +46,7 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground overflow-visible"
             >
-              {!!user ? (
+              {user ? (
                 <>
                   <div className="relative inline-block">
                     {/* {!!localNotification.unread.length && (
@@ -51,12 +54,12 @@ export function NavUser() {
                     )} */}
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage
-                        src={user.image || ""}
-                        alt={user.name || ""}
+                        src={user.image ?? ""}
+                        alt={user.name ?? ""}
                         className="object-cover"
                       />
                       <AvatarFallback className="rounded-lg">
-                        {user && user.name ? user.name.slice(0, 2) : "S"}
+                        {user.name?.slice(0, 2) ?? "S"}
                       </AvatarFallback>
                     </Avatar>
                   </div>
@@ -104,18 +107,18 @@ export function NavUser() {
             align="end"
             sideOffset={4}
           >
-            {!!user && (
+            {user && (
               <>
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage
-                        src={user.image || "/avatars/doro_think.webp"}
-                        alt={user.name || "Doro"}
+                        src={user.image ?? "/avatars/doro_think.webp"}
+                        alt={user.name ?? "Doro"}
                         className="object-cover"
                       />
                       <AvatarFallback className="rounded-lg">
-                        {user && user.name ? user.name.slice(0, 2) : "DR"}
+                        {user.name?.slice(0, 2) ?? "DR"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
@@ -180,7 +183,13 @@ export function NavUser() {
               <DropdownMenuItem
                 className="text-red-500 focus:bg-red-500/20 focus:text-red-500"
                 onClick={() => {
-                  void authClient.signOut();
+                  void authClient.signOut({
+                    fetchOptions: {
+                      onSuccess: () => {
+                        router.push(signOutRedirect);
+                      },
+                    },
+                  });
                 }}
               >
                 <LogOut />
