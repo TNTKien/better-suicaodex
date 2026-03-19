@@ -67,3 +67,5 @@ migrate-manga-ids-to-weebdex.mjs
 /.sisyphus
 
 prisma/generated
+# next-agents-md
+.next-docs/
