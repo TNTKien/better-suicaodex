@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/empty";
 import { db } from "@/lib/db";
 import { accounts, users } from "@/lib/db/schema";
-import { ProfileShowcase } from "./_components/profile-showcase";
+import { MyProfile } from "./_components/my-profile";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Hồ sơ của tôi",
+    title: "Trang cá nhân",
   };
 }
 
@@ -75,7 +75,7 @@ export default async function Page() {
       <div className="flex flex-col gap-6">
         <div>
           <hr className="h-1 w-9 border-none bg-primary" />
-          <h1 className="text-2xl font-black uppercase">Hồ sơ của tôi</h1>
+          <h1 className="text-2xl font-black uppercase">Trang cá nhân</h1>
         </div>
 
         <Empty className="min-h-72 bg-muted/30">
@@ -83,10 +83,9 @@ export default async function Page() {
             <EmptyMedia variant="icon">
               <ShieldOff />
             </EmptyMedia>
-            <EmptyTitle>Không tìm thấy hồ sơ nội bộ</EmptyTitle>
+            <EmptyTitle>Không tìm thấy thông tin</EmptyTitle>
             <EmptyDescription className="max-w-lg text-pretty">
-              Bạn đã đăng nhập nhưng chưa đọc được dữ liệu tài khoản SuicaoDex
-              trong cơ sở dữ liệu. Hãy thử đăng xuất rồi đăng nhập lại.
+              Nếu thấy dòng này thì vả ngay thằng dev cho tôi 😡
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
@@ -163,7 +162,7 @@ export default async function Page() {
         <h1 className="text-2xl font-black uppercase">Trang cá nhân</h1>
       </div>
 
-      <ProfileShowcase profile={profile} />
+      <MyProfile profile={profile} />
     </div>
   );
 }

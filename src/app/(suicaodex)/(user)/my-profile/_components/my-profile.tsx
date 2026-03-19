@@ -1,8 +1,10 @@
 import {
+  AppWindowIcon,
   BadgeCheck,
   CalendarIcon,
   Fingerprint,
   History,
+  Link2,
   Mail,
   ShieldCheck,
   Sparkles,
@@ -10,10 +12,14 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { cn } from "@/lib/utils";
 import { LightRays } from "@/components/ui/light-rays";
 import {
@@ -30,7 +36,7 @@ interface ProfileDetail {
   value: string;
 }
 
-interface ProfileShowcaseProps {
+interface MyProfileProps {
   profile: {
     displayName: string;
     email: string;
@@ -44,19 +50,19 @@ interface ProfileShowcaseProps {
 const detailIcons = {
   "User ID": Fingerprint,
   "Tên hiển thị": User,
-  "Email": Mail,
+  Email: Mail,
   "Ngày tham gia": CalendarIcon,
   "Trạng thái xác thực": ShieldCheck,
   "Cập nhật lần cuối": History,
 } as const;
 
 const providerIcons = {
-  "google": SiGoogle,
-  "discord": SiDiscord,
-  "github": SiGithub,
+  google: SiGoogle,
+  discord: SiDiscord,
+  github: SiGithub,
 } as const;
 
-export function ProfileShowcase({ profile }: ProfileShowcaseProps) {
+export function MyProfile({ profile }: MyProfileProps) {
   return (
     <>
       <Card className="-mt-2 relative overflow-hidden border-none shadow-sm rounded-md">
@@ -122,15 +128,61 @@ export function ProfileShowcase({ profile }: ProfileShowcaseProps) {
                       <ItemTitle className="font-semibold uppercase tracking-[0.2em]">
                         {detail.label}
                       </ItemTitle>
-                      <ItemDescription>{detail.value}</ItemDescription>
+                      <ItemDescription className="break-all">
+                        {detail.value}
+                      </ItemDescription>
                     </ItemContent>
                   </Item>
                 );
               })}
+
+              <Item variant="muted">
+                <ItemMedia variant="icon">
+                  <Link2 className="size-4 text-primary" />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle className="font-semibold uppercase tracking-[0.2em]">
+                    Tài khoản liên kết
+                  </ItemTitle>
+                  <ItemDescription className="hidden" />
+                  <div className="flex flex-wrap gap-3">
+                    {profile.providers.map((provider) => {
+                      const Icon =
+                        providerIcons[provider as keyof typeof providerIcons] ??
+                        Link2;
+
+                      return (
+                        <Badge
+                          key={provider}
+                          variant="default"
+                          className="rounded-md!"
+                        >
+                          <Icon data-icon="inline-start" />
+                          {provider.charAt(0).toUpperCase() + provider.slice(1)}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </ItemContent>
+              </Item>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      <Empty className="bg-card shadow-sm rounded-md">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <AppWindowIcon />
+          </EmptyMedia>
+          <EmptyTitle>Coming soon...</EmptyTitle>
+          <EmptyDescription>
+            Một số tính năng khác đang được phát triển và sẽ sớm ra mắt. Tạm để
+            đây cho đỡ trống!
+          </EmptyDescription>
+        </EmptyHeader>
+        {/* <LightRays /> */}
+      </Empty>
     </>
   );
 }
