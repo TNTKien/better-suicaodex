@@ -32,13 +32,21 @@ export const presetThemes = [
     },
   },
   {
+    name: "neo-brutalism",
+    label: "Neo Brutalism",
+    activeColor: {
+      light: "214 100% 58%",
+      dark: "56 100% 62%",
+    },
+  },
+  {
     name: "doom",
     label: "Doom",
     activeColor: {
       light: "0 0% 20%",
       dark: "0 0% 80%",
     },
-  }, 
+  },
   {
     name: "vs-code",
     label: "VS Code",
@@ -46,7 +54,7 @@ export const presetThemes = [
       light: "201 90% 55%",
       dark: "201 90% 55%",
     },
-  }
+  },
 ] as const;
 
 export type PresetTheme = (typeof presetThemes)[number];
