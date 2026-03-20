@@ -80,11 +80,11 @@ export default function Page() {
       />
 
       <div className="flex flex-col">
-        <section className="h-[324px] md:h-[400px]">
+        <section className="">
           <PopularMangaSwiper />
         </section>
 
-        <section className="-mt-4 md:-mt-8 lg:-mt-3">
+        <section className="mt-9 mx-4 md:mx-8 lg:mx-12">
           <Alert className="border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
             <OctagonAlert strokeWidth={3} />
             <AlertTitle className="font-semibold uppercase">
@@ -104,11 +104,11 @@ export default function Page() {
         </section>
 
         {/* <section className="-mt-4 md:-mt-8 lg:-mt-3"> */}
-        <section className="mt-9">
+        <section className="mt-9 mx-4 md:mx-8 lg:mx-12">
           <LatestUpdate />
         </section>
 
-        <section className="mt-9">
+        <section className="mt-9 mx-4 md:mx-8 lg:mx-12">
           <Recently />
         </section>
 
@@ -126,7 +126,7 @@ export default function Page() {
           </div>
         </section> */}
 
-        <section className="mt-9 grid grid-cols-1 gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        <section className="mt-9 mx-4 md:mx-8 lg:mx-12 grid grid-cols-1 gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           <div className="lg:col-span-2 xl:col-span-3 2xl:col-span-4">
             <CompletedManga />
           </div>

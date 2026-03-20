@@ -7,7 +7,7 @@ export default function MangaSkeleton() {
         <Skeleton className="absolute h-70 w-full bg-primary/30" />
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 px-4 md:px-8 lg:px-12">
         <div className="flex flex-row gap-4">
           <div className="relative bg-background rounded-md">
             <Skeleton className="w-[130px] md:w-[200px] h-[182px] md:h-[280px] bg-primary/65 rounded-md" />

@@ -63,12 +63,12 @@ export default async function Page() {
   ];
   return (
     <>
-      <div>
+      <div className="px-4 md:px-8 lg:px-12">
         <hr className="w-9 h-1 bg-primary border-none" />
         <h1 className="text-2xl font-black uppercase">Thông báo</h1>
       </div>
 
-      <Tabs defaultValue="system" className="mt-4">
+      <Tabs defaultValue="system" className="mt-4 px-4 md:px-8 lg:px-12">
         <TabsList className="w-full">
           {tabValues.map((tab) => (
             <TabsTrigger

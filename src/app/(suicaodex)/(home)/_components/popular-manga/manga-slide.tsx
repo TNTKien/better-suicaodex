@@ -8,7 +8,11 @@ import { Streamdown } from "streamdown";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Link from "next/link";
 import MangaCover from "@/app/(suicaodex)/(manga)/manga/_components/manga-cover";
-import { ContentRatingTag, NormalTag, StatusTag } from "@/app/(suicaodex)/(manga)/manga/_components/manga-tags";
+import {
+  ContentRatingTag,
+  NormalTag,
+  StatusTag,
+} from "@/app/(suicaodex)/(manga)/manga/_components/manga-tags";
 
 interface MangaSlideProps {
   manga: Manga;
@@ -36,33 +40,16 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
   ].filter(Boolean);
 
   return (
-    <>
-      {/* Banner */}
-      <div className="absolute h-[324px] md:h-[400px] z-[-2] w-auto left-0 right-0 top-0 block">
-        <div
-          className={cn(
-            "absolute h-[324px] md:h-[400px] w-full",
-            "bg-no-repeat bg-cover bg-position-[center_top_25%]",
-          )}
-          style={{ backgroundImage: `url('${coverUrl}')` }}
-        />
-
-        <div
-          className={cn(
-            "absolute h-[324px] md:h-[400px] w-auto inset-0 pointer-events-none",
-            "bg-linear-to-b from-background/25 to-background backdrop-blur-[0.5px]",
-          )}
-        />
-      </div>
-
-      {/* Manga */}
-      <div
-        className={cn(
-          "flex gap-4 h-full pt-28 px-4 md:pl-8 lg:pl-12",
-          "md:pr-[calc(32px+var(--sidebar-width-icon))] lg:pr-[calc(48px+var(--sidebar-width-icon))]",
-        )}
-      >
-        <Link href={`/manga/${manga.id}/${slug}`} prefetch={false}>
+    <div
+      className="relative bg-no-repeat bg-cover bg-position-[center_top_25%] h-[300px] md:h-[400px] lg:h-[420px]"
+      style={{ backgroundImage: `url('${coverUrl}')` }}
+    >
+      <div className="relative z-1 flex gap-4 pt-28 h-full px-4 md:px-8 lg:px-12">
+        <Link
+          href={`/manga/${manga.id}/${slug}`}
+          prefetch={false}
+          className="z-10!"
+        >
           <MangaCover
             manga_id={manga.id || ""}
             cover={manga.relationships?.cover}
@@ -76,7 +63,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
         </Link>
 
         <div
-          className="grid gap-6 sm:gap-2 h-full min-h-0 pb-8 md:pb-1.5 lg:pb-1"
+          className="grid gap-6 sm:gap-2 h-full min-h-0"
           style={{
             gridTemplateRows: isMobile
               ? "1fr auto"
@@ -84,7 +71,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
           }}
         >
           <Link href={`/manga/${manga.id}/${slug}`}>
-            <p className="drop-shadow-md font-black text-xl line-clamp-5 sm:line-clamp-2 lg:text-4xl overflow-hidden lg:leading-11!">
+            <p className="drop-shadow-md font-black text-2xl line-clamp-5 sm:line-clamp-2 wrap-break-word lg:text-[42px] overflow-hidden lg:leading-12!">
               {title}
             </p>
           </Link>
@@ -105,17 +92,27 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
 
           <div className="hidden md:block min-h-0 relative overflow-auto">
             <div className="relative overflow-hidden">
-              <Streamdown controls={{ table: false }} className="text-sm">
+              <Streamdown
+                controls={{ table: false }}
+                className="text-sm text-balance"
+              >
                 {manga.description ?? ""}
               </Streamdown>
             </div>
           </div>
 
-          <p className="self-end text-base md:text-lg italic font-medium line-clamp-1 max-w-full md:max-w-[80%]">
+          <p className=" flex-1 self-end text-base md:text-lg italic font-medium line-clamp-1 max-w-full md:max-w-[80%]">
             {creatorNames.join(", ")}
           </p>
         </div>
       </div>
-    </>
+
+      <div
+        className={cn(
+          "absolute w-full inset-0 pointer-events-none z-0",
+          "bg-linear-to-b from-background/25 to-background backdrop-blur-[0.5px]",
+        )}
+      />
+    </div>
   );
 }

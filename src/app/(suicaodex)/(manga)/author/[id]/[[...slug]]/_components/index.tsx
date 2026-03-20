@@ -307,7 +307,7 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-4 md:px-8 lg:px-12">
       <div>{renderAuthorInfo()}</div>
 
       <div className="flex flex-col gap-2">

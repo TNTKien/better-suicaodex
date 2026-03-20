@@ -24,7 +24,7 @@ export default async function LoginPage({ searchParams }: pageProps) {
   }
 
   return (
-    <WarpBackground className="p-0 border-none!">
+    <WarpBackground className="p-0 border-none! mx-4 md:mx-8 lg:mx-12">
       <div className="grid lg:grid-cols-2 h-[calc(100vh-80px)]">
         <div className="flex flex-col gap-4 p-6 md:p-10">
           <div className="flex flex-1 items-center justify-center">

@@ -146,7 +146,7 @@ export default async function Page() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 md:px-8 lg:px-12">
       <div className="absolute h-70 z-[-2] w-auto left-0 right-0 top-0 block">
         <div
           className="absolute h-70 w-full transition-[width] duration-150 ease-in-out bg-no-repeat bg-cover bg-position-[center_top_33%] md:bg-fixed"

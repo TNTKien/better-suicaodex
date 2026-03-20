@@ -28,7 +28,7 @@ export default async function Page({ searchParams }: pageProps) {
   const limit = rawLimit > 100 ? 100 : rawLimit;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 md:px-8 lg:px-12">
       <TotalCatAlert />
       <MeoPage page={page} limit={limit} />
     </div>

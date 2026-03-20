@@ -8,39 +8,38 @@ export default function SlideControl() {
   const swiper = useSwiper();
 
   return (
-    <>
-      <p
+    <div className="relative md:-mt-8.5 md:z-10 w-full px-4 mr:px-8 lg:px-12 flex items-center gap-2 justify-end">
+      <span
         className={cn(
-          "hidden md:flex text-sm font-black uppercase",
-          swiper.realIndex === 0 && "text-primary"
+          "text-sm font-black uppercase hidden md:inline-flex",
+          swiper.realIndex === 0 && "text-primary",
         )}
       >
         No. {swiper.realIndex + 1}
-      </p>
-      <Button
-        size="icon"
-        className={cn(
-          "h-8 w-8 bg-transparent hover:bg-transparent hover:text-primary rounded-full [&_svg]:size-6 shadow-none text-inherit",
-          "md:h-10 md:w-10"
-        )}
-        onClick={() => swiper.slidePrev()}
-      >
-        <ChevronLeft />
-      </Button>
+      </span>
+      <div className="w-full justify-between md:w-auto md:justify-end flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="rounded-full"
+          onClick={() => swiper.slidePrev()}
+        >
+          <ChevronLeft />
+        </Button>
 
-      <p className="md:hidden text-sm uppercase">{swiper.realIndex + 1} / 10</p>
+        <span className="text-sm md:hidden">
+          {swiper.realIndex + 1} / {swiper.slides.length}
+        </span>
 
-      <Button
-        size="icon"
-        className={cn(
-          "h-8 w-8 bg-transparent hover:bg-transparent hover:text-primary rounded-full [&_svg]:size-6 shadow-none text-inherit",
-          "md:h-10 md:w-10"
-        )}
-        onClick={() => swiper.slideNext()}
-      >
-        <ChevronRight />
-      </Button>
-    </>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="rounded-full"
+          onClick={() => swiper.slideNext()}
+        >
+          <ChevronRight />
+        </Button>
+      </div>
+    </div>
   );
 }
-

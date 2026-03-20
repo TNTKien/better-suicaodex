@@ -296,7 +296,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-4 md:px-8 lg:px-12">
       {/* Group info */}
       <div>{renderGroupInfo()}</div>
 
