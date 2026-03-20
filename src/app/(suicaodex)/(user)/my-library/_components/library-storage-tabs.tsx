@@ -26,7 +26,7 @@ export default function LibraryStorageTabs({
     <Tabs
       value={storage}
       onValueChange={(v) => setStorage(v as LibraryStorage)}
-      className="mt-4"
+      className="mt-4 px-4 md:px-8 lg:px-12"
     >
       <TabsList className="w-full">
         <TabsTrigger className="w-full flex items-center" value="local">

@@ -140,7 +140,7 @@ export default function MangaPage({ id, initData }: PageProps) {
 
       <MangaBanner manga_id={id} cover={manga.relationships?.cover} />
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-4 px-4 md:px-8 lg:px-12">
         <div className="grid grid-cols-[auto_1fr] gap-4 w-full">
           <div className="relative">
             <MangaCover

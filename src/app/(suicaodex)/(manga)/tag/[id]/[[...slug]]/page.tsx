@@ -51,7 +51,12 @@ export async function generateMetadata({
 export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
   if (isValidUUID(id)) {
-    return <ErrorPage statusCode={404} message="Có vẻ bạn đang dùng link chứa uuid của MangaDex (không còn hỗ trợ nữa)" />;
+    return (
+      <ErrorPage
+        statusCode={404}
+        message="Có vẻ bạn đang dùng link chứa uuid của MangaDex (không còn hỗ trợ nữa)"
+      />
+    );
   }
   let { page } = await loadSearchParams(searchParams);
   if (page < 1 || isNaN(page)) page = 1;
@@ -61,12 +66,14 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   return (
     <>
-      <div>
+      <div className="px-4 md:px-8 lg:px-12">
         <hr className="w-9 h-1 bg-primary border-none" />
         <h1 className="text-2xl font-black uppercase">{tag.name}</h1>
       </div>
 
-      <TagMangaPage id={id} page={page} />
+      <div className="px-4 md:px-8 lg:px-12">
+        <TagMangaPage id={id} page={page} />
+      </div>
     </>
   );
 }

@@ -485,7 +485,7 @@ export default function AdvancedSearchPage() {
 
   return (
     <>
-      <section className="flex flex-col gap-4">
+      <section className="flex flex-col gap-4 px-4 md:px-8 lg:px-12">
         <div>
           <div className="h-1 w-9 bg-primary" />
           <h1 className="text-2xl font-black uppercase">Tìm kiếm nâng cao</h1>
@@ -836,7 +836,7 @@ export default function AdvancedSearchPage() {
         </div>
       </section>
 
-      <section className="mt-8">
+      <section className="mt-8 px-4 md:px-8 lg:px-12">
         {isLoading ? (
           <SkeletonGrid />
         ) : isApiError ? (

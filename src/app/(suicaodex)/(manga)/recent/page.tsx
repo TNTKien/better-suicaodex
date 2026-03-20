@@ -26,11 +26,11 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <>
-      <div>
+      <div className="px-4 md:px-8 lg:px-12">
         <hr className="w-9 h-1 bg-primary border-none" />
         <h1 className="text-2xl font-black uppercase">truyện mới</h1>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 px-4 md:px-8 lg:px-12">
         <Recent page={page} />
       </div>
     </>
