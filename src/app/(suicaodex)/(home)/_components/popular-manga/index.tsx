@@ -56,8 +56,8 @@ export default function PopularMangaSwiper() {
 
       <div className="w-full -mt-16">
         <Swiper
-          autoplay={false}
-          loop
+          autoplay
+          // loop
           modules={[Autoplay, Navigation, Pagination]}
           onSlideChange={(swiper) => setSlideIndex(swiper.realIndex + 1)}
         >
