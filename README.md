@@ -48,8 +48,6 @@ Tuy vậy, SuicaoDex sẽ luôn:
 
 ☑️ Làm lại reader: cơ bản đã xong, cần thử nghiệm thêm để cải thiện UI/UX
 
-⬛ Fix layout trang chủ
-
 ⬛ Hoàn thiện Thông báo.
 
 ☑️ Hoàn thiện bình luận:
