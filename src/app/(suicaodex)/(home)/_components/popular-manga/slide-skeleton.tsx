@@ -3,12 +3,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function SlideSkeleton() {
   return (
     <>
-      <div className="absolute z-10">
+      <div className="absolute z-10 mx-4 md:mx-8 lg:mx-12">
         <hr className="w-9 h-1 bg-primary border-none" />
         <h1 className="text-2xl font-black uppercase">Tiêu điểm</h1>
       </div>
 
-      <div className="flex flex-col gap-4 pt-12">
+      <div className="flex flex-col gap-4 pt-12 mx-4 md:mx-8 lg:mx-12">
         <div className="flex flex-row gap-4">
           <div className="relative bg-background rounded-md">
             <Skeleton className="w-[130px] md:w-[200px] h-[182px] md:h-[285px] lg:w-[215px] lg:h-[307px] bg-gray-500 rounded-md" />
