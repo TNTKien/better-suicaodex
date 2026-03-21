@@ -1,18 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ error: res.statusText }));
-    throw Object.assign(new Error(error.error || "Có lỗi xảy ra"), { status: res.status });
-  }
-  return res.json();
-};
+import {
+  fetchCommentJson,
+  type CommentCountResponse,
+} from "@/lib/comment-client";
+import { getCommentCountQueryKey } from "@/lib/comment-query-keys";
 
 export function useCommentCount(mangaId: string) {
-  const { data, refetch, isLoading } = useQuery({
-    queryKey: [`comment-count-${mangaId}`],
-    queryFn: () => fetcher(`/api/comments/manga/${mangaId}/count`),
+  const { data, refetch, isLoading } = useQuery<CommentCountResponse>({
+    queryKey: getCommentCountQueryKey(mangaId),
+    queryFn: () =>
+      fetchCommentJson<CommentCountResponse>(
+        `/api/comments/manga/${mangaId}/count`,
+      ),
     enabled: !!mangaId,
     refetchInterval: false, // Không auto revalidate
     staleTime: Infinity,

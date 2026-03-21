@@ -1,6 +1,6 @@
 // "use client";
 import { Card } from "@/components/ui/card";
-import { CommentWithUser } from "@/lib/suicaodex/serializers";
+import type { LatestComment } from "@/lib/comment-client";
 import { Streamdown } from "streamdown";
 import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,11 +10,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 
 interface CommentFeedItemProps {
-  comment: CommentWithUser & {
-    mangaId?: string;
-    chapterId?: string;
-    chapterNumber?: number;
-  };
+  comment: LatestComment;
   type: "manga" | "chapter";
 }
 
@@ -80,8 +76,8 @@ export default function CommentFeedItem({
       <div className="flex gap-2 mt-2">
         <Avatar className="h-10 w-10 relative z-10 shrink-0">
           <AvatarImage
-            src={comment.user.image || ""}
-            alt={comment.user.name || "User"}
+            src={comment.user.image ?? ""}
+            alt={comment.user.name ?? "User"}
           />
           <AvatarFallback>
             {comment.user.name ? comment.user.name.slice(0, 2) : "SC"}
@@ -96,9 +92,7 @@ export default function CommentFeedItem({
           </div>
           {text && (
             <div className="bg-muted rounded-2xl px-3 py-2 mt-1 inline-block max-w-full">
-              <Streamdown>
-                {text}
-              </Streamdown>
+              <Streamdown>{text}</Streamdown>
             </div>
           )}
           {stickers.length > 0 && (

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Streamdown } from "streamdown";
@@ -15,6 +16,11 @@ import { StickerPicker } from "./sticker-picker";
 import { ButtonGroup } from "../ui/button-group";
 import { Spinner } from "../ui/spinner";
 import { authClient } from "@/lib/auth-client";
+import {
+  getCommentCountQueryKey,
+  getCommentsQueryKey,
+  latestCommentsQueryKey,
+} from "@/lib/comment-query-keys";
 
 interface SerializedComment {
   id: string;
@@ -43,7 +49,10 @@ interface CommentCardProps {
   type: "manga" | "chapter";
   contentId: string;
   isReply?: boolean;
-  onMutate?: () => void;
+}
+
+interface CommentMutationError extends Error {
+  status?: number;
 }
 
 const MIN_COMMENT_LENGTH = 3;
@@ -106,19 +115,120 @@ export default function CommentCard({
   type,
   contentId,
   isReply = false,
-  onMutate,
 }: CommentCardProps) {
   const { data: session } = authClient.useSession();
+  const queryClient = useQueryClient();
   const [editMode, setEditMode] = useState(false);
   const [replyMode, setReplyMode] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [replyContent, setReplyContent] = useState("");
-  const [editLoading, setEditLoading] = useState(false);
-  const [replyLoading, setReplyLoading] = useState(false);
   const editTextareaRef = useRef<HTMLTextAreaElement>(null);
   const replyTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const { text, stickers } = parseCommentContent(comment.content);
+
+  const handleCommentMutationError = (error: CommentMutationError) => {
+    if (error.status === 429) {
+      toast.error("Rap chậm thôi bruh...😓");
+      return;
+    }
+
+    toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+  };
+
+  const invalidateCommentQueries = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: getCommentsQueryKey(type, contentId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: latestCommentsQueryKey,
+      }),
+    ]);
+  };
+
+  const invalidateCreateQueries = async () => {
+    const invalidations = [
+      queryClient.invalidateQueries({
+        queryKey: getCommentsQueryKey(type, contentId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: latestCommentsQueryKey,
+      }),
+    ];
+
+    if (type === "manga") {
+      invalidations.push(
+        queryClient.invalidateQueries({
+          queryKey: getCommentCountQueryKey(contentId),
+        }),
+      );
+    }
+
+    await Promise.all(invalidations);
+  };
+
+  const editCommentMutation = useMutation({
+    mutationKey: ["edit-comment", comment.id],
+    mutationFn: async (content: string) => {
+      const response = await fetch(`/api/comments/${comment.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ content, type }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw Object.assign(new Error("Comment request failed"), {
+          status: response.status,
+        }) as CommentMutationError;
+      }
+
+      return response;
+    },
+    onSuccess: async () => {
+      setEditMode(false);
+      await invalidateCommentQueries();
+    },
+    onError: handleCommentMutationError,
+  });
+
+  const replyCommentMutation = useMutation({
+    mutationKey: ["reply-comment", type, contentId, comment.id],
+    mutationFn: async (content: string) => {
+      const body: Record<string, string> = {
+        content,
+        parentId: comment.id,
+        title: "",
+      };
+
+      if (type === "chapter") {
+        body.chapterNumber = "";
+      }
+
+      const response = await fetch(`/api/comments/${type}/${contentId}`, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw Object.assign(new Error("Comment request failed"), {
+          status: response.status,
+        }) as CommentMutationError;
+      }
+
+      return response;
+    },
+    onSuccess: async () => {
+      setReplyContent("");
+      setReplyMode(false);
+      await invalidateCreateQueries();
+    },
+    onError: handleCommentMutationError,
+  });
+
+  const editLoading = editCommentMutation.isPending;
+  const replyLoading = replyCommentMutation.isPending;
 
   const handleEditOpen = () => {
     setEditContent(comment.content);
@@ -134,7 +244,7 @@ export default function CommentCard({
     setTimeout(() => replyTextareaRef.current?.focus(), 0);
   };
 
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = () => {
     const trimmed = editContent.trim();
     const validationError = getCommentValidationError(editContent);
 
@@ -143,33 +253,10 @@ export default function CommentCard({
       return;
     }
 
-    try {
-      setEditLoading(true);
-      const response = await fetch(`/api/comments/${comment.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ content: trimmed, type }),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          toast.error("Rap chậm thôi bruh...😓");
-        } else {
-          toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-        }
-        return;
-      }
-
-      setEditMode(false);
-      if (onMutate) onMutate();
-    } catch {
-      toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-    } finally {
-      setEditLoading(false);
-    }
+    editCommentMutation.mutate(trimmed);
   };
 
-  const handleReplySubmit = async () => {
+  const handleReplySubmit = () => {
     const trimmed = replyContent.trim();
     const validationError = getCommentValidationError(replyContent);
 
@@ -178,41 +265,7 @@ export default function CommentCard({
       return;
     }
 
-    try {
-      setReplyLoading(true);
-      const endpoint = `/api/comments/${type}/${contentId}`;
-      const body: Record<string, string> = {
-        content: trimmed,
-        parentId: comment.id,
-        title: "",
-      };
-      if (type === "chapter") {
-        body.chapterNumber = "";
-      }
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          toast.error("Rap chậm thôi bruh...😓");
-        } else {
-          toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-        }
-        return;
-      }
-
-      setReplyContent("");
-      setReplyMode(false);
-      if (onMutate) onMutate();
-    } catch {
-      toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-    } finally {
-      setReplyLoading(false);
-    }
+    replyCommentMutation.mutate(trimmed);
   };
 
   const insertStickerToEdit = (stickerName: string) => {
@@ -288,9 +341,7 @@ export default function CommentCard({
                   <ButtonGroup>
                     <Button
                       type="button"
-                      onClick={() => {
-                        void handleEditSubmit();
-                      }}
+                      onClick={handleEditSubmit}
                       disabled={editLoading}
                       className="text-xs"
                       size="sm"
@@ -366,9 +417,7 @@ export default function CommentCard({
                   <ButtonGroup>
                     <Button
                       type="button"
-                      onClick={() => {
-                        void handleReplySubmit();
-                      }}
+                      onClick={handleReplySubmit}
                       disabled={replyLoading}
                       className="text-xs"
                       size="sm"

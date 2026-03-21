@@ -34,7 +34,6 @@ import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import { cn, formatChapterTitle, generateSlug } from "@/lib/utils";
 import CommentList from "@/components/comment/comment-list";
 import CommentFormSimple from "@/components/comment/comment-form-simple";
-import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import ChapterNavSidebar from "./chapter-nav-sidebar";
 
@@ -44,13 +43,6 @@ interface ReaderSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
   const { state, isMobile, toggleSidebar } = useSidebar();
-
-  const commentListRef = useRef<{ mutate: () => void } | null>(null);
-  const handleCommentPosted = () => {
-    if (commentListRef.current) {
-      commentListRef.current.mutate();
-    }
-  };
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -85,7 +77,9 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
           <Collapsible asChild defaultOpen className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={chapter.relationships?.manga?.title ?? ""}>
+                <SidebarMenuButton
+                  tooltip={chapter.relationships?.manga?.title ?? ""}
+                >
                   <NotebookTextIcon />
                   <span>Đang đọc</span>
                 </SidebarMenuButton>
@@ -98,7 +92,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
                       className="h-auto text-pretty text-primary hover:bg-transparent hover:text-primary hover:underline"
                     >
                       <NoPrefetchLink
-                        href={`/manga/${chapter.relationships?.manga?.id}/${generateSlug(chapter.relationships?.manga?.title || "")}`}
+                        href={`/manga/${chapter.relationships?.manga?.id}/${generateSlug(chapter.relationships?.manga?.title ?? "")}`}
                       >
                         {chapter.relationships?.manga?.title}
                       </NoPrefetchLink>
@@ -176,7 +170,7 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
       >
         <SidebarGroup className="py-0">
           <SidebarGroupContent>
-            <CommentList id={chapter.id ?? ""} type="chapter" ref={commentListRef} inSidebar/>
+            <CommentList id={chapter.id ?? ""} type="chapter" inSidebar />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -186,9 +180,8 @@ export function ReaderSidebar({ chapter, ...props }: ReaderSidebarProps) {
       >
         <CommentFormSimple
           id={chapter.id ?? ""}
-          title={chapter.relationships?.manga?.title || ""}
+          title={chapter.relationships?.manga?.title ?? ""}
           type="chapter"
-          onCommentPosted={handleCommentPosted}
           chapterNumber={formatChapterTitle(chapter, false)}
         />
       </SidebarFooter>
