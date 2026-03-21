@@ -1,5 +1,6 @@
 import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
-import { Hono } from "hono";
+import { type Context, Hono } from "hono";
+import { z } from "zod";
 import { db } from "@/lib/db";
 import {
   chapterComments,
@@ -16,76 +17,102 @@ import {
   type MangaCommentWithUser,
   serializeComment,
 } from "@/lib/suicaodex/serializers";
-import { getContentLength } from "@/lib/utils";
 
 export const commentsApp = new Hono<CommentsAppEnv>().basePath("/api/comments");
 
-interface MangaCommentRequestBody {
-  content?: string;
-  title?: string;
-  parentId?: string;
-}
+const COMMENT_MIN_LENGTH = 3;
+const COMMENT_MAX_LENGTH = 2000;
 
-interface ChapterCommentRequestBody {
-  content?: string;
-  title?: string;
-  chapterNumber?: string;
-  parentId?: string;
-}
+const commentContentSchema = z
+  .string()
+  .max(COMMENT_MAX_LENGTH, {
+    message: `Comment must not exceed ${COMMENT_MAX_LENGTH} characters`,
+  })
+  .refine((value) => value.trim().length >= COMMENT_MIN_LENGTH, {
+    message: `Comment must be at least ${COMMENT_MIN_LENGTH} characters`,
+  });
 
-interface EditCommentRequestBody {
-  content?: string;
-  type?: "manga" | "chapter";
-}
+const mangaCommentRequestSchema = z
+  .object({
+    content: commentContentSchema,
+    title: z.string().optional(),
+    parentId: z.string().optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (!value.parentId?.trim() && !value.title?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["title"],
+        message: "Missing data",
+      });
+    }
+  });
 
-function isMangaCommentRequestBody(
-  value: unknown,
-): value is MangaCommentRequestBody {
-  if (typeof value !== "object" || value === null) {
-    return false;
+const chapterCommentRequestSchema = z
+  .object({
+    content: commentContentSchema,
+    title: z.string().optional(),
+    chapterNumber: z.string().optional(),
+    parentId: z.string().optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (!value.parentId?.trim() && !value.title?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["title"],
+        message: "Missing data",
+      });
+    }
+
+    if (!value.parentId?.trim() && !value.chapterNumber?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["chapterNumber"],
+        message: "Missing data",
+      });
+    }
+  });
+
+const editCommentRequestSchema = z.object({
+  content: commentContentSchema,
+  type: z.enum(["manga", "chapter"]),
+});
+
+function getValidationErrorMessage(error: z.ZodError): string {
+  const issue = error.issues[0];
+
+  if (!issue) {
+    return "Missing data";
   }
 
-  const record = value as Record<string, unknown>;
-
-  return (
-    (record.content === undefined || typeof record.content === "string") &&
-    (record.title === undefined || typeof record.title === "string") &&
-    (record.parentId === undefined || typeof record.parentId === "string")
-  );
-}
-
-function isChapterCommentRequestBody(
-  value: unknown,
-): value is ChapterCommentRequestBody {
-  if (typeof value !== "object" || value === null) {
-    return false;
+  if (issue.code === "invalid_type" || issue.code === "invalid_value") {
+    return "Missing data";
   }
 
-  const record = value as Record<string, unknown>;
-
-  return (
-    (record.content === undefined || typeof record.content === "string") &&
-    (record.title === undefined || typeof record.title === "string") &&
-    (record.chapterNumber === undefined ||
-      typeof record.chapterNumber === "string") &&
-    (record.parentId === undefined || typeof record.parentId === "string")
-  );
+  return issue.message || "Missing data";
 }
 
-function isEditCommentRequestBody(
-  value: unknown,
-): value is EditCommentRequestBody {
-  if (typeof value !== "object" || value === null) {
-    return false;
+async function validateRequestBody<TSchema extends z.ZodTypeAny>(
+  c: Context<CommentsAppEnv>,
+  schema: TSchema,
+): Promise<
+  | { success: true; data: z.infer<TSchema> }
+  | { success: false; response: Response }
+> {
+  const body: unknown = await c.req.json().catch(() => undefined);
+  const result = schema.safeParse(body);
+
+  if (!result.success) {
+    return {
+      success: false,
+      response: c.json({ error: getValidationErrorMessage(result.error) }, 400),
+    };
   }
 
-  const record = value as Record<string, unknown>;
-  const type = record.type;
-
-  return (
-    (record.content === undefined || typeof record.content === "string") &&
-    (type === undefined || type === "manga" || type === "chapter")
-  );
+  return {
+    success: true,
+    data: result.data,
+  };
 }
 
 commentsApp.get("/manga/:id/count", rateLimitByIp(50), async (c) => {
@@ -196,29 +223,16 @@ commentsApp.post(
   }),
   async (c) => {
     const id = c.req.param("id");
-    const body: unknown = await c.req.json();
+    const parsedBody = await validateRequestBody(c, mangaCommentRequestSchema);
 
-    if (!isMangaCommentRequestBody(body)) {
+    if (!parsedBody.success) {
+      return parsedBody.response;
+    }
+
+    const { content, title, parentId } = parsedBody.data;
+
+    if (!id) {
       return c.json({ error: "Missing data" }, 400);
-    }
-
-    const { content, title, parentId } = body;
-    const contentLength = getContentLength(content ?? "");
-
-    if (!id || !content) {
-      return c.json({ error: "Missing data" }, 400);
-    }
-
-    if (!parentId && !title) {
-      return c.json({ error: "Missing data" }, 400);
-    }
-
-    if (contentLength < 1) {
-      return c.json({ error: "Comment must be at least 1 character" }, 400);
-    }
-
-    if (contentLength > 2000) {
-      return c.json({ error: "Comment must not exceed 2000 characters" }, 400);
     }
 
     if (parentId) {
@@ -380,29 +394,19 @@ commentsApp.post(
   }),
   async (c) => {
     const id = c.req.param("id");
-    const body: unknown = await c.req.json();
+    const parsedBody = await validateRequestBody(
+      c,
+      chapterCommentRequestSchema,
+    );
 
-    if (!isChapterCommentRequestBody(body)) {
+    if (!parsedBody.success) {
+      return parsedBody.response;
+    }
+
+    const { content, title, chapterNumber, parentId } = parsedBody.data;
+
+    if (!id) {
       return c.json({ error: "Missing data" }, 400);
-    }
-
-    const { content, title, chapterNumber, parentId } = body;
-    const contentLength = getContentLength(content ?? "");
-
-    if (!id || !content) {
-      return c.json({ error: "Missing data" }, 400);
-    }
-
-    if (!parentId && (!title || !chapterNumber)) {
-      return c.json({ error: "Missing data" }, 400);
-    }
-
-    if (contentLength < 1) {
-      return c.json({ error: "Comment must be at least 1 character" }, 400);
-    }
-
-    if (contentLength > 2000) {
-      return c.json({ error: "Comment must not exceed 2000 characters" }, 400);
     }
 
     if (parentId) {
@@ -473,25 +477,16 @@ commentsApp.patch(
   }),
   async (c) => {
     const commentId = c.req.param("commentId");
-    const body: unknown = await c.req.json();
+    const parsedBody = await validateRequestBody(c, editCommentRequestSchema);
 
-    if (!isEditCommentRequestBody(body)) {
+    if (!parsedBody.success) {
+      return parsedBody.response;
+    }
+
+    const { content, type } = parsedBody.data;
+
+    if (!commentId) {
       return c.json({ error: "Missing data" }, 400);
-    }
-
-    const { content, type } = body;
-    const contentLength = getContentLength(content ?? "");
-
-    if (!commentId || !content || !type) {
-      return c.json({ error: "Missing data" }, 400);
-    }
-
-    if (contentLength < 1) {
-      return c.json({ error: "Comment must be at least 1 character" }, 400);
-    }
-
-    if (contentLength > 2000) {
-      return c.json({ error: "Comment must not exceed 2000 characters" }, 400);
     }
 
     const session = c.get("session");

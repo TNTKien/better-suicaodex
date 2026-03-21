@@ -6,28 +6,21 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { fetchCommentJson, type LatestComment } from "@/lib/comment-client";
+import { latestCommentsQueryKey } from "@/lib/comment-query-keys";
 
 import Image from "next/image";
 import DoroLoading from "#/images/doro-loading.gif";
 import { Marquee } from "@/components/ui/marquee";
-
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ error: res.statusText }));
-    throw Object.assign(new Error(error.error || "Có lỗi xảy ra"), { status: res.status });
-  }
-  return res.json();
-};
 
 export default function CommentFeed() {
   const {
     data: comments,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["/api/comments/latest"],
-    queryFn: () => fetcher("/api/comments/latest"),
+  } = useQuery<LatestComment[]>({
+    queryKey: latestCommentsQueryKey,
+    queryFn: () => fetchCommentJson<LatestComment[]>("/api/comments/latest"),
   });
 
   if (isLoading)
@@ -64,7 +57,7 @@ export default function CommentFeed() {
         vertical
         className="[--duration:55s] px-0 h-[450px] md:h-[650px] overflow-hidden"
       >
-        {comments.map((cmt: any, index: any) => (
+        {comments.map((cmt) => (
           <CommentFeedItem key={cmt.id} comment={cmt} type={cmt.type} />
         ))}
       </Marquee>

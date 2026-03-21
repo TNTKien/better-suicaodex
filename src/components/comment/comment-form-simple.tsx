@@ -2,6 +2,7 @@
 
 import { Alert, AlertTitle } from "../ui/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -13,19 +14,30 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
 import { Send } from "lucide-react";
 import { toast } from "sonner";
 import { StickerPicker } from "./sticker-picker";
 import { ButtonGroup, ButtonGroupSeparator } from "../ui/button-group";
 import { Spinner } from "../ui/spinner";
 import { authClient } from "@/lib/auth-client";
+import {
+  getCommentCountQueryKey,
+  getCommentsQueryKey,
+  latestCommentsQueryKey,
+} from "@/lib/comment-query-keys";
+
+const MIN_COMMENT_LENGTH = 3;
+const MAX_COMMENT_LENGTH = 2000;
 
 const FormSchema = z.object({
   comment: z
     .string()
-    .min(3, { message: "Bình luận phải dài ít nhất 3 ký tự!" })
-    .max(2000, { message: "Bình luận không được dài hơn 2000 ký tự!" }),
+    .max(MAX_COMMENT_LENGTH, {
+      message: `Bình luận không được dài hơn ${MAX_COMMENT_LENGTH} ký tự!`,
+    })
+    .refine((value) => value.trim().length >= MIN_COMMENT_LENGTH, {
+      message: `Bình luận phải dài ít nhất ${MIN_COMMENT_LENGTH} ký tự!`,
+    }),
 });
 
 interface CommentFormSimpleProps {
@@ -33,7 +45,16 @@ interface CommentFormSimpleProps {
   type: "manga" | "chapter";
   title: string;
   chapterNumber?: string;
-  onCommentPosted?: () => void;
+}
+
+interface CreateCommentPayload {
+  content: string;
+  title: string;
+  chapterNumber?: string;
+}
+
+interface CommentMutationError extends Error {
+  status?: number;
 }
 
 export default function CommentFormSimple({
@@ -41,42 +62,19 @@ export default function CommentFormSimple({
   type,
   title,
   chapterNumber,
-  onCommentPosted,
 }: CommentFormSimpleProps) {
   const { data: session } = authClient.useSession();
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       comment: "",
     },
   });
-  const [loading, setLoading] = useState(false);
-
-  if (!session?.user?.id)
-    return (
-      <Alert className="rounded-sm justify-center text-center">
-        <AlertTitle>Bạn cần đăng nhập để bình luận!</AlertTitle>
-      </Alert>
-    );
-
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    try {
-      setLoading(true);
-      const endpoint = `/api/comments/${type}/${id}`;
-
-      const body: {
-        content: string;
-        title: string;
-        chapterNumber?: string;
-      } = {
-        content: data.comment,
-        title: title,
-      };
-      if (chapterNumber) {
-        body.chapterNumber = chapterNumber;
-      }
-
-      const response = await fetch(endpoint, {
+  const createCommentMutation = useMutation({
+    mutationKey: ["create-comment", type, id],
+    mutationFn: async (body: CreateCommentPayload) => {
+      const response = await fetch(`/api/comments/${type}/${id}`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: {
@@ -85,27 +83,67 @@ export default function CommentFormSimple({
       });
 
       if (!response.ok) {
-        if (response.status === 429) {
-          toast.error("Rap chậm thôi bruh...😓", {
-            closeButton: false,
-          });
-        } else {
-          toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-        }
+        throw Object.assign(new Error("Comment request failed"), {
+          status: response.status,
+        }) as CommentMutationError;
+      }
+
+      return response;
+    },
+    onSuccess: async () => {
+      form.reset();
+
+      const invalidations = [
+        queryClient.invalidateQueries({
+          queryKey: getCommentsQueryKey(type, id),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: latestCommentsQueryKey,
+        }),
+      ];
+
+      if (type === "manga") {
+        invalidations.push(
+          queryClient.invalidateQueries({
+            queryKey: getCommentCountQueryKey(id),
+          }),
+        );
+      }
+
+      await Promise.all(invalidations);
+    },
+    onError: (error: CommentMutationError) => {
+      if (error.status === 429) {
+        toast.error("Rap chậm thôi bruh...😓", {
+          closeButton: false,
+        });
         return;
       }
 
-      form.reset();
-
-      if (onCommentPosted) {
-        onCommentPosted();
-      }
-    } catch (error) {
-      console.error("Error posting comment:", error);
       toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-    } finally {
-      setLoading(false);
+    },
+  });
+  const handleFormSubmit = form.handleSubmit(onSubmit);
+  const loading = createCommentMutation.isPending;
+
+  if (!session?.user?.id)
+    return (
+      <Alert className="rounded-sm justify-center text-center">
+        <AlertTitle>Bạn cần đăng nhập để bình luận!</AlertTitle>
+      </Alert>
+    );
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    const body: CreateCommentPayload = {
+      content: data.comment.trim(),
+      title,
+    };
+
+    if (chapterNumber) {
+      body.chapterNumber = chapterNumber;
     }
+
+    createCommentMutation.mutate(body);
   }
 
   const insertSticker = (stickerName: string) => {
@@ -118,7 +156,12 @@ export default function CommentFormSimple({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
+      <form
+        onSubmit={(event) => {
+          void handleFormSubmit(event);
+        }}
+        className="w-full space-y-2"
+      >
         <FormField
           control={form.control}
           name="comment"
@@ -129,7 +172,7 @@ export default function CommentFormSimple({
                   <Textarea
                     placeholder="Viết bình luận...(hỗ trợ markdown)"
                     className="bg-sidebar rounded-sm resize-none min-h-[115px]"
-                    maxLength={2000}
+                    maxLength={MAX_COMMENT_LENGTH}
                     disabled={loading}
                     {...field}
                   />
@@ -142,7 +185,7 @@ export default function CommentFormSimple({
                         size="sm"
                         variant="outline"
                       >
-                        {!!loading ? <Spinner /> : <Send />}
+                        {loading ? <Spinner /> : <Send />}
                         Gửi bình luận
                       </Button>
                       <ButtonGroupSeparator />

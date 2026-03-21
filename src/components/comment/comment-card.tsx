@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Streamdown } from "streamdown";
@@ -15,6 +16,11 @@ import { StickerPicker } from "./sticker-picker";
 import { ButtonGroup } from "../ui/button-group";
 import { Spinner } from "../ui/spinner";
 import { authClient } from "@/lib/auth-client";
+import {
+  getCommentCountQueryKey,
+  getCommentsQueryKey,
+  latestCommentsQueryKey,
+} from "@/lib/comment-query-keys";
 
 interface SerializedComment {
   id: string;
@@ -43,12 +49,36 @@ interface CommentCardProps {
   type: "manga" | "chapter";
   contentId: string;
   isReply?: boolean;
-  onMutate?: () => void;
 }
+
+interface CommentMutationError extends Error {
+  status?: number;
+}
+
+const MIN_COMMENT_LENGTH = 3;
+const MAX_COMMENT_LENGTH = 2000;
 
 // Check if content is HTML (old format from richtext editor)
 const isHTML = (str: string): boolean => {
   return /<[a-z][\s\S]*>/i.test(str);
+};
+
+const getCommentValidationError = (content: string): string | null => {
+  const trimmed = content.trim();
+
+  if (!trimmed) {
+    return "Bình luận không được để trống!";
+  }
+
+  if (trimmed.length < MIN_COMMENT_LENGTH) {
+    return `Bình luận phải dài ít nhất ${MIN_COMMENT_LENGTH} ký tự!`;
+  }
+
+  if (trimmed.length > MAX_COMMENT_LENGTH) {
+    return `Bình luận không được dài hơn ${MAX_COMMENT_LENGTH} ký tự!`;
+  }
+
+  return null;
 };
 
 // Parse comment content to separate text and stickers
@@ -85,19 +115,120 @@ export default function CommentCard({
   type,
   contentId,
   isReply = false,
-  onMutate,
 }: CommentCardProps) {
   const { data: session } = authClient.useSession();
+  const queryClient = useQueryClient();
   const [editMode, setEditMode] = useState(false);
   const [replyMode, setReplyMode] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [replyContent, setReplyContent] = useState("");
-  const [editLoading, setEditLoading] = useState(false);
-  const [replyLoading, setReplyLoading] = useState(false);
   const editTextareaRef = useRef<HTMLTextAreaElement>(null);
   const replyTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const { text, stickers } = parseCommentContent(comment.content);
+
+  const handleCommentMutationError = (error: CommentMutationError) => {
+    if (error.status === 429) {
+      toast.error("Rap chậm thôi bruh...😓");
+      return;
+    }
+
+    toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+  };
+
+  const invalidateCommentQueries = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: getCommentsQueryKey(type, contentId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: latestCommentsQueryKey,
+      }),
+    ]);
+  };
+
+  const invalidateCreateQueries = async () => {
+    const invalidations = [
+      queryClient.invalidateQueries({
+        queryKey: getCommentsQueryKey(type, contentId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: latestCommentsQueryKey,
+      }),
+    ];
+
+    if (type === "manga") {
+      invalidations.push(
+        queryClient.invalidateQueries({
+          queryKey: getCommentCountQueryKey(contentId),
+        }),
+      );
+    }
+
+    await Promise.all(invalidations);
+  };
+
+  const editCommentMutation = useMutation({
+    mutationKey: ["edit-comment", comment.id],
+    mutationFn: async (content: string) => {
+      const response = await fetch(`/api/comments/${comment.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ content, type }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw Object.assign(new Error("Comment request failed"), {
+          status: response.status,
+        }) as CommentMutationError;
+      }
+
+      return response;
+    },
+    onSuccess: async () => {
+      setEditMode(false);
+      await invalidateCommentQueries();
+    },
+    onError: handleCommentMutationError,
+  });
+
+  const replyCommentMutation = useMutation({
+    mutationKey: ["reply-comment", type, contentId, comment.id],
+    mutationFn: async (content: string) => {
+      const body: Record<string, string> = {
+        content,
+        parentId: comment.id,
+        title: "",
+      };
+
+      if (type === "chapter") {
+        body.chapterNumber = "";
+      }
+
+      const response = await fetch(`/api/comments/${type}/${contentId}`, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw Object.assign(new Error("Comment request failed"), {
+          status: response.status,
+        }) as CommentMutationError;
+      }
+
+      return response;
+    },
+    onSuccess: async () => {
+      setReplyContent("");
+      setReplyMode(false);
+      await invalidateCreateQueries();
+    },
+    onError: handleCommentMutationError,
+  });
+
+  const editLoading = editCommentMutation.isPending;
+  const replyLoading = replyCommentMutation.isPending;
 
   const handleEditOpen = () => {
     setEditContent(comment.content);
@@ -113,89 +244,28 @@ export default function CommentCard({
     setTimeout(() => replyTextareaRef.current?.focus(), 0);
   };
 
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = () => {
     const trimmed = editContent.trim();
-    if (!trimmed) {
-      toast.error("Bình luận không được để trống!");
+    const validationError = getCommentValidationError(editContent);
+
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
-    if (trimmed.length > 2000) {
-      toast.error("Bình luận không được dài hơn 2000 ký tự!");
-      return;
-    }
 
-    try {
-      setEditLoading(true);
-      const response = await fetch(`/api/comments/${comment.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ content: trimmed, type }),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          toast.error("Rap chậm thôi bruh...😓");
-        } else {
-          toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-        }
-        return;
-      }
-
-      setEditMode(false);
-      if (onMutate) onMutate();
-    } catch {
-      toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-    } finally {
-      setEditLoading(false);
-    }
+    editCommentMutation.mutate(trimmed);
   };
 
-  const handleReplySubmit = async () => {
+  const handleReplySubmit = () => {
     const trimmed = replyContent.trim();
-    if (!trimmed) {
-      toast.error("Bình luận không được để trống!");
+    const validationError = getCommentValidationError(replyContent);
+
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
-    if (trimmed.length > 2000) {
-      toast.error("Bình luận không được dài hơn 2000 ký tự!");
-      return;
-    }
 
-    try {
-      setReplyLoading(true);
-      const endpoint = `/api/comments/${type}/${contentId}`;
-      const body: Record<string, string> = {
-        content: trimmed,
-        parentId: comment.id,
-        title: "",
-      };
-      if (type === "chapter") {
-        body.chapterNumber = "";
-      }
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          toast.error("Rap chậm thôi bruh...😓");
-        } else {
-          toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-        }
-        return;
-      }
-
-      setReplyContent("");
-      setReplyMode(false);
-      if (onMutate) onMutate();
-    } catch {
-      toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
-    } finally {
-      setReplyLoading(false);
-    }
+    replyCommentMutation.mutate(trimmed);
   };
 
   const insertStickerToEdit = (stickerName: string) => {
@@ -215,8 +285,8 @@ export default function CommentCard({
       <div className="flex gap-2">
         <Avatar className="size-8 relative z-10 shrink-0">
           <AvatarImage
-            src={comment.user.image || ""}
-            alt={comment.user.name || "User"}
+            src={comment.user.image ?? ""}
+            alt={comment.user.name ?? "User"}
           />
           <AvatarFallback>
             {comment.user.name ? comment.user.name.slice(0, 2) : "SC"}
@@ -264,7 +334,7 @@ export default function CommentCard({
                   onChange={(e) => setEditContent(e.target.value)}
                   placeholder="Chỉnh sửa bình luận...(hỗ trợ markdown)"
                   className="bg-sidebar rounded-sm resize-none min-h-[100px] pr-28"
-                  maxLength={2000}
+                  maxLength={MAX_COMMENT_LENGTH}
                   disabled={editLoading}
                 />
                 <div className="absolute bottom-2 right-2">
@@ -338,9 +408,9 @@ export default function CommentCard({
                   ref={replyTextareaRef}
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
-                  placeholder={`Trả lời ${comment.user.name || ""}...`}
+                  placeholder={`Trả lời ${comment.user.name ?? ""}...`}
                   className="bg-sidebar rounded-sm resize-none min-h-[90px] pr-28"
-                  maxLength={2000}
+                  maxLength={MAX_COMMENT_LENGTH}
                   disabled={replyLoading}
                 />
                 <div className="absolute bottom-2 right-2">

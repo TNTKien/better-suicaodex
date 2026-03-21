@@ -2,7 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNowStrict } from "date-fns";
 import { vi as locale } from "date-fns/locale";
-import * as cheerio from "cheerio";
 import { siteConfig } from "@/config/site";
 import slugify from "slugify";
 export function cn(...inputs: ClassValue[]) {
@@ -46,14 +45,6 @@ function formatDistance(token: string, count: number, options?: any): string {
   }
 
   return result;
-}
-
-export function getContentLength(html: string): number {
-  const $ = cheerio.load(html);
-  const text = $.text().trim();
-  const textLength = text.length;
-  const imgCount = $("img").length;
-  return textLength + imgCount;
 }
 
 export function formatTimeToNow(date: Date | number): string {

@@ -2,23 +2,15 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import CommentCard from "./comment-card";
-import { useImperativeHandle } from "react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Card, CardContent } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
+import type { CommentsResponse, SerializedComment } from "@/lib/comment-client";
+import { fetchCommentJson } from "@/lib/comment-client";
+import { getCommentsQueryKey } from "@/lib/comment-query-keys";
 import { cn } from "@/lib/utils";
 
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ error: res.statusText }));
-    throw Object.assign(new Error(error.error || "Có lỗi xảy ra"), {
-      status: res.status,
-    });
-  }
-  return res.json();
-};
 const LIMIT = 10;
 
 interface CommentListProps {
@@ -27,42 +19,34 @@ interface CommentListProps {
   inSidebar?: boolean;
 }
 
-const CommentList = ({
-  ref,
-  id,
-  type,
-  inSidebar = false,
-}: CommentListProps & {
-  ref: React.RefObject<unknown>;
-}) => {
+const CommentList = ({ id, type, inSidebar = false }: CommentListProps) => {
   const {
     data,
-    refetch: mutate,
     isLoading,
     error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: [`/api/comments/${type}/${id}`],
-    queryFn: ({ pageParam = 0 }) =>
-      fetcher(`/api/comments/${type}/${id}?offset=${pageParam}&limit=${LIMIT}`),
+  } = useInfiniteQuery<CommentsResponse>({
+    queryKey: getCommentsQueryKey(type, id),
+    queryFn: ({ pageParam = 0 }) => {
+      const offset = typeof pageParam === "number" ? pageParam : 0;
+
+      return fetchCommentJson<CommentsResponse>(
+        `/api/comments/${type}/${id}?offset=${offset}&limit=${LIMIT}`,
+      );
+    },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       const totalLoaded = allPages.reduce(
         (acc, page) => acc + page.comments.length,
         0,
       );
-      return totalLoaded < (lastPage.meta.totalCount || 0)
+      return totalLoaded < (lastPage.meta.totalCount ?? 0)
         ? totalLoaded
         : undefined;
     },
   });
-
-  // Expose the mutate function to the parent component
-  useImperativeHandle(ref, () => ({
-    mutate,
-  }));
 
   if (error)
     return (
@@ -112,25 +96,24 @@ const CommentList = ({
   return (
     <div className="space-y-4">
       <div className="space-y-4 px-1">
-        {allComments.map((comment: any) => (
+        {allComments.map((comment: SerializedComment) => (
           <Card
             key={comment.id}
             className="rounded-none shadow-none border-none p-0 bg-transparent overflow-hidden"
           >
             <CardContent className="p-0!">
               <div className="relative">
-                <CommentCard
-                  comment={comment}
-                  type={type}
-                  contentId={id}
-                  onMutate={mutate}
-                />
+                <CommentCard comment={comment} type={type} contentId={id} />
                 {comment.replies && comment.replies.length > 0 && (
                   <div className="relative mt-2 space-y-3">
                     {/* Vertical line going up through parent and down through all replies */}
                     <div className="absolute left-4 top-[-9999px] bottom-0 w-0.5 bg-border" />
                     {comment.replies.map(
-                      (reply: any, index: number, arr: any[]) => {
+                      (
+                        reply: SerializedComment,
+                        index: number,
+                        arr: SerializedComment[],
+                      ) => {
                         const isLast = index === arr.length - 1;
                         return (
                           <div key={reply.id} className="relative pl-10">
@@ -150,7 +133,6 @@ const CommentList = ({
                               type={type}
                               contentId={id}
                               isReply={true}
-                              onMutate={mutate}
                             />
                           </div>
                         );
@@ -168,7 +150,9 @@ const CommentList = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => fetchNextPage()}
+            onClick={() => {
+              void fetchNextPage();
+            }}
             disabled={isFetchingNextPage}
           >
             {isFetchingNextPage ? "Đang tải..." : "Xem thêm"}
