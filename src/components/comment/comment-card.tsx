@@ -46,9 +46,30 @@ interface CommentCardProps {
   onMutate?: () => void;
 }
 
+const MIN_COMMENT_LENGTH = 3;
+const MAX_COMMENT_LENGTH = 2000;
+
 // Check if content is HTML (old format from richtext editor)
 const isHTML = (str: string): boolean => {
   return /<[a-z][\s\S]*>/i.test(str);
+};
+
+const getCommentValidationError = (content: string): string | null => {
+  const trimmed = content.trim();
+
+  if (!trimmed) {
+    return "Bình luận không được để trống!";
+  }
+
+  if (trimmed.length < MIN_COMMENT_LENGTH) {
+    return `Bình luận phải dài ít nhất ${MIN_COMMENT_LENGTH} ký tự!`;
+  }
+
+  if (trimmed.length > MAX_COMMENT_LENGTH) {
+    return `Bình luận không được dài hơn ${MAX_COMMENT_LENGTH} ký tự!`;
+  }
+
+  return null;
 };
 
 // Parse comment content to separate text and stickers
@@ -115,12 +136,10 @@ export default function CommentCard({
 
   const handleEditSubmit = async () => {
     const trimmed = editContent.trim();
-    if (!trimmed) {
-      toast.error("Bình luận không được để trống!");
-      return;
-    }
-    if (trimmed.length > 2000) {
-      toast.error("Bình luận không được dài hơn 2000 ký tự!");
+    const validationError = getCommentValidationError(editContent);
+
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
 
@@ -152,12 +171,10 @@ export default function CommentCard({
 
   const handleReplySubmit = async () => {
     const trimmed = replyContent.trim();
-    if (!trimmed) {
-      toast.error("Bình luận không được để trống!");
-      return;
-    }
-    if (trimmed.length > 2000) {
-      toast.error("Bình luận không được dài hơn 2000 ký tự!");
+    const validationError = getCommentValidationError(replyContent);
+
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
 
@@ -215,8 +232,8 @@ export default function CommentCard({
       <div className="flex gap-2">
         <Avatar className="size-8 relative z-10 shrink-0">
           <AvatarImage
-            src={comment.user.image || ""}
-            alt={comment.user.name || "User"}
+            src={comment.user.image ?? ""}
+            alt={comment.user.name ?? "User"}
           />
           <AvatarFallback>
             {comment.user.name ? comment.user.name.slice(0, 2) : "SC"}
@@ -264,14 +281,16 @@ export default function CommentCard({
                   onChange={(e) => setEditContent(e.target.value)}
                   placeholder="Chỉnh sửa bình luận...(hỗ trợ markdown)"
                   className="bg-sidebar rounded-sm resize-none min-h-[100px] pr-28"
-                  maxLength={2000}
+                  maxLength={MAX_COMMENT_LENGTH}
                   disabled={editLoading}
                 />
                 <div className="absolute bottom-2 right-2">
                   <ButtonGroup>
                     <Button
                       type="button"
-                      onClick={handleEditSubmit}
+                      onClick={() => {
+                        void handleEditSubmit();
+                      }}
                       disabled={editLoading}
                       className="text-xs"
                       size="sm"
@@ -338,16 +357,18 @@ export default function CommentCard({
                   ref={replyTextareaRef}
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
-                  placeholder={`Trả lời ${comment.user.name || ""}...`}
+                  placeholder={`Trả lời ${comment.user.name ?? ""}...`}
                   className="bg-sidebar rounded-sm resize-none min-h-[90px] pr-28"
-                  maxLength={2000}
+                  maxLength={MAX_COMMENT_LENGTH}
                   disabled={replyLoading}
                 />
                 <div className="absolute bottom-2 right-2">
                   <ButtonGroup>
                     <Button
                       type="button"
-                      onClick={handleReplySubmit}
+                      onClick={() => {
+                        void handleReplySubmit();
+                      }}
                       disabled={replyLoading}
                       className="text-xs"
                       size="sm"

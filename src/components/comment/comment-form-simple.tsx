@@ -21,11 +21,18 @@ import { ButtonGroup, ButtonGroupSeparator } from "../ui/button-group";
 import { Spinner } from "../ui/spinner";
 import { authClient } from "@/lib/auth-client";
 
+const MIN_COMMENT_LENGTH = 3;
+const MAX_COMMENT_LENGTH = 2000;
+
 const FormSchema = z.object({
   comment: z
     .string()
-    .min(3, { message: "Bình luận phải dài ít nhất 3 ký tự!" })
-    .max(2000, { message: "Bình luận không được dài hơn 2000 ký tự!" }),
+    .max(MAX_COMMENT_LENGTH, {
+      message: `Bình luận không được dài hơn ${MAX_COMMENT_LENGTH} ký tự!`,
+    })
+    .refine((value) => value.trim().length >= MIN_COMMENT_LENGTH, {
+      message: `Bình luận phải dài ít nhất ${MIN_COMMENT_LENGTH} ký tự!`,
+    }),
 });
 
 interface CommentFormSimpleProps {
@@ -50,6 +57,7 @@ export default function CommentFormSimple({
       comment: "",
     },
   });
+  const handleFormSubmit = form.handleSubmit(onSubmit);
   const [loading, setLoading] = useState(false);
 
   if (!session?.user?.id)
@@ -69,7 +77,7 @@ export default function CommentFormSimple({
         title: string;
         chapterNumber?: string;
       } = {
-        content: data.comment,
+        content: data.comment.trim(),
         title: title,
       };
       if (chapterNumber) {
@@ -118,7 +126,12 @@ export default function CommentFormSimple({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
+      <form
+        onSubmit={(event) => {
+          void handleFormSubmit(event);
+        }}
+        className="w-full space-y-2"
+      >
         <FormField
           control={form.control}
           name="comment"
@@ -129,7 +142,7 @@ export default function CommentFormSimple({
                   <Textarea
                     placeholder="Viết bình luận...(hỗ trợ markdown)"
                     className="bg-sidebar rounded-sm resize-none min-h-[115px]"
-                    maxLength={2000}
+                    maxLength={MAX_COMMENT_LENGTH}
                     disabled={loading}
                     {...field}
                   />
@@ -142,7 +155,7 @@ export default function CommentFormSimple({
                         size="sm"
                         variant="outline"
                       >
-                        {!!loading ? <Spinner /> : <Send />}
+                        {loading ? <Spinner /> : <Send />}
                         Gửi bình luận
                       </Button>
                       <ButtonGroupSeparator />
