@@ -49,7 +49,7 @@ export default function MangaBanner({
       </div>
 
       <div className="mt-70 bg-background col-start-1 row-start-1">
-        <LightRays className="mt-70"/>
+        <LightRays className="mt-70 hidden md:block"/>
       </div>
     </div>
   );
