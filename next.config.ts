@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         pathname: "/**",
         search: "",
       },
+      {
+        protocol: "https",
+        hostname: "moetruyen.net",
+        port: "",
+        pathname: "/uploads/covers/**",
+      },
     ],
   },
   allowedDevOrigins: ["*.suicaodex.com"],
