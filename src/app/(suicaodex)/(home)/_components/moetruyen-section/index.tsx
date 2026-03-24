@@ -6,7 +6,6 @@ import { useMounted } from "@mantine/hooks";
 import {
   ArrowRight,
   ArrowUpRight,
-  ChevronDown,
   ChevronsDown,
   OctagonAlert,
   UserRound,
