@@ -39,9 +39,15 @@ const nextConfig: NextConfig = {
         pathname: "/**",
         search: "",
       },
+      {
+        protocol: "https",
+        hostname: "moetruyen.net",
+        port: "",
+        pathname: "/uploads/covers/**",
+      },
     ],
   },
-  allowedDevOrigins: ["*.suicaodex.com"],
+  allowedDevOrigins: ["*.suicaodex.com", 'suicaodex.com'],
   rewrites: () => [
     {
       source: "/manga-sitemap.xml",
