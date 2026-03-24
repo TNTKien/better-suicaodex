@@ -6,6 +6,8 @@ import { useMounted } from "@mantine/hooks";
 import {
   ArrowRight,
   ArrowUpRight,
+  ChevronDown,
+  ChevronsDown,
   OctagonAlert,
   UserRound,
 } from "lucide-react";
@@ -14,7 +16,6 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   getMoetruyenMangaUrl,
   type MoetruyenHomeManga,
@@ -298,6 +299,131 @@ function MediumMangaPairCard({
   );
 }
 
+function MobileExpandLayout({
+  featuredPair,
+  leftBottomPairs,
+  rightTopPair,
+  rightBottomPair,
+  clockMs,
+}: {
+  featuredPair: MoetruyenHomeManga[];
+  leftBottomPairs: MoetruyenHomeManga[][];
+  rightTopPair: MoetruyenHomeManga[] | null;
+  rightBottomPair: MoetruyenHomeManga[] | null;
+  clockMs: number;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const mobilePairs = [
+    featuredPair,
+    leftBottomPairs[0],
+    leftBottomPairs[1],
+    rightTopPair,
+    rightBottomPair,
+  ].filter((pair): pair is MoetruyenHomeManga[] => Boolean(pair));
+  const visiblePairs = mobilePairs.slice(0, 2);
+  const hiddenPairs = mobilePairs.slice(2);
+
+  return (
+    <div className="md:hidden">
+      <div className="flex flex-col gap-3">
+        {visiblePairs.map((pair, index) => {
+          const pairIndex = mobilePairs.indexOf(pair);
+          const activeIndex = getActiveRotationIndex(
+            pair,
+            clockMs,
+            CARD_ROTATION_DURATIONS[pairIndex] ?? CARD_ROTATION_DURATIONS[0],
+          );
+
+          return index === 0 ? (
+            <LargeMangaPairCard
+              key={pair.map((manga) => manga.id).join("-")}
+              pair={pair}
+              activeIndex={activeIndex}
+              className="min-h-[13rem]"
+            />
+          ) : (
+            <MediumMangaPairCard
+              key={pair.map((manga) => manga.id).join("-")}
+              pair={pair}
+              activeIndex={activeIndex}
+              className="min-h-[9rem]"
+            />
+          );
+        })}
+
+        {hiddenPairs.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            <div
+              className={cn(
+                "grid transition-all duration-500 ease-out",
+                isExpanded
+                  ? "grid-rows-[1fr] opacity-100"
+                  : "grid-rows-[0fr] opacity-0",
+              )}
+            >
+              <div className="overflow-hidden">
+                <div className="flex flex-col gap-3 pt-0.5">
+                  {hiddenPairs.map((pair, index) => {
+                    const pairIndex = mobilePairs.indexOf(pair);
+                    const isLastCard = index === hiddenPairs.length - 1;
+
+                    const activeIndex = getActiveRotationIndex(
+                      pair,
+                      clockMs,
+                      CARD_ROTATION_DURATIONS[pairIndex] ??
+                        CARD_ROTATION_DURATIONS[0],
+                    );
+
+                    return isLastCard ? (
+                      <LargeMangaPairCard
+                        key={pair.map((manga) => manga.id).join("-")}
+                        pair={pair}
+                        activeIndex={activeIndex}
+                        className="min-h-[13rem]"
+                      />
+                    ) : (
+                      <MediumMangaPairCard
+                        key={pair.map((manga) => manga.id).join("-")}
+                        pair={pair}
+                        activeIndex={activeIndex}
+                        className="min-h-[9rem]"
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <Button
+              aria-expanded={isExpanded}
+              className="w-full rounded-full"
+              onClick={() => setIsExpanded((current) => !current)}
+              type="button"
+              variant="secondary"
+              size="sm"
+            >
+              <ChevronsDown
+                className={cn(
+                  "transition-transform",
+                  isExpanded && "rotate-180",
+                )}
+              />
+              {isExpanded ? "Thu gọn" : "Xem thêm"}
+              <ChevronsDown
+                className={cn(
+                  "transition-transform",
+                  isExpanded && "rotate-180",
+                )}
+              />
+            </Button>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 export default function MoetruyenSection() {
   const isMounted = useMounted();
   const sectionTitleId = useId();
@@ -375,7 +501,15 @@ export default function MoetruyenSection() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <MobileExpandLayout
+        featuredPair={featuredPair}
+        leftBottomPairs={leftBottomPairs}
+        rightTopPair={rightTopPair}
+        rightBottomPair={rightBottomPair}
+        clockMs={clockMs}
+      />
+
+      <div className="hidden gap-4 md:grid xl:grid-cols-2">
         <div className="grid gap-4">
           <LargeMangaPairCard
             key={featuredPair.map((manga) => manga.id).join("-")}

@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
 
 import { cn } from "@/lib/utils";
 
@@ -42,7 +41,14 @@ export default function MoetruyenSectionSkeleton() {
         <h1 className="text-2xl font-black uppercase">MoèTruyện</h1>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <div className="flex flex-col gap-3 md:hidden">
+        <MoetruyenSkeletonCard className="min-h-[13rem]" />
+        <MoetruyenSkeletonCard className="min-h-[9rem]" />
+
+        <Skeleton className="h-10 w-full rounded-full" />
+      </div>
+
+      <div className="hidden gap-4 md:grid xl:grid-cols-2">
         <div className="grid gap-4">
           <MoetruyenSkeletonCard
             className="min-h-[18rem] sm:min-h-[22rem]"
