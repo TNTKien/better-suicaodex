@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  allowedDevOrigins: ["*.suicaodex.com"],
+  allowedDevOrigins: ["*.suicaodex.com", 'suicaodex.com'],
   rewrites: () => [
     {
       source: "/manga-sitemap.xml",

@@ -13,6 +13,7 @@ interface MoetruyenRandomMangaPayload {
   title: string;
   author: string | null;
   coverUrl: string | null;
+  description: string | null;
   genres: MoetruyenGenre[];
 }
 
@@ -22,6 +23,7 @@ export interface MoetruyenHomeManga {
   title: string;
   author: string | null;
   coverUrl: string | null;
+  description: string | null;
   tags: string[];
 }
 
@@ -77,6 +79,7 @@ function normalizeRandomMangaItem(
     id,
     slug,
     title,
+    description: getString(value.description),
     author: getString(value.author),
     coverUrl: getString(value.coverUrl),
     genres: normalizeGenres(value.genres),
@@ -97,6 +100,7 @@ function normalizeRandomMangaResponse(payload: unknown): MoetruyenHomeManga[] {
       title: manga.title,
       author: manga.author,
       coverUrl: manga.coverUrl,
+      description: manga.description,
       tags: manga.genres.slice(0, 2).map((genre) => genre.name),
     }));
 }

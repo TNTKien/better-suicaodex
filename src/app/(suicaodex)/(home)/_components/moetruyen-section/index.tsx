@@ -8,7 +8,6 @@ import {
   ArrowUpRight,
   ChevronsDown,
   OctagonAlert,
-  UserRound,
 } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
@@ -24,6 +23,7 @@ import { cn } from "@/lib/utils";
 
 import MoetruyenSectionSkeleton from "./section-skeleton";
 import Link from "next/link";
+import { Streamdown } from "streamdown";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
 const MOETRUYEN_PAIR_COUNT = 5;
@@ -215,12 +215,13 @@ function LargeMangaPairCard({
             </h3>
           </a>
 
-          <div className="flex items-center gap-2 text-sm  sm:text-base">
-            <UserRound className="size-4 shrink-0" />
-            <span className="line-clamp-1 font-medium">
-              {activeManga.author ?? "Đang cập nhật"}
-            </span>
-          </div>
+          {!!activeManga.description && (
+            <div className="flex items-center gap-2 text-sm sm:text-base">
+              <Streamdown className="line-clamp-3">
+                {activeManga.description}
+              </Streamdown>
+            </div>
+          )}
         </div>
 
         {showCallToAction ? (
@@ -285,12 +286,13 @@ function MediumMangaPairCard({
               {activeManga.title}
             </h3>
 
-            <div className="flex items-center gap-2 text-xs  sm:text-sm">
-              <UserRound className="size-3.5 shrink-0" />
-              <span className="line-clamp-1">
-                {activeManga.author ?? "Đang cập nhật"}
-              </span>
-            </div>
+            {!!activeManga.description && (
+              <div className="flex items-center gap-2 text-sm sm:text-base">
+                <Streamdown className="line-clamp-2">
+                  {activeManga.description}
+                </Streamdown>
+              </div>
+            )}
           </div>
         </div>
       </Link>
