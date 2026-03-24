@@ -37,7 +37,7 @@ function getCardClassName(className?: string) {
 }
 
 function getMangaTags(manga: MoetruyenHomeManga) {
-  return manga.tags.length > 0 ? manga.tags : ["Đang cập nhật tag"];
+  return manga.tags.length > 0 ? manga.tags : ["Đang cập nhật"];
 }
 
 function pairManga(items: MoetruyenHomeManga[], pairCount: number) {
@@ -218,7 +218,7 @@ function LargeMangaPairCard({
           <div className="flex items-center gap-2 text-sm  sm:text-base">
             <UserRound className="size-4 shrink-0" />
             <span className="line-clamp-1 font-medium">
-              {activeManga.author ?? "Đang cập nhật tác giả"}
+              {activeManga.author ?? "Đang cập nhật"}
             </span>
           </div>
         </div>
@@ -288,7 +288,7 @@ function MediumMangaPairCard({
             <div className="flex items-center gap-2 text-xs  sm:text-sm">
               <UserRound className="size-3.5 shrink-0" />
               <span className="line-clamp-1">
-                {activeManga.author ?? "Đang cập nhật tác giả"}
+                {activeManga.author ?? "Đang cập nhật"}
               </span>
             </div>
           </div>
