@@ -108,7 +108,7 @@ export async function getMoetruyenRandomManga(
   const url = new URL("/v1/manga/random", MOETRUYEN_API_URL);
   url.searchParams.set("limit", normalizedLimit.toString());
 
-  const response = await fetch("https://cors.iamneyk.workers.dev?url=" + url.toString(), {
+  const response = await fetch(url.toString(), {
     cache: "no-store",
     headers: {
       Accept: "application/json",
