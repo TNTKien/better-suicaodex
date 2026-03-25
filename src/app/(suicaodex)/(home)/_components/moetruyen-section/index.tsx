@@ -195,7 +195,7 @@ function LargeMangaPairCard({
           {getMangaTags(activeManga).map((tag) => (
             <Badge
               key={tag}
-              variant="secondary"
+              variant="outline"
               className="border-white/20 bg-black/20"
             >
               {tag}
