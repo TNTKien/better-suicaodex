@@ -4,12 +4,33 @@ import type {
   UserRow,
 } from "@/lib/db/schema";
 
-type CommentUser = Pick<UserRow, "id" | "name" | "image" | "createdAt">;
+type CommentUser = Pick<
+  UserRow,
+  "id" | "name" | "displayName" | "image" | "createdAt"
+>;
+
+function normalizeCommentUserName(value: string | null | undefined) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue || trimmedValue.toLowerCase() === "null") {
+    return null;
+  }
+
+  return trimmedValue;
+}
 
 export function serializeUser(user: CommentUser) {
+  const name =
+    normalizeCommentUserName(user.displayName) ??
+    normalizeCommentUserName(user.name);
+
   return {
     id: user.id,
-    name: user.name,
+    name,
     image: user.image,
     createdAt: user.createdAt,
   };
