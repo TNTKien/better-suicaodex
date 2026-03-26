@@ -26,6 +26,11 @@
       "sourceType": "github",
       "computedHash": "7786d722fa682b3d6a99793e73a9d51b59becefa595676134a993020633e068f"
     },
+    "next-browser": {
+      "source": "vercel-labs/next-browser",
+      "sourceType": "github",
+      "computedHash": "c0b614395a826c558427c88f29a9630151fa796d3ded86ecd69d87e80820b896"
+    },
     "organization-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
