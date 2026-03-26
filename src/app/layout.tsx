@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "@/styles/globals.css";
 import "@/styles/themes.css";
 import { ThemeProvider } from "@/components/providers";
@@ -62,21 +63,19 @@ export default function RootLayout({
       translate="no"
     >
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                if (window.localStorage && (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches))) {
-                  document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
-                }
-              } catch (_) {}
-            `,
-          }}
-        />
         <meta name="theme-color" content={META_THEME_COLORS.dark} />
       </head>
       {/* <body className={`${leagueSpartan.className} antialiased`}> */}
       <body className={`${inter.className} antialiased`}>
+        <Script id="theme-color-bootstrap" strategy="beforeInteractive">
+          {`
+            try {
+              if (window.localStorage && (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches))) {
+                document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '${META_THEME_COLORS.dark}')
+              }
+            } catch (_) {}
+          `}
+        </Script>
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"
