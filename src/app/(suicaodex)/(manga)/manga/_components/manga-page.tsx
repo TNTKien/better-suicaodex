@@ -1,6 +1,7 @@
 "use client";
 
 import MangaSkeleton from "./manga-skeleton";
+import dynamic from "next/dynamic";
 import { parseAsInteger, parseAsStringLiteral, useQueryState } from "nuqs";
 import { MANGA_PAGE_TABS } from "@/types/types";
 import {
@@ -39,6 +40,7 @@ import {
   ImagesIcon,
   LinkIcon,
   List,
+  Loader2,
   MessageSquare,
   Sprout,
   SquareArrowOutUpRight,
@@ -54,12 +56,74 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { MangaChaptersList } from "./chapters-list/manga-chapters-list";
-import CommentSection from "@/components/comment/comment-section";
-import MangaCoversTab from "./manga-covers-tab";
-import MangaRcms from "./manga-rcms";
-import MangaRelated from "./manga-related";
 import MangaReadNowBtn from "./manga-readnow-btn";
+
+const CommentSectionLoading = () => (
+  <div className="space-y-4 px-1">
+    {Array.from({ length: 3 }).map((_, i) => (
+      <Card
+        key={i}
+        className="rounded-none shadow-none border-none p-0 bg-transparent"
+      >
+        <CardContent className="p-0!">
+          <div className="flex gap-2">
+            <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+);
+
+const MangaTabSpinnerLoading = () => (
+  <div className="flex justify-center items-center w-full h-16">
+    <Loader2 className="animate-spin w-8 h-8" />
+  </div>
+);
+
+const MangaRelatedLoading = () => (
+  <div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <Card
+        key={i}
+        className="rounded-sm shadow-xs transition-colors duration-200 overflow-hidden border-none"
+      >
+        <Skeleton className="w-full aspect-5/7 rounded-none bg-gray-500" />
+      </Card>
+    ))}
+  </div>
+);
+
+const CommentSection = dynamic(
+  () => import("@/components/comment/comment-section"),
+  {
+    ssr: false,
+    loading: () => <CommentSectionLoading />,
+  },
+);
+
+const MangaCoversTab = dynamic(() => import("./manga-covers-tab"), {
+  ssr: false,
+  loading: () => <MangaTabSpinnerLoading />,
+});
+
+const MangaRcms = dynamic(() => import("./manga-rcms"), {
+  ssr: false,
+  loading: () => <MangaTabSpinnerLoading />,
+});
+
+const MangaRelated = dynamic(() => import("./manga-related"), {
+  ssr: false,
+  loading: () => <MangaRelatedLoading />,
+});
 
 interface PageProps {
   id: string;

@@ -1,12 +1,12 @@
 "use client";
 
-import { cn, generateSlug } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { ArrowRight, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { Input } from "../ui/input";
 import { useConfig } from "@/hooks/use-config";
-import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
 import {
   Dialog,
@@ -19,40 +19,30 @@ import {
 } from "../ui/dialog";
 import useKeyDown from "@/hooks/use-keydown";
 import { Badge } from "../ui/badge";
-import { useGetManga } from "@/lib/weebdex/hooks/manga/manga";
 import { useDebouncedValue } from "@mantine/hooks";
-import { parseMangaTitle } from "@/lib/weebdex/utils";
-import CompactCardWeebdex from "./compact-card-weebdex";
+
+const QuickSearchResults = dynamic(() => import("./quick-search-results"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col gap-2">
+      <Skeleton className="w-[69px] h-5 rounded-sm bg-gray-500 mb-2" />
+      <Skeleton className="w-full h-24 rounded-sm bg-gray-500" />
+      <Skeleton className="w-full h-24 rounded-sm bg-gray-500" />
+      <Skeleton className="w-full h-24 rounded-sm bg-gray-500" />
+    </div>
+  ),
+});
 
 export default function QuickSearch() {
   const [expanded, setExpanded] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm] = useDebouncedValue(searchTerm, 500);
+  const trimmedSearchTerm = searchTerm.trim();
+  const trimmedDebouncedTerm = debouncedTerm.trim();
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const [config] = useConfig();
-
-  const contentRating = config.r18
-    ? (["safe", "suggestive", "erotica", "pornographic"] as const)
-    : (["safe", "suggestive", "erotica"] as const);
-
-  const { data, isLoading, isError } = useGetManga(
-    {
-      title: debouncedTerm || undefined,
-      limit: 10,
-      contentRating: [...contentRating],
-      sort: "relevance",
-    },
-    {
-      query: {
-        enabled: debouncedTerm.length > 0,
-        refetchOnWindowFocus: false,
-      },
-    },
-  );
-
-  const mangas = data?.status === 200 ? (data.data.data ?? []) : [];
 
   useKeyDown({ key: "k", ctrlKey: true }, () => {
     setExpanded(true);
@@ -75,73 +65,29 @@ export default function QuickSearch() {
   };
 
   const renderResults = (maxHeight: string, onClose?: () => void) => {
-    if (searchTerm.length === 0)
+    if (trimmedSearchTerm.length === 0) {
       return (
         <p className="text-muted-foreground">
           Nhập từ khoá đi mới tìm được chứ...
         </p>
       );
-
-    if (isLoading)
-      return (
-        <div className="flex flex-col gap-2">
-          <Skeleton className="w-[69px] h-5 rounded-sm bg-gray-500 mb-2" />
-          <Skeleton className="w-full h-24 rounded-sm bg-gray-500" />
-          <Skeleton className="w-full h-24 rounded-sm bg-gray-500" />
-          <Skeleton className="w-full h-24 rounded-sm bg-gray-500" />
-        </div>
-      );
-
-    if (isError)
-      return <p className="text-muted-foreground">Lỗi mất rồi 😭</p>;
-
-    if (mangas.length === 0)
-      return <p className="text-muted-foreground">Không có kết quả</p>;
+    }
 
     return (
-      <>
-        <div className="mb-2 flex justify-between items-center">
-          <p className="font-black text-xl">Manga</p>
-          <Button
-            asChild
-            size="sm"
-            variant="ghost"
-            className="hover:text-primary hover:bg-transparent hover:underline"
-          >
-            <Link
-              href={`/advanced-search?q=${debouncedTerm}`}
-              onClick={onClose}
-            >
-              Tìm kiếm nâng cao
-              <ArrowRight />
-            </Link>
-          </Button>
-        </div>
-        <div className={cn("grid gap-2 overflow-y-auto", maxHeight)}>
-          {mangas.map((manga) => {
-            const { title } = parseMangaTitle(manga);
-            return (
-              <Link
-                key={manga.id}
-                href={`/manga/${manga.id}/${generateSlug(title)}`}
-                onClick={onClose}
-                prefetch={false}
-              >
-                <CompactCardWeebdex manga={manga} />
-              </Link>
-            );
-          })}
-        </div>
-      </>
+      <QuickSearchResults
+        searchTerm={searchTerm}
+        debouncedTerm={trimmedDebouncedTerm}
+        maxHeight={maxHeight}
+        r18Enabled={config.r18}
+        onClose={onClose}
+      />
     );
   };
 
   return (
     <>
       {/* Desktop */}
-      <div
-        className="hidden md:flex relative grow justify-end z-10"
-      >
+      <div className="hidden md:flex relative grow justify-end z-10">
         <div className="w-full">
           <div className="flex items-center w-full justify-end">
             <Input
@@ -256,7 +202,9 @@ export default function QuickSearch() {
           </div>
 
           <DialogFooter>
-            <div className="w-full">{renderResults("max-h-[322px] pb-2", () => setMobileOpen(false))}</div>
+            <div className="w-full">
+              {renderResults("max-h-[322px] pb-2", () => setMobileOpen(false))}
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

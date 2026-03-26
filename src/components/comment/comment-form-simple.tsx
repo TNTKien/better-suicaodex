@@ -1,6 +1,7 @@
 "use client";
 
 import { Alert, AlertTitle } from "../ui/alert";
+import dynamic from "next/dynamic";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -14,9 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
+import { Send, Smile } from "lucide-react";
 import { toast } from "sonner";
-import { StickerPicker } from "./sticker-picker";
 import { ButtonGroup, ButtonGroupSeparator } from "../ui/button-group";
 import { Spinner } from "../ui/spinner";
 import { authClient } from "@/lib/auth-client";
@@ -25,6 +25,24 @@ import {
   getCommentsQueryKey,
   latestCommentsQueryKey,
 } from "@/lib/comment-query-keys";
+
+const StickerPicker = dynamic(
+  () => import("./sticker-picker").then((mod) => mod.StickerPicker),
+  {
+    ssr: false,
+    loading: () => (
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        className="h-8 w-8 dark:bg-secondary dark:hover:bg-secondary"
+        disabled
+      >
+        <Smile className="h-4 w-4" />
+      </Button>
+    ),
+  },
+);
 
 const MIN_COMMENT_LENGTH = 3;
 const MAX_COMMENT_LENGTH = 2000;

@@ -4,7 +4,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
-    optimizePackageImports: ["lucide-react", "recharts"],
+    optimizePackageImports: ["lucide-react"],
     // webpackMemoryOptimizations: true,
   },
   // cacheComponents: true,
@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  allowedDevOrigins: ["*.suicaodex.com", 'suicaodex.com'],
+  allowedDevOrigins: ["*.suicaodex.com", "suicaodex.com"],
   rewrites: () => [
     {
       source: "/manga-sitemap.xml",
