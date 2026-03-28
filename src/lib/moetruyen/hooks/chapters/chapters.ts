@@ -66,7 +66,7 @@ export type getV1ChaptersByIdResponse =
   | getV1ChaptersByIdResponseError;
 
 export const getGetV1ChaptersByIdUrl = (id: number) => {
-  return `http://localhost:8787/v1/chapters/${id}`;
+  return `https://moe.suicaodex.com/v1/chapters/${id}`;
 };
 
 export const getV1ChaptersById = async (
@@ -89,7 +89,7 @@ export const getV1ChaptersById = async (
 };
 
 export const getGetV1ChaptersByIdQueryKey = (id: number) => {
-  return [`http://localhost:8787/v1/chapters/${id}`] as const;
+  return [`https://moe.suicaodex.com/v1/chapters/${id}`] as const;
 };
 
 export const getGetV1ChaptersByIdQueryOptions = <

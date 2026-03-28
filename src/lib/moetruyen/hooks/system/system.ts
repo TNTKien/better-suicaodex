@@ -43,7 +43,7 @@ export type getHealthResponseSuccess = getHealthResponse200 & {
 export type getHealthResponse = getHealthResponseSuccess;
 
 export const getGetHealthUrl = () => {
-  return `http://localhost:8787/health`;
+  return `https://moe.suicaodex.com/health`;
 };
 
 export const getHealth = async (
@@ -65,7 +65,7 @@ export const getHealth = async (
 };
 
 export const getGetHealthQueryKey = () => {
-  return [`http://localhost:8787/health`] as const;
+  return [`https://moe.suicaodex.com/health`] as const;
 };
 
 export const getGetHealthQueryOptions = <

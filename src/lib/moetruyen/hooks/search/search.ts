@@ -69,8 +69,8 @@ export const getGetV1SearchMangaUrl = (params: GetV1SearchMangaParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v1/search/manga?${stringifiedParams}`
-    : `http://localhost:8787/v1/search/manga`;
+    ? `https://moe.suicaodex.com/v1/search/manga?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v1/search/manga`;
 };
 
 export const getV1SearchManga = async (
@@ -96,7 +96,7 @@ export const getGetV1SearchMangaQueryKey = (
   params?: GetV1SearchMangaParams,
 ) => {
   return [
-    `http://localhost:8787/v1/search/manga`,
+    `https://moe.suicaodex.com/v1/search/manga`,
     ...(params ? [params] : []),
   ] as const;
 };
