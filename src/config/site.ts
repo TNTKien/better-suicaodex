@@ -18,6 +18,10 @@ export const siteConfig = {
     ogURL: "https://og.weebdex.org",
     proxyURL: "https://wd.memaydex.online",
   },
+  moetruyen: {
+    domain: "https://moetruyen.net",
+    apiURL: "https://moe.suicaodex.com",
+  },
 };
 
 export type SiteConfig = typeof siteConfig;
