@@ -513,7 +513,7 @@ export default function MoetruyenSection() {
           variant="secondary"
           className="[&_svg]:size-5"
         >
-          <Link href="https://moetruyen.net/" prefetch={false} target="_blank">
+          <Link href="/moetruyen" prefetch={false}>
             <ArrowRight className="size-5" />
           </Link>
         </Button>
