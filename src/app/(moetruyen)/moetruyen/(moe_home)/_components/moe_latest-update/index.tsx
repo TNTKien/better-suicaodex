@@ -6,6 +6,10 @@ import { useGetV1Manga } from "@/lib/moetruyen/hooks/manga/manga";
 
 import MoeLatestMangaCard from "./moe-latest-manga-card";
 import MoeLatestSkeletonCard from "./moe-latest-skeleton-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 const LIMIT = 36;
 
@@ -46,9 +50,22 @@ export default function MoeLatestUpdate() {
 
   return (
     <div className="flex flex-col">
-      <div>
-        <hr className="w-9 h-1 bg-primary border-none" />
-        <h1 className="text-2xl font-black uppercase">Mới cập nhật</h1>
+      <div className="flex justify-between">
+        <div>
+          <hr className="w-9 h-1 bg-primary border-none" />
+          <h1 className="text-2xl font-black uppercase">Mới cập nhật</h1>
+        </div>
+
+        <Button
+          asChild
+          size="icon"
+          variant="secondary"
+          className="[&_svg]:size-5"
+        >
+          <Link href={siteConfig.moetruyen.domain} prefetch={false} target="_blank">
+            <ArrowRight className="size-5" />
+          </Link>
+        </Button>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">

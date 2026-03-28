@@ -10,6 +10,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import type { GetV1MangaTop200DataItem } from "@/lib/moetruyen/model/getV1MangaTop200DataItem";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
+const NO_COVER = "/images/no-cover.webp";
 
 function MoeNormalTag(props: ComponentProps<"div">) {
   return (
@@ -83,7 +84,7 @@ export default function MoeMangaSlide({
   manga: GetV1MangaTop200DataItem;
 }) {
   const isMobile = useIsMobile();
-  const coverUrl = manga.coverUrl ?? FALLBACK_COVER;
+  const coverUrl = manga.coverUrl ?? NO_COVER;
   const href = `/moetruyen/manga/${manga.id}/${manga.slug}`;
   const authorLine = manga.author ?? "";
 
