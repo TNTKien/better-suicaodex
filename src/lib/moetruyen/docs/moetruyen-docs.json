@@ -1877,6 +1877,21 @@
                                   }
                                 ]
                               },
+                              "groupName": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "viewCount": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
                               "access": {
                                 "type": "string",
                                 "enum": [
@@ -1893,6 +1908,8 @@
                               "title",
                               "date",
                               "pages",
+                              "groupName",
+                              "viewCount",
                               "access"
                             ]
                           }
@@ -2172,14 +2189,6 @@
                                 }
                               ]
                             },
-                            "access": {
-                              "type": "string",
-                              "enum": [
-                                "public",
-                                "password_required",
-                                "locked"
-                              ]
-                            },
                             "groupName": {
                               "anyOf": [
                                 {
@@ -2188,6 +2197,19 @@
                                 {
                                   "type": "null"
                                 }
+                              ]
+                            },
+                            "viewCount": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "access": {
+                              "type": "string",
+                              "enum": [
+                                "public",
+                                "password_required",
+                                "locked"
                               ]
                             },
                             "isOneshot": {
@@ -2201,8 +2223,9 @@
                             "title",
                             "date",
                             "pages",
-                            "access",
                             "groupName",
+                            "viewCount",
+                            "access",
                             "isOneshot"
                           ]
                         },

@@ -26,5 +26,11 @@ export type GetV1MangaByIdChapters200DataChaptersItem = {
   title: string | null;
   date: string | null;
   pages: number | null;
+  groupName: string | null;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  viewCount: number;
   access: GetV1MangaByIdChapters200DataChaptersItemAccess;
 };

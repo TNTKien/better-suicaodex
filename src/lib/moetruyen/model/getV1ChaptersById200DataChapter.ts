@@ -26,7 +26,12 @@ export type GetV1ChaptersById200DataChapter = {
   title: string | null;
   date: string | null;
   pages: number | null;
-  access: GetV1ChaptersById200DataChapterAccess;
   groupName: string | null;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  viewCount: number;
+  access: GetV1ChaptersById200DataChapterAccess;
   isOneshot: boolean;
 };
