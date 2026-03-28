@@ -1,0 +1,36 @@
+"use client";
+
+import { MainNav } from "@/components/layout/navbar/main-nav";
+import { ModeSwitcher } from "@/components/layout/navbar/mode-switcher";
+import QuickSearch from "@/components/search/quick-search";
+import useScrollOffset from "@/hooks/use-scroll-offset";
+import { cn } from "@/lib/utils";
+import { useReaderStore } from "@/store/reader-store";
+
+export default function MoeReaderHeader() {
+  const { isAtTop } = useScrollOffset();
+  const { header } = useReaderStore();
+
+  return (
+    <header
+      className={cn(
+        "top-0 z-50 w-full transform transition-all duration-300",
+        header ? "sticky" : "hidden",
+        "px-4 md:px-8 lg:px-12",
+        isAtTop
+          ? "bg-transparent"
+          : "bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60",
+      )}
+    >
+      <div className="container-wrapper">
+        <div className="flex h-12 items-center justify-between">
+          <MainNav />
+          <div className="flex grow items-center justify-end gap-2">
+            <QuickSearch />
+            <ModeSwitcher />
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
