@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, MessageSquareText, MessagesSquare, SwatchBook, Users } from "lucide-react";
+import { Clock, MessagesSquare, Users } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { Card, CardContent } from "@/components/ui/card";

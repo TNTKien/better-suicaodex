@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Clock3, MessageSquareText, SwatchBook } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import type { GetV1CommentsRecent200DataItem } from "@/lib/moetruyen/model/getV1CommentsRecent200DataItem";
-import { formatShortTime, formatTimeToNow } from "@/lib/utils";
+import { formatShortTime } from "@/lib/utils";
 
 function getCommentHref(comment: GetV1CommentsRecent200DataItem) {
   if (comment.chapter) {

@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn, formatNumber } from "@/lib/utils";
-import { BookMarked, BookmarkIcon, Eye, List, MessageSquare, Star } from "lucide-react";
+import { BookmarkIcon, Eye, Star } from "lucide-react";
 
 interface MoeMangaStatsProps {
   totalViews: number;

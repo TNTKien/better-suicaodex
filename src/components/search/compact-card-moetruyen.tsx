@@ -1,24 +1,20 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { siteConfig } from "@/config/site";
-import { Manga } from "@/lib/weebdex/model";
-import { parseMangaTitle } from "@/lib/weebdex/utils";
+import type { GetV1Manga200DataItem } from "@/lib/moetruyen/model/getV1Manga200DataItem";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { StatusTag } from "@/app/(suicaodex)/(manga)/manga/_components/manga-tags";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Streamdown } from "streamdown";
+import { MoeStatusTag } from "@/app/(moetruyen)/moetruyen/(moe_home)/manga/_components/moe-manga-tags";
 
-interface CompactCardWeebdexProps {
-  manga: Manga;
+interface CompactCardMoetruyenProps {
+  manga: GetV1Manga200DataItem;
 }
 
-export default function CompactCardWeebdex({ manga }: CompactCardWeebdexProps) {
-  const { title } = parseMangaTitle(manga);
-  const cover = manga.relationships?.cover;
-  const coverUrl = cover
-    ? `${siteConfig.weebdex.proxyURL}/covers/${manga.id}/${cover.id}.256.webp`
-    : "/images/no-cover.webp";
+export default function CompactCardMoetruyen({
+  manga,
+}: CompactCardMoetruyenProps) {
+  const coverUrl = manga.coverUrl ?? "/images/no-cover.webp";
 
   return (
     <Card className="rounded-md shadow-xs transition-colors duration-200 hover:bg-accent">
@@ -26,19 +22,20 @@ export default function CompactCardWeebdex({ manga }: CompactCardWeebdexProps) {
         <LazyLoadImage
           wrapperClassName="block! shrink-0"
           src={coverUrl}
-          alt={title}
+          alt={manga.title}
           placeholderSrc="/images/place-doro.webp"
           className="w-16! h-auto! aspect-5/7 object-cover! rounded-sm border"
           onError={(e) => {
             e.currentTarget.src = "/images/xidoco.webp";
           }}
         />
+
         <div className="flex min-w-0 w-full flex-col gap-1.5">
           <p className="line-clamp-2 text-lg font-semibold leading-tight">
-            {title}
+            {manga.title}
           </p>
 
-          {!!manga.status && <StatusTag status={manga.status} />}
+          <MoeStatusTag status={manga.status} />
 
           {!!manga.description && (
             <ScrollArea className="max-h-16">

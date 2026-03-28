@@ -1,4 +1,3 @@
-import { LightRays } from "@/components/ui/light-rays";
 import { cn } from "@/lib/utils";
 
 interface MoeMangaBannerProps {
