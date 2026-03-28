@@ -21,14 +21,15 @@ import type { GetV1MangaRandom200DataItem } from "@/lib/moetruyen/model/getV1Man
 import { cn } from "@/lib/utils";
 
 import MoetruyenSectionSkeleton from "./section-skeleton";
+import { siteConfig } from "@/config/site";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
-const MOETRUYEN_SITE_URL = "https://moetruyen.net";
+
 const MOETRUYEN_PAIR_COUNT = 5;
 const CARD_ROTATION_DURATIONS = [4200, 5600, 6900, 5100, 7600] as const;
 
 function getMoetruyenMangaUrl(slug: string) {
-  return `${MOETRUYEN_SITE_URL}/manga/${slug}`;
+  return `${siteConfig.moetruyen.domain}/manga/${slug}`;
 }
 
 function getCardClassName(className?: string) {
