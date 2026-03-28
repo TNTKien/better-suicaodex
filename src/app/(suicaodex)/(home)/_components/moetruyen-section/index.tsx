@@ -9,25 +9,27 @@ import {
   ChevronsDown,
   OctagonAlert,
 } from "lucide-react";
+import Link from "next/link";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { Streamdown } from "streamdown";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  getMoetruyenMangaUrl,
-  type MoetruyenHomeManga,
-} from "@/lib/moetruyen/client";
-import { useMoetruyenRandomMangaQuery } from "@/lib/moetruyen/queries";
+import { useGetV1MangaRandom } from "@/lib/moetruyen/hooks/manga/manga";
+import type { GetV1MangaRandom200DataItem } from "@/lib/moetruyen/model/getV1MangaRandom200DataItem";
 import { cn } from "@/lib/utils";
 
 import MoetruyenSectionSkeleton from "./section-skeleton";
-import Link from "next/link";
-import { Streamdown } from "streamdown";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
+const MOETRUYEN_SITE_URL = "https://moetruyen.net";
 const MOETRUYEN_PAIR_COUNT = 5;
 const CARD_ROTATION_DURATIONS = [4200, 5600, 6900, 5100, 7600] as const;
+
+function getMoetruyenMangaUrl(slug: string) {
+  return `${MOETRUYEN_SITE_URL}/manga/${slug}`;
+}
 
 function getCardClassName(className?: string) {
   return cn(
@@ -36,12 +38,13 @@ function getCardClassName(className?: string) {
   );
 }
 
-function getMangaTags(manga: MoetruyenHomeManga) {
-  return manga.tags.length > 0 ? manga.tags : ["Đang cập nhật"];
+function getMangaTags(manga: GetV1MangaRandom200DataItem) {
+  const tags = manga.genres.slice(0, 2).map((genre) => genre.name);
+  return tags.length > 0 ? tags : ["Đang cập nhật"];
 }
 
-function pairManga(items: MoetruyenHomeManga[], pairCount: number) {
-  const pairs: MoetruyenHomeManga[][] = [];
+function pairManga(items: GetV1MangaRandom200DataItem[], pairCount: number) {
+  const pairs: GetV1MangaRandom200DataItem[][] = [];
 
   for (let index = 0; index < pairCount; index += 1) {
     const firstItem = items[index * 2];
@@ -58,7 +61,7 @@ function pairManga(items: MoetruyenHomeManga[], pairCount: number) {
 }
 
 function getActiveRotationIndex(
-  pair: MoetruyenHomeManga[],
+  pair: GetV1MangaRandom200DataItem[],
   clockMs: number,
   duration: number = CARD_ROTATION_DURATIONS[0],
 ) {
@@ -128,7 +131,7 @@ function RotatingBackground({
   activeIndex,
   overlayClassName,
 }: {
-  pair: MoetruyenHomeManga[];
+  pair: GetV1MangaRandom200DataItem[];
   activeIndex: number;
   overlayClassName: string;
 }) {
@@ -167,7 +170,7 @@ function LargeMangaPairCard({
   className,
   showCallToAction = false,
 }: {
-  pair: MoetruyenHomeManga[];
+  pair: GetV1MangaRandom200DataItem[];
   activeIndex: number;
   className?: string;
   showCallToAction?: boolean;
@@ -244,7 +247,7 @@ function MediumMangaPairCard({
   activeIndex,
   className,
 }: {
-  pair: MoetruyenHomeManga[];
+  pair: GetV1MangaRandom200DataItem[];
   activeIndex: number;
   className?: string;
 }) {
@@ -307,10 +310,10 @@ function MobileExpandLayout({
   rightBottomPair,
   clockMs,
 }: {
-  featuredPair: MoetruyenHomeManga[];
-  leftBottomPairs: MoetruyenHomeManga[][];
-  rightTopPair: MoetruyenHomeManga[] | null;
-  rightBottomPair: MoetruyenHomeManga[] | null;
+  featuredPair: GetV1MangaRandom200DataItem[];
+  leftBottomPairs: GetV1MangaRandom200DataItem[][];
+  rightTopPair: GetV1MangaRandom200DataItem[] | null;
+  rightBottomPair: GetV1MangaRandom200DataItem[] | null;
   clockMs: number;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -321,7 +324,7 @@ function MobileExpandLayout({
     leftBottomPairs[1],
     rightTopPair,
     rightBottomPair,
-  ].filter((pair): pair is MoetruyenHomeManga[] => Boolean(pair));
+  ].filter((pair): pair is GetV1MangaRandom200DataItem[] => Boolean(pair));
   const visiblePairs = mobilePairs.slice(0, 2);
   const hiddenPairs = mobilePairs.slice(2);
 
@@ -429,14 +432,27 @@ export default function MoetruyenSection() {
   const isMounted = useMounted();
   const sectionTitleId = useId();
 
-  const { data, isLoading, isError } = useMoetruyenRandomMangaQuery(
-    MOETRUYEN_PAIR_COUNT * 2,
-    isMounted,
+  const { data, isLoading, isError } = useGetV1MangaRandom(
+    { limit: MOETRUYEN_PAIR_COUNT * 2 },
+    {
+      query: {
+        enabled: isMounted,
+        staleTime: 1000 * 60 * 5,
+        refetchInterval: 1000 * 60 * 10,
+        refetchOnWindowFocus: false,
+      },
+    },
   );
 
-  const mangaPairs = useMemo(
-    () => pairManga(data ?? [], MOETRUYEN_PAIR_COUNT),
+  const mangaItems = useMemo(
+    () => (data?.status === 200 ? data.data.data : []),
     [data],
+  );
+  const hasResponseError = data !== undefined && data.status !== 200;
+
+  const mangaPairs = useMemo(
+    () => pairManga(mangaItems, MOETRUYEN_PAIR_COUNT),
+    [mangaItems],
   );
 
   const featuredPair = mangaPairs[0] ?? null;
@@ -462,7 +478,7 @@ export default function MoetruyenSection() {
     return <MoetruyenSectionSkeleton />;
   }
 
-  if (isError || featuredPair === null) {
+  if (isError || hasResponseError || featuredPair === null) {
     return (
       <section aria-labelledby={sectionTitleId} className="flex flex-col gap-4">
         <div>
