@@ -1,6 +1,7 @@
 import MoePopularManga from "./_components/moe_popular-manga";
 import MoeLatestUpdate from "./_components/moe_latest-update";
 import MoeLeaderboard from "./_components/moe_leaderboard";
+import MoeRecentComments from "./_components/moe_recent-comments";
 
 export default function MoetruyenPage() {
   return (
@@ -17,7 +18,9 @@ export default function MoetruyenPage() {
         <div>
           <MoeLeaderboard />
         </div>
-        <div>bình luận gần đây</div>
+        <div>
+          <MoeRecentComments />
+        </div>
       </section>
     </div>
   );
