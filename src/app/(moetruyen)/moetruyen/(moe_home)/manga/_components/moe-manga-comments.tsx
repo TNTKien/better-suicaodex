@@ -70,9 +70,9 @@ export default function MoeMangaComments({
         <AlertTitle className="flex justify-center text-center">
           Chưa có bình luận nào!
         </AlertTitle>
-        <AlertDescription className="flex justify-center text-center">
+        {/* <AlertDescription className="flex justify-center text-center">
           Hãy bóc tem em nó ngay thôi! 😍
-        </AlertDescription>
+        </AlertDescription> */}
       </Alert>
     );
   }
