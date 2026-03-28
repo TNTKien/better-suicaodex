@@ -1583,6 +1583,16 @@
                               "name"
                             ]
                           }
+                        },
+                        "totalViews": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "totalFollows": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
                         }
                       },
                       "required": [
@@ -1603,7 +1613,9 @@
                         "latestChapterNumberText",
                         "chapterCount",
                         "isOneshot",
-                        "genres"
+                        "genres",
+                        "totalViews",
+                        "totalFollows"
                       ]
                     },
                     "meta": {

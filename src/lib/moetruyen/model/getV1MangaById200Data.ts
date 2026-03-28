@@ -49,4 +49,14 @@ export type GetV1MangaById200Data = {
   chapterCount: number;
   isOneshot: boolean;
   genres: GetV1MangaById200DataGenresItem[];
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  totalViews: number;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  totalFollows: number;
 };
