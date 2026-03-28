@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import type { GetV1CommentsMangaById200DataItem } from "@/lib/moetruyen/model/getV1CommentsMangaById200DataItem";
 import type { GetV1CommentsMangaById200DataItemRepliesItem } from "@/lib/moetruyen/model/getV1CommentsMangaById200DataItemRepliesItem";
-import { cn, formatShortTime } from "@/lib/utils";
+import { formatShortTime } from "@/lib/utils";
 
 function AuthorAvatar({
   name,
@@ -92,12 +92,7 @@ export default function MoeMangaCommentItem({
                   <div key={reply.id} className="relative pl-10">
                     <div className="absolute left-4 top-4 h-0.5 w-6 bg-border" />
                     {isLast ? (
-                      <div
-                        className={cn(
-                          "absolute bottom-0 left-4 top-[17px] w-0.5",
-                          "bg-background",
-                        )}
-                      />
+                      <div className="absolute bottom-0 left-4 top-[17px] w-0.5 bg-sidebar" />
                     ) : null}
                     <ReplyItem reply={reply} />
                   </div>

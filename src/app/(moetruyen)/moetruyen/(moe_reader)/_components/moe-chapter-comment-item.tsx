@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import type { GetV1CommentsChaptersById200DataItem } from "@/lib/moetruyen/model/getV1CommentsChaptersById200DataItem";
 import type { GetV1CommentsChaptersById200DataItemRepliesItem } from "@/lib/moetruyen/model/getV1CommentsChaptersById200DataItemRepliesItem";
-import { cn, formatTimeToNow } from "@/lib/utils";
+import { formatShortTime } from "@/lib/utils";
 
 function AuthorAvatar({
   name,
@@ -12,7 +12,7 @@ function AuthorAvatar({
   avatarUrl: string | null;
 }) {
   return (
-    <Avatar className="h-10 w-10 shrink-0">
+    <Avatar className="size-8 shrink-0 z-10">
       <AvatarImage src={avatarUrl ?? ""} alt={name} />
       <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
     </Avatar>
@@ -46,7 +46,7 @@ function ReplyItem({
         </div>
         <CommentBubble content={reply.content} />
         <span className="mt-1 block line-clamp-1 text-xs text-muted-foreground">
-          {reply.createdAt ? formatTimeToNow(new Date(reply.createdAt)) : ""}
+          {reply.createdAt ? formatShortTime(new Date(reply.createdAt)) : ""}
         </span>
       </div>
     </div>
@@ -76,7 +76,7 @@ export default function MoeChapterCommentItem({
               <CommentBubble content={comment.content} />
               <span className="mt-1 block line-clamp-1 text-xs text-muted-foreground">
                 {comment.createdAt
-                  ? formatTimeToNow(new Date(comment.createdAt))
+                  ? formatShortTime(new Date(comment.createdAt))
                   : ""}
               </span>
             </div>
@@ -92,12 +92,7 @@ export default function MoeChapterCommentItem({
                   <div key={reply.id} className="relative pl-10">
                     <div className="absolute left-4 top-4 h-0.5 w-6 bg-border" />
                     {isLast ? (
-                      <div
-                        className={cn(
-                          "absolute bottom-0 left-4 top-[17px] w-0.5",
-                          "bg-background",
-                        )}
-                      />
+                      <div className="absolute bottom-0 left-4 top-[17px] w-0.5 bg-sidebar" />
                     ) : null}
                     <ReplyItem reply={reply} />
                   </div>
