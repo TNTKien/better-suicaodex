@@ -76,10 +76,10 @@ export default function MoeRecentCommentItem({
                   <span>{formatShortTime(new Date(comment.createdAt))} · </span>
                 </time>
               ) : null}
-              {/* <SwatchBook className="size-3.5" /> */}
-
-              {comment.manga.title}
-              {chapterLabel ? ` · ${chapterLabel}` : ""}
+              <span className="line-clamp-1 wrap-break-word">
+                {comment.manga.title}
+                {chapterLabel ? ` · ${chapterLabel}` : ""}
+              </span>
             </Link>
           </div>
         </div>
