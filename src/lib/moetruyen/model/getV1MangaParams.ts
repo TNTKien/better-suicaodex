@@ -13,6 +13,7 @@ NOTE:
 - To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
  * OpenAPI spec version: 0.1.0
  */
+import type { GetV1MangaHasChapters } from "./getV1MangaHasChapters";
 import type { GetV1MangaSort } from "./getV1MangaSort";
 import type { GetV1MangaStatus } from "./getV1MangaStatus";
 
@@ -37,4 +38,5 @@ export type GetV1MangaParams = {
   genre?: string;
   status?: GetV1MangaStatus;
   sort?: GetV1MangaSort;
+  hasChapters?: GetV1MangaHasChapters;
 };

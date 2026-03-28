@@ -13,28 +13,11 @@ NOTE:
 - To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
  * OpenAPI spec version: 0.1.0
  */
-import type { GetV1SearchManga200DataItemStatus } from "./getV1SearchManga200DataItemStatus";
 
-export type GetV1SearchManga200DataItem = {
-  /**
-   * @maximum 9007199254740991
-   * @exclusiveMinimum 0
-   */
-  id: number;
-  /** @minLength 1 */
-  slug: string;
-  /** @minLength 1 */
-  title: string;
-  cover: string | null;
-  coverUrl: string | null;
-  coverUpdatedAt: string | null;
-  updatedAt: string | null;
-  createdAt: string | null;
-  /**
-   * @minimum 0
-   * @maximum 9007199254740991
-   */
-  commentCount: number;
-  status: GetV1SearchManga200DataItemStatus;
-  isAdult?: boolean;
-};
+export type GetV1MangaHasChapters =
+  (typeof GetV1MangaHasChapters)[keyof typeof GetV1MangaHasChapters];
+
+export const GetV1MangaHasChapters = {
+  NUMBER_0: "0",
+  NUMBER_1: "1",
+} as const;

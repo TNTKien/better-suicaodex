@@ -43,7 +43,7 @@ export type getV1GenresResponseSuccess = getV1GenresResponse200 & {
 export type getV1GenresResponse = getV1GenresResponseSuccess;
 
 export const getGetV1GenresUrl = () => {
-  return `https://moe.suicaodex.com/v1/genres`;
+  return `http://localhost:8787/v1/genres`;
 };
 
 export const getV1Genres = async (
@@ -65,7 +65,7 @@ export const getV1Genres = async (
 };
 
 export const getGetV1GenresQueryKey = () => {
-  return [`https://moe.suicaodex.com/v1/genres`] as const;
+  return [`http://localhost:8787/v1/genres`] as const;
 };
 
 export const getGetV1GenresQueryOptions = <

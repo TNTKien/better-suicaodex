@@ -32,6 +32,14 @@ export type GetV1MangaRandom200DataItem = {
   cover: string | null;
   coverUrl: string | null;
   coverUpdatedAt: string | null;
+  groupName: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  commentCount: number;
   latestChapterNumber: number | null;
   latestChapterNumberText: string | null;
   /**

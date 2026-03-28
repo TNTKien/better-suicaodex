@@ -132,6 +132,7 @@ export * from "./getV1MangaByIdChapters404Error";
 export * from "./getV1MangaByIdChapters404ErrorDetails";
 export * from "./getV1MangaByIdChapters404Meta";
 export * from "./getV1MangaByIdChapters404MetaPagination";
+export * from "./getV1MangaHasChapters";
 export * from "./getV1MangaParams";
 export * from "./getV1MangaRandom200";
 export * from "./getV1MangaRandom200DataItem";

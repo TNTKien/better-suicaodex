@@ -82,8 +82,8 @@ export const getGetV1CommentsRecentUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/comments/recent?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/comments/recent`;
+    ? `http://localhost:8787/v1/comments/recent?${stringifiedParams}`
+    : `http://localhost:8787/v1/comments/recent`;
 };
 
 export const getV1CommentsRecent = async (
@@ -111,7 +111,7 @@ export const getGetV1CommentsRecentQueryKey = (
   params?: GetV1CommentsRecentParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/comments/recent`,
+    `http://localhost:8787/v1/comments/recent`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -308,8 +308,8 @@ export const getGetV1CommentsMangaByIdUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/comments/manga/${id}?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/comments/manga/${id}`;
+    ? `http://localhost:8787/v1/comments/manga/${id}?${stringifiedParams}`
+    : `http://localhost:8787/v1/comments/manga/${id}`;
 };
 
 export const getV1CommentsMangaById = async (
@@ -339,7 +339,7 @@ export const getGetV1CommentsMangaByIdQueryKey = (
   params?: GetV1CommentsMangaByIdParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/comments/manga/${id}`,
+    `http://localhost:8787/v1/comments/manga/${id}`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -559,8 +559,8 @@ export const getGetV1CommentsChaptersByIdUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/comments/chapters/${id}?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/comments/chapters/${id}`;
+    ? `http://localhost:8787/v1/comments/chapters/${id}?${stringifiedParams}`
+    : `http://localhost:8787/v1/comments/chapters/${id}`;
 };
 
 export const getV1CommentsChaptersById = async (
@@ -590,7 +590,7 @@ export const getGetV1CommentsChaptersByIdQueryKey = (
   params?: GetV1CommentsChaptersByIdParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/comments/chapters/${id}`,
+    `http://localhost:8787/v1/comments/chapters/${id}`,
     ...(params ? [params] : []),
   ] as const;
 };

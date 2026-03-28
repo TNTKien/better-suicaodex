@@ -79,8 +79,8 @@ export const getGetV1MangaTopUrl = (params?: GetV1MangaTopParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/manga/top?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/manga/top`;
+    ? `http://localhost:8787/v1/manga/top?${stringifiedParams}`
+    : `http://localhost:8787/v1/manga/top`;
 };
 
 export const getV1MangaTop = async (
@@ -104,7 +104,7 @@ export const getV1MangaTop = async (
 
 export const getGetV1MangaTopQueryKey = (params?: GetV1MangaTopParams) => {
   return [
-    `https://moe.suicaodex.com/v1/manga/top`,
+    `http://localhost:8787/v1/manga/top`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -268,8 +268,8 @@ export const getGetV1MangaRandomUrl = (params?: GetV1MangaRandomParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/manga/random?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/manga/random`;
+    ? `http://localhost:8787/v1/manga/random?${stringifiedParams}`
+    : `http://localhost:8787/v1/manga/random`;
 };
 
 export const getV1MangaRandom = async (
@@ -295,7 +295,7 @@ export const getGetV1MangaRandomQueryKey = (
   params?: GetV1MangaRandomParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/manga/random`,
+    `http://localhost:8787/v1/manga/random`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -444,7 +444,7 @@ export function useGetV1MangaRandom<
 }
 
 /**
- * Returns paginated public manga results with optional search, genre, status, and sort filters.
+ * Returns paginated public manga results with optional search, genre, status, sort, and hasChapters filters.
  * @summary List public manga
  */
 export type getV1MangaResponse200 = {
@@ -480,8 +480,8 @@ export const getGetV1MangaUrl = (params?: GetV1MangaParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/manga?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/manga`;
+    ? `http://localhost:8787/v1/manga?${stringifiedParams}`
+    : `http://localhost:8787/v1/manga`;
 };
 
 export const getV1Manga = async (
@@ -505,7 +505,7 @@ export const getV1Manga = async (
 
 export const getGetV1MangaQueryKey = (params?: GetV1MangaParams) => {
   return [
-    `https://moe.suicaodex.com/v1/manga`,
+    `http://localhost:8787/v1/manga`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -658,7 +658,7 @@ export type getV1MangaByIdResponse =
   | getV1MangaByIdResponseError;
 
 export const getGetV1MangaByIdUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/manga/${id}`;
+  return `http://localhost:8787/v1/manga/${id}`;
 };
 
 export const getV1MangaById = async (
@@ -681,7 +681,7 @@ export const getV1MangaById = async (
 };
 
 export const getGetV1MangaByIdQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/manga/${id}`] as const;
+  return [`http://localhost:8787/v1/manga/${id}`] as const;
 };
 
 export const getGetV1MangaByIdQueryOptions = <
@@ -839,7 +839,7 @@ export type getV1MangaByIdChaptersResponse =
   | getV1MangaByIdChaptersResponseError;
 
 export const getGetV1MangaByIdChaptersUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/manga/${id}/chapters`;
+  return `http://localhost:8787/v1/manga/${id}/chapters`;
 };
 
 export const getV1MangaByIdChapters = async (
@@ -864,7 +864,7 @@ export const getV1MangaByIdChapters = async (
 };
 
 export const getGetV1MangaByIdChaptersQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/manga/${id}/chapters`] as const;
+  return [`http://localhost:8787/v1/manga/${id}/chapters`] as const;
 };
 
 export const getGetV1MangaByIdChaptersQueryOptions = <

@@ -83,8 +83,8 @@ export const getGetV1TeamsUrl = (params?: GetV1TeamsParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/teams?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/teams`;
+    ? `http://localhost:8787/v1/teams?${stringifiedParams}`
+    : `http://localhost:8787/v1/teams`;
 };
 
 export const getV1Teams = async (
@@ -108,7 +108,7 @@ export const getV1Teams = async (
 
 export const getGetV1TeamsQueryKey = (params?: GetV1TeamsParams) => {
   return [
-    `https://moe.suicaodex.com/v1/teams`,
+    `http://localhost:8787/v1/teams`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -269,7 +269,7 @@ export type getV1TeamsByIdResponse =
   | getV1TeamsByIdResponseError;
 
 export const getGetV1TeamsByIdUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/teams/${id}`;
+  return `http://localhost:8787/v1/teams/${id}`;
 };
 
 export const getV1TeamsById = async (
@@ -292,7 +292,7 @@ export const getV1TeamsById = async (
 };
 
 export const getGetV1TeamsByIdQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/teams/${id}`] as const;
+  return [`http://localhost:8787/v1/teams/${id}`] as const;
 };
 
 export const getGetV1TeamsByIdQueryOptions = <
@@ -471,8 +471,8 @@ export const getGetV1TeamsByIdUpdatesUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/teams/${id}/updates?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/teams/${id}/updates`;
+    ? `http://localhost:8787/v1/teams/${id}/updates?${stringifiedParams}`
+    : `http://localhost:8787/v1/teams/${id}/updates`;
 };
 
 export const getV1TeamsByIdUpdates = async (
@@ -502,7 +502,7 @@ export const getGetV1TeamsByIdUpdatesQueryKey = (
   params?: GetV1TeamsByIdUpdatesParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/teams/${id}/updates`,
+    `http://localhost:8787/v1/teams/${id}/updates`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -716,8 +716,8 @@ export const getGetV1TeamsByIdMangaUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/teams/${id}/manga?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/teams/${id}/manga`;
+    ? `http://localhost:8787/v1/teams/${id}/manga?${stringifiedParams}`
+    : `http://localhost:8787/v1/teams/${id}/manga`;
 };
 
 export const getV1TeamsByIdManga = async (
@@ -747,7 +747,7 @@ export const getGetV1TeamsByIdMangaQueryKey = (
   params?: GetV1TeamsByIdMangaParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/teams/${id}/manga`,
+    `http://localhost:8787/v1/teams/${id}/manga`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -943,7 +943,7 @@ export type getV1TeamsByIdMembersResponse =
   | getV1TeamsByIdMembersResponseError;
 
 export const getGetV1TeamsByIdMembersUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/teams/${id}/members`;
+  return `http://localhost:8787/v1/teams/${id}/members`;
 };
 
 export const getV1TeamsByIdMembers = async (
@@ -968,7 +968,7 @@ export const getV1TeamsByIdMembers = async (
 };
 
 export const getGetV1TeamsByIdMembersQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/teams/${id}/members`] as const;
+  return [`http://localhost:8787/v1/teams/${id}/members`] as const;
 };
 
 export const getGetV1TeamsByIdMembersQueryOptions = <
