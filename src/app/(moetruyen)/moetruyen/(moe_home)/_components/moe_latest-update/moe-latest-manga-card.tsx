@@ -37,7 +37,7 @@ export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
             }}
           />
           <div className="absolute bottom-0 left-0 right-0 flex h-[45%] items-end bg-linear-to-t from-black/85 to-transparent p-2">
-            <p className="text-base font-semibold line-clamp-2 break-all text-white drop-shadow-xs leading-tight">
+            <p className="text-base font-semibold line-clamp-2 wrap-break-word text-white drop-shadow-xs leading-tight">
               {manga.title}
             </p>
           </div>
