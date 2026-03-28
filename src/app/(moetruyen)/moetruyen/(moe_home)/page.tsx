@@ -1,13 +1,16 @@
-import LatestUpdate from "@/app/(suicaodex)/(home)/_components/latest-update";
-import PopularMangaSwiper from "@/app/(suicaodex)/(home)/_components/popular-manga";
-import Recently from "@/app/(suicaodex)/(home)/_components/recently-manga";
+import MoePopularManga from "./_components/moe_popular-manga";
+import MoeLatestUpdate from "./_components/moe_latest-update";
 
 export default function MoetruyenPage() {
   return (
     <div className="flex flex-col">
-      <section className=""></section>
+      <section className="">
+        <MoePopularManga />
+      </section>
 
-      <section className="mt-9 mx-4 md:mx-8 lg:mx-12"></section>
+      <section className="mt-9 mx-4 md:mx-8 lg:mx-12">
+        <MoeLatestUpdate />
+      </section>
 
       <section className="mt-9 mx-4 md:mx-8 lg:mx-12"></section>
 
