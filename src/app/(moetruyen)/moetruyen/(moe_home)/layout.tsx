@@ -1,7 +1,6 @@
-import { SiteHeader } from "@/components/layout/navbar/site-header";
 import { AppSidebar } from "@/components/layout/sidebar/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { MoetruyenHeader } from "./_components/moetruyen-header";
+import { MoetruyenHeader } from "../../_components/moetruyen-header";
 
 export default function MainLayout({
   children,

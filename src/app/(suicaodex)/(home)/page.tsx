@@ -5,9 +5,6 @@ import LatestUpdate from "./_components/latest-update";
 import Recently from "./_components/recently-manga";
 import CompletedManga from "./_components/completed-manga";
 import CommentsFeed from "./_components/comments-feed";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { OctagonAlert } from "lucide-react";
-import { Streamdown } from "streamdown";
 
 function breadcrumbJsonLd() {
   return {
