@@ -25,6 +25,7 @@ export function MainNav() {
           !isAtTop && "invert-0 md:invert-0"
         )}
         quality={100}
+        height={32}
         priority
       />
       <Image
@@ -32,6 +33,7 @@ export function MainNav() {
         alt="SuicaoDex's logo"
         quality={100}
         priority
+        height={32}
         className={cn(
           "max-h-[22px] w-auto drop-shadow-md dark:invert xs:hidden",
           // pathname.includes("/manga") && "invert",
