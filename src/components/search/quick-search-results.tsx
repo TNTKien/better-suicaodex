@@ -96,7 +96,7 @@ export default function QuickSearchResults({
     {
       q: debouncedTerm,
       limit: RESULT_LIMIT,
-      hasChapters: "1",
+      // hasChapters: "1",
     },
     {
       query: {
