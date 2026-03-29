@@ -10,7 +10,7 @@ export default function MainLayout({
   return (
     <SidebarProvider defaultOpen={false}>
       <div className="border-grid flex flex-1 flex-col">
-        <MoetruyenHeader />
+        <MoetruyenHeader showSidebarTrigger/>
         <main className="flex-1 py-4">{children}</main>
       </div>
       <AppSidebar side="right" />

@@ -9,8 +9,8 @@ import {
 import { useGetV1MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
 
 import MoeReader from "./moe-reader";
-import MoeReaderHeader from "./moe-reader-header";
 import MoeReaderSidebar from "./moe-reader-sidebar";
+import { MoetruyenHeader } from "@/app/(moetruyen)/_components/moetruyen-header";
 
 interface MoeChapterPageProps {
   id: number;
@@ -92,7 +92,7 @@ export default function MoeChapterPage({
   return (
     <>
       <div className="border-grid flex flex-1 flex-col">
-        <MoeReaderHeader />
+        <MoetruyenHeader />
         <MoeReader
           key={payload.chapter.id}
           images={pages}
