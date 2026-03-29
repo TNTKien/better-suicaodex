@@ -137,6 +137,21 @@ export default function QuickSearchResults({
 
   return (
     <div className={cn("grid gap-4 overflow-y-auto", maxHeight)}>
+      {moeMangas.length > 0 ? (
+        <SearchSection title="MoeTruyen">
+          {moeMangas.map((manga) => (
+            <Link
+              key={manga.id}
+              href={`/moetruyen/manga/${manga.id}/${manga.slug}`}
+              onClick={onClose}
+              prefetch={false}
+            >
+              <CompactCardMoetruyen manga={manga} />
+            </Link>
+          ))}
+        </SearchSection>
+      ) : null}
+
       {weebdexMangas.length > 0 ? (
         <SearchSection
           title="Suicaodex"
@@ -171,21 +186,6 @@ export default function QuickSearchResults({
               </Link>
             );
           })}
-        </SearchSection>
-      ) : null}
-
-      {moeMangas.length > 0 ? (
-        <SearchSection title="MoeTruyen">
-          {moeMangas.map((manga) => (
-            <Link
-              key={manga.id}
-              href={`/moetruyen/manga/${manga.id}/${manga.slug}`}
-              onClick={onClose}
-              prefetch={false}
-            >
-              <CompactCardMoetruyen manga={manga} />
-            </Link>
-          ))}
         </SearchSection>
       ) : null}
     </div>
