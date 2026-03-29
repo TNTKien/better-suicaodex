@@ -36,13 +36,11 @@ export function MoetruyenHeader({
   return (
     <header
       className={cn(
-        "top-0 z-50 w-full transform transition-all duration-300",
-        !pathname.includes("/chapter") && "sticky",
-        !!pathname.includes("/chapter") && !!readerHeader && "sticky",
-        "px-4 md:px-8 lg:px-12",
-        isAtTop && "bg-transparent",
-        !isAtTop &&
-          "bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60",
+        "top-0 sticky z-50 w-full transform transition-all duration-300 px-4 md:px-8 lg:px-12",
+        pathname.includes("/chapter") && !readerHeader && "hidden",
+        isAtTop
+          ? "bg-transparent"
+          : "bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60",
       )}
     >
       <div className="container-wrapper">
