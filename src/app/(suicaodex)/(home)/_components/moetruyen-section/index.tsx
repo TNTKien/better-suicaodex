@@ -21,16 +21,11 @@ import type { GetV1MangaRandom200DataItem } from "@/lib/moetruyen/model/getV1Man
 import { cn } from "@/lib/utils";
 
 import MoetruyenSectionSkeleton from "./section-skeleton";
-import { siteConfig } from "@/config/site";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
 
 const MOETRUYEN_PAIR_COUNT = 5;
 const CARD_ROTATION_DURATIONS = [4200, 5600, 6900, 5100, 7600] as const;
-
-function getMoetruyenMangaUrl(slug: string) {
-  return `${siteConfig.moetruyen.domain}/manga/${slug}`;
-}
 
 function getCardClassName(className?: string) {
   return cn(
@@ -182,7 +177,7 @@ function LargeMangaPairCard({
     return null;
   }
 
-  const mangaHref = getMoetruyenMangaUrl(activeManga.slug);
+  const mangaHref = `/moetruyen/manga/${activeManga.id}/${activeManga.slug}`;
 
   return (
     <article className={getCardClassName(className)}>
@@ -208,16 +203,14 @@ function LargeMangaPairCard({
         </div>
 
         <div className="flex flex-col gap-3">
-          <a
+          <Link
             className="w-fit max-w-full rounded-md! outline-none focus-visible:ring-2 focus-visible:ring-primary"
             href={mangaHref}
-            rel="noreferrer"
-            target="_blank"
           >
             <h3 className="max-w-3xl text-balance text-2xl font-black leading-tight transition hover:text-primary sm:text-3xl">
               {activeManga.title}
             </h3>
-          </a>
+          </Link>
 
           {!!activeManga.description && (
             <div className="flex items-center gap-2 text-sm sm:text-base">
@@ -257,14 +250,13 @@ function MediumMangaPairCard({
   if (!activeManga) {
     return null;
   }
+  const mangaHref = `/moetruyen/manga/${activeManga.id}/${activeManga.slug}`;
 
   return (
     <article className={getCardClassName(className)}>
       <Link
         className="block h-full rounded-md! outline-none focus-visible:ring-2 focus-visible:ring-primary"
-        href={getMoetruyenMangaUrl(activeManga.slug)}
-        rel="noreferrer"
-        target="_blank"
+        href={mangaHref}
       >
         <RotatingBackground
           pair={pair}
