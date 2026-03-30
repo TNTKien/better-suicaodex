@@ -47,27 +47,6 @@ export default function MoeMangaSubInfo({
           </div>
         </div>
       ) : null}
-
-      <div className="flex flex-col gap-2">
-        <Label className="text-base font-bold">Các nguồn liên quan</Label>
-        <div className="flex flex-wrap gap-2">
-          <Button asChild variant="secondary" size="sm">
-            <Link
-              href={`${siteConfig.moetruyen.domain}/manga/${data.slug}`}
-              target="_blank"
-            >
-              <LazyLoadImage
-                src="https://www.google.com/s2/favicons?sz=64&domain_url=https://moetruyen.net"
-                alt="MoeTruyen Favicon"
-                className="h-4 w-4 rounded-full"
-                wrapperClassName="block!"
-                visibleByDefault
-              />
-              MoeTruyen
-            </Link>
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
