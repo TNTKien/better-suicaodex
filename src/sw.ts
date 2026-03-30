@@ -71,8 +71,8 @@ const serwist = new Serwist({
         ],
       }),
     },
-    // Tránh cache/fallback cho ảnh chapter Moetruyen để không trả về opaque response
-    // (gây lỗi CORS ngẫu nhiên khi reader tải ảnh bằng XHR mode=cors).
+    // Avoid cache/fallback for MoeTruyen chapter images to prevent opaque responses
+    // that can cause intermittent CORS failures in the reader XHR loader.
     {
       matcher: ({ url }) =>
         url.hostname === "i.moetruyen.net" &&
