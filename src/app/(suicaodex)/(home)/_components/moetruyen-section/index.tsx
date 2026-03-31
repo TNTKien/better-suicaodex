@@ -21,6 +21,7 @@ import type { GetV1MangaRandom200DataItem } from "@/lib/moetruyen/model/getV1Man
 import { cn } from "@/lib/utils";
 
 import MoetruyenSectionSkeleton from "./section-skeleton";
+import { getMoetruyenThumbnailCoverUrl } from "@/lib/moetruyen/cover-url";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
 
@@ -133,29 +134,34 @@ function RotatingBackground({
 }) {
   return (
     <div className="absolute inset-0 overflow-hidden rounded-md">
-      {pair.map((manga, index) => (
-        <div
-          key={manga.id}
-          className={cn(
-            "absolute inset-0 overflow-hidden rounded-md transition duration-700",
-            index === activeIndex ? "opacity-100" : "opacity-0",
-          )}
-        >
-          <LazyLoadImage
-            src={manga.coverUrl ?? FALLBACK_COVER}
-            alt={manga.title}
-            wrapperClassName="block! absolute inset-0 h-full w-full overflow-hidden rounded-md"
-            placeholderSrc={FALLBACK_COVER}
-            className="h-full w-full rounded-md object-cover transition duration-700 backface-hidden transform-[translateZ(0)] group-hover:scale-[1.03]"
-            onError={(event) => {
-              event.currentTarget.src = FALLBACK_COVER;
-            }}
-          />
+      {pair.map((manga, index) => {
+        const coverUrl = getMoetruyenThumbnailCoverUrl(
+          manga.coverUrl ?? FALLBACK_COVER,
+        );
+        return (
           <div
-            className={cn("absolute inset-0 rounded-md", overlayClassName)}
-          />
-        </div>
-      ))}
+            key={manga.id}
+            className={cn(
+              "absolute inset-0 overflow-hidden rounded-md transition duration-700",
+              index === activeIndex ? "opacity-100" : "opacity-0",
+            )}
+          >
+            <LazyLoadImage
+              src={coverUrl}
+              alt={manga.title}
+              wrapperClassName="block! absolute inset-0 h-full w-full overflow-hidden rounded-md"
+              placeholderSrc={FALLBACK_COVER}
+              className="h-full w-full rounded-md object-cover transition duration-700 backface-hidden transform-[translateZ(0)] group-hover:scale-[1.03]"
+              onError={(event) => {
+                event.currentTarget.src = FALLBACK_COVER;
+              }}
+            />
+            <div
+              className={cn("absolute inset-0 rounded-md", overlayClassName)}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
