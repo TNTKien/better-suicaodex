@@ -5,7 +5,7 @@ import MoeRecentComments from "./_components/moe_recent-comments";
 
 export const metadata = {
   title: "MoeTruyen",
-}
+};
 
 export default function MoetruyenPage() {
   return (
@@ -19,12 +19,8 @@ export default function MoetruyenPage() {
       </section>
 
       <section className="mt-9 mx-4 md:mx-8 lg:mx-12 grid grid-cols-1 gap-3 lg:grid-cols-2">
-        <div>
-          <MoeLeaderboard />
-        </div>
-        <div>
-          <MoeRecentComments />
-        </div>
+        <MoeLeaderboard />
+        <MoeRecentComments />
       </section>
     </div>
   );

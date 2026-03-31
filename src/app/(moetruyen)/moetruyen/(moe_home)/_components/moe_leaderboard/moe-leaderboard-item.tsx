@@ -6,7 +6,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { Card } from "@/components/ui/card";
 import { getMoetruyenThumbnailCoverUrl } from "@/lib/moetruyen/cover-url";
-import type { GetV1MangaTop200DataItem } from "@/lib/moetruyen/model/getV1MangaTop200DataItem";
+import type { GetV2MangaTop200DataItem } from "@/lib/moetruyen/model";
 import { formatNumber } from "@/lib/utils";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
@@ -15,7 +15,7 @@ const NO_COVER = "/images/no-cover.webp";
 export default function MoeLeaderboardItem({
   manga,
 }: {
-  manga: GetV1MangaTop200DataItem;
+  manga: GetV2MangaTop200DataItem;
 }) {
   const href = `/moetruyen/manga/${manga.id}/${manga.slug}`;
   const coverUrl = getMoetruyenThumbnailCoverUrl(manga.coverUrl ?? NO_COVER, {w: 256, q: 80});
@@ -28,7 +28,7 @@ export default function MoeLeaderboardItem({
         className="flex items-center gap-3 p-3"
       >
         <div className="flex h-24 w-10 shrink-0 items-center justify-center rounded-md bg-muted text-2xl font-black text-primary">
-          {manga.rank}
+          {manga.ranking.rank}
         </div>
 
         <div className="relative h-24 w-16 shrink-0 overflow-hidden rounded-md">
@@ -55,7 +55,7 @@ export default function MoeLeaderboardItem({
 
           <div className="mt-2 flex items-center justify-end gap-2 text-sm text-muted-foreground">
             <span className="inline-flex min-w-0 items-center gap-1">
-              <span className="truncate">{formatNumber(manga.totalViews)}</span>
+              <span className="truncate">{formatNumber(manga.ranking.value)}</span>
               <Eye className="size-4 shrink-0" />
             </span>
           </div>
