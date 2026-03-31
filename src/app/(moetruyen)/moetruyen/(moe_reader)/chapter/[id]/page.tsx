@@ -1,6 +1,6 @@
 import ErrorPage from "@/components/error-page";
 import { siteConfig } from "@/config/site";
-import { getV1ChaptersById } from "@/lib/moetruyen/hooks/chapters/chapters";
+import { getV2ChaptersById } from "@/lib/moetruyen/hooks/chapters/chapters";
 import type { Metadata } from "next";
 import { cache } from "react";
 
@@ -14,7 +14,7 @@ interface PageProps {
 }
 
 const getCachedChapterData = cache(async (id: number) => {
-  return await getV1ChaptersById(id);
+  return await getV2ChaptersById(id);
 });
 
 function parseChapterId(id: string) {

@@ -3,10 +3,10 @@
 import ErrorPage from "@/components/error-page";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  useGetV1ChaptersById,
-  type getV1ChaptersByIdResponseSuccess,
+  useGetV2ChaptersById,
+  type getV2ChaptersByIdResponseSuccess,
 } from "@/lib/moetruyen/hooks/chapters/chapters";
-import { useGetV1MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
+import { useGetV2MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
 
 import MoeReader from "./moe-reader";
 import MoeReaderSidebar from "./moe-reader-sidebar";
@@ -14,7 +14,7 @@ import { MoetruyenHeader } from "@/app/(moetruyen)/_components/moetruyen-header"
 
 interface MoeChapterPageProps {
   id: number;
-  initialData?: getV1ChaptersByIdResponseSuccess;
+  initialData?: getV2ChaptersByIdResponseSuccess;
 }
 
 export default function MoeChapterPage({
@@ -25,7 +25,7 @@ export default function MoeChapterPage({
     data: response,
     isLoading,
     error,
-  } = useGetV1ChaptersById(id, {
+  } = useGetV2ChaptersById(id, {
     query: {
       initialData,
       refetchOnMount: !initialData,
@@ -38,7 +38,7 @@ export default function MoeChapterPage({
   const payload = response?.status === 200 ? response.data.data : undefined;
   const mangaId = payload?.manga.id;
   const { data: chapterListResponse, isLoading: isChapterListLoading } =
-    useGetV1MangaByIdChapters(mangaId ?? 0, {
+    useGetV2MangaByIdChapters(mangaId ?? 0, {
       query: {
         enabled: !!mangaId,
         refetchInterval: 1000 * 60 * 10,

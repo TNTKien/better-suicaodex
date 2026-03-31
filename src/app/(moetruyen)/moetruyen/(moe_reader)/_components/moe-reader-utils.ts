@@ -1,7 +1,7 @@
-import type { GetV1ChaptersById200Data } from "@/lib/moetruyen/model/getV1ChaptersById200Data";
-import type { GetV1ChaptersById200DataNextChapter } from "@/lib/moetruyen/model/getV1ChaptersById200DataNextChapter";
-import type { GetV1ChaptersById200DataPrevChapter } from "@/lib/moetruyen/model/getV1ChaptersById200DataPrevChapter";
-import type { GetV1MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV1MangaByIdChapters200DataChaptersItem";
+import type { GetV2ChaptersById200Data } from "@/lib/moetruyen/model/getV2ChaptersById200Data";
+import type { GetV2ChaptersById200DataNextChapter } from "@/lib/moetruyen/model/getV2ChaptersById200DataNextChapter";
+import type { GetV2ChaptersById200DataPrevChapter } from "@/lib/moetruyen/model/getV2ChaptersById200DataPrevChapter";
+import type { GetV2MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChapters200DataChaptersItem";
 
 type ChapterTitleInput = {
   number: number;
@@ -32,15 +32,15 @@ export function getMoeChapterHref(id: number | string) {
 }
 
 export function getMoeMangaHref(
-  manga: Pick<GetV1ChaptersById200Data["manga"], "id" | "slug">,
+  manga: Pick<GetV2ChaptersById200Data["manga"], "id" | "slug">,
 ) {
   return `/moetruyen/manga/${manga.id}/${manga.slug}`;
 }
 
 export function getAdjacentChapterHref(
   chapter:
-    | GetV1ChaptersById200DataPrevChapter
-    | GetV1ChaptersById200DataNextChapter,
+    | GetV2ChaptersById200DataPrevChapter
+    | GetV2ChaptersById200DataNextChapter,
 ) {
   if (!chapter) {
     return undefined;
@@ -50,7 +50,7 @@ export function getAdjacentChapterHref(
 }
 
 export function sortMoeChaptersForSelect(
-  chapters: GetV1MangaByIdChapters200DataChaptersItem[],
+  chapters: GetV2MangaByIdChapters200DataChaptersItem[],
 ) {
   return [...chapters].sort((a, b) => {
     const aNumber = a.number;

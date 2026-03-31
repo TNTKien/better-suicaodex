@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/collapsible";
 import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import { cn } from "@/lib/utils";
-import type { GetV1ChaptersById200Data } from "@/lib/moetruyen/model/getV1ChaptersById200Data";
-import type { GetV1MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV1MangaByIdChapters200DataChaptersItem";
+import type { GetV2ChaptersById200Data } from "@/lib/moetruyen/model/getV2ChaptersById200Data";
+import type { GetV2MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChapters200DataChaptersItem";
 import {
   HomeIcon,
   MessageSquareTextIcon,
@@ -41,8 +41,8 @@ import MoeChapterNavSidebar from "./moe-chapter-nav-sidebar";
 import { formatMoeChapterTitle, getMoeMangaHref } from "./moe-reader-utils";
 
 interface MoeReaderSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  chapter: GetV1ChaptersById200Data;
-  chapterList?: GetV1MangaByIdChapters200DataChaptersItem[];
+  chapter: GetV2ChaptersById200Data;
+  chapterList?: GetV2MangaByIdChapters200DataChaptersItem[];
   isChapterListLoading?: boolean;
 }
 

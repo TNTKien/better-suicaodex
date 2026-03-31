@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetV1MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
+import { useGetV2MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
 import { BookOpen, BookX, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function MoeMangaReadNowBtn({ id }: { id: number }) {
-  const { data, isLoading } = useGetV1MangaByIdChapters(id, {
+  const { data, isLoading } = useGetV2MangaByIdChapters(id, {
     query: {
       refetchInterval: 1000 * 60 * 10,
       refetchOnWindowFocus: false,

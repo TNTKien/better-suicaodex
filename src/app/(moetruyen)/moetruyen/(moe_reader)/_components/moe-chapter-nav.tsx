@@ -14,8 +14,8 @@ import {
 import { useSidebar } from "@/components/ui/sidebar-2-reader";
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import useScrollOffset from "@/hooks/use-scroll-offset";
-import type { GetV1ChaptersById200Data } from "@/lib/moetruyen/model/getV1ChaptersById200Data";
-import type { GetV1MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV1MangaByIdChapters200DataChaptersItem";
+import type { GetV2ChaptersById200Data } from "@/lib/moetruyen/model/getV2ChaptersById200Data";
+import type { GetV2MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChapters200DataChaptersItem";
 import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
@@ -34,8 +34,8 @@ import {
 } from "./moe-reader-utils";
 
 interface MoeChapterNavProps {
-  chapterData: GetV1ChaptersById200Data;
-  chapterList?: GetV1MangaByIdChapters200DataChaptersItem[];
+  chapterData: GetV2ChaptersById200Data;
+  chapterList?: GetV2MangaByIdChapters200DataChaptersItem[];
   isChapterListLoading?: boolean;
 }
 

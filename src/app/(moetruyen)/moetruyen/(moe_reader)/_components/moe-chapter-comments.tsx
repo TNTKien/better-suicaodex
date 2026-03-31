@@ -2,7 +2,7 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { useGetV1CommentsChaptersById } from "@/lib/moetruyen/hooks/comments/comments";
+import { useGetV2CommentsChaptersById } from "@/lib/moetruyen/hooks/comments/comments";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
@@ -17,7 +17,7 @@ export default function MoeChapterComments({
 }) {
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, error } = useGetV1CommentsChaptersById(
+  const { data, isLoading, error } = useGetV2CommentsChaptersById(
     chapterId,
     {
       page: page === 1 ? 1 : page,

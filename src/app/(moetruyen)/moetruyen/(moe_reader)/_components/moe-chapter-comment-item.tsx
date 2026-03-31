@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import type { GetV1CommentsChaptersById200DataItem } from "@/lib/moetruyen/model/getV1CommentsChaptersById200DataItem";
-import type { GetV1CommentsChaptersById200DataItemRepliesItem } from "@/lib/moetruyen/model/getV1CommentsChaptersById200DataItemRepliesItem";
+import type { GetV2CommentsChaptersById200DataItem } from "@/lib/moetruyen/model/getV2CommentsChaptersById200DataItem";
+import type { GetV2CommentsChaptersById200DataItemRepliesItem } from "@/lib/moetruyen/model/getV2CommentsChaptersById200DataItemRepliesItem";
 import { formatShortTime } from "@/lib/utils";
 
 function AuthorAvatar({
@@ -30,7 +30,7 @@ function CommentBubble({ content }: { content: string }) {
 function ReplyItem({
   reply,
 }: {
-  reply: GetV1CommentsChaptersById200DataItemRepliesItem;
+  reply: GetV2CommentsChaptersById200DataItemRepliesItem;
 }) {
   return (
     <div className="flex gap-2">
@@ -56,7 +56,7 @@ function ReplyItem({
 export default function MoeChapterCommentItem({
   comment,
 }: {
-  comment: GetV1CommentsChaptersById200DataItem;
+  comment: GetV2CommentsChaptersById200DataItem;
 }) {
   return (
     <Card className="overflow-hidden rounded-none border-none bg-transparent p-0 shadow-none">
