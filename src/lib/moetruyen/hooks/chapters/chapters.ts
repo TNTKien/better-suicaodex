@@ -6,19 +6,16 @@
 
 ## Quick start
 
-Use the `/v1` routes for the current stable surface.
-Use the `/v2` manga-family routes for the newer include-based contract.
+Use the `/v2` routes for the current stable surface.
 
 ## Request notes
 
 - All API endpoints have a global rate limit of 7 requests per second per IP.
 - Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
-- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
 
 ## Versioning
 
-- `/v1` preserves the original route contracts.
-- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+- From 01/04/2026, v1 routes are deprecated, pleade use v2 instead.
 
 ## Repositories
 
@@ -40,222 +37,10 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
-  GetV1ChaptersById200,
-  GetV1ChaptersById403,
-  GetV1ChaptersById404,
   GetV2ChaptersById200,
   GetV2ChaptersById403,
   GetV2ChaptersById404,
 } from "../../model";
-
-/**
- * Returns chapter reader metadata, page URLs, and adjacent chapter links for a public chapter.
- * @summary Get chapter reader payload
- */
-export type getV1ChaptersByIdResponse200 = {
-  data: GetV1ChaptersById200;
-  status: 200;
-};
-
-export type getV1ChaptersByIdResponse403 = {
-  data: GetV1ChaptersById403;
-  status: 403;
-};
-
-export type getV1ChaptersByIdResponse404 = {
-  data: GetV1ChaptersById404;
-  status: 404;
-};
-
-export type getV1ChaptersByIdResponseSuccess = getV1ChaptersByIdResponse200 & {
-  headers: Headers;
-};
-export type getV1ChaptersByIdResponseError = (
-  | getV1ChaptersByIdResponse403
-  | getV1ChaptersByIdResponse404
-) & {
-  headers: Headers;
-};
-
-export type getV1ChaptersByIdResponse =
-  | getV1ChaptersByIdResponseSuccess
-  | getV1ChaptersByIdResponseError;
-
-export const getGetV1ChaptersByIdUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/chapters/${id}`;
-};
-
-export const getV1ChaptersById = async (
-  id: number,
-  options?: RequestInit,
-): Promise<getV1ChaptersByIdResponse> => {
-  const res = await fetch(getGetV1ChaptersByIdUrl(id), {
-    ...options,
-    method: "GET",
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getV1ChaptersByIdResponse["data"] = body ? JSON.parse(body) : {};
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as getV1ChaptersByIdResponse;
-};
-
-export const getGetV1ChaptersByIdQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/chapters/${id}`] as const;
-};
-
-export const getGetV1ChaptersByIdQueryOptions = <
-  TData = Awaited<ReturnType<typeof getV1ChaptersById>>,
-  TError = GetV1ChaptersById403 | GetV1ChaptersById404,
->(
-  id: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getV1ChaptersById>>,
-        TError,
-        TData
-      >
-    >;
-    fetch?: RequestInit;
-  },
-) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetV1ChaptersByIdQueryKey(id);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getV1ChaptersById>>
-  > = ({ signal }) => getV1ChaptersById(id, { signal, ...fetchOptions });
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getV1ChaptersById>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetV1ChaptersByIdQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getV1ChaptersById>>
->;
-export type GetV1ChaptersByIdQueryError =
-  | GetV1ChaptersById403
-  | GetV1ChaptersById404;
-
-export function useGetV1ChaptersById<
-  TData = Awaited<ReturnType<typeof getV1ChaptersById>>,
-  TError = GetV1ChaptersById403 | GetV1ChaptersById404,
->(
-  id: number,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getV1ChaptersById>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1ChaptersById>>,
-          TError,
-          Awaited<ReturnType<typeof getV1ChaptersById>>
-        >,
-        "initialData"
-      >;
-    fetch?: RequestInit;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetV1ChaptersById<
-  TData = Awaited<ReturnType<typeof getV1ChaptersById>>,
-  TError = GetV1ChaptersById403 | GetV1ChaptersById404,
->(
-  id: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getV1ChaptersById>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1ChaptersById>>,
-          TError,
-          Awaited<ReturnType<typeof getV1ChaptersById>>
-        >,
-        "initialData"
-      >;
-    fetch?: RequestInit;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetV1ChaptersById<
-  TData = Awaited<ReturnType<typeof getV1ChaptersById>>,
-  TError = GetV1ChaptersById403 | GetV1ChaptersById404,
->(
-  id: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getV1ChaptersById>>,
-        TError,
-        TData
-      >
-    >;
-    fetch?: RequestInit;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get chapter reader payload
- */
-
-export function useGetV1ChaptersById<
-  TData = Awaited<ReturnType<typeof getV1ChaptersById>>,
-  TError = GetV1ChaptersById403 | GetV1ChaptersById404,
->(
-  id: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getV1ChaptersById>>,
-        TError,
-        TData
-      >
-    >;
-    fetch?: RequestInit;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetV1ChaptersByIdQueryOptions(id, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * Returns chapter reader metadata, page URLs, and adjacent chapter links for a public chapter.

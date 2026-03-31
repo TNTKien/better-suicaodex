@@ -6,19 +6,16 @@
 
 ## Quick start
 
-Use the `/v1` routes for the current stable surface.
-Use the `/v2` manga-family routes for the newer include-based contract.
+Use the `/v2` routes for the current stable surface.
 
 ## Request notes
 
 - All API endpoints have a global rate limit of 7 requests per second per IP.
 - Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
-- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
 
 ## Versioning
 
-- `/v1` preserves the original route contracts.
-- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+- From 01/04/2026, v1 routes are deprecated, pleade use v2 instead.
 
 ## Repositories
 
