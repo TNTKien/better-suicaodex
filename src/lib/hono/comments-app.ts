@@ -633,4 +633,4 @@ commentsApp.get("/latest", rateLimitByIp(50), async (c) => {
   return c.json(merged);
 });
 
-commentsApp.notFound((c) => c.notFound());
+commentsApp.notFound((c) => c.json({ error: "Not Found" }, 404));
