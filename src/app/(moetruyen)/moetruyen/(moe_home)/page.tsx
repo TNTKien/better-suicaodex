@@ -3,6 +3,10 @@ import MoeLatestUpdate from "./_components/moe_latest-update";
 import MoeLeaderboard from "./_components/moe_leaderboard";
 import MoeRecentComments from "./_components/moe_recent-comments";
 
+export const metadata = {
+  title: "MoeTruyen",
+}
+
 export default function MoetruyenPage() {
   return (
     <div className="flex flex-col">

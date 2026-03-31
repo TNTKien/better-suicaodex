@@ -55,6 +55,10 @@ function organizationJsonLd() {
   };
 }
 
+export const metadata = {
+  title: "Home",
+}
+
 export default function Page() {
   return (
     <>
