@@ -4,14 +4,27 @@
  * Moetruyen Public API
  * Unofficial read-only REST API for [MoeTruyen](https://moetruyen.net/).
 
-Full features will be added in the future (chắc thế)
+## Quick start
 
-Github: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api), [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+Use the `/v1` routes for the current stable surface.
+Use the `/v2` manga-family routes for the newer include-based contract.
 
-NOTE:
+## Request notes
+
 - All API endpoints have a global rate limit of 7 requests per second per IP.
-- To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
- * OpenAPI spec version: 0.1.0
+- Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
+- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
+
+## Versioning
+
+- `/v1` preserves the original route contracts.
+- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+
+## Repositories
+
+- API repo: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
+- Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+ * OpenAPI spec version: 0.2.0
  */
 import { useQuery } from "@tanstack/react-query";
 import type {
@@ -34,6 +47,13 @@ import type {
   GetV1UsersByUsernameComments400,
   GetV1UsersByUsernameComments404,
   GetV1UsersByUsernameCommentsParams,
+  GetV2UsersByUsername200,
+  GetV2UsersByUsername400,
+  GetV2UsersByUsername404,
+  GetV2UsersByUsernameComments200,
+  GetV2UsersByUsernameComments400,
+  GetV2UsersByUsernameComments404,
+  GetV2UsersByUsernameCommentsParams,
 } from "../../model";
 
 /**
@@ -490,6 +510,469 @@ export function useGetV1UsersByUsername<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getGetV1UsersByUsernameQueryOptions(username, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated public-visible manga comments and forum replies for a username.
+ * @summary List public user comments (v2)
+ */
+export type getV2UsersByUsernameCommentsResponse200 = {
+  data: GetV2UsersByUsernameComments200;
+  status: 200;
+};
+
+export type getV2UsersByUsernameCommentsResponse400 = {
+  data: GetV2UsersByUsernameComments400;
+  status: 400;
+};
+
+export type getV2UsersByUsernameCommentsResponse404 = {
+  data: GetV2UsersByUsernameComments404;
+  status: 404;
+};
+
+export type getV2UsersByUsernameCommentsResponseSuccess =
+  getV2UsersByUsernameCommentsResponse200 & {
+    headers: Headers;
+  };
+export type getV2UsersByUsernameCommentsResponseError = (
+  | getV2UsersByUsernameCommentsResponse400
+  | getV2UsersByUsernameCommentsResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2UsersByUsernameCommentsResponse =
+  | getV2UsersByUsernameCommentsResponseSuccess
+  | getV2UsersByUsernameCommentsResponseError;
+
+export const getGetV2UsersByUsernameCommentsUrl = (
+  username: string,
+  params?: GetV2UsersByUsernameCommentsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `https://moe.suicaodex.com/v2/users/${username}/comments?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/users/${username}/comments`;
+};
+
+export const getV2UsersByUsernameComments = async (
+  username: string,
+  params?: GetV2UsersByUsernameCommentsParams,
+  options?: RequestInit,
+): Promise<getV2UsersByUsernameCommentsResponse> => {
+  const res = await fetch(
+    getGetV2UsersByUsernameCommentsUrl(username, params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2UsersByUsernameCommentsResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2UsersByUsernameCommentsResponse;
+};
+
+export const getGetV2UsersByUsernameCommentsQueryKey = (
+  username: string,
+  params?: GetV2UsersByUsernameCommentsParams,
+) => {
+  return [
+    `https://moe.suicaodex.com/v2/users/${username}/comments`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2UsersByUsernameCommentsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+  TError = GetV2UsersByUsernameComments400 | GetV2UsersByUsernameComments404,
+>(
+  username: string,
+  params?: GetV2UsersByUsernameCommentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGetV2UsersByUsernameCommentsQueryKey(username, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2UsersByUsernameComments>>
+  > = ({ signal }) =>
+    getV2UsersByUsernameComments(username, params, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!username,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2UsersByUsernameCommentsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2UsersByUsernameComments>>
+>;
+export type GetV2UsersByUsernameCommentsQueryError =
+  | GetV2UsersByUsernameComments400
+  | GetV2UsersByUsernameComments404;
+
+export function useGetV2UsersByUsernameComments<
+  TData = Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+  TError = GetV2UsersByUsernameComments400 | GetV2UsersByUsernameComments404,
+>(
+  username: string,
+  params: undefined | GetV2UsersByUsernameCommentsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+          TError,
+          Awaited<ReturnType<typeof getV2UsersByUsernameComments>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2UsersByUsernameComments<
+  TData = Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+  TError = GetV2UsersByUsernameComments400 | GetV2UsersByUsernameComments404,
+>(
+  username: string,
+  params?: GetV2UsersByUsernameCommentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+          TError,
+          Awaited<ReturnType<typeof getV2UsersByUsernameComments>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2UsersByUsernameComments<
+  TData = Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+  TError = GetV2UsersByUsernameComments400 | GetV2UsersByUsernameComments404,
+>(
+  username: string,
+  params?: GetV2UsersByUsernameCommentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public user comments (v2)
+ */
+
+export function useGetV2UsersByUsernameComments<
+  TData = Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+  TError = GetV2UsersByUsernameComments400 | GetV2UsersByUsernameComments404,
+>(
+  username: string,
+  params?: GetV2UsersByUsernameCommentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsernameComments>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2UsersByUsernameCommentsQueryOptions(
+    username,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns a public-safe user profile summary for a username.
+ * @summary Get public user (v2)
+ */
+export type getV2UsersByUsernameResponse200 = {
+  data: GetV2UsersByUsername200;
+  status: 200;
+};
+
+export type getV2UsersByUsernameResponse400 = {
+  data: GetV2UsersByUsername400;
+  status: 400;
+};
+
+export type getV2UsersByUsernameResponse404 = {
+  data: GetV2UsersByUsername404;
+  status: 404;
+};
+
+export type getV2UsersByUsernameResponseSuccess =
+  getV2UsersByUsernameResponse200 & {
+    headers: Headers;
+  };
+export type getV2UsersByUsernameResponseError = (
+  | getV2UsersByUsernameResponse400
+  | getV2UsersByUsernameResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2UsersByUsernameResponse =
+  | getV2UsersByUsernameResponseSuccess
+  | getV2UsersByUsernameResponseError;
+
+export const getGetV2UsersByUsernameUrl = (username: string) => {
+  return `https://moe.suicaodex.com/v2/users/${username}`;
+};
+
+export const getV2UsersByUsername = async (
+  username: string,
+  options?: RequestInit,
+): Promise<getV2UsersByUsernameResponse> => {
+  const res = await fetch(getGetV2UsersByUsernameUrl(username), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2UsersByUsernameResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2UsersByUsernameResponse;
+};
+
+export const getGetV2UsersByUsernameQueryKey = (username: string) => {
+  return [`https://moe.suicaodex.com/v2/users/${username}`] as const;
+};
+
+export const getGetV2UsersByUsernameQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2UsersByUsername>>,
+  TError = GetV2UsersByUsername400 | GetV2UsersByUsername404,
+>(
+  username: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsername>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2UsersByUsernameQueryKey(username);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2UsersByUsername>>
+  > = ({ signal }) =>
+    getV2UsersByUsername(username, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!username,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2UsersByUsername>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2UsersByUsernameQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2UsersByUsername>>
+>;
+export type GetV2UsersByUsernameQueryError =
+  | GetV2UsersByUsername400
+  | GetV2UsersByUsername404;
+
+export function useGetV2UsersByUsername<
+  TData = Awaited<ReturnType<typeof getV2UsersByUsername>>,
+  TError = GetV2UsersByUsername400 | GetV2UsersByUsername404,
+>(
+  username: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsername>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2UsersByUsername>>,
+          TError,
+          Awaited<ReturnType<typeof getV2UsersByUsername>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2UsersByUsername<
+  TData = Awaited<ReturnType<typeof getV2UsersByUsername>>,
+  TError = GetV2UsersByUsername400 | GetV2UsersByUsername404,
+>(
+  username: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsername>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2UsersByUsername>>,
+          TError,
+          Awaited<ReturnType<typeof getV2UsersByUsername>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2UsersByUsername<
+  TData = Awaited<ReturnType<typeof getV2UsersByUsername>>,
+  TError = GetV2UsersByUsername400 | GetV2UsersByUsername404,
+>(
+  username: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsername>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Get public user (v2)
+ */
+
+export function useGetV2UsersByUsername<
+  TData = Awaited<ReturnType<typeof getV2UsersByUsername>>,
+  TError = GetV2UsersByUsername400 | GetV2UsersByUsername404,
+>(
+  username: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2UsersByUsername>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2UsersByUsernameQueryOptions(username, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

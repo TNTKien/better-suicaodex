@@ -4,14 +4,27 @@
  * Moetruyen Public API
  * Unofficial read-only REST API for [MoeTruyen](https://moetruyen.net/).
 
-Full features will be added in the future (chắc thế)
+## Quick start
 
-Github: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api), [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+Use the `/v1` routes for the current stable surface.
+Use the `/v2` manga-family routes for the newer include-based contract.
 
-NOTE:
+## Request notes
+
 - All API endpoints have a global rate limit of 7 requests per second per IP.
-- To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
- * OpenAPI spec version: 0.1.0
+- Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
+- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
+
+## Versioning
+
+- `/v1` preserves the original route contracts.
+- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+
+## Repositories
+
+- API repo: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
+- Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+ * OpenAPI spec version: 0.2.0
  */
 import { useQuery } from "@tanstack/react-query";
 import type {
@@ -26,7 +39,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { GetV1Genres200 } from "../../model";
+import type { GetV1Genres200, GetV2Genres200 } from "../../model";
 
 /**
  * Returns public genres with visible manga counts.
@@ -174,6 +187,161 @@ export function useGetV1Genres<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getGetV1GenresQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns public genres with visible manga counts.
+ * @summary List public genres (v2)
+ */
+export type getV2GenresResponse200 = {
+  data: GetV2Genres200;
+  status: 200;
+};
+
+export type getV2GenresResponseSuccess = getV2GenresResponse200 & {
+  headers: Headers;
+};
+export type getV2GenresResponse = getV2GenresResponseSuccess;
+
+export const getGetV2GenresUrl = () => {
+  return `https://moe.suicaodex.com/v2/genres`;
+};
+
+export const getV2Genres = async (
+  options?: RequestInit,
+): Promise<getV2GenresResponse> => {
+  const res = await fetch(getGetV2GenresUrl(), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2GenresResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2GenresResponse;
+};
+
+export const getGetV2GenresQueryKey = () => {
+  return [`https://moe.suicaodex.com/v2/genres`] as const;
+};
+
+export const getGetV2GenresQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2Genres>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getV2Genres>>, TError, TData>
+  >;
+  fetch?: RequestInit;
+}) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetV2GenresQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getV2Genres>>> = ({
+    signal,
+  }) => getV2Genres({ signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2Genres>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2GenresQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2Genres>>
+>;
+export type GetV2GenresQueryError = unknown;
+
+export function useGetV2Genres<
+  TData = Awaited<ReturnType<typeof getV2Genres>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Genres>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2Genres>>,
+          TError,
+          Awaited<ReturnType<typeof getV2Genres>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2Genres<
+  TData = Awaited<ReturnType<typeof getV2Genres>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Genres>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2Genres>>,
+          TError,
+          Awaited<ReturnType<typeof getV2Genres>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2Genres<
+  TData = Awaited<ReturnType<typeof getV2Genres>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Genres>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public genres (v2)
+ */
+
+export function useGetV2Genres<
+  TData = Awaited<ReturnType<typeof getV2Genres>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Genres>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2GenresQueryOptions(options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

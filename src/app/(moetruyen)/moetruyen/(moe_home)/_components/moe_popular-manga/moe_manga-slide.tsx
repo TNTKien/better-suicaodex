@@ -11,7 +11,7 @@ import {
   getMoetruyenBannerCoverUrl,
   getMoetruyenThumbnailCoverUrl,
 } from "@/lib/moetruyen/cover-url";
-import type { GetV1MangaTop200DataItem } from "@/lib/moetruyen/model/getV1MangaTop200DataItem";
+import type { GetV2MangaTop200DataItem } from "@/lib/moetruyen/model";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
 const NO_COVER = "/images/no-cover.webp";
@@ -85,7 +85,7 @@ function MoeStatusTag({ status }: { status: string }) {
 export default function MoeMangaSlide({
   manga,
 }: {
-  manga: GetV1MangaTop200DataItem;
+  manga: GetV2MangaTop200DataItem;
 }) {
   const isMobile = useIsMobile();
   const coverUrl = manga.coverUrl ?? NO_COVER;
@@ -130,11 +130,12 @@ export default function MoeMangaSlide({
 
           <div className="hidden md:flex flex-wrap gap-1">
             <MoeStatusTag status={manga.status} />
-            {manga.genres.map((genre) => (
-              <MoeNormalTag key={genre.id} className="uppercase">
-                {genre.name}
-              </MoeNormalTag>
-            ))}
+            {manga.genres &&
+              manga.genres.map((genre) => (
+                <MoeNormalTag key={genre.id} className="uppercase">
+                  {genre.name}
+                </MoeNormalTag>
+              ))}
           </div>
 
           <div className="hidden md:block min-h-0 relative overflow-auto">

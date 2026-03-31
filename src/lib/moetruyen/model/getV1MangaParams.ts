@@ -4,14 +4,27 @@
  * Moetruyen Public API
  * Unofficial read-only REST API for [MoeTruyen](https://moetruyen.net/).
 
-Full features will be added in the future (chắc thế)
+## Quick start
 
-Github: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api), [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+Use the `/v1` routes for the current stable surface.
+Use the `/v2` manga-family routes for the newer include-based contract.
 
-NOTE:
+## Request notes
+
 - All API endpoints have a global rate limit of 7 requests per second per IP.
-- To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
- * OpenAPI spec version: 0.1.0
+- Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
+- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
+
+## Versioning
+
+- `/v1` preserves the original route contracts.
+- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+
+## Repositories
+
+- API repo: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
+- Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+ * OpenAPI spec version: 0.2.0
  */
 import type { GetV1MangaHasChapters } from "./getV1MangaHasChapters";
 import type { GetV1MangaSort } from "./getV1MangaSort";
@@ -19,24 +32,37 @@ import type { GetV1MangaStatus } from "./getV1MangaStatus";
 
 export type GetV1MangaParams = {
   /**
+   * Page number starting from `1`. Used with `limit` for pagination.
    * @minimum 1
    * @maximum 9007199254740991
    */
   page?: number;
   /**
+   * Maximum number of manga items to return per page. Allowed range: `1` to `100`.
    * @minimum 1
    * @maximum 100
    */
   limit?: number;
   /**
+   * Free-text search term matched against manga title, slug, and aliases.
    * @maxLength 100
    */
   q?: string;
   /**
+   * Legacy v1 genre filter. Accepts a genre name, not a genre id.
    * @maxLength 100
    */
   genre?: string;
+  /**
+   * Optional manga status filter. Use one of the documented public status enum values.
+   */
   status?: GetV1MangaStatus;
+  /**
+   * Sort mode. `updated_at` sorts by recent updates, `title` sorts alphabetically, and `popular` sorts by view-derived popularity.
+   */
   sort?: GetV1MangaSort;
+  /**
+   * Chapter-presence filter. `0` keeps manga that have chapters. `1` keeps manga that currently have no chapters.
+   */
   hasChapters?: GetV1MangaHasChapters;
 };

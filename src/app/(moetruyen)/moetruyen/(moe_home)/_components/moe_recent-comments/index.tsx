@@ -2,7 +2,7 @@
 
 import { useMounted } from "@mantine/hooks";
 
-import { useGetV1CommentsRecent } from "@/lib/moetruyen/hooks/comments/comments";
+import { useGetV2CommentsRecent } from "@/lib/moetruyen/hooks/comments/comments";
 
 import MoeRecentCommentItem from "./moe-recent-comment-item";
 import MoeRecentCommentsSkeleton from "./moe-recent-comments-skeleton";
@@ -12,7 +12,7 @@ const LIMIT = 10;
 export default function MoeRecentComments() {
   const isMounted = useMounted();
 
-  const { data, isLoading, error } = useGetV1CommentsRecent(
+  const { data, isLoading, error } = useGetV2CommentsRecent(
     {
       limit: LIMIT,
       sort: "created_at",

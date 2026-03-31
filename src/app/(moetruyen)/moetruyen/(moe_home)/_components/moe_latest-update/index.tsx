@@ -2,7 +2,7 @@
 
 import { useMounted } from "@mantine/hooks";
 
-import { useGetV1Manga } from "@/lib/moetruyen/hooks/manga/manga";
+import { useGetV2Manga } from "@/lib/moetruyen/hooks/manga/manga";
 
 import MoeLatestMangaCard from "./moe-latest-manga-card";
 import MoeLatestSkeletonCard from "./moe-latest-skeleton-card";
@@ -16,10 +16,11 @@ const LIMIT = 36;
 export default function MoeLatestUpdate() {
   const isMounted = useMounted();
 
-  const { data, isLoading, error } = useGetV1Manga(
+  const { data, isLoading, error } = useGetV2Manga(
     {
       limit: LIMIT,
       sort: "updated_at",
+      include: "stats",
     },
     {
       query: {

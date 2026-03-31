@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import type { GetV1CommentsMangaById200DataItem } from "@/lib/moetruyen/model/getV1CommentsMangaById200DataItem";
-import type { GetV1CommentsMangaById200DataItemRepliesItem } from "@/lib/moetruyen/model/getV1CommentsMangaById200DataItemRepliesItem";
+import type { GetV2CommentsMangaById200DataItem } from "@/lib/moetruyen/model/getV2CommentsMangaById200DataItem";
+import type { GetV2CommentsMangaById200DataItemRepliesItem } from "@/lib/moetruyen/model/getV2CommentsMangaById200DataItemRepliesItem";
 import { formatShortTime } from "@/lib/utils";
 
 function AuthorAvatar({
@@ -30,7 +30,7 @@ function CommentBubble({ content }: { content: string }) {
 function ReplyItem({
   reply,
 }: {
-  reply: GetV1CommentsMangaById200DataItemRepliesItem;
+  reply: GetV2CommentsMangaById200DataItemRepliesItem;
 }) {
   return (
     <div className="flex gap-2">
@@ -56,7 +56,7 @@ function ReplyItem({
 export default function MoeMangaCommentItem({
   comment,
 }: {
-  comment: GetV1CommentsMangaById200DataItem;
+  comment: GetV2CommentsMangaById200DataItem;
 }) {
   return (
     <Card className="overflow-hidden rounded-none border-none bg-transparent p-0 shadow-none">

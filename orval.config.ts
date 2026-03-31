@@ -26,7 +26,7 @@ export default defineConfig({
       prettier: true,
     },
     input: {
-      target: "./src/lib/moetruyen/docs/moetruyen-docs.json",
+      target: "./src/lib/moetruyen/docs/moetruyen-docs-0.2.json",
     },
   },
 });

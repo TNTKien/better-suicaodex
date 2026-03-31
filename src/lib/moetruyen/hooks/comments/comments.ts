@@ -4,14 +4,27 @@
  * Moetruyen Public API
  * Unofficial read-only REST API for [MoeTruyen](https://moetruyen.net/).
 
-Full features will be added in the future (chắc thế)
+## Quick start
 
-Github: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api), [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+Use the `/v1` routes for the current stable surface.
+Use the `/v2` manga-family routes for the newer include-based contract.
 
-NOTE:
+## Request notes
+
 - All API endpoints have a global rate limit of 7 requests per second per IP.
-- To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
- * OpenAPI spec version: 0.1.0
+- Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
+- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
+
+## Versioning
+
+- `/v1` preserves the original route contracts.
+- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+
+## Repositories
+
+- API repo: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
+- Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+ * OpenAPI spec version: 0.2.0
  */
 import { useQuery } from "@tanstack/react-query";
 import type {
@@ -39,6 +52,18 @@ import type {
   GetV1CommentsRecent200,
   GetV1CommentsRecent400,
   GetV1CommentsRecentParams,
+  GetV2CommentsChaptersById200,
+  GetV2CommentsChaptersById400,
+  GetV2CommentsChaptersById403,
+  GetV2CommentsChaptersById404,
+  GetV2CommentsChaptersByIdParams,
+  GetV2CommentsMangaById200,
+  GetV2CommentsMangaById400,
+  GetV2CommentsMangaById404,
+  GetV2CommentsMangaByIdParams,
+  GetV2CommentsRecent200,
+  GetV2CommentsRecent400,
+  GetV2CommentsRecentParams,
 } from "../../model";
 
 /**
@@ -758,6 +783,736 @@ export function useGetV1CommentsChaptersById<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getGetV1CommentsChaptersByIdQueryOptions(
+    id,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated recent visible root comments across public manga and chapters.
+ * @summary List recent public comments (v2)
+ */
+export type getV2CommentsRecentResponse200 = {
+  data: GetV2CommentsRecent200;
+  status: 200;
+};
+
+export type getV2CommentsRecentResponse400 = {
+  data: GetV2CommentsRecent400;
+  status: 400;
+};
+
+export type getV2CommentsRecentResponseSuccess =
+  getV2CommentsRecentResponse200 & {
+    headers: Headers;
+  };
+export type getV2CommentsRecentResponseError =
+  getV2CommentsRecentResponse400 & {
+    headers: Headers;
+  };
+
+export type getV2CommentsRecentResponse =
+  | getV2CommentsRecentResponseSuccess
+  | getV2CommentsRecentResponseError;
+
+export const getGetV2CommentsRecentUrl = (
+  params?: GetV2CommentsRecentParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `https://moe.suicaodex.com/v2/comments/recent?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/comments/recent`;
+};
+
+export const getV2CommentsRecent = async (
+  params?: GetV2CommentsRecentParams,
+  options?: RequestInit,
+): Promise<getV2CommentsRecentResponse> => {
+  const res = await fetch(getGetV2CommentsRecentUrl(params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2CommentsRecentResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2CommentsRecentResponse;
+};
+
+export const getGetV2CommentsRecentQueryKey = (
+  params?: GetV2CommentsRecentParams,
+) => {
+  return [
+    `https://moe.suicaodex.com/v2/comments/recent`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2CommentsRecentQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2CommentsRecent>>,
+  TError = GetV2CommentsRecent400,
+>(
+  params?: GetV2CommentsRecentParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsRecent>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2CommentsRecentQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2CommentsRecent>>
+  > = ({ signal }) => getV2CommentsRecent(params, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2CommentsRecent>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2CommentsRecentQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2CommentsRecent>>
+>;
+export type GetV2CommentsRecentQueryError = GetV2CommentsRecent400;
+
+export function useGetV2CommentsRecent<
+  TData = Awaited<ReturnType<typeof getV2CommentsRecent>>,
+  TError = GetV2CommentsRecent400,
+>(
+  params: undefined | GetV2CommentsRecentParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsRecent>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2CommentsRecent>>,
+          TError,
+          Awaited<ReturnType<typeof getV2CommentsRecent>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2CommentsRecent<
+  TData = Awaited<ReturnType<typeof getV2CommentsRecent>>,
+  TError = GetV2CommentsRecent400,
+>(
+  params?: GetV2CommentsRecentParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsRecent>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2CommentsRecent>>,
+          TError,
+          Awaited<ReturnType<typeof getV2CommentsRecent>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2CommentsRecent<
+  TData = Awaited<ReturnType<typeof getV2CommentsRecent>>,
+  TError = GetV2CommentsRecent400,
+>(
+  params?: GetV2CommentsRecentParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsRecent>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List recent public comments (v2)
+ */
+
+export function useGetV2CommentsRecent<
+  TData = Awaited<ReturnType<typeof getV2CommentsRecent>>,
+  TError = GetV2CommentsRecent400,
+>(
+  params?: GetV2CommentsRecentParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsRecent>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2CommentsRecentQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated visible manga-level comment threads for a manga id.
+ * @summary List public manga comments (v2)
+ */
+export type getV2CommentsMangaByIdResponse200 = {
+  data: GetV2CommentsMangaById200;
+  status: 200;
+};
+
+export type getV2CommentsMangaByIdResponse400 = {
+  data: GetV2CommentsMangaById400;
+  status: 400;
+};
+
+export type getV2CommentsMangaByIdResponse404 = {
+  data: GetV2CommentsMangaById404;
+  status: 404;
+};
+
+export type getV2CommentsMangaByIdResponseSuccess =
+  getV2CommentsMangaByIdResponse200 & {
+    headers: Headers;
+  };
+export type getV2CommentsMangaByIdResponseError = (
+  | getV2CommentsMangaByIdResponse400
+  | getV2CommentsMangaByIdResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2CommentsMangaByIdResponse =
+  | getV2CommentsMangaByIdResponseSuccess
+  | getV2CommentsMangaByIdResponseError;
+
+export const getGetV2CommentsMangaByIdUrl = (
+  id: number,
+  params?: GetV2CommentsMangaByIdParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `https://moe.suicaodex.com/v2/comments/manga/${id}?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/comments/manga/${id}`;
+};
+
+export const getV2CommentsMangaById = async (
+  id: number,
+  params?: GetV2CommentsMangaByIdParams,
+  options?: RequestInit,
+): Promise<getV2CommentsMangaByIdResponse> => {
+  const res = await fetch(getGetV2CommentsMangaByIdUrl(id, params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2CommentsMangaByIdResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2CommentsMangaByIdResponse;
+};
+
+export const getGetV2CommentsMangaByIdQueryKey = (
+  id: number,
+  params?: GetV2CommentsMangaByIdParams,
+) => {
+  return [
+    `https://moe.suicaodex.com/v2/comments/manga/${id}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2CommentsMangaByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+  TError = GetV2CommentsMangaById400 | GetV2CommentsMangaById404,
+>(
+  id: number,
+  params?: GetV2CommentsMangaByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2CommentsMangaByIdQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2CommentsMangaById>>
+  > = ({ signal }) =>
+    getV2CommentsMangaById(id, params, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2CommentsMangaByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2CommentsMangaById>>
+>;
+export type GetV2CommentsMangaByIdQueryError =
+  | GetV2CommentsMangaById400
+  | GetV2CommentsMangaById404;
+
+export function useGetV2CommentsMangaById<
+  TData = Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+  TError = GetV2CommentsMangaById400 | GetV2CommentsMangaById404,
+>(
+  id: number,
+  params: undefined | GetV2CommentsMangaByIdParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+          TError,
+          Awaited<ReturnType<typeof getV2CommentsMangaById>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2CommentsMangaById<
+  TData = Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+  TError = GetV2CommentsMangaById400 | GetV2CommentsMangaById404,
+>(
+  id: number,
+  params?: GetV2CommentsMangaByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+          TError,
+          Awaited<ReturnType<typeof getV2CommentsMangaById>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2CommentsMangaById<
+  TData = Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+  TError = GetV2CommentsMangaById400 | GetV2CommentsMangaById404,
+>(
+  id: number,
+  params?: GetV2CommentsMangaByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public manga comments (v2)
+ */
+
+export function useGetV2CommentsMangaById<
+  TData = Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+  TError = GetV2CommentsMangaById400 | GetV2CommentsMangaById404,
+>(
+  id: number,
+  params?: GetV2CommentsMangaByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsMangaById>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2CommentsMangaByIdQueryOptions(
+    id,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated visible comment threads for a public chapter id.
+ * @summary List public chapter comments (v2)
+ */
+export type getV2CommentsChaptersByIdResponse200 = {
+  data: GetV2CommentsChaptersById200;
+  status: 200;
+};
+
+export type getV2CommentsChaptersByIdResponse400 = {
+  data: GetV2CommentsChaptersById400;
+  status: 400;
+};
+
+export type getV2CommentsChaptersByIdResponse403 = {
+  data: GetV2CommentsChaptersById403;
+  status: 403;
+};
+
+export type getV2CommentsChaptersByIdResponse404 = {
+  data: GetV2CommentsChaptersById404;
+  status: 404;
+};
+
+export type getV2CommentsChaptersByIdResponseSuccess =
+  getV2CommentsChaptersByIdResponse200 & {
+    headers: Headers;
+  };
+export type getV2CommentsChaptersByIdResponseError = (
+  | getV2CommentsChaptersByIdResponse400
+  | getV2CommentsChaptersByIdResponse403
+  | getV2CommentsChaptersByIdResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2CommentsChaptersByIdResponse =
+  | getV2CommentsChaptersByIdResponseSuccess
+  | getV2CommentsChaptersByIdResponseError;
+
+export const getGetV2CommentsChaptersByIdUrl = (
+  id: number,
+  params?: GetV2CommentsChaptersByIdParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `https://moe.suicaodex.com/v2/comments/chapters/${id}?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/comments/chapters/${id}`;
+};
+
+export const getV2CommentsChaptersById = async (
+  id: number,
+  params?: GetV2CommentsChaptersByIdParams,
+  options?: RequestInit,
+): Promise<getV2CommentsChaptersByIdResponse> => {
+  const res = await fetch(getGetV2CommentsChaptersByIdUrl(id, params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2CommentsChaptersByIdResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2CommentsChaptersByIdResponse;
+};
+
+export const getGetV2CommentsChaptersByIdQueryKey = (
+  id: number,
+  params?: GetV2CommentsChaptersByIdParams,
+) => {
+  return [
+    `https://moe.suicaodex.com/v2/comments/chapters/${id}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2CommentsChaptersByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+  TError =
+    | GetV2CommentsChaptersById400
+    | GetV2CommentsChaptersById403
+    | GetV2CommentsChaptersById404,
+>(
+  id: number,
+  params?: GetV2CommentsChaptersByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2CommentsChaptersByIdQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2CommentsChaptersById>>
+  > = ({ signal }) =>
+    getV2CommentsChaptersById(id, params, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2CommentsChaptersByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2CommentsChaptersById>>
+>;
+export type GetV2CommentsChaptersByIdQueryError =
+  | GetV2CommentsChaptersById400
+  | GetV2CommentsChaptersById403
+  | GetV2CommentsChaptersById404;
+
+export function useGetV2CommentsChaptersById<
+  TData = Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+  TError =
+    | GetV2CommentsChaptersById400
+    | GetV2CommentsChaptersById403
+    | GetV2CommentsChaptersById404,
+>(
+  id: number,
+  params: undefined | GetV2CommentsChaptersByIdParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+          TError,
+          Awaited<ReturnType<typeof getV2CommentsChaptersById>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2CommentsChaptersById<
+  TData = Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+  TError =
+    | GetV2CommentsChaptersById400
+    | GetV2CommentsChaptersById403
+    | GetV2CommentsChaptersById404,
+>(
+  id: number,
+  params?: GetV2CommentsChaptersByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+          TError,
+          Awaited<ReturnType<typeof getV2CommentsChaptersById>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2CommentsChaptersById<
+  TData = Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+  TError =
+    | GetV2CommentsChaptersById400
+    | GetV2CommentsChaptersById403
+    | GetV2CommentsChaptersById404,
+>(
+  id: number,
+  params?: GetV2CommentsChaptersByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public chapter comments (v2)
+ */
+
+export function useGetV2CommentsChaptersById<
+  TData = Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+  TError =
+    | GetV2CommentsChaptersById400
+    | GetV2CommentsChaptersById403
+    | GetV2CommentsChaptersById404,
+>(
+  id: number,
+  params?: GetV2CommentsChaptersByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2CommentsChaptersById>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2CommentsChaptersByIdQueryOptions(
     id,
     params,
     options,

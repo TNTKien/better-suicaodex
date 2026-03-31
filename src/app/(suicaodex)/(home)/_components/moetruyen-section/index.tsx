@@ -16,8 +16,8 @@ import { Streamdown } from "streamdown";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useGetV1MangaRandom } from "@/lib/moetruyen/hooks/manga/manga";
-import type { GetV1MangaRandom200DataItem } from "@/lib/moetruyen/model/getV1MangaRandom200DataItem";
+import { useGetV2MangaRandom } from "@/lib/moetruyen/hooks/manga/manga";
+import type { GetV2MangaRandom200DataItem } from "@/lib/moetruyen/model/getV2MangaRandom200DataItem";
 import { cn } from "@/lib/utils";
 
 import MoetruyenSectionSkeleton from "./section-skeleton";
@@ -35,13 +35,13 @@ function getCardClassName(className?: string) {
   );
 }
 
-function getMangaTags(manga: GetV1MangaRandom200DataItem) {
-  const tags = manga.genres.slice(0, 2).map((genre) => genre.name);
+function getMangaTags(manga: GetV2MangaRandom200DataItem) {
+  const tags = (manga.genres ?? []).slice(0, 2).map((genre) => genre.name);
   return tags.length > 0 ? tags : ["Đang cập nhật"];
 }
 
-function pairManga(items: GetV1MangaRandom200DataItem[], pairCount: number) {
-  const pairs: GetV1MangaRandom200DataItem[][] = [];
+function pairManga(items: GetV2MangaRandom200DataItem[], pairCount: number) {
+  const pairs: GetV2MangaRandom200DataItem[][] = [];
 
   for (let index = 0; index < pairCount; index += 1) {
     const firstItem = items[index * 2];
@@ -58,7 +58,7 @@ function pairManga(items: GetV1MangaRandom200DataItem[], pairCount: number) {
 }
 
 function getActiveRotationIndex(
-  pair: GetV1MangaRandom200DataItem[],
+  pair: GetV2MangaRandom200DataItem[],
   clockMs: number,
   duration: number = CARD_ROTATION_DURATIONS[0],
 ) {
@@ -128,7 +128,7 @@ function RotatingBackground({
   activeIndex,
   overlayClassName,
 }: {
-  pair: GetV1MangaRandom200DataItem[];
+  pair: GetV2MangaRandom200DataItem[];
   activeIndex: number;
   overlayClassName: string;
 }) {
@@ -172,7 +172,7 @@ function LargeMangaPairCard({
   className,
   showCallToAction = false,
 }: {
-  pair: GetV1MangaRandom200DataItem[];
+  pair: GetV2MangaRandom200DataItem[];
   activeIndex: number;
   className?: string;
   showCallToAction?: boolean;
@@ -247,7 +247,7 @@ function MediumMangaPairCard({
   activeIndex,
   className,
 }: {
-  pair: GetV1MangaRandom200DataItem[];
+  pair: GetV2MangaRandom200DataItem[];
   activeIndex: number;
   className?: string;
 }) {
@@ -309,10 +309,10 @@ function MobileExpandLayout({
   rightBottomPair,
   clockMs,
 }: {
-  featuredPair: GetV1MangaRandom200DataItem[];
-  leftBottomPairs: GetV1MangaRandom200DataItem[][];
-  rightTopPair: GetV1MangaRandom200DataItem[] | null;
-  rightBottomPair: GetV1MangaRandom200DataItem[] | null;
+  featuredPair: GetV2MangaRandom200DataItem[];
+  leftBottomPairs: GetV2MangaRandom200DataItem[][];
+  rightTopPair: GetV2MangaRandom200DataItem[] | null;
+  rightBottomPair: GetV2MangaRandom200DataItem[] | null;
   clockMs: number;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -323,7 +323,7 @@ function MobileExpandLayout({
     leftBottomPairs[1],
     rightTopPair,
     rightBottomPair,
-  ].filter((pair): pair is GetV1MangaRandom200DataItem[] => Boolean(pair));
+  ].filter((pair): pair is GetV2MangaRandom200DataItem[] => Boolean(pair));
   const visiblePairs = mobilePairs.slice(0, 2);
   const hiddenPairs = mobilePairs.slice(2);
 
@@ -431,7 +431,7 @@ export default function MoetruyenSection() {
   const isMounted = useMounted();
   const sectionTitleId = useId();
 
-  const { data, isLoading, isError } = useGetV1MangaRandom(
+  const { data, isLoading, isError } = useGetV2MangaRandom(
     { limit: MOETRUYEN_PAIR_COUNT * 2 },
     {
       query: {

@@ -4,7 +4,7 @@ import { useMounted } from "@mantine/hooks";
 import { useState } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useGetV1MangaTop } from "@/lib/moetruyen/hooks/manga/manga";
+import { useGetV2MangaTop } from "@/lib/moetruyen/hooks/manga/manga";
 
 import MoeLeaderboardItem from "./moe-leaderboard-item";
 import MoeLeaderboardSkeleton from "./moe-leaderboard-skeleton";
@@ -26,7 +26,7 @@ export default function MoeLeaderboard() {
   const isMounted = useMounted();
   const [activeTab, setActiveTab] = useState<RankingTabValue>("24h");
 
-  const { data, isLoading, error } = useGetV1MangaTop(
+  const { data, isLoading, error } = useGetV2MangaTop(
     {
       limit: 10,
       sort_by: "views",

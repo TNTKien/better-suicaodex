@@ -26,8 +26,8 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 import {
-  useGetV1MangaById,
-  type getV1MangaByIdResponse,
+  useGetV2MangaById,
+  type getV2MangaByIdResponse,
 } from "@/lib/moetruyen/hooks/manga/manga";
 
 import { MOE_MANGA_PAGE_TABS } from "../[id]/[[...slug]]/searchParams";
@@ -45,7 +45,7 @@ import MoeMangaStats from "./moe-manga-stats";
 
 interface MoeMangaPageProps {
   id: number;
-  initData?: getV1MangaByIdResponse;
+  initData?: getV2MangaByIdResponse;
 }
 
 export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
@@ -65,17 +65,23 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
     parseAsStringLiteral(MOE_MANGA_PAGE_TABS).withDefault("chapters"),
   );
 
-  const { data: response, isLoading } = useGetV1MangaById(id, {
-    query: {
-      queryKey: [`moe-manga-${id}`, id],
-      enabled: !initData,
-      initialData: initData,
-      refetchOnMount: !initData,
-      refetchInterval: 1000 * 60 * 10,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+  const { data: response, isLoading } = useGetV2MangaById(
+    id,
+    {
+      include: "stats,genres",
     },
-  });
+    {
+      query: {
+        queryKey: [`moe-manga-${id}`, id],
+        enabled: !initData,
+        initialData: initData,
+        refetchOnMount: !initData,
+        refetchInterval: 1000 * 60 * 10,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+      },
+    },
+  );
 
   if (isLoading || !response || !initData) {
     return <MoeMangaPageSkeleton />;
@@ -133,8 +139,8 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
             </div>
 
             <MoeMangaStats
-              totalViews={manga.totalViews}
-              totalFollows={manga.totalFollows}
+              totalViews={manga.stats?.totalViews ?? 0}
+              bookmarkCount={manga.stats?.bookmarkCount ?? 0}
             />
           </div>
 
@@ -193,16 +199,17 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
 
               <div className="flex flex-wrap gap-1">
                 <MoeStatusTag status={manga.status} />
-                {manga.genres.map((genre) => (
-                  <MoeNormalTag key={genre.id} className="uppercase">
-                    {genre.name}
-                  </MoeNormalTag>
-                ))}
+                {manga.genres &&
+                  manga.genres.map((genre) => (
+                    <MoeNormalTag key={genre.id} className="uppercase">
+                      {genre.name}
+                    </MoeNormalTag>
+                  ))}
               </div>
 
               <MoeMangaStats
-                totalViews={manga.totalViews}
-                totalFollows={manga.totalFollows}
+                totalViews={manga.stats?.totalViews ?? 0}
+                bookmarkCount={manga.stats?.bookmarkCount ?? 0}
                 size="lg"
               />
             </div>
@@ -211,11 +218,12 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
 
         <div className="flex w-full flex-wrap gap-1 md:hidden">
           <MoeStatusTag status={manga.status} />
-          {manga.genres.map((genre) => (
-            <MoeNormalTag key={genre.id} className="uppercase">
-              {genre.name}
-            </MoeNormalTag>
-          ))}
+          {manga.genres &&
+            manga.genres.map((genre) => (
+              <MoeNormalTag key={genre.id} className="uppercase">
+                {genre.name}
+              </MoeNormalTag>
+            ))}
         </div>
 
         <div className="flex w-full flex-wrap gap-2 md:hidden">
@@ -260,7 +268,7 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
           maxHeight={160}
           subInfo={{
             author: manga.author,
-            genres: manga.genres,
+            genres: manga.genres ?? [],
             slug: manga.slug,
           }}
         />
@@ -270,7 +278,7 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
             <MoeMangaSubInfo
               data={{
                 author: manga.author,
-                genres: manga.genres,
+                genres: manga.genres ?? [],
                 slug: manga.slug,
               }}
             />

@@ -1,8 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { siteConfig } from "@/config/site";
-import Link from "next/link";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 
 interface MoeGenre {
   id: number;

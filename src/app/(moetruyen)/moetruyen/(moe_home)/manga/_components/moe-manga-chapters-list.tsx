@@ -15,8 +15,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useGetV1MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
-import type { GetV1MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV1MangaByIdChapters200DataChaptersItem";
+import { useGetV2MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
+import type { GetV2MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChapters200DataChaptersItem";
 import { cn, formatNumber, formatTimeToNow } from "@/lib/utils";
 import {
   BadgeAlert,
@@ -31,12 +31,12 @@ import {
   Users,
 } from "lucide-react";
 
-function getChapterLabel(chapter: GetV1MangaByIdChapters200DataChaptersItem) {
+function getChapterLabel(chapter: GetV2MangaByIdChapters200DataChaptersItem) {
   return `Ch. ${chapter.number ?? chapter.number}`;
 }
 
 function getAccessLabel(
-  access: GetV1MangaByIdChapters200DataChaptersItem["access"],
+  access: GetV2MangaByIdChapters200DataChaptersItem["access"],
 ) {
   if (access === "password_required") {
     return "Có mật khẩu";
@@ -52,7 +52,7 @@ function getAccessLabel(
 function MoeChapterCard({
   chapter,
 }: {
-  chapter: GetV1MangaByIdChapters200DataChaptersItem;
+  chapter: GetV2MangaByIdChapters200DataChaptersItem;
 }) {
   const isUnavailable = chapter.access !== "public";
   const timestamp = chapter.date;
@@ -175,7 +175,7 @@ function MoeChapterCard({
 }
 
 export default function MoeMangaChaptersList({ mangaId }: { mangaId: number }) {
-  const { data, isLoading, error } = useGetV1MangaByIdChapters(mangaId, {
+  const { data, isLoading, error } = useGetV2MangaByIdChapters(mangaId, {
     query: {
       refetchInterval: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
