@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { useGetV1MangaTop } from "@/lib/moetruyen/hooks/manga/manga";
+import { useGetV2MangaTop } from "@/lib/moetruyen/hooks/manga/manga";
 
 import MoeMangaSlide from "./moe_manga-slide";
 import MoeSlideControl from "./moe_slide_control";
@@ -19,11 +19,12 @@ export default function MoePopularManga() {
   const isMounted = useMounted();
   const [, setSlideIndex] = useState(1);
 
-  const { data, isLoading, error } = useGetV1MangaTop(
+  const { data, isLoading, error } = useGetV2MangaTop(
     {
       limit: 10,
       sort_by: "views",
       time: "24h",
+      include: "genres",
     },
     {
       query: {
