@@ -134,7 +134,7 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
 
             <MoeMangaStats
               totalViews={manga.totalViews}
-              totalFollows={manga.totalFollows}
+              bookmarkCount={manga.bookmarkCount}
             />
           </div>
 
@@ -202,7 +202,7 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
 
               <MoeMangaStats
                 totalViews={manga.totalViews}
-                totalFollows={manga.totalFollows}
+                bookmarkCount={manga.bookmarkCount}
                 size="lg"
               />
             </div>

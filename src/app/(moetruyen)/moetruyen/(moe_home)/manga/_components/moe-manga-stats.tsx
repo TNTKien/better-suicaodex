@@ -4,13 +4,13 @@ import { BookmarkIcon, Eye, Star } from "lucide-react";
 
 interface MoeMangaStatsProps {
   totalViews: number;
-  totalFollows: number;
+  bookmarkCount: number;
   size?: "sm" | "lg";
 }
 
 export default function MoeMangaStats({
   totalViews,
-  totalFollows,
+  bookmarkCount,
   size = "sm",
 }: MoeMangaStatsProps) {
   const isLg = size === "lg";
@@ -29,7 +29,7 @@ export default function MoeMangaStats({
       </Badge>
       <Badge variant="ghost" className={cn("p-0", textClass)}>
         <BookmarkIcon data-icon="inline-start" className={iconClass} />
-        {formatNumber(totalFollows)}
+        {formatNumber(bookmarkCount)}
       </Badge>
     </div>
   );
