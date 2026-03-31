@@ -9,7 +9,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useGetV1CommentsMangaById } from "@/lib/moetruyen/hooks/comments/comments";
+import { useGetV2CommentsMangaById } from "@/lib/moetruyen/hooks/comments/comments";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 
@@ -26,7 +26,7 @@ export default function MoeMangaComments({
   page: number;
   onPageChange: (page: number) => void;
 }) {
-  const { data, isLoading, error } = useGetV1CommentsMangaById(
+  const { data, isLoading, error } = useGetV2CommentsMangaById(
     mangaId,
     {
       page,

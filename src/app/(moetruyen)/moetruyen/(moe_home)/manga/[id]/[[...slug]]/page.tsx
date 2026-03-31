@@ -1,8 +1,8 @@
 import ErrorPage from "@/components/error-page";
 import { siteConfig } from "@/config/site";
 import {
-  getV1MangaById,
-  type getV1MangaByIdResponse,
+  getV2MangaById,
+  type getV2MangaByIdResponse,
 } from "@/lib/moetruyen/hooks/manga/manga";
 import type { Metadata } from "next";
 import { cache } from "react";
@@ -19,7 +19,9 @@ interface PageProps {
 }
 
 const getCachedMangaData = cache(async (id: number) => {
-  return await getV1MangaById(id);
+  return await getV2MangaById(id, {
+    include: "stats,genres",
+  });
 });
 
 function parseMangaId(id: string) {
@@ -93,5 +95,5 @@ export default async function Page({ params }: PageProps) {
     return <ErrorPage statusCode={res.status} />;
   }
 
-  return <MoeMangaPage id={mangaId} initData={res as getV1MangaByIdResponse} />;
+  return <MoeMangaPage id={mangaId} initData={res as getV2MangaByIdResponse} />;
 }
