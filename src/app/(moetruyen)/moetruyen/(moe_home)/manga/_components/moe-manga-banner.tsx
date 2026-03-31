@@ -1,10 +1,13 @@
 import { cn } from "@/lib/utils";
+import { getMoetruyenBannerCoverUrl } from "@/lib/moetruyen/cover-url";
 
 interface MoeMangaBannerProps {
   coverUrl: string;
 }
 
 export default function MoeMangaBanner({ coverUrl }: MoeMangaBannerProps) {
+  const bannerCoverUrl = getMoetruyenBannerCoverUrl(coverUrl);
+
   return (
     <div className="-mt-16 col-start-1 row-start-1 grid w-auto">
       <div className="md:sticky md:top-0 col-start-1 row-start-1 grid z-[-2] w-auto h-70">
@@ -14,7 +17,7 @@ export default function MoeMangaBanner({ coverUrl }: MoeMangaBannerProps) {
             "transition-[width] duration-150 ease-in-out",
             "bg-no-repeat bg-cover bg-position-[center_top_25%]",
           )}
-          style={{ backgroundImage: `url('${coverUrl}')` }}
+          style={{ backgroundImage: `url('${bannerCoverUrl}')` }}
         />
         <div
           className={cn(

@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getMoetruyenThumbnailCoverUrl } from "@/lib/moetruyen/cover-url";
 import { cn } from "@/lib/utils";
 import { Expand, Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -32,6 +33,7 @@ export default function MoeMangaCover({
 }: MoeMangaCoverProps) {
   const [loaded, setLoaded] = useState(false);
   const coverUrl = src ?? "/images/no-cover.webp";
+  const thumbnailCoverUrl = getMoetruyenThumbnailCoverUrl(coverUrl);
 
   return (
     <div className="relative">
@@ -71,7 +73,7 @@ export default function MoeMangaCover({
           wrapper,
         )}
         placeholderSrc={placeholder}
-        src={coverUrl}
+        src={thumbnailCoverUrl}
         alt={`Ảnh bìa ${alt}`}
         className={cn("block h-auto w-full rounded-sm", className)}
         onLoad={() => setLoaded(true)}

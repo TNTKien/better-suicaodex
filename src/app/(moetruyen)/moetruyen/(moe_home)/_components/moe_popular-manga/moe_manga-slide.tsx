@@ -7,6 +7,10 @@ import { Streamdown } from "streamdown";
 
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  getMoetruyenBannerCoverUrl,
+  getMoetruyenThumbnailCoverUrl,
+} from "@/lib/moetruyen/cover-url";
 import type { GetV1MangaTop200DataItem } from "@/lib/moetruyen/model/getV1MangaTop200DataItem";
 
 const FALLBACK_COVER = "/images/place-doro.webp";
@@ -85,19 +89,21 @@ export default function MoeMangaSlide({
 }) {
   const isMobile = useIsMobile();
   const coverUrl = manga.coverUrl ?? NO_COVER;
+  const thumbnailCoverUrl = getMoetruyenThumbnailCoverUrl(coverUrl);
+  const bannerCoverUrl = getMoetruyenBannerCoverUrl(coverUrl);
   const href = `/moetruyen/manga/${manga.id}/${manga.slug}`;
   const authorLine = manga.author ?? "";
 
   return (
     <div
       className="relative bg-no-repeat bg-cover bg-position-[center_top_25%] h-[300px] md:h-[400px] lg:h-[420px]"
-      style={{ backgroundImage: `url('${coverUrl}')` }}
+      style={{ backgroundImage: `url('${bannerCoverUrl}')` }}
     >
       <div className="relative z-1 flex gap-4 pt-28 h-full px-4 md:px-8 lg:px-12">
         <Link href={href} prefetch={false} className="z-10!">
           <LazyLoadImage
             placeholderSrc={FALLBACK_COVER}
-            src={coverUrl}
+            src={thumbnailCoverUrl}
             alt={`Ảnh bìa ${manga.title}`}
             onError={(event) => {
               event.currentTarget.src = FALLBACK_COVER;

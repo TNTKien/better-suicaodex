@@ -6,6 +6,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { Card, CardContent } from "@/components/ui/card";
 import type { GetV1Manga200DataItem } from "@/lib/moetruyen/model/getV1Manga200DataItem";
+import { getMoetruyenThumbnailCoverUrl } from "@/lib/moetruyen/cover-url";
 import { formatNumber, formatTimeToNow } from "@/lib/utils";
 import { VN } from "country-flag-icons/react/3x2";
 
@@ -14,7 +15,9 @@ interface MoeLatestMangaCardProps {
 }
 
 export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
-  const coverUrl = manga.coverUrl ?? "/images/no-cover.webp";
+  const coverUrl = getMoetruyenThumbnailCoverUrl(
+    manga.coverUrl ?? "/images/no-cover.webp",
+  );
   const mangaHref = `/moetruyen/manga/${manga.id}/${manga.slug}`;
   const chapterLabel = manga.latestChapterNumber
     ? `Ch. ${manga.latestChapterNumber}`

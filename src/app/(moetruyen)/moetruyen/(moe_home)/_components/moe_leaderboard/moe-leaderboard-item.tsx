@@ -5,6 +5,7 @@ import { Eye } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { Card } from "@/components/ui/card";
+import { getMoetruyenThumbnailCoverUrl } from "@/lib/moetruyen/cover-url";
 import type { GetV1MangaTop200DataItem } from "@/lib/moetruyen/model/getV1MangaTop200DataItem";
 import { formatNumber } from "@/lib/utils";
 
@@ -17,7 +18,7 @@ export default function MoeLeaderboardItem({
   manga: GetV1MangaTop200DataItem;
 }) {
   const href = `/moetruyen/manga/${manga.id}/${manga.slug}`;
-  const coverUrl = manga.coverUrl ?? NO_COVER;
+  const coverUrl = getMoetruyenThumbnailCoverUrl(manga.coverUrl ?? NO_COVER, {w: 256, q: 80});
 
   return (
     <Card className="overflow-hidden rounded-md border-none shadow-xs transition-colors duration-200 min-h-[121px]">
