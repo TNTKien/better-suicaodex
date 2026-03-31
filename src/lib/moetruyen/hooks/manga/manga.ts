@@ -4,14 +4,27 @@
  * Moetruyen Public API
  * Unofficial read-only REST API for [MoeTruyen](https://moetruyen.net/).
 
-Full features will be added in the future (chắc thế)
+## Quick start
 
-Github: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api), [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+Use the `/v1` routes for the current stable surface.
+Use the `/v2` manga-family routes for the newer include-based contract.
 
-NOTE:
+## Request notes
+
 - All API endpoints have a global rate limit of 7 requests per second per IP.
-- To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
- * OpenAPI spec version: 0.1.0
+- Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
+- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
+
+## Versioning
+
+- `/v1` preserves the original route contracts.
+- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+
+## Repositories
+
+- API repo: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
+- Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+ * OpenAPI spec version: 0.2.0
  */
 import { useQuery } from "@tanstack/react-query";
 import type {
@@ -40,6 +53,21 @@ import type {
   GetV1MangaTop200,
   GetV1MangaTop400,
   GetV1MangaTopParams,
+  GetV2Manga200,
+  GetV2Manga400,
+  GetV2MangaById200,
+  GetV2MangaById400,
+  GetV2MangaById404,
+  GetV2MangaByIdChapters200,
+  GetV2MangaByIdChapters404,
+  GetV2MangaByIdParams,
+  GetV2MangaParams,
+  GetV2MangaRandom200,
+  GetV2MangaRandom400,
+  GetV2MangaRandomParams,
+  GetV2MangaTop200,
+  GetV2MangaTop400,
+  GetV2MangaTopParams,
 } from "../../model";
 
 /**
@@ -79,8 +107,8 @@ export const getGetV1MangaTopUrl = (params?: GetV1MangaTopParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/manga/top?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/manga/top`;
+    ? `http://localhost:8787/v1/manga/top?${stringifiedParams}`
+    : `http://localhost:8787/v1/manga/top`;
 };
 
 export const getV1MangaTop = async (
@@ -104,7 +132,7 @@ export const getV1MangaTop = async (
 
 export const getGetV1MangaTopQueryKey = (params?: GetV1MangaTopParams) => {
   return [
-    `https://moe.suicaodex.com/v1/manga/top`,
+    `http://localhost:8787/v1/manga/top`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -268,8 +296,8 @@ export const getGetV1MangaRandomUrl = (params?: GetV1MangaRandomParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/manga/random?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/manga/random`;
+    ? `http://localhost:8787/v1/manga/random?${stringifiedParams}`
+    : `http://localhost:8787/v1/manga/random`;
 };
 
 export const getV1MangaRandom = async (
@@ -295,7 +323,7 @@ export const getGetV1MangaRandomQueryKey = (
   params?: GetV1MangaRandomParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/manga/random`,
+    `http://localhost:8787/v1/manga/random`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -480,8 +508,8 @@ export const getGetV1MangaUrl = (params?: GetV1MangaParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/manga?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/manga`;
+    ? `http://localhost:8787/v1/manga?${stringifiedParams}`
+    : `http://localhost:8787/v1/manga`;
 };
 
 export const getV1Manga = async (
@@ -505,7 +533,7 @@ export const getV1Manga = async (
 
 export const getGetV1MangaQueryKey = (params?: GetV1MangaParams) => {
   return [
-    `https://moe.suicaodex.com/v1/manga`,
+    `http://localhost:8787/v1/manga`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -658,7 +686,7 @@ export type getV1MangaByIdResponse =
   | getV1MangaByIdResponseError;
 
 export const getGetV1MangaByIdUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/manga/${id}`;
+  return `http://localhost:8787/v1/manga/${id}`;
 };
 
 export const getV1MangaById = async (
@@ -681,7 +709,7 @@ export const getV1MangaById = async (
 };
 
 export const getGetV1MangaByIdQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/manga/${id}`] as const;
+  return [`http://localhost:8787/v1/manga/${id}`] as const;
 };
 
 export const getGetV1MangaByIdQueryOptions = <
@@ -839,7 +867,7 @@ export type getV1MangaByIdChaptersResponse =
   | getV1MangaByIdChaptersResponseError;
 
 export const getGetV1MangaByIdChaptersUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/manga/${id}/chapters`;
+  return `http://localhost:8787/v1/manga/${id}/chapters`;
 };
 
 export const getV1MangaByIdChapters = async (
@@ -864,7 +892,7 @@ export const getV1MangaByIdChapters = async (
 };
 
 export const getGetV1MangaByIdChaptersQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/manga/${id}/chapters`] as const;
+  return [`http://localhost:8787/v1/manga/${id}/chapters`] as const;
 };
 
 export const getGetV1MangaByIdChaptersQueryOptions = <
@@ -1006,6 +1034,1015 @@ export function useGetV1MangaByIdChapters<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getGetV1MangaByIdChaptersQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated top manga using the shared v2 manga base shape. Use `sort_by=views` and `time=24h|7d|30d|all_time` to control the ranking window. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand each manga item.
+ * @summary List top public manga (v2)
+ */
+export type getV2MangaTopResponse200 = {
+  data: GetV2MangaTop200;
+  status: 200;
+};
+
+export type getV2MangaTopResponse400 = {
+  data: GetV2MangaTop400;
+  status: 400;
+};
+
+export type getV2MangaTopResponseSuccess = getV2MangaTopResponse200 & {
+  headers: Headers;
+};
+export type getV2MangaTopResponseError = getV2MangaTopResponse400 & {
+  headers: Headers;
+};
+
+export type getV2MangaTopResponse =
+  | getV2MangaTopResponseSuccess
+  | getV2MangaTopResponseError;
+
+export const getGetV2MangaTopUrl = (params?: GetV2MangaTopParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:8787/v2/manga/top?${stringifiedParams}`
+    : `http://localhost:8787/v2/manga/top`;
+};
+
+export const getV2MangaTop = async (
+  params?: GetV2MangaTopParams,
+  options?: RequestInit,
+): Promise<getV2MangaTopResponse> => {
+  const res = await fetch(getGetV2MangaTopUrl(params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2MangaTopResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2MangaTopResponse;
+};
+
+export const getGetV2MangaTopQueryKey = (params?: GetV2MangaTopParams) => {
+  return [
+    `http://localhost:8787/v2/manga/top`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2MangaTopQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2MangaTop>>,
+  TError = GetV2MangaTop400,
+>(
+  params?: GetV2MangaTopParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaTop>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetV2MangaTopQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getV2MangaTop>>> = ({
+    signal,
+  }) => getV2MangaTop(params, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2MangaTop>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2MangaTopQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2MangaTop>>
+>;
+export type GetV2MangaTopQueryError = GetV2MangaTop400;
+
+export function useGetV2MangaTop<
+  TData = Awaited<ReturnType<typeof getV2MangaTop>>,
+  TError = GetV2MangaTop400,
+>(
+  params: undefined | GetV2MangaTopParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaTop>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaTop>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaTop>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaTop<
+  TData = Awaited<ReturnType<typeof getV2MangaTop>>,
+  TError = GetV2MangaTop400,
+>(
+  params?: GetV2MangaTopParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaTop>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaTop>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaTop>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaTop<
+  TData = Awaited<ReturnType<typeof getV2MangaTop>>,
+  TError = GetV2MangaTop400,
+>(
+  params?: GetV2MangaTopParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaTop>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List top public manga (v2)
+ */
+
+export function useGetV2MangaTop<
+  TData = Awaited<ReturnType<typeof getV2MangaTop>>,
+  TError = GetV2MangaTop400,
+>(
+  params?: GetV2MangaTopParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaTop>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2MangaTopQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns 1 to 10 random public manga items using the shared v2 manga base shape. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand each manga item.
+ * @summary List random public manga (v2)
+ */
+export type getV2MangaRandomResponse200 = {
+  data: GetV2MangaRandom200;
+  status: 200;
+};
+
+export type getV2MangaRandomResponse400 = {
+  data: GetV2MangaRandom400;
+  status: 400;
+};
+
+export type getV2MangaRandomResponseSuccess = getV2MangaRandomResponse200 & {
+  headers: Headers;
+};
+export type getV2MangaRandomResponseError = getV2MangaRandomResponse400 & {
+  headers: Headers;
+};
+
+export type getV2MangaRandomResponse =
+  | getV2MangaRandomResponseSuccess
+  | getV2MangaRandomResponseError;
+
+export const getGetV2MangaRandomUrl = (params?: GetV2MangaRandomParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:8787/v2/manga/random?${stringifiedParams}`
+    : `http://localhost:8787/v2/manga/random`;
+};
+
+export const getV2MangaRandom = async (
+  params?: GetV2MangaRandomParams,
+  options?: RequestInit,
+): Promise<getV2MangaRandomResponse> => {
+  const res = await fetch(getGetV2MangaRandomUrl(params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2MangaRandomResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2MangaRandomResponse;
+};
+
+export const getGetV2MangaRandomQueryKey = (
+  params?: GetV2MangaRandomParams,
+) => {
+  return [
+    `http://localhost:8787/v2/manga/random`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2MangaRandomQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2MangaRandom>>,
+  TError = GetV2MangaRandom400,
+>(
+  params?: GetV2MangaRandomParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaRandom>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2MangaRandomQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2MangaRandom>>
+  > = ({ signal }) => getV2MangaRandom(params, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2MangaRandom>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2MangaRandomQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2MangaRandom>>
+>;
+export type GetV2MangaRandomQueryError = GetV2MangaRandom400;
+
+export function useGetV2MangaRandom<
+  TData = Awaited<ReturnType<typeof getV2MangaRandom>>,
+  TError = GetV2MangaRandom400,
+>(
+  params: undefined | GetV2MangaRandomParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaRandom>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaRandom>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaRandom>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaRandom<
+  TData = Awaited<ReturnType<typeof getV2MangaRandom>>,
+  TError = GetV2MangaRandom400,
+>(
+  params?: GetV2MangaRandomParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaRandom>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaRandom>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaRandom>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaRandom<
+  TData = Awaited<ReturnType<typeof getV2MangaRandom>>,
+  TError = GetV2MangaRandom400,
+>(
+  params?: GetV2MangaRandomParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaRandom>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List random public manga (v2)
+ */
+
+export function useGetV2MangaRandom<
+  TData = Awaited<ReturnType<typeof getV2MangaRandom>>,
+  TError = GetV2MangaRandom400,
+>(
+  params?: GetV2MangaRandomParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaRandom>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2MangaRandomQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated public manga using the shared v2 manga base shape. `genre` accepts comma-separated genre ids with OR semantics, `genrex` excludes manga that have any listed genre ids, and `include` controls optional expansions such as `stats` and `genres`.
+ * @summary List public manga (v2)
+ */
+export type getV2MangaResponse200 = {
+  data: GetV2Manga200;
+  status: 200;
+};
+
+export type getV2MangaResponse400 = {
+  data: GetV2Manga400;
+  status: 400;
+};
+
+export type getV2MangaResponseSuccess = getV2MangaResponse200 & {
+  headers: Headers;
+};
+export type getV2MangaResponseError = getV2MangaResponse400 & {
+  headers: Headers;
+};
+
+export type getV2MangaResponse =
+  | getV2MangaResponseSuccess
+  | getV2MangaResponseError;
+
+export const getGetV2MangaUrl = (params?: GetV2MangaParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:8787/v2/manga?${stringifiedParams}`
+    : `http://localhost:8787/v2/manga`;
+};
+
+export const getV2Manga = async (
+  params?: GetV2MangaParams,
+  options?: RequestInit,
+): Promise<getV2MangaResponse> => {
+  const res = await fetch(getGetV2MangaUrl(params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2MangaResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2MangaResponse;
+};
+
+export const getGetV2MangaQueryKey = (params?: GetV2MangaParams) => {
+  return [
+    `http://localhost:8787/v2/manga`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2MangaQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2Manga>>,
+  TError = GetV2Manga400,
+>(
+  params?: GetV2MangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Manga>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetV2MangaQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getV2Manga>>> = ({
+    signal,
+  }) => getV2Manga(params, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2Manga>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2MangaQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2Manga>>
+>;
+export type GetV2MangaQueryError = GetV2Manga400;
+
+export function useGetV2Manga<
+  TData = Awaited<ReturnType<typeof getV2Manga>>,
+  TError = GetV2Manga400,
+>(
+  params: undefined | GetV2MangaParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Manga>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2Manga>>,
+          TError,
+          Awaited<ReturnType<typeof getV2Manga>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2Manga<
+  TData = Awaited<ReturnType<typeof getV2Manga>>,
+  TError = GetV2Manga400,
+>(
+  params?: GetV2MangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Manga>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2Manga>>,
+          TError,
+          Awaited<ReturnType<typeof getV2Manga>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2Manga<
+  TData = Awaited<ReturnType<typeof getV2Manga>>,
+  TError = GetV2Manga400,
+>(
+  params?: GetV2MangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Manga>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public manga (v2)
+ */
+
+export function useGetV2Manga<
+  TData = Awaited<ReturnType<typeof getV2Manga>>,
+  TError = GetV2Manga400,
+>(
+  params?: GetV2MangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Manga>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2MangaQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns a single manga using the shared v2 manga base shape. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand the response with optional aggregates and genre metadata.
+ * @summary Get manga detail (v2)
+ */
+export type getV2MangaByIdResponse200 = {
+  data: GetV2MangaById200;
+  status: 200;
+};
+
+export type getV2MangaByIdResponse400 = {
+  data: GetV2MangaById400;
+  status: 400;
+};
+
+export type getV2MangaByIdResponse404 = {
+  data: GetV2MangaById404;
+  status: 404;
+};
+
+export type getV2MangaByIdResponseSuccess = getV2MangaByIdResponse200 & {
+  headers: Headers;
+};
+export type getV2MangaByIdResponseError = (
+  | getV2MangaByIdResponse400
+  | getV2MangaByIdResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2MangaByIdResponse =
+  | getV2MangaByIdResponseSuccess
+  | getV2MangaByIdResponseError;
+
+export const getGetV2MangaByIdUrl = (
+  id: number,
+  params?: GetV2MangaByIdParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:8787/v2/manga/${id}?${stringifiedParams}`
+    : `http://localhost:8787/v2/manga/${id}`;
+};
+
+export const getV2MangaById = async (
+  id: number,
+  params?: GetV2MangaByIdParams,
+  options?: RequestInit,
+): Promise<getV2MangaByIdResponse> => {
+  const res = await fetch(getGetV2MangaByIdUrl(id, params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2MangaByIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2MangaByIdResponse;
+};
+
+export const getGetV2MangaByIdQueryKey = (
+  id: number,
+  params?: GetV2MangaByIdParams,
+) => {
+  return [
+    `http://localhost:8787/v2/manga/${id}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2MangaByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2MangaById>>,
+  TError = GetV2MangaById400 | GetV2MangaById404,
+>(
+  id: number,
+  params?: GetV2MangaByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaById>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2MangaByIdQueryKey(id, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getV2MangaById>>> = ({
+    signal,
+  }) => getV2MangaById(id, params, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2MangaById>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2MangaByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2MangaById>>
+>;
+export type GetV2MangaByIdQueryError = GetV2MangaById400 | GetV2MangaById404;
+
+export function useGetV2MangaById<
+  TData = Awaited<ReturnType<typeof getV2MangaById>>,
+  TError = GetV2MangaById400 | GetV2MangaById404,
+>(
+  id: number,
+  params: undefined | GetV2MangaByIdParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaById>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaById>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaById>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaById<
+  TData = Awaited<ReturnType<typeof getV2MangaById>>,
+  TError = GetV2MangaById400 | GetV2MangaById404,
+>(
+  id: number,
+  params?: GetV2MangaByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaById>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaById>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaById>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaById<
+  TData = Awaited<ReturnType<typeof getV2MangaById>>,
+  TError = GetV2MangaById400 | GetV2MangaById404,
+>(
+  id: number,
+  params?: GetV2MangaByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaById>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Get manga detail (v2)
+ */
+
+export function useGetV2MangaById<
+  TData = Awaited<ReturnType<typeof getV2MangaById>>,
+  TError = GetV2MangaById400 | GetV2MangaById404,
+>(
+  id: number,
+  params?: GetV2MangaByIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2MangaById>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2MangaByIdQueryOptions(id, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns public chapter metadata for a manga id ordered by latest chapter first.
+ * @summary List public manga chapters (v2)
+ */
+export type getV2MangaByIdChaptersResponse200 = {
+  data: GetV2MangaByIdChapters200;
+  status: 200;
+};
+
+export type getV2MangaByIdChaptersResponse404 = {
+  data: GetV2MangaByIdChapters404;
+  status: 404;
+};
+
+export type getV2MangaByIdChaptersResponseSuccess =
+  getV2MangaByIdChaptersResponse200 & {
+    headers: Headers;
+  };
+export type getV2MangaByIdChaptersResponseError =
+  getV2MangaByIdChaptersResponse404 & {
+    headers: Headers;
+  };
+
+export type getV2MangaByIdChaptersResponse =
+  | getV2MangaByIdChaptersResponseSuccess
+  | getV2MangaByIdChaptersResponseError;
+
+export const getGetV2MangaByIdChaptersUrl = (id: number) => {
+  return `http://localhost:8787/v2/manga/${id}/chapters`;
+};
+
+export const getV2MangaByIdChapters = async (
+  id: number,
+  options?: RequestInit,
+): Promise<getV2MangaByIdChaptersResponse> => {
+  const res = await fetch(getGetV2MangaByIdChaptersUrl(id), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2MangaByIdChaptersResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2MangaByIdChaptersResponse;
+};
+
+export const getGetV2MangaByIdChaptersQueryKey = (id: number) => {
+  return [`http://localhost:8787/v2/manga/${id}/chapters`] as const;
+};
+
+export const getGetV2MangaByIdChaptersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+  TError = GetV2MangaByIdChapters404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2MangaByIdChaptersQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2MangaByIdChapters>>
+  > = ({ signal }) => getV2MangaByIdChapters(id, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2MangaByIdChaptersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2MangaByIdChapters>>
+>;
+export type GetV2MangaByIdChaptersQueryError = GetV2MangaByIdChapters404;
+
+export function useGetV2MangaByIdChapters<
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+  TError = GetV2MangaByIdChapters404,
+>(
+  id: number,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaByIdChapters>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaByIdChapters<
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+  TError = GetV2MangaByIdChapters404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaByIdChapters>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaByIdChapters<
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+  TError = GetV2MangaByIdChapters404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public manga chapters (v2)
+ */
+
+export function useGetV2MangaByIdChapters<
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+  TError = GetV2MangaByIdChapters404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2MangaByIdChaptersQueryOptions(id, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

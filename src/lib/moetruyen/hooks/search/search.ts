@@ -4,14 +4,27 @@
  * Moetruyen Public API
  * Unofficial read-only REST API for [MoeTruyen](https://moetruyen.net/).
 
-Full features will be added in the future (chắc thế)
+## Quick start
 
-Github: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api), [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+Use the `/v1` routes for the current stable surface.
+Use the `/v2` manga-family routes for the newer include-based contract.
 
-NOTE:
+## Request notes
+
 - All API endpoints have a global rate limit of 7 requests per second per IP.
-- To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
- * OpenAPI spec version: 0.1.0
+- Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
+- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
+
+## Versioning
+
+- `/v1` preserves the original route contracts.
+- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+
+## Repositories
+
+- API repo: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
+- Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+ * OpenAPI spec version: 0.2.0
  */
 import { useQuery } from "@tanstack/react-query";
 import type {
@@ -30,6 +43,9 @@ import type {
   GetV1SearchManga200,
   GetV1SearchManga400,
   GetV1SearchMangaParams,
+  GetV2SearchManga200,
+  GetV2SearchManga400,
+  GetV2SearchMangaParams,
 } from "../../model";
 
 /**
@@ -69,8 +85,8 @@ export const getGetV1SearchMangaUrl = (params: GetV1SearchMangaParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/search/manga?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/search/manga`;
+    ? `http://localhost:8787/v1/search/manga?${stringifiedParams}`
+    : `http://localhost:8787/v1/search/manga`;
 };
 
 export const getV1SearchManga = async (
@@ -96,7 +112,7 @@ export const getGetV1SearchMangaQueryKey = (
   params?: GetV1SearchMangaParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/search/manga`,
+    `http://localhost:8787/v1/search/manga`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -235,6 +251,218 @@ export function useGetV1SearchManga<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getGetV1SearchMangaQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns manga search results using the shared v2 manga base shape. Use `q` for the search term, `limit` to control result size, and `include` to request optional `stats` and/or `genres`.
+ * @summary Search public manga (v2)
+ */
+export type getV2SearchMangaResponse200 = {
+  data: GetV2SearchManga200;
+  status: 200;
+};
+
+export type getV2SearchMangaResponse400 = {
+  data: GetV2SearchManga400;
+  status: 400;
+};
+
+export type getV2SearchMangaResponseSuccess = getV2SearchMangaResponse200 & {
+  headers: Headers;
+};
+export type getV2SearchMangaResponseError = getV2SearchMangaResponse400 & {
+  headers: Headers;
+};
+
+export type getV2SearchMangaResponse =
+  | getV2SearchMangaResponseSuccess
+  | getV2SearchMangaResponseError;
+
+export const getGetV2SearchMangaUrl = (params: GetV2SearchMangaParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:8787/v2/search/manga?${stringifiedParams}`
+    : `http://localhost:8787/v2/search/manga`;
+};
+
+export const getV2SearchManga = async (
+  params: GetV2SearchMangaParams,
+  options?: RequestInit,
+): Promise<getV2SearchMangaResponse> => {
+  const res = await fetch(getGetV2SearchMangaUrl(params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2SearchMangaResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2SearchMangaResponse;
+};
+
+export const getGetV2SearchMangaQueryKey = (
+  params?: GetV2SearchMangaParams,
+) => {
+  return [
+    `http://localhost:8787/v2/search/manga`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2SearchMangaQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2SearchManga>>,
+  TError = GetV2SearchManga400,
+>(
+  params: GetV2SearchMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2SearchManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2SearchMangaQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2SearchManga>>
+  > = ({ signal }) => getV2SearchManga(params, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2SearchManga>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2SearchMangaQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2SearchManga>>
+>;
+export type GetV2SearchMangaQueryError = GetV2SearchManga400;
+
+export function useGetV2SearchManga<
+  TData = Awaited<ReturnType<typeof getV2SearchManga>>,
+  TError = GetV2SearchManga400,
+>(
+  params: GetV2SearchMangaParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2SearchManga>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2SearchManga>>,
+          TError,
+          Awaited<ReturnType<typeof getV2SearchManga>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2SearchManga<
+  TData = Awaited<ReturnType<typeof getV2SearchManga>>,
+  TError = GetV2SearchManga400,
+>(
+  params: GetV2SearchMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2SearchManga>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2SearchManga>>,
+          TError,
+          Awaited<ReturnType<typeof getV2SearchManga>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2SearchManga<
+  TData = Awaited<ReturnType<typeof getV2SearchManga>>,
+  TError = GetV2SearchManga400,
+>(
+  params: GetV2SearchMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2SearchManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Search public manga (v2)
+ */
+
+export function useGetV2SearchManga<
+  TData = Awaited<ReturnType<typeof getV2SearchManga>>,
+  TError = GetV2SearchManga400,
+>(
+  params: GetV2SearchMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2SearchManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2SearchMangaQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

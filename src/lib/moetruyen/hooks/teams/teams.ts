@@ -4,14 +4,27 @@
  * Moetruyen Public API
  * Unofficial read-only REST API for [MoeTruyen](https://moetruyen.net/).
 
-Full features will be added in the future (chắc thế)
+## Quick start
 
-Github: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api), [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+Use the `/v1` routes for the current stable surface.
+Use the `/v2` manga-family routes for the newer include-based contract.
 
-NOTE:
+## Request notes
+
 - All API endpoints have a global rate limit of 7 requests per second per IP.
-- To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
- * OpenAPI spec version: 0.1.0
+- Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
+- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
+
+## Versioning
+
+- `/v1` preserves the original route contracts.
+- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+
+## Repositories
+
+- API repo: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
+- Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+ * OpenAPI spec version: 0.2.0
  */
 import { useQuery } from "@tanstack/react-query";
 import type {
@@ -44,6 +57,23 @@ import type {
   GetV1TeamsByIdUpdates404,
   GetV1TeamsByIdUpdatesParams,
   GetV1TeamsParams,
+  GetV2Teams200,
+  GetV2Teams400,
+  GetV2TeamsById200,
+  GetV2TeamsById400,
+  GetV2TeamsById404,
+  GetV2TeamsByIdManga200,
+  GetV2TeamsByIdManga400,
+  GetV2TeamsByIdManga404,
+  GetV2TeamsByIdMangaParams,
+  GetV2TeamsByIdMembers200,
+  GetV2TeamsByIdMembers400,
+  GetV2TeamsByIdMembers404,
+  GetV2TeamsByIdUpdates200,
+  GetV2TeamsByIdUpdates400,
+  GetV2TeamsByIdUpdates404,
+  GetV2TeamsByIdUpdatesParams,
+  GetV2TeamsParams,
 } from "../../model";
 
 /**
@@ -83,8 +113,8 @@ export const getGetV1TeamsUrl = (params?: GetV1TeamsParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/teams?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/teams`;
+    ? `http://localhost:8787/v1/teams?${stringifiedParams}`
+    : `http://localhost:8787/v1/teams`;
 };
 
 export const getV1Teams = async (
@@ -108,7 +138,7 @@ export const getV1Teams = async (
 
 export const getGetV1TeamsQueryKey = (params?: GetV1TeamsParams) => {
   return [
-    `https://moe.suicaodex.com/v1/teams`,
+    `http://localhost:8787/v1/teams`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -269,7 +299,7 @@ export type getV1TeamsByIdResponse =
   | getV1TeamsByIdResponseError;
 
 export const getGetV1TeamsByIdUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/teams/${id}`;
+  return `http://localhost:8787/v1/teams/${id}`;
 };
 
 export const getV1TeamsById = async (
@@ -292,7 +322,7 @@ export const getV1TeamsById = async (
 };
 
 export const getGetV1TeamsByIdQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/teams/${id}`] as const;
+  return [`http://localhost:8787/v1/teams/${id}`] as const;
 };
 
 export const getGetV1TeamsByIdQueryOptions = <
@@ -471,8 +501,8 @@ export const getGetV1TeamsByIdUpdatesUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/teams/${id}/updates?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/teams/${id}/updates`;
+    ? `http://localhost:8787/v1/teams/${id}/updates?${stringifiedParams}`
+    : `http://localhost:8787/v1/teams/${id}/updates`;
 };
 
 export const getV1TeamsByIdUpdates = async (
@@ -502,7 +532,7 @@ export const getGetV1TeamsByIdUpdatesQueryKey = (
   params?: GetV1TeamsByIdUpdatesParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/teams/${id}/updates`,
+    `http://localhost:8787/v1/teams/${id}/updates`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -716,8 +746,8 @@ export const getGetV1TeamsByIdMangaUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `https://moe.suicaodex.com/v1/teams/${id}/manga?${stringifiedParams}`
-    : `https://moe.suicaodex.com/v1/teams/${id}/manga`;
+    ? `http://localhost:8787/v1/teams/${id}/manga?${stringifiedParams}`
+    : `http://localhost:8787/v1/teams/${id}/manga`;
 };
 
 export const getV1TeamsByIdManga = async (
@@ -747,7 +777,7 @@ export const getGetV1TeamsByIdMangaQueryKey = (
   params?: GetV1TeamsByIdMangaParams,
 ) => {
   return [
-    `https://moe.suicaodex.com/v1/teams/${id}/manga`,
+    `http://localhost:8787/v1/teams/${id}/manga`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -943,7 +973,7 @@ export type getV1TeamsByIdMembersResponse =
   | getV1TeamsByIdMembersResponseError;
 
 export const getGetV1TeamsByIdMembersUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v1/teams/${id}/members`;
+  return `http://localhost:8787/v1/teams/${id}/members`;
 };
 
 export const getV1TeamsByIdMembers = async (
@@ -968,7 +998,7 @@ export const getV1TeamsByIdMembers = async (
 };
 
 export const getGetV1TeamsByIdMembersQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v1/teams/${id}/members`] as const;
+  return [`http://localhost:8787/v1/teams/${id}/members`] as const;
 };
 
 export const getGetV1TeamsByIdMembersQueryOptions = <
@@ -1112,6 +1142,1081 @@ export function useGetV1TeamsByIdMembers<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getGetV1TeamsByIdMembersQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated manga associated with a team using the shared v2 manga base shape. `genre` accepts comma-separated genre ids with OR semantics, `genrex` excludes listed genre ids, and `include` controls optional `stats` and `genres` expansions.
+ * @summary List public team manga (v2)
+ */
+export type getV2TeamsByIdMangaResponse200 = {
+  data: GetV2TeamsByIdManga200;
+  status: 200;
+};
+
+export type getV2TeamsByIdMangaResponse400 = {
+  data: GetV2TeamsByIdManga400;
+  status: 400;
+};
+
+export type getV2TeamsByIdMangaResponse404 = {
+  data: GetV2TeamsByIdManga404;
+  status: 404;
+};
+
+export type getV2TeamsByIdMangaResponseSuccess =
+  getV2TeamsByIdMangaResponse200 & {
+    headers: Headers;
+  };
+export type getV2TeamsByIdMangaResponseError = (
+  | getV2TeamsByIdMangaResponse400
+  | getV2TeamsByIdMangaResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2TeamsByIdMangaResponse =
+  | getV2TeamsByIdMangaResponseSuccess
+  | getV2TeamsByIdMangaResponseError;
+
+export const getGetV2TeamsByIdMangaUrl = (
+  id: number,
+  params?: GetV2TeamsByIdMangaParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:8787/v2/teams/${id}/manga?${stringifiedParams}`
+    : `http://localhost:8787/v2/teams/${id}/manga`;
+};
+
+export const getV2TeamsByIdManga = async (
+  id: number,
+  params?: GetV2TeamsByIdMangaParams,
+  options?: RequestInit,
+): Promise<getV2TeamsByIdMangaResponse> => {
+  const res = await fetch(getGetV2TeamsByIdMangaUrl(id, params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2TeamsByIdMangaResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2TeamsByIdMangaResponse;
+};
+
+export const getGetV2TeamsByIdMangaQueryKey = (
+  id: number,
+  params?: GetV2TeamsByIdMangaParams,
+) => {
+  return [
+    `http://localhost:8787/v2/teams/${id}/manga`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2TeamsByIdMangaQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+  TError = GetV2TeamsByIdManga400 | GetV2TeamsByIdManga404,
+>(
+  id: number,
+  params?: GetV2TeamsByIdMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2TeamsByIdMangaQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2TeamsByIdManga>>
+  > = ({ signal }) =>
+    getV2TeamsByIdManga(id, params, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2TeamsByIdMangaQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2TeamsByIdManga>>
+>;
+export type GetV2TeamsByIdMangaQueryError =
+  | GetV2TeamsByIdManga400
+  | GetV2TeamsByIdManga404;
+
+export function useGetV2TeamsByIdManga<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+  TError = GetV2TeamsByIdManga400 | GetV2TeamsByIdManga404,
+>(
+  id: number,
+  params: undefined | GetV2TeamsByIdMangaParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+          TError,
+          Awaited<ReturnType<typeof getV2TeamsByIdManga>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2TeamsByIdManga<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+  TError = GetV2TeamsByIdManga400 | GetV2TeamsByIdManga404,
+>(
+  id: number,
+  params?: GetV2TeamsByIdMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+          TError,
+          Awaited<ReturnType<typeof getV2TeamsByIdManga>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2TeamsByIdManga<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+  TError = GetV2TeamsByIdManga400 | GetV2TeamsByIdManga404,
+>(
+  id: number,
+  params?: GetV2TeamsByIdMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public team manga (v2)
+ */
+
+export function useGetV2TeamsByIdManga<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+  TError = GetV2TeamsByIdManga400 | GetV2TeamsByIdManga404,
+>(
+  id: number,
+  params?: GetV2TeamsByIdMangaParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdManga>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2TeamsByIdMangaQueryOptions(id, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated approved translation teams with optional search and team-specific sort modes.
+ * @summary List public teams (v2)
+ */
+export type getV2TeamsResponse200 = {
+  data: GetV2Teams200;
+  status: 200;
+};
+
+export type getV2TeamsResponse400 = {
+  data: GetV2Teams400;
+  status: 400;
+};
+
+export type getV2TeamsResponseSuccess = getV2TeamsResponse200 & {
+  headers: Headers;
+};
+export type getV2TeamsResponseError = getV2TeamsResponse400 & {
+  headers: Headers;
+};
+
+export type getV2TeamsResponse =
+  | getV2TeamsResponseSuccess
+  | getV2TeamsResponseError;
+
+export const getGetV2TeamsUrl = (params?: GetV2TeamsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:8787/v2/teams?${stringifiedParams}`
+    : `http://localhost:8787/v2/teams`;
+};
+
+export const getV2Teams = async (
+  params?: GetV2TeamsParams,
+  options?: RequestInit,
+): Promise<getV2TeamsResponse> => {
+  const res = await fetch(getGetV2TeamsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2TeamsResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2TeamsResponse;
+};
+
+export const getGetV2TeamsQueryKey = (params?: GetV2TeamsParams) => {
+  return [
+    `http://localhost:8787/v2/teams`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2TeamsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2Teams>>,
+  TError = GetV2Teams400,
+>(
+  params?: GetV2TeamsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Teams>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetV2TeamsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getV2Teams>>> = ({
+    signal,
+  }) => getV2Teams(params, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2Teams>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2TeamsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2Teams>>
+>;
+export type GetV2TeamsQueryError = GetV2Teams400;
+
+export function useGetV2Teams<
+  TData = Awaited<ReturnType<typeof getV2Teams>>,
+  TError = GetV2Teams400,
+>(
+  params: undefined | GetV2TeamsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Teams>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2Teams>>,
+          TError,
+          Awaited<ReturnType<typeof getV2Teams>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2Teams<
+  TData = Awaited<ReturnType<typeof getV2Teams>>,
+  TError = GetV2Teams400,
+>(
+  params?: GetV2TeamsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Teams>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2Teams>>,
+          TError,
+          Awaited<ReturnType<typeof getV2Teams>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2Teams<
+  TData = Awaited<ReturnType<typeof getV2Teams>>,
+  TError = GetV2Teams400,
+>(
+  params?: GetV2TeamsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Teams>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public teams (v2)
+ */
+
+export function useGetV2Teams<
+  TData = Awaited<ReturnType<typeof getV2Teams>>,
+  TError = GetV2Teams400,
+>(
+  params?: GetV2TeamsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2Teams>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2TeamsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns public-safe metadata for an approved translation team.
+ * @summary Get public team (v2)
+ */
+export type getV2TeamsByIdResponse200 = {
+  data: GetV2TeamsById200;
+  status: 200;
+};
+
+export type getV2TeamsByIdResponse400 = {
+  data: GetV2TeamsById400;
+  status: 400;
+};
+
+export type getV2TeamsByIdResponse404 = {
+  data: GetV2TeamsById404;
+  status: 404;
+};
+
+export type getV2TeamsByIdResponseSuccess = getV2TeamsByIdResponse200 & {
+  headers: Headers;
+};
+export type getV2TeamsByIdResponseError = (
+  | getV2TeamsByIdResponse400
+  | getV2TeamsByIdResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2TeamsByIdResponse =
+  | getV2TeamsByIdResponseSuccess
+  | getV2TeamsByIdResponseError;
+
+export const getGetV2TeamsByIdUrl = (id: number) => {
+  return `http://localhost:8787/v2/teams/${id}`;
+};
+
+export const getV2TeamsById = async (
+  id: number,
+  options?: RequestInit,
+): Promise<getV2TeamsByIdResponse> => {
+  const res = await fetch(getGetV2TeamsByIdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2TeamsByIdResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2TeamsByIdResponse;
+};
+
+export const getGetV2TeamsByIdQueryKey = (id: number) => {
+  return [`http://localhost:8787/v2/teams/${id}`] as const;
+};
+
+export const getGetV2TeamsByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2TeamsById>>,
+  TError = GetV2TeamsById400 | GetV2TeamsById404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2TeamsById>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetV2TeamsByIdQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getV2TeamsById>>> = ({
+    signal,
+  }) => getV2TeamsById(id, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2TeamsById>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2TeamsByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2TeamsById>>
+>;
+export type GetV2TeamsByIdQueryError = GetV2TeamsById400 | GetV2TeamsById404;
+
+export function useGetV2TeamsById<
+  TData = Awaited<ReturnType<typeof getV2TeamsById>>,
+  TError = GetV2TeamsById400 | GetV2TeamsById404,
+>(
+  id: number,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2TeamsById>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2TeamsById>>,
+          TError,
+          Awaited<ReturnType<typeof getV2TeamsById>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2TeamsById<
+  TData = Awaited<ReturnType<typeof getV2TeamsById>>,
+  TError = GetV2TeamsById400 | GetV2TeamsById404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2TeamsById>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2TeamsById>>,
+          TError,
+          Awaited<ReturnType<typeof getV2TeamsById>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2TeamsById<
+  TData = Awaited<ReturnType<typeof getV2TeamsById>>,
+  TError = GetV2TeamsById400 | GetV2TeamsById404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2TeamsById>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Get public team (v2)
+ */
+
+export function useGetV2TeamsById<
+  TData = Awaited<ReturnType<typeof getV2TeamsById>>,
+  TError = GetV2TeamsById400 | GetV2TeamsById404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getV2TeamsById>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2TeamsByIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns paginated recent chapter updates associated with an approved translation team.
+ * @summary List public team updates (v2)
+ */
+export type getV2TeamsByIdUpdatesResponse200 = {
+  data: GetV2TeamsByIdUpdates200;
+  status: 200;
+};
+
+export type getV2TeamsByIdUpdatesResponse400 = {
+  data: GetV2TeamsByIdUpdates400;
+  status: 400;
+};
+
+export type getV2TeamsByIdUpdatesResponse404 = {
+  data: GetV2TeamsByIdUpdates404;
+  status: 404;
+};
+
+export type getV2TeamsByIdUpdatesResponseSuccess =
+  getV2TeamsByIdUpdatesResponse200 & {
+    headers: Headers;
+  };
+export type getV2TeamsByIdUpdatesResponseError = (
+  | getV2TeamsByIdUpdatesResponse400
+  | getV2TeamsByIdUpdatesResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2TeamsByIdUpdatesResponse =
+  | getV2TeamsByIdUpdatesResponseSuccess
+  | getV2TeamsByIdUpdatesResponseError;
+
+export const getGetV2TeamsByIdUpdatesUrl = (
+  id: number,
+  params?: GetV2TeamsByIdUpdatesParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:8787/v2/teams/${id}/updates?${stringifiedParams}`
+    : `http://localhost:8787/v2/teams/${id}/updates`;
+};
+
+export const getV2TeamsByIdUpdates = async (
+  id: number,
+  params?: GetV2TeamsByIdUpdatesParams,
+  options?: RequestInit,
+): Promise<getV2TeamsByIdUpdatesResponse> => {
+  const res = await fetch(getGetV2TeamsByIdUpdatesUrl(id, params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2TeamsByIdUpdatesResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2TeamsByIdUpdatesResponse;
+};
+
+export const getGetV2TeamsByIdUpdatesQueryKey = (
+  id: number,
+  params?: GetV2TeamsByIdUpdatesParams,
+) => {
+  return [
+    `http://localhost:8787/v2/teams/${id}/updates`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getGetV2TeamsByIdUpdatesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+  TError = GetV2TeamsByIdUpdates400 | GetV2TeamsByIdUpdates404,
+>(
+  id: number,
+  params?: GetV2TeamsByIdUpdatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2TeamsByIdUpdatesQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>
+  > = ({ signal }) =>
+    getV2TeamsByIdUpdates(id, params, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2TeamsByIdUpdatesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>
+>;
+export type GetV2TeamsByIdUpdatesQueryError =
+  | GetV2TeamsByIdUpdates400
+  | GetV2TeamsByIdUpdates404;
+
+export function useGetV2TeamsByIdUpdates<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+  TError = GetV2TeamsByIdUpdates400 | GetV2TeamsByIdUpdates404,
+>(
+  id: number,
+  params: undefined | GetV2TeamsByIdUpdatesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+          TError,
+          Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2TeamsByIdUpdates<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+  TError = GetV2TeamsByIdUpdates400 | GetV2TeamsByIdUpdates404,
+>(
+  id: number,
+  params?: GetV2TeamsByIdUpdatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+          TError,
+          Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2TeamsByIdUpdates<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+  TError = GetV2TeamsByIdUpdates400 | GetV2TeamsByIdUpdates404,
+>(
+  id: number,
+  params?: GetV2TeamsByIdUpdatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public team updates (v2)
+ */
+
+export function useGetV2TeamsByIdUpdates<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+  TError = GetV2TeamsByIdUpdates400 | GetV2TeamsByIdUpdates404,
+>(
+  id: number,
+  params?: GetV2TeamsByIdUpdatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdUpdates>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2TeamsByIdUpdatesQueryOptions(
+    id,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns approved public-facing members for an approved translation team.
+ * @summary List public team members (v2)
+ */
+export type getV2TeamsByIdMembersResponse200 = {
+  data: GetV2TeamsByIdMembers200;
+  status: 200;
+};
+
+export type getV2TeamsByIdMembersResponse400 = {
+  data: GetV2TeamsByIdMembers400;
+  status: 400;
+};
+
+export type getV2TeamsByIdMembersResponse404 = {
+  data: GetV2TeamsByIdMembers404;
+  status: 404;
+};
+
+export type getV2TeamsByIdMembersResponseSuccess =
+  getV2TeamsByIdMembersResponse200 & {
+    headers: Headers;
+  };
+export type getV2TeamsByIdMembersResponseError = (
+  | getV2TeamsByIdMembersResponse400
+  | getV2TeamsByIdMembersResponse404
+) & {
+  headers: Headers;
+};
+
+export type getV2TeamsByIdMembersResponse =
+  | getV2TeamsByIdMembersResponseSuccess
+  | getV2TeamsByIdMembersResponseError;
+
+export const getGetV2TeamsByIdMembersUrl = (id: number) => {
+  return `http://localhost:8787/v2/teams/${id}/members`;
+};
+
+export const getV2TeamsByIdMembers = async (
+  id: number,
+  options?: RequestInit,
+): Promise<getV2TeamsByIdMembersResponse> => {
+  const res = await fetch(getGetV2TeamsByIdMembersUrl(id), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2TeamsByIdMembersResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2TeamsByIdMembersResponse;
+};
+
+export const getGetV2TeamsByIdMembersQueryKey = (id: number) => {
+  return [`http://localhost:8787/v2/teams/${id}/members`] as const;
+};
+
+export const getGetV2TeamsByIdMembersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+  TError = GetV2TeamsByIdMembers400 | GetV2TeamsByIdMembers404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2TeamsByIdMembersQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2TeamsByIdMembers>>
+  > = ({ signal }) => getV2TeamsByIdMembers(id, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2TeamsByIdMembersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2TeamsByIdMembers>>
+>;
+export type GetV2TeamsByIdMembersQueryError =
+  | GetV2TeamsByIdMembers400
+  | GetV2TeamsByIdMembers404;
+
+export function useGetV2TeamsByIdMembers<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+  TError = GetV2TeamsByIdMembers400 | GetV2TeamsByIdMembers404,
+>(
+  id: number,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+          TError,
+          Awaited<ReturnType<typeof getV2TeamsByIdMembers>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2TeamsByIdMembers<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+  TError = GetV2TeamsByIdMembers400 | GetV2TeamsByIdMembers404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+          TError,
+          Awaited<ReturnType<typeof getV2TeamsByIdMembers>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2TeamsByIdMembers<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+  TError = GetV2TeamsByIdMembers400 | GetV2TeamsByIdMembers404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List public team members (v2)
+ */
+
+export function useGetV2TeamsByIdMembers<
+  TData = Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+  TError = GetV2TeamsByIdMembers400 | GetV2TeamsByIdMembers404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2TeamsByIdMembers>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2TeamsByIdMembersQueryOptions(id, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

@@ -4,29 +4,50 @@
  * Moetruyen Public API
  * Unofficial read-only REST API for [MoeTruyen](https://moetruyen.net/).
 
-Full features will be added in the future (chắc thế)
+## Quick start
 
-Github: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api), [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+Use the `/v1` routes for the current stable surface.
+Use the `/v2` manga-family routes for the newer include-based contract.
 
-NOTE:
+## Request notes
+
 - All API endpoints have a global rate limit of 7 requests per second per IP.
-- To avoid future issues, include the Origin: https://suicaodex.com or https://moetruyen.net headers when making API requests.
- * OpenAPI spec version: 0.1.0
+- Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
+- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
+
+## Versioning
+
+- `/v1` preserves the original route contracts.
+- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+
+## Repositories
+
+- API repo: [TNTKien/moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
+- Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
+ * OpenAPI spec version: 0.2.0
  */
 import type { GetV1MangaTopSortBy } from "./getV1MangaTopSortBy";
 import type { GetV1MangaTopTime } from "./getV1MangaTopTime";
 
 export type GetV1MangaTopParams = {
   /**
+   * Page number starting from `1`.
    * @minimum 1
    * @maximum 9007199254740991
    */
   page?: number;
   /**
+   * Maximum number of ranked manga items to return per page. Allowed range: `1` to `100`.
    * @minimum 1
    * @maximum 100
    */
   limit?: number;
+  /**
+   * Ranking metric. Currently only `views` is available.
+   */
   sort_by?: GetV1MangaTopSortBy;
+  /**
+   * Ranking window. Use `24h`, `7d`, `30d`, or `all_time`.
+   */
   time?: GetV1MangaTopTime;
 };
