@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { useGetV1Manga } from "@/lib/moetruyen/hooks/manga/manga";
+import { useGetV2Manga } from "@/lib/moetruyen/hooks/manga/manga";
 import { useGetManga } from "@/lib/weebdex/hooks/manga/manga";
 import { cn, generateSlug } from "@/lib/utils";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
@@ -92,7 +92,7 @@ export default function QuickSearchResults({
     data: moeData,
     isLoading: isMoeLoading,
     isError: isMoeError,
-  } = useGetV1Manga(
+  } = useGetV2Manga(
     {
       q: debouncedTerm,
       limit: RESULT_LIMIT,

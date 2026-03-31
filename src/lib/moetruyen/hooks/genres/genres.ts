@@ -6,19 +6,16 @@
 
 ## Quick start
 
-Use the `/v1` routes for the current stable surface.
-Use the `/v2` manga-family routes for the newer include-based contract.
+Use the `/v2` routes for the current stable surface.
 
 ## Request notes
 
 - All API endpoints have a global rate limit of 7 requests per second per IP.
 - Include a valid `Origin` header such as `https://suicaodex.com` or `https://moetruyen.net` when making browser-like requests.
-- Query parameters such as `sort`, `order`, `genre`, `genrex`, and `include` are documented per route below.
 
 ## Versioning
 
-- `/v1` preserves the original route contracts.
-- `/v2` is the forward-looking surface where manga-family routes share a common base object and optional expansions.
+- From 01/04/2026, v1 routes are deprecated, pleade use v2 instead.
 
 ## Repositories
 
@@ -39,162 +36,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { GetV1Genres200, GetV2Genres200 } from "../../model";
-
-/**
- * Returns public genres with visible manga counts.
- * @summary List public genres
- */
-export type getV1GenresResponse200 = {
-  data: GetV1Genres200;
-  status: 200;
-};
-
-export type getV1GenresResponseSuccess = getV1GenresResponse200 & {
-  headers: Headers;
-};
-export type getV1GenresResponse = getV1GenresResponseSuccess;
-
-export const getGetV1GenresUrl = () => {
-  return `https://moe.suicaodex.com/v1/genres`;
-};
-
-export const getV1Genres = async (
-  options?: RequestInit,
-): Promise<getV1GenresResponse> => {
-  const res = await fetch(getGetV1GenresUrl(), {
-    ...options,
-    method: "GET",
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getV1GenresResponse["data"] = body ? JSON.parse(body) : {};
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as getV1GenresResponse;
-};
-
-export const getGetV1GenresQueryKey = () => {
-  return [`https://moe.suicaodex.com/v1/genres`] as const;
-};
-
-export const getGetV1GenresQueryOptions = <
-  TData = Awaited<ReturnType<typeof getV1Genres>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof getV1Genres>>, TError, TData>
-  >;
-  fetch?: RequestInit;
-}) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetV1GenresQueryKey();
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Genres>>> = ({
-    signal,
-  }) => getV1Genres({ signal, ...fetchOptions });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getV1Genres>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetV1GenresQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getV1Genres>>
->;
-export type GetV1GenresQueryError = unknown;
-
-export function useGetV1Genres<
-  TData = Awaited<ReturnType<typeof getV1Genres>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getV1Genres>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1Genres>>,
-          TError,
-          Awaited<ReturnType<typeof getV1Genres>>
-        >,
-        "initialData"
-      >;
-    fetch?: RequestInit;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetV1Genres<
-  TData = Awaited<ReturnType<typeof getV1Genres>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getV1Genres>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1Genres>>,
-          TError,
-          Awaited<ReturnType<typeof getV1Genres>>
-        >,
-        "initialData"
-      >;
-    fetch?: RequestInit;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetV1Genres<
-  TData = Awaited<ReturnType<typeof getV1Genres>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getV1Genres>>, TError, TData>
-    >;
-    fetch?: RequestInit;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List public genres
- */
-
-export function useGetV1Genres<
-  TData = Awaited<ReturnType<typeof getV1Genres>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getV1Genres>>, TError, TData>
-    >;
-    fetch?: RequestInit;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetV1GenresQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
+import type { GetV2Genres200 } from "../../model";
 
 /**
  * Returns public genres with visible manga counts.
