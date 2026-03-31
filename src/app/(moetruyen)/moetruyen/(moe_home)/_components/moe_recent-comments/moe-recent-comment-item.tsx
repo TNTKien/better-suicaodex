@@ -4,10 +4,10 @@ import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import type { GetV1CommentsRecent200DataItem } from "@/lib/moetruyen/model/getV1CommentsRecent200DataItem";
+import type { GetV2CommentsRecent200DataItem } from "@/lib/moetruyen/model";
 import { formatShortTime } from "@/lib/utils";
 
-function getCommentHref(comment: GetV1CommentsRecent200DataItem) {
+function getCommentHref(comment: GetV2CommentsRecent200DataItem) {
   if (comment.chapter) {
     return `/moetruyen/chapter/${comment.chapter.id}`;
   }
@@ -22,7 +22,7 @@ function getAuthorFallback(name: string) {
 export default function MoeRecentCommentItem({
   comment,
 }: {
-  comment: GetV1CommentsRecent200DataItem;
+  comment: GetV2CommentsRecent200DataItem;
 }) {
   const href = getCommentHref(comment);
   const chapterLabel = comment.chapter?.number
