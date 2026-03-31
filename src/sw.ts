@@ -3,12 +3,7 @@
 /// <reference lib="webworker" />
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import {
-  CacheFirst,
-  ExpirationPlugin,
-  NetworkOnly,
-  Serwist,
-} from "serwist";
+import { CacheFirst, ExpirationPlugin, NetworkOnly, Serwist } from "serwist";
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -18,13 +13,55 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
+const MIN_IMAGE_SIZE_BYTES = 1024;
+const ONE_DAY_IN_SECONDS = 86400;
+
+function createImageCacheHandler({
+  cacheName,
+  maxEntries,
+  maxAgeDays,
+}: {
+  cacheName: string;
+  maxEntries: number;
+  maxAgeDays: number;
+}) {
+  return new CacheFirst({
+    cacheName,
+    // Force CORS mode để tránh opaque response (status 0) từ no-cors requests
+    fetchOptions: {
+      mode: "cors",
+      credentials: "omit",
+    },
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries,
+        maxAgeSeconds: ONE_DAY_IN_SECONDS * maxAgeDays,
+        purgeOnQuotaError: true,
+      }),
+      {
+        // Không cache ảnh lỗi (< 1KB) hoặc status !== 200
+        async cacheWillUpdate({ response }) {
+          try {
+            if (response.status !== 200) return null;
+            const blob = await response.clone().blob();
+            if (blob.size < MIN_IMAGE_SIZE_BYTES) return null;
+          } catch {
+            return null;
+          }
+          return response;
+        },
+      },
+    ],
+  });
+}
+
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
-    // Không cache API calls từ weebdex (phải luôn fetch mới)
+    // Không cache API calls từ weebdex
     {
       matcher: ({ url }) =>
         url.hostname === "wd.memaydex.online" &&
@@ -37,38 +74,37 @@ const serwist = new Serwist({
         sameOrigin && url.pathname.startsWith("/api/"),
       handler: new NetworkOnly(),
     },
-    // Cache ảnh cover từ weebdex proxy (CacheFirst, 7 ngày, tối đa 1000 ảnh)
+    // Cache ảnh cover từ weebdex proxy (CacheFirst, 5 ngày, tối đa 500 ảnh)
     {
       matcher: ({ url }) =>
         url.hostname === "wd.memaydex.online" &&
         url.pathname.startsWith("/covers/"),
-      handler: new CacheFirst({
+      handler: createImageCacheHandler({
         cacheName: "weebdex-covers",
-        // Force CORS mode để tránh opaque response (status 0) từ no-cors requests
-        fetchOptions: {
-          mode: "cors",
-          credentials: "omit",
-        },
-        plugins: [
-          new ExpirationPlugin({
-            maxEntries: 1000,
-            maxAgeSeconds: 60 * 60 * 24 * 7,
-            purgeOnQuotaError: true,
-          }),
-          {
-            // Không cache ảnh lỗi (< 1KB) hoặc status !== 200
-            async cacheWillUpdate({ response }) {
-              try {
-                if (response.status !== 200) return null;
-                const blob = await response.clone().blob();
-                if (blob.size < 1024) return null;
-              } catch {
-                return null;
-              }
-              return response;
-            },
-          },
-        ],
+        maxEntries: 500,
+        maxAgeDays: 5,
+      }),
+    },
+    // Cache ảnh bìa từ Moetruyen (CacheFirst, 5 ngày, tối đa 500 ảnh)
+    {
+      matcher: ({ url }) =>
+        url.hostname === "moetruyen.net" &&
+        url.pathname.startsWith("/uploads/covers/"),
+      handler: createImageCacheHandler({
+        cacheName: "moetruyen-covers",
+        maxEntries: 500,
+        maxAgeDays: 5,
+      }),
+    },
+    // Cache ảnh truyện từ Moetruyen CDN (CacheFirst, 3 ngày, tối đa 400 ảnh)
+    {
+      matcher: ({ url }) =>
+        url.hostname === "i.moetruyen.net" &&
+        url.pathname.startsWith("/chapters/"),
+      handler: createImageCacheHandler({
+        cacheName: "moetruyen-chapters",
+        maxEntries: 400,
+        maxAgeDays: 3,
       }),
     },
     ...defaultCache,
