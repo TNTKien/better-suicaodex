@@ -1,20 +1,24 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import type { GetV1Manga200DataItem } from "@/lib/moetruyen/model/getV1Manga200DataItem";
+import type { GetV2Manga200DataItem } from "@/lib/moetruyen/model/getV2Manga200DataItem";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Streamdown } from "streamdown";
 import { MoeStatusTag } from "@/app/(moetruyen)/moetruyen/(moe_home)/manga/_components/moe-manga-tags";
+import { getMoetruyenThumbnailCoverUrl } from "@/lib/moetruyen/cover-url";
 
 interface CompactCardMoetruyenProps {
-  manga: GetV1Manga200DataItem;
+  manga: GetV2Manga200DataItem;
 }
 
 export default function CompactCardMoetruyen({
   manga,
 }: CompactCardMoetruyenProps) {
-  const coverUrl = manga.coverUrl ?? "/images/no-cover.webp";
+  const coverUrl = getMoetruyenThumbnailCoverUrl(
+    manga.coverUrl ?? "/images/no-cover.webp",
+    { w: 256, q: 80 },
+  );
 
   return (
     <Card className="rounded-md shadow-xs transition-colors duration-200 hover:bg-accent">
