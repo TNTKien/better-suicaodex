@@ -96,7 +96,7 @@ export default function MoeMangaSlide({
 
   return (
     <div
-      className="relative bg-no-repeat bg-cover bg-position-[center_top_25%] h-[300px] md:h-[400px] lg:h-[420px]"
+      className="relative bg-no-repeat bg-cover bg-position-[center_top_25%] h-[300px] md:h-[400px] lg:h-[420px] md:backdrop-blur-xs"
       style={{ backgroundImage: `url('${bannerCoverUrl}')` }}
     >
       <div className="relative z-1 flex gap-4 pt-28 h-full px-4 md:px-8 lg:px-12">
