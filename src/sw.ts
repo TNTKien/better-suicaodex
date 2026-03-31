@@ -85,24 +85,22 @@ const serwist = new Serwist({
         maxAgeDays: 5,
       }),
     },
-    // Cache ảnh bìa từ Moetruyen (CacheFirst, 5 ngày, tối đa 500 ảnh)
-    {
-      matcher: ({ url }) =>
-        url.hostname === "moetruyen.net" &&
-        url.pathname.startsWith("/uploads/covers/"),
-      handler: createImageCacheHandler({
-        cacheName: "moetruyen-covers",
-        maxEntries: 500,
-        maxAgeDays: 5,
-      }),
-    },
-    // Không cache ảnh truyện từ Moetruyen CDN
-    {
-      matcher: ({ url }) =>
-        url.hostname === "i.moetruyen.net" &&
-        url.pathname.startsWith("/chapters/"),
-      handler: new NetworkOnly(),
-    },
+    // {
+    //   matcher: ({ url }) =>
+    //     url.hostname === "moetruyen.net" &&
+    //     url.pathname.startsWith("/uploads/covers/"),
+    //   handler: createImageCacheHandler({
+    //     cacheName: "moetruyen-covers",
+    //     maxEntries: 500,
+    //     maxAgeDays: 5,
+    //   }),
+    // },
+    // {
+    //   matcher: ({ url }) =>
+    //     url.hostname === "i.moetruyen.net" &&
+    //     url.pathname.startsWith("/chapters/"),
+    //   handler: new NetworkOnly(),
+    // },
     ...defaultCache,
   ],
 });
