@@ -107,8 +107,8 @@ export const getGetV1CommentsRecentUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v1/comments/recent?${stringifiedParams}`
-    : `http://localhost:8787/v1/comments/recent`;
+    ? `https://moe.suicaodex.com/v1/comments/recent?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v1/comments/recent`;
 };
 
 export const getV1CommentsRecent = async (
@@ -136,7 +136,7 @@ export const getGetV1CommentsRecentQueryKey = (
   params?: GetV1CommentsRecentParams,
 ) => {
   return [
-    `http://localhost:8787/v1/comments/recent`,
+    `https://moe.suicaodex.com/v1/comments/recent`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -333,8 +333,8 @@ export const getGetV1CommentsMangaByIdUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v1/comments/manga/${id}?${stringifiedParams}`
-    : `http://localhost:8787/v1/comments/manga/${id}`;
+    ? `https://moe.suicaodex.com/v1/comments/manga/${id}?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v1/comments/manga/${id}`;
 };
 
 export const getV1CommentsMangaById = async (
@@ -364,7 +364,7 @@ export const getGetV1CommentsMangaByIdQueryKey = (
   params?: GetV1CommentsMangaByIdParams,
 ) => {
   return [
-    `http://localhost:8787/v1/comments/manga/${id}`,
+    `https://moe.suicaodex.com/v1/comments/manga/${id}`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -584,8 +584,8 @@ export const getGetV1CommentsChaptersByIdUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v1/comments/chapters/${id}?${stringifiedParams}`
-    : `http://localhost:8787/v1/comments/chapters/${id}`;
+    ? `https://moe.suicaodex.com/v1/comments/chapters/${id}?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v1/comments/chapters/${id}`;
 };
 
 export const getV1CommentsChaptersById = async (
@@ -615,7 +615,7 @@ export const getGetV1CommentsChaptersByIdQueryKey = (
   params?: GetV1CommentsChaptersByIdParams,
 ) => {
   return [
-    `http://localhost:8787/v1/comments/chapters/${id}`,
+    `https://moe.suicaodex.com/v1/comments/chapters/${id}`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -837,8 +837,8 @@ export const getGetV2CommentsRecentUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v2/comments/recent?${stringifiedParams}`
-    : `http://localhost:8787/v2/comments/recent`;
+    ? `https://moe.suicaodex.com/v2/comments/recent?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/comments/recent`;
 };
 
 export const getV2CommentsRecent = async (
@@ -866,7 +866,7 @@ export const getGetV2CommentsRecentQueryKey = (
   params?: GetV2CommentsRecentParams,
 ) => {
   return [
-    `http://localhost:8787/v2/comments/recent`,
+    `https://moe.suicaodex.com/v2/comments/recent`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -1063,8 +1063,8 @@ export const getGetV2CommentsMangaByIdUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v2/comments/manga/${id}?${stringifiedParams}`
-    : `http://localhost:8787/v2/comments/manga/${id}`;
+    ? `https://moe.suicaodex.com/v2/comments/manga/${id}?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/comments/manga/${id}`;
 };
 
 export const getV2CommentsMangaById = async (
@@ -1094,7 +1094,7 @@ export const getGetV2CommentsMangaByIdQueryKey = (
   params?: GetV2CommentsMangaByIdParams,
 ) => {
   return [
-    `http://localhost:8787/v2/comments/manga/${id}`,
+    `https://moe.suicaodex.com/v2/comments/manga/${id}`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -1314,8 +1314,8 @@ export const getGetV2CommentsChaptersByIdUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v2/comments/chapters/${id}?${stringifiedParams}`
-    : `http://localhost:8787/v2/comments/chapters/${id}`;
+    ? `https://moe.suicaodex.com/v2/comments/chapters/${id}?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/comments/chapters/${id}`;
 };
 
 export const getV2CommentsChaptersById = async (
@@ -1345,7 +1345,7 @@ export const getGetV2CommentsChaptersByIdQueryKey = (
   params?: GetV2CommentsChaptersByIdParams,
 ) => {
   return [
-    `http://localhost:8787/v2/comments/chapters/${id}`,
+    `https://moe.suicaodex.com/v2/comments/chapters/${id}`,
     ...(params ? [params] : []),
   ] as const;
 };

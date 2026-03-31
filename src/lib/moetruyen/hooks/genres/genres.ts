@@ -56,7 +56,7 @@ export type getV1GenresResponseSuccess = getV1GenresResponse200 & {
 export type getV1GenresResponse = getV1GenresResponseSuccess;
 
 export const getGetV1GenresUrl = () => {
-  return `http://localhost:8787/v1/genres`;
+  return `https://moe.suicaodex.com/v1/genres`;
 };
 
 export const getV1Genres = async (
@@ -78,7 +78,7 @@ export const getV1Genres = async (
 };
 
 export const getGetV1GenresQueryKey = () => {
-  return [`http://localhost:8787/v1/genres`] as const;
+  return [`https://moe.suicaodex.com/v1/genres`] as const;
 };
 
 export const getGetV1GenresQueryOptions = <
@@ -211,7 +211,7 @@ export type getV2GenresResponseSuccess = getV2GenresResponse200 & {
 export type getV2GenresResponse = getV2GenresResponseSuccess;
 
 export const getGetV2GenresUrl = () => {
-  return `http://localhost:8787/v2/genres`;
+  return `https://moe.suicaodex.com/v2/genres`;
 };
 
 export const getV2Genres = async (
@@ -233,7 +233,7 @@ export const getV2Genres = async (
 };
 
 export const getGetV2GenresQueryKey = () => {
-  return [`http://localhost:8787/v2/genres`] as const;
+  return [`https://moe.suicaodex.com/v2/genres`] as const;
 };
 
 export const getGetV2GenresQueryOptions = <

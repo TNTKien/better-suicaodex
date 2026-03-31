@@ -105,8 +105,8 @@ export const getGetV1UsersByUsernameCommentsUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v1/users/${username}/comments?${stringifiedParams}`
-    : `http://localhost:8787/v1/users/${username}/comments`;
+    ? `https://moe.suicaodex.com/v1/users/${username}/comments?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v1/users/${username}/comments`;
 };
 
 export const getV1UsersByUsernameComments = async (
@@ -139,7 +139,7 @@ export const getGetV1UsersByUsernameCommentsQueryKey = (
   params?: GetV1UsersByUsernameCommentsParams,
 ) => {
   return [
-    `http://localhost:8787/v1/users/${username}/comments`,
+    `https://moe.suicaodex.com/v1/users/${username}/comments`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -340,7 +340,7 @@ export type getV1UsersByUsernameResponse =
   | getV1UsersByUsernameResponseError;
 
 export const getGetV1UsersByUsernameUrl = (username: string) => {
-  return `http://localhost:8787/v1/users/${username}`;
+  return `https://moe.suicaodex.com/v1/users/${username}`;
 };
 
 export const getV1UsersByUsername = async (
@@ -365,7 +365,7 @@ export const getV1UsersByUsername = async (
 };
 
 export const getGetV1UsersByUsernameQueryKey = (username: string) => {
-  return [`http://localhost:8787/v1/users/${username}`] as const;
+  return [`https://moe.suicaodex.com/v1/users/${username}`] as const;
 };
 
 export const getGetV1UsersByUsernameQueryOptions = <
@@ -568,8 +568,8 @@ export const getGetV2UsersByUsernameCommentsUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://localhost:8787/v2/users/${username}/comments?${stringifiedParams}`
-    : `http://localhost:8787/v2/users/${username}/comments`;
+    ? `https://moe.suicaodex.com/v2/users/${username}/comments?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/users/${username}/comments`;
 };
 
 export const getV2UsersByUsernameComments = async (
@@ -602,7 +602,7 @@ export const getGetV2UsersByUsernameCommentsQueryKey = (
   params?: GetV2UsersByUsernameCommentsParams,
 ) => {
   return [
-    `http://localhost:8787/v2/users/${username}/comments`,
+    `https://moe.suicaodex.com/v2/users/${username}/comments`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -803,7 +803,7 @@ export type getV2UsersByUsernameResponse =
   | getV2UsersByUsernameResponseError;
 
 export const getGetV2UsersByUsernameUrl = (username: string) => {
-  return `http://localhost:8787/v2/users/${username}`;
+  return `https://moe.suicaodex.com/v2/users/${username}`;
 };
 
 export const getV2UsersByUsername = async (
@@ -828,7 +828,7 @@ export const getV2UsersByUsername = async (
 };
 
 export const getGetV2UsersByUsernameQueryKey = (username: string) => {
-  return [`http://localhost:8787/v2/users/${username}`] as const;
+  return [`https://moe.suicaodex.com/v2/users/${username}`] as const;
 };
 
 export const getGetV2UsersByUsernameQueryOptions = <
