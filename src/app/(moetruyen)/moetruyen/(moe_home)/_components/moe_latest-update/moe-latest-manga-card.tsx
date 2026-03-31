@@ -1,17 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, MessagesSquare, Users } from "lucide-react";
+import { Clock, EyeIcon, MessagesSquare, Users } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { Card, CardContent } from "@/components/ui/card";
-import type { GetV1Manga200DataItem } from "@/lib/moetruyen/model/getV1Manga200DataItem";
+import type { GetV2Manga200DataItem } from "@/lib/moetruyen/model";
 import { getMoetruyenThumbnailCoverUrl } from "@/lib/moetruyen/cover-url";
 import { formatNumber, formatTimeToNow } from "@/lib/utils";
 import { VN } from "country-flag-icons/react/3x2";
 
 interface MoeLatestMangaCardProps {
-  manga: GetV1Manga200DataItem;
+  manga: GetV2Manga200DataItem;
 }
 
 export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
@@ -48,16 +48,25 @@ export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
       </Link>
 
       <CardContent className="flex flex-col gap-1 px-2 py-1.5">
-        <Link
-          href={mangaHref}
-          prefetch={false}
-          className="hover:underline flex items-center gap-1"
-        >
-          <VN className="inline-block select-none shrink-0 size-4" />
-          <p className="font-semibold text-sm truncate px-0.5">
-            {chapterLabel}
-          </p>
-        </Link>
+        <div className="flex items-center space-x-1 min-w-0 justify-between">
+          <Link
+            href={mangaHref}
+            prefetch={false}
+            className="hover:underline flex items-center gap-1"
+          >
+            <VN className="inline-block select-none shrink-0 size-4" />
+            <p className="font-semibold text-sm line-clamp-1 break-all px-0.5">
+              {chapterLabel}
+            </p>
+          </Link>
+
+          <div className="flex items-center gap-1 text-xs font-light">
+            <span className="px-0.5 line-clamp-1 break-all">
+              {formatNumber(manga.stats?.totalViews ?? 0)}
+            </span>
+            <EyeIcon size={16} className="shrink-0" />
+          </div>
+        </div>
 
         <div className="space-y-1">
           <div className="flex items-center space-x-1 min-w-0">
@@ -79,7 +88,7 @@ export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
 
             <div className="flex items-center gap-1 text-xs font-light">
               <span className="px-0.5 line-clamp-1 break-all">
-                {formatNumber(manga.commentCount)}
+                {formatNumber(manga.stats?.commentCount ?? 0)}
               </span>
               <MessagesSquare size={16} className="shrink-0" />
             </div>
