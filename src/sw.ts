@@ -96,16 +96,12 @@ const serwist = new Serwist({
         maxAgeDays: 5,
       }),
     },
-    // Cache ảnh truyện từ Moetruyen CDN (CacheFirst, 3 ngày, tối đa 400 ảnh)
+    // Không cache ảnh truyện từ Moetruyen CDN
     {
       matcher: ({ url }) =>
         url.hostname === "i.moetruyen.net" &&
         url.pathname.startsWith("/chapters/"),
-      handler: createImageCacheHandler({
-        cacheName: "moetruyen-chapters",
-        maxEntries: 400,
-        maxAgeDays: 3,
-      }),
+      handler: new NetworkOnly(),
     },
     ...defaultCache,
   ],
