@@ -1,14 +1,13 @@
 import Link from "next/link";
-import { 
+import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationLink,
   PaginationPrevious,
   PaginationNext,
-  PaginationEllipsis
+  PaginationEllipsis,
 } from "@/components/ui/pagination";
-import NoPrefetchLink from "./no-prefetch-link";
 
 interface PaginationControlProps {
   currentPage: number;
@@ -23,36 +22,37 @@ export default function PaginationControl({
   totalPages,
   createHref,
   className = "",
-  prefetch = false
+  prefetch = false,
 }: PaginationControlProps) {
-  const LinkComponent = prefetch ? Link : NoPrefetchLink;
-  
   return (
     <Pagination className={className}>
       <PaginationContent>
         <PaginationItem>
-          <LinkComponent href={currentPage > 1 ? createHref(currentPage - 1) : "#"} 
+          <Link
+            href={currentPage > 1 ? createHref(currentPage - 1) : "#"}
+            prefetch={prefetch}
             aria-disabled={currentPage === 1}
-            tabIndex={currentPage === 1 ? -1 : undefined}>
+            tabIndex={currentPage === 1 ? -1 : undefined}
+          >
             <PaginationPrevious
               className="w-8 h-8"
               disabled={currentPage === 1}
             />
-          </LinkComponent>
+          </Link>
         </PaginationItem>
 
         {totalPages <= 7 ? (
           // Show all pages if total is 7 or less
           Array.from({ length: totalPages }, (_, i) => (
             <PaginationItem key={i + 1}>
-              <LinkComponent href={createHref(i + 1)}>
+              <Link href={createHref(i + 1)} prefetch={prefetch}>
                 <PaginationLink
                   className="w-8 h-8"
                   isActive={i + 1 === currentPage}
                 >
                   {i + 1}
                 </PaginationLink>
-              </LinkComponent>
+              </Link>
             </PaginationItem>
           ))
         ) : currentPage <= 4 ? (
@@ -60,34 +60,32 @@ export default function PaginationControl({
           <>
             {[1, 2, 3, 4, 5].map((num) => (
               <PaginationItem key={num}>
-                <LinkComponent href={createHref(num)}>
+                <Link href={createHref(num)} prefetch={prefetch}>
                   <PaginationLink
                     className="w-8 h-8"
                     isActive={num === currentPage}
                   >
                     {num}
                   </PaginationLink>
-                </LinkComponent>
+                </Link>
               </PaginationItem>
             ))}
             <PaginationEllipsis />
             <PaginationItem>
-              <LinkComponent href={createHref(totalPages)}>
+              <Link href={createHref(totalPages)} prefetch={prefetch}>
                 <PaginationLink className="w-8 h-8">
                   {totalPages}
                 </PaginationLink>
-              </LinkComponent>
+              </Link>
             </PaginationItem>
           </>
         ) : currentPage >= totalPages - 3 ? (
           // Near end: show 1, ..., lastPage-4, lastPage-3, lastPage-2, lastPage-1, lastPage
           <>
             <PaginationItem>
-              <LinkComponent href={createHref(1)}>
-                <PaginationLink className="w-8 h-8">
-                  1
-                </PaginationLink>
-              </LinkComponent>
+              <Link href={createHref(1)} prefetch={prefetch}>
+                <PaginationLink className="w-8 h-8">1</PaginationLink>
+              </Link>
             </PaginationItem>
             <PaginationEllipsis />
             {[
@@ -98,14 +96,14 @@ export default function PaginationControl({
               totalPages,
             ].map((num) => (
               <PaginationItem key={num}>
-                <LinkComponent href={createHref(num)}>
+                <Link href={createHref(num)} prefetch={prefetch}>
                   <PaginationLink
                     className="w-8 h-8"
                     isActive={num === currentPage}
                   >
                     {num}
                   </PaginationLink>
-                </LinkComponent>
+                </Link>
               </PaginationItem>
             ))}
           </>
@@ -113,45 +111,46 @@ export default function PaginationControl({
           // Middle: show 1, ..., page-1, page, page+1, ..., lastPage
           <>
             <PaginationItem>
-              <LinkComponent href={createHref(1)}>
-                <PaginationLink className="w-8 h-8">
-                  1
-                </PaginationLink>
-              </LinkComponent>
+              <Link href={createHref(1)} prefetch={prefetch}>
+                <PaginationLink className="w-8 h-8">1</PaginationLink>
+              </Link>
             </PaginationItem>
             <PaginationEllipsis />
             {[currentPage - 1, currentPage, currentPage + 1].map((num) => (
               <PaginationItem key={num}>
-                <LinkComponent href={createHref(num)}>
+                <Link href={createHref(num)} prefetch={prefetch}>
                   <PaginationLink
                     className="w-8 h-8"
                     isActive={num === currentPage}
                   >
                     {num}
                   </PaginationLink>
-                </LinkComponent>
+                </Link>
               </PaginationItem>
             ))}
             <PaginationEllipsis />
             <PaginationItem>
-              <LinkComponent href={createHref(totalPages)}>
+              <Link href={createHref(totalPages)} prefetch={prefetch}>
                 <PaginationLink className="w-8 h-8">
                   {totalPages}
                 </PaginationLink>
-              </LinkComponent>
+              </Link>
             </PaginationItem>
           </>
         )}
 
         <PaginationItem>
-          <LinkComponent href={currentPage < totalPages ? createHref(currentPage + 1) : "#"}
+          <Link
+            href={currentPage < totalPages ? createHref(currentPage + 1) : "#"}
             aria-disabled={currentPage === totalPages}
-            tabIndex={currentPage === totalPages ? -1 : undefined}>
+            tabIndex={currentPage === totalPages ? -1 : undefined}
+            prefetch={prefetch}
+          >
             <PaginationNext
               className="w-8 h-8"
               disabled={currentPage === totalPages}
             />
-          </LinkComponent>
+          </Link>
         </PaginationItem>
       </PaginationContent>
     </Pagination>

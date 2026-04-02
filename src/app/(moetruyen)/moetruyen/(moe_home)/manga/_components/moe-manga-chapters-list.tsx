@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-const LIMIT = 20;
+const LIMIT = 30;
 
 function getChapterLabel(chapter: GetV2MangaByIdChapters200DataChaptersItem) {
   return `Ch. ${chapter.number ?? chapter.number}`;
@@ -248,6 +248,25 @@ export default function MoeMangaChaptersList({
 
   return (
     <>
+    {totalPages > 1 ? (
+        <PaginationControl
+          currentPage={resolvedCurrentPage}
+          totalPages={totalPages}
+          createHref={(targetPage) => {
+            const params = new URLSearchParams();
+
+            params.set("tab", "chapters");
+
+            if (targetPage > 1) {
+              params.set("page", String(targetPage));
+            }
+
+            return `${pathname}?${params.toString()}`;
+          }}
+          className="mt-2 justify-start"
+        />
+      ) : null}
+
       <div className="mt-2 flex flex-col gap-2">
         {chapters.map((chapter) => (
           <MoeChapterCard key={chapter.id} chapter={chapter} />
@@ -269,7 +288,7 @@ export default function MoeMangaChaptersList({
 
             return `${pathname}?${params.toString()}`;
           }}
-          className="mt-4"
+          className="mt-2 justify-start"
         />
       ) : null}
     </>

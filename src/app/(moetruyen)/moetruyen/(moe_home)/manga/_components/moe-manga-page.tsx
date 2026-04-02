@@ -281,18 +281,16 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
                 );
               }}
             >
-              <div className="relative h-12 overflow-x-auto">
-                <TabsList className="absolute">
-                  <TabsTrigger value="chapters" className="flex gap-1 px-2">
-                    <List size={18} />
-                    Danh sách chương
-                  </TabsTrigger>
-                  <TabsTrigger value="comments" className="flex gap-1 px-2">
-                    <MessageSquare size={18} />
-                    Bình luận
-                  </TabsTrigger>
-                </TabsList>
-              </div>
+              <TabsList>
+                <TabsTrigger value="chapters" className="flex gap-1 px-2">
+                  <List size={18} />
+                  Danh sách chương
+                </TabsTrigger>
+                <TabsTrigger value="comments" className="flex gap-1 px-2">
+                  <MessageSquare size={18} />
+                  Bình luận
+                </TabsTrigger>
+              </TabsList>
 
               <TabsContent value="chapters" className="mt-0">
                 <MoeMangaChaptersList mangaId={id} page={currentPage} />
