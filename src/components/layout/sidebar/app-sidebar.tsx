@@ -1,7 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { Bookmark, BookOpen, Gamepad2, Users } from "lucide-react";
+import {
+  BirdIcon,
+  Bookmark,
+  BookOpen,
+  Gamepad2,
+  PawPrint,
+  Shrimp,
+  Users,
+} from "lucide-react";
 import {
   SiDiscord,
   SiFacebook,
@@ -71,6 +79,30 @@ const data = {
         {
           title: "Truyện ngẫu nhiên",
           url: "/random",
+        },
+      ],
+    },
+    {
+      title: "MoèTruyện",
+      url: "#",
+      icon: BirdIcon,
+      isActive: true,
+      items: [
+        {
+          title: "Trang chủ",
+          url: "/moetruyen",
+        },
+        {
+          title: "Mới cập nhật",
+          url: "/moetruyen/latest",
+        },
+        {
+          title: "Nhóm dịch",
+          url: "/moetruyen/groups",
+        },
+        {
+          title: "Truyện ngẫu nhiên",
+          url: "/moetruyen/random",
         },
       ],
     },
