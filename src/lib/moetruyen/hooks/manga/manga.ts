@@ -55,7 +55,7 @@ import type {
 } from "../../model";
 
 /**
- * Returns paginated top manga using the shared v2 manga base shape. Use `sort_by=views` and `time=24h|7d|30d|all_time` to control the ranking window. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand each manga item.
+ * Returns paginated top manga using the shared v2 manga base shape. Use `sort_by=views` with `time=24h|7d|30d|all_time`, or `sort_by=bookmarks|comments` with `time=all_time`. If `time` is omitted, it defaults to `24h` for `views` and `all_time` for `bookmarks` or `comments`. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand each manga item.
  * @summary List top public manga (v2)
  */
 export type getV2MangaTopResponse200 = {

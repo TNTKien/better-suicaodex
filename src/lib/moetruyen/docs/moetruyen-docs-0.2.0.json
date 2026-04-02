@@ -152,7 +152,7 @@
           "Manga"
         ],
         "summary": "List top public manga (v2)",
-        "description": "Returns paginated top manga using the shared v2 manga base shape. Use `sort_by=views` and `time=24h|7d|30d|all_time` to control the ranking window. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand each manga item.",
+        "description": "Returns paginated top manga using the shared v2 manga base shape. Use `sort_by=views` with `time=24h|7d|30d|all_time`, or `sort_by=bookmarks|comments` with `time=all_time`. If `time` is omitted, it defaults to `24h` for `views` and `all_time` for `bookmarks` or `comments`. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand each manga item.",
         "responses": {
           "200": {
             "description": "Paginated top manga list",
@@ -371,7 +371,9 @@
                               "sortBy": {
                                 "type": "string",
                                 "enum": [
-                                  "views"
+                                  "views",
+                                  "bookmarks",
+                                  "comments"
                                 ],
                                 "description": "Ranking metric used for this list."
                               },
@@ -606,16 +608,17 @@
               "default": "views",
               "type": "string",
               "enum": [
-                "views"
+                "views",
+                "bookmarks",
+                "comments"
               ]
             },
-            "description": "Ranking metric. Currently only `views` is available."
+            "description": "Ranking metric. Use `views`, `bookmarks`, or `comments`."
           },
           {
             "in": "query",
             "name": "time",
             "schema": {
-              "default": "24h",
               "type": "string",
               "enum": [
                 "24h",
@@ -624,7 +627,7 @@
                 "all_time"
               ]
             },
-            "description": "Ranking window. Use `24h`, `7d`, `30d`, or `all_time`."
+            "description": "Ranking window. Use `24h`, `7d`, `30d`, or `all_time`. Omit it to default to `24h` for `views`, or `all_time` for `bookmarks` and `comments`."
           },
           {
             "in": "query",

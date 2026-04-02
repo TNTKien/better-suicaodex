@@ -29,4 +29,6 @@ export type GetV2MangaTopSortBy =
 
 export const GetV2MangaTopSortBy = {
   views: "views",
+  bookmarks: "bookmarks",
+  comments: "comments",
 } as const;
