@@ -23,7 +23,6 @@ import {
   SquareArrowOutUpRight,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
 
 import {
   useGetV2MangaById,
@@ -49,16 +48,7 @@ interface MoeMangaPageProps {
 }
 
 export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
-  const [currentPage, setCurrentPage] = useQueryState(
-    "page",
-    parseAsInteger.withDefault(1),
-  );
-
-  useEffect(() => {
-    if (currentPage < 1) {
-      void setCurrentPage(1);
-    }
-  }, [currentPage, setCurrentPage]);
+  const [currentPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
   const [currentTab, setCurrentTab] = useQueryState(
     "tab",
@@ -199,12 +189,11 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
 
               <div className="flex flex-wrap gap-1">
                 <MoeStatusTag status={manga.status} />
-                {manga.genres &&
-                  manga.genres.map((genre) => (
-                    <MoeNormalTag key={genre.id} className="uppercase">
-                      {genre.name}
-                    </MoeNormalTag>
-                  ))}
+                {manga.genres?.map((genre) => (
+                  <MoeNormalTag key={genre.id} className="uppercase">
+                    {genre.name}
+                  </MoeNormalTag>
+                ))}
               </div>
 
               <MoeMangaStats
@@ -218,12 +207,11 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
 
         <div className="flex w-full flex-wrap gap-1 md:hidden">
           <MoeStatusTag status={manga.status} />
-          {manga.genres &&
-            manga.genres.map((genre) => (
-              <MoeNormalTag key={genre.id} className="uppercase">
-                {genre.name}
-              </MoeNormalTag>
-            ))}
+          {manga.genres?.map((genre) => (
+            <MoeNormalTag key={genre.id} className="uppercase">
+              {genre.name}
+            </MoeNormalTag>
+          ))}
         </div>
 
         <div className="flex w-full flex-wrap gap-2 md:hidden">
@@ -307,17 +295,11 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
               </div>
 
               <TabsContent value="chapters" className="mt-0">
-                <MoeMangaChaptersList mangaId={id} />
+                <MoeMangaChaptersList mangaId={id} page={currentPage} />
               </TabsContent>
 
               <TabsContent value="comments" className="mt-0">
-                <MoeMangaComments
-                  mangaId={id}
-                  page={currentPage}
-                  onPageChange={(page) => {
-                    void setCurrentPage(page);
-                  }}
-                />
+                <MoeMangaComments mangaId={id} />
               </TabsContent>
             </Tabs>
           </div>

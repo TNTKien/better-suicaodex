@@ -6,7 +6,7 @@ import {
   useGetV2ChaptersById,
   type getV2ChaptersByIdResponseSuccess,
 } from "@/lib/moetruyen/hooks/chapters/chapters";
-import { useGetV2MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
+import { useGetV2MangaByIdChaptersAggregate } from "@/lib/moetruyen/hooks/manga/manga";
 
 import MoeReader from "./moe-reader";
 import MoeReaderSidebar from "./moe-reader-sidebar";
@@ -38,7 +38,7 @@ export default function MoeChapterPage({
   const payload = response?.status === 200 ? response.data.data : undefined;
   const mangaId = payload?.manga.id;
   const { data: chapterListResponse, isLoading: isChapterListLoading } =
-    useGetV2MangaByIdChapters(mangaId ?? 0, {
+    useGetV2MangaByIdChaptersAggregate(mangaId ?? 0, {
       query: {
         enabled: !!mangaId,
         refetchInterval: 1000 * 60 * 10,

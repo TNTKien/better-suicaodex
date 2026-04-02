@@ -1,49 +1,53 @@
 "use client";
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { useGetV2CommentsMangaById } from "@/lib/moetruyen/hooks/comments/comments";
+import { useInfiniteQuery } from "@tanstack/react-query";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { getV2CommentsMangaById } from "@/lib/moetruyen/hooks/comments/comments";
 import { Loader2 } from "lucide-react";
 
 import MoeMangaCommentItem from "./moe-manga-comment-item";
 
 const LIMIT = 10;
 
-export default function MoeMangaComments({
-  mangaId,
-  page,
-  onPageChange,
-}: {
-  mangaId: number;
-  page: number;
-  onPageChange: (page: number) => void;
-}) {
-  const { data, isLoading, error } = useGetV2CommentsMangaById(
-    mangaId,
-    {
-      page,
-      limit: LIMIT,
-      sort: "created_at",
-      order: "desc",
-    },
-    {
-      query: {
-        refetchInterval: 1000 * 60 * 10,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-      },
-    },
-  );
+export default function MoeMangaComments({ mangaId }: { mangaId: number }) {
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["moetruyen", "comments", "manga", mangaId],
+    queryFn: async ({ pageParam = 1 }) => {
+      const res = await getV2CommentsMangaById(mangaId, {
+        page: pageParam,
+        limit: LIMIT,
+        sort: "created_at",
+        order: "desc",
+      });
 
-  if (isLoading) {
+      if (res.status !== 200) {
+        throw new Error("Failed to fetch comments");
+      }
+
+      return res.data;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const currentPage = lastPage.meta.pagination?.page ?? 1;
+      const totalPages = lastPage.meta.pagination?.totalPages ?? 1;
+
+      return currentPage < totalPages ? currentPage + 1 : undefined;
+    },
+    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  if (isLoading || !data) {
     return (
       <div className="flex h-16 w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -51,7 +55,7 @@ export default function MoeMangaComments({
     );
   }
 
-  if (error || data?.status !== 200) {
+  if (error) {
     return (
       <Alert className="mt-2 rounded-sm bg-secondary">
         <AlertDescription className="flex justify-center">
@@ -61,8 +65,7 @@ export default function MoeMangaComments({
     );
   }
 
-  const comments = data.data.data;
-  const totalPages = data.data.meta.pagination?.totalPages ?? 1;
+  const comments = data.pages.flatMap((page) => page.data);
 
   if (comments.length === 0) {
     return (
@@ -85,80 +88,19 @@ export default function MoeMangaComments({
         ))}
       </div>
 
-      {totalPages > 1 ? (
-        <Pagination>
-          <PaginationContent>
-            <PaginationPrevious
-              className="h-8 w-8"
-              onClick={() => onPageChange(page - 1)}
-              disabled={page === 1}
-            />
-
-            {totalPages <= 7 ? (
-              Array.from({ length: totalPages }, (_, index) => (
-                <PaginationItem key={index + 1}>
-                  <PaginationLink
-                    className="h-8 w-8"
-                    isActive={page === index + 1}
-                    onClick={() => onPageChange(index + 1)}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))
-            ) : (
-              <>
-                {page > 3 ? (
-                  <>
-                    <PaginationItem>
-                      <PaginationLink
-                        className="h-8 w-8"
-                        onClick={() => onPageChange(1)}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    {page > 4 ? <PaginationEllipsis /> : null}
-                  </>
-                ) : null}
-
-                {Array.from({ length: 5 }, (_, index) => page - 2 + index)
-                  .filter((value) => value >= 1 && value <= totalPages)
-                  .map((value) => (
-                    <PaginationItem key={value}>
-                      <PaginationLink
-                        className="h-8 w-8"
-                        isActive={page === value}
-                        onClick={() => onPageChange(value)}
-                      >
-                        {value}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-
-                {page < totalPages - 2 ? (
-                  <>
-                    {page < totalPages - 3 ? <PaginationEllipsis /> : null}
-                    <PaginationItem>
-                      <PaginationLink
-                        className="h-8 w-8"
-                        onClick={() => onPageChange(totalPages)}
-                      >
-                        {totalPages}
-                      </PaginationLink>
-                    </PaginationItem>
-                  </>
-                ) : null}
-              </>
-            )}
-
-            <PaginationNext
-              className="h-8 w-8"
-              onClick={() => onPageChange(page + 1)}
-              disabled={page === totalPages}
-            />
-          </PaginationContent>
-        </Pagination>
+      {hasNextPage ? (
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              void fetchNextPage();
+            }}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage ? "Đang tải..." : "Xem thêm"}
+          </Button>
+        </div>
       ) : null}
     </div>
   );

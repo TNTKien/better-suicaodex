@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { GetV2ChaptersById200Data } from "@/lib/moetruyen/model/getV2ChaptersById200Data";
-import type { GetV2MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChapters200DataChaptersItem";
 import { ArrowLeft, ArrowRight, ChevronsUp } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,13 +20,14 @@ import {
   formatMoeChapterTitle,
   getAdjacentChapterHref,
   getMoeChapterHref,
+  type MoeChapterListItem,
   sortMoeChaptersForSelect,
 } from "./moe-reader-utils";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 
 interface MoeChapterNavSidebarProps {
   chapterData: GetV2ChaptersById200Data;
-  chapterList?: GetV2MangaByIdChapters200DataChaptersItem[];
+  chapterList?: MoeChapterListItem[];
   isChapterListLoading?: boolean;
 }
 
