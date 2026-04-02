@@ -32,7 +32,7 @@ export default function MoeRecentCommentItem({
       : null;
 
   return (
-    <Card className="rounded-sm border-none p-3 shadow-xs">
+    <Card className="rounded-sm border-none p-3 shadow-xs min-h-[120px]">
       <div className="flex gap-3">
         <Avatar className="h-10 w-10 shrink-0">
           <AvatarImage
