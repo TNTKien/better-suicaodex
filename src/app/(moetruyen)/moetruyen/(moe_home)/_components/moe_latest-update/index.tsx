@@ -105,11 +105,7 @@ export default function MoeLatestUpdate({
               variant="secondary"
               className="[&_svg]:size-5"
             >
-              <Link
-                href={siteConfig.moetruyen.domain}
-                prefetch={false}
-                target="_blank"
-              >
+              <Link href="/moetruyen/latest" prefetch={false}>
                 <ArrowRight className="size-5" />
               </Link>
             </Button>
