@@ -40,11 +40,11 @@ export type GetV2MangaTopParams = {
    */
   limit?: number;
   /**
-   * Ranking metric. Currently only `views` is available.
+   * Ranking metric. Use `views`, `bookmarks`, or `comments`.
    */
   sort_by?: GetV2MangaTopSortBy;
   /**
-   * Ranking window. Use `24h`, `7d`, `30d`, or `all_time`.
+   * Ranking window. Use `24h`, `7d`, `30d`, or `all_time`. Omit it to default to `24h` for `views`, or `all_time` for `bookmarks` and `comments`.
    */
   time?: GetV2MangaTopTime;
   /**
