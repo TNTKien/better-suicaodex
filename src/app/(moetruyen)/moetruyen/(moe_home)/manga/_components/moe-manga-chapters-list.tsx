@@ -248,15 +248,6 @@ export default function MoeMangaChaptersList({
 
   return (
     <>
-      {totalPages > 1 ? (
-        <PaginationControl
-          currentPage={resolvedCurrentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-          className="mt-2 justify-start"
-        />
-      ) : null}
-
       <div className="mt-2 flex flex-col gap-2">
         {chapters.map((chapter) => (
           <MoeChapterCard key={chapter.id} chapter={chapter} />
@@ -268,7 +259,7 @@ export default function MoeMangaChaptersList({
           currentPage={resolvedCurrentPage}
           totalPages={totalPages}
           onPageChange={onPageChange}
-          className="mt-2 justify-start"
+          className="mt-2"
         />
       ) : null}
     </>
