@@ -43,7 +43,11 @@ import type {
   GetV2MangaById400,
   GetV2MangaById404,
   GetV2MangaByIdChapters200,
+  GetV2MangaByIdChapters400,
   GetV2MangaByIdChapters404,
+  GetV2MangaByIdChaptersAggregate200,
+  GetV2MangaByIdChaptersAggregate404,
+  GetV2MangaByIdChaptersParams,
   GetV2MangaByIdParams,
   GetV2MangaParams,
   GetV2MangaRandom200,
@@ -860,12 +864,17 @@ export function useGetV2MangaById<
 }
 
 /**
- * Returns public chapter metadata for a manga id ordered by latest chapter first.
+ * Returns paginated public chapter metadata for a manga id ordered by latest chapter first.
  * @summary List public manga chapters (v2)
  */
 export type getV2MangaByIdChaptersResponse200 = {
   data: GetV2MangaByIdChapters200;
   status: 200;
+};
+
+export type getV2MangaByIdChaptersResponse400 = {
+  data: GetV2MangaByIdChapters400;
+  status: 400;
 };
 
 export type getV2MangaByIdChaptersResponse404 = {
@@ -877,24 +886,42 @@ export type getV2MangaByIdChaptersResponseSuccess =
   getV2MangaByIdChaptersResponse200 & {
     headers: Headers;
   };
-export type getV2MangaByIdChaptersResponseError =
-  getV2MangaByIdChaptersResponse404 & {
-    headers: Headers;
-  };
+export type getV2MangaByIdChaptersResponseError = (
+  | getV2MangaByIdChaptersResponse400
+  | getV2MangaByIdChaptersResponse404
+) & {
+  headers: Headers;
+};
 
 export type getV2MangaByIdChaptersResponse =
   | getV2MangaByIdChaptersResponseSuccess
   | getV2MangaByIdChaptersResponseError;
 
-export const getGetV2MangaByIdChaptersUrl = (id: number) => {
-  return `https://moe.suicaodex.com/v2/manga/${id}/chapters`;
+export const getGetV2MangaByIdChaptersUrl = (
+  id: number,
+  params?: GetV2MangaByIdChaptersParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `https://moe.suicaodex.com/v2/manga/${id}/chapters?${stringifiedParams}`
+    : `https://moe.suicaodex.com/v2/manga/${id}/chapters`;
 };
 
 export const getV2MangaByIdChapters = async (
   id: number,
+  params?: GetV2MangaByIdChaptersParams,
   options?: RequestInit,
 ): Promise<getV2MangaByIdChaptersResponse> => {
-  const res = await fetch(getGetV2MangaByIdChaptersUrl(id), {
+  const res = await fetch(getGetV2MangaByIdChaptersUrl(id, params), {
     ...options,
     method: "GET",
   });
@@ -911,15 +938,22 @@ export const getV2MangaByIdChapters = async (
   } as getV2MangaByIdChaptersResponse;
 };
 
-export const getGetV2MangaByIdChaptersQueryKey = (id: number) => {
-  return [`https://moe.suicaodex.com/v2/manga/${id}/chapters`] as const;
+export const getGetV2MangaByIdChaptersQueryKey = (
+  id: number,
+  params?: GetV2MangaByIdChaptersParams,
+) => {
+  return [
+    `https://moe.suicaodex.com/v2/manga/${id}/chapters`,
+    ...(params ? [params] : []),
+  ] as const;
 };
 
 export const getGetV2MangaByIdChaptersQueryOptions = <
   TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
-  TError = GetV2MangaByIdChapters404,
+  TError = GetV2MangaByIdChapters400 | GetV2MangaByIdChapters404,
 >(
   id: number,
+  params?: GetV2MangaByIdChaptersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -934,11 +968,12 @@ export const getGetV2MangaByIdChaptersQueryOptions = <
   const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getGetV2MangaByIdChaptersQueryKey(id);
+    queryOptions?.queryKey ?? getGetV2MangaByIdChaptersQueryKey(id, params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getV2MangaByIdChapters>>
-  > = ({ signal }) => getV2MangaByIdChapters(id, { signal, ...fetchOptions });
+  > = ({ signal }) =>
+    getV2MangaByIdChapters(id, params, { signal, ...fetchOptions });
 
   return {
     queryKey,
@@ -955,13 +990,16 @@ export const getGetV2MangaByIdChaptersQueryOptions = <
 export type GetV2MangaByIdChaptersQueryResult = NonNullable<
   Awaited<ReturnType<typeof getV2MangaByIdChapters>>
 >;
-export type GetV2MangaByIdChaptersQueryError = GetV2MangaByIdChapters404;
+export type GetV2MangaByIdChaptersQueryError =
+  | GetV2MangaByIdChapters400
+  | GetV2MangaByIdChapters404;
 
 export function useGetV2MangaByIdChapters<
   TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
-  TError = GetV2MangaByIdChapters404,
+  TError = GetV2MangaByIdChapters400 | GetV2MangaByIdChapters404,
 >(
   id: number,
+  params: undefined | GetV2MangaByIdChaptersParams,
   options: {
     query: Partial<
       UseQueryOptions<
@@ -986,9 +1024,10 @@ export function useGetV2MangaByIdChapters<
 };
 export function useGetV2MangaByIdChapters<
   TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
-  TError = GetV2MangaByIdChapters404,
+  TError = GetV2MangaByIdChapters400 | GetV2MangaByIdChapters404,
 >(
   id: number,
+  params?: GetV2MangaByIdChaptersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -1013,9 +1052,10 @@ export function useGetV2MangaByIdChapters<
 };
 export function useGetV2MangaByIdChapters<
   TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
-  TError = GetV2MangaByIdChapters404,
+  TError = GetV2MangaByIdChapters400 | GetV2MangaByIdChapters404,
 >(
   id: number,
+  params?: GetV2MangaByIdChaptersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -1036,9 +1076,10 @@ export function useGetV2MangaByIdChapters<
 
 export function useGetV2MangaByIdChapters<
   TData = Awaited<ReturnType<typeof getV2MangaByIdChapters>>,
-  TError = GetV2MangaByIdChapters404,
+  TError = GetV2MangaByIdChapters400 | GetV2MangaByIdChapters404,
 >(
   id: number,
+  params?: GetV2MangaByIdChaptersParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -1053,7 +1094,222 @@ export function useGetV2MangaByIdChapters<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getGetV2MangaByIdChaptersQueryOptions(id, options);
+  const queryOptions = getGetV2MangaByIdChaptersQueryOptions(
+    id,
+    params,
+    options,
+  );
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns the full lightweight chapter table-of-contents for a manga id ordered by latest chapter first.
+ * @summary List aggregate manga chapters (v2)
+ */
+export type getV2MangaByIdChaptersAggregateResponse200 = {
+  data: GetV2MangaByIdChaptersAggregate200;
+  status: 200;
+};
+
+export type getV2MangaByIdChaptersAggregateResponse404 = {
+  data: GetV2MangaByIdChaptersAggregate404;
+  status: 404;
+};
+
+export type getV2MangaByIdChaptersAggregateResponseSuccess =
+  getV2MangaByIdChaptersAggregateResponse200 & {
+    headers: Headers;
+  };
+export type getV2MangaByIdChaptersAggregateResponseError =
+  getV2MangaByIdChaptersAggregateResponse404 & {
+    headers: Headers;
+  };
+
+export type getV2MangaByIdChaptersAggregateResponse =
+  | getV2MangaByIdChaptersAggregateResponseSuccess
+  | getV2MangaByIdChaptersAggregateResponseError;
+
+export const getGetV2MangaByIdChaptersAggregateUrl = (id: number) => {
+  return `https://moe.suicaodex.com/v2/manga/${id}/chapters/aggregate`;
+};
+
+export const getV2MangaByIdChaptersAggregate = async (
+  id: number,
+  options?: RequestInit,
+): Promise<getV2MangaByIdChaptersAggregateResponse> => {
+  const res = await fetch(getGetV2MangaByIdChaptersAggregateUrl(id), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getV2MangaByIdChaptersAggregateResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getV2MangaByIdChaptersAggregateResponse;
+};
+
+export const getGetV2MangaByIdChaptersAggregateQueryKey = (id: number) => {
+  return [
+    `https://moe.suicaodex.com/v2/manga/${id}/chapters/aggregate`,
+  ] as const;
+};
+
+export const getGetV2MangaByIdChaptersAggregateQueryOptions = <
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+  TError = GetV2MangaByIdChaptersAggregate404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetV2MangaByIdChaptersAggregateQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>
+  > = ({ signal }) =>
+    getV2MangaByIdChaptersAggregate(id, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetV2MangaByIdChaptersAggregateQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>
+>;
+export type GetV2MangaByIdChaptersAggregateQueryError =
+  GetV2MangaByIdChaptersAggregate404;
+
+export function useGetV2MangaByIdChaptersAggregate<
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+  TError = GetV2MangaByIdChaptersAggregate404,
+>(
+  id: number,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaByIdChaptersAggregate<
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+  TError = GetV2MangaByIdChaptersAggregate404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+          TError,
+          Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>
+        >,
+        "initialData"
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetV2MangaByIdChaptersAggregate<
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+  TError = GetV2MangaByIdChaptersAggregate404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List aggregate manga chapters (v2)
+ */
+
+export function useGetV2MangaByIdChaptersAggregate<
+  TData = Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+  TError = GetV2MangaByIdChaptersAggregate404,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getV2MangaByIdChaptersAggregate>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetV2MangaByIdChaptersAggregateQueryOptions(
+    id,
+    options,
+  );
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

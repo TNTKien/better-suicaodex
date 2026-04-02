@@ -94,3 +94,5 @@ export default async function Page({ params }: PageProps) {
 
   return <MoeChapterPage id={chapterId} initialData={response} />;
 }
+
+//TODO: moetruyen history, new reader mode (zenUI)

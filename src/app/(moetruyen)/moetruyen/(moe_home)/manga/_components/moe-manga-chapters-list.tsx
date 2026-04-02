@@ -1,6 +1,7 @@
 "use client";
 
 import NoPrefetchLink from "@/components/common/no-prefetch-link";
+import PaginationControl from "@/components/common/pagination-control";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import {
@@ -30,6 +31,9 @@ import {
   MessagesSquare,
   Users,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
+
+const LIMIT = 30;
 
 function getChapterLabel(chapter: GetV2MangaByIdChapters200DataChaptersItem) {
   return `Ch. ${chapter.number ?? chapter.number}`;
@@ -174,14 +178,29 @@ function MoeChapterCard({
   );
 }
 
-export default function MoeMangaChaptersList({ mangaId }: { mangaId: number }) {
-  const { data, isLoading, error } = useGetV2MangaByIdChapters(mangaId, {
-    query: {
-      refetchInterval: 1000 * 60 * 10,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+export default function MoeMangaChaptersList({
+  mangaId,
+  page,
+}: {
+  mangaId: number;
+  page: number;
+}) {
+  const pathname = usePathname();
+  const currentPage = Math.max(page, 1);
+  const { data, isLoading, error } = useGetV2MangaByIdChapters(
+    mangaId,
+    {
+      page: currentPage,
+      limit: LIMIT,
     },
-  });
+    {
+      query: {
+        refetchInterval: 1000 * 60 * 10,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+      },
+    },
+  );
 
   if (isLoading) {
     return (
@@ -208,6 +227,8 @@ export default function MoeMangaChaptersList({ mangaId }: { mangaId: number }) {
   }
 
   const chapters = data.data.data.chapters;
+  const totalPages = data.data.meta.pagination?.totalPages ?? 1;
+  const resolvedCurrentPage = data.data.meta.pagination?.page ?? currentPage;
 
   if (chapters.length === 0) {
     return (
@@ -226,10 +247,50 @@ export default function MoeMangaChaptersList({ mangaId }: { mangaId: number }) {
   }
 
   return (
-    <div className="mt-2 flex flex-col gap-2">
-      {chapters.map((chapter) => (
-        <MoeChapterCard key={chapter.id} chapter={chapter} />
-      ))}
-    </div>
+    <>
+    {totalPages > 1 ? (
+        <PaginationControl
+          currentPage={resolvedCurrentPage}
+          totalPages={totalPages}
+          createHref={(targetPage) => {
+            const params = new URLSearchParams();
+
+            params.set("tab", "chapters");
+
+            if (targetPage > 1) {
+              params.set("page", String(targetPage));
+            }
+
+            return `${pathname}?${params.toString()}`;
+          }}
+          className="mt-2 justify-start"
+        />
+      ) : null}
+
+      <div className="mt-2 flex flex-col gap-2">
+        {chapters.map((chapter) => (
+          <MoeChapterCard key={chapter.id} chapter={chapter} />
+        ))}
+      </div>
+
+      {totalPages > 1 ? (
+        <PaginationControl
+          currentPage={resolvedCurrentPage}
+          totalPages={totalPages}
+          createHref={(targetPage) => {
+            const params = new URLSearchParams();
+
+            params.set("tab", "chapters");
+
+            if (targetPage > 1) {
+              params.set("page", String(targetPage));
+            }
+
+            return `${pathname}?${params.toString()}`;
+          }}
+          className="mt-2 justify-start"
+        />
+      ) : null}
+    </>
   );
 }

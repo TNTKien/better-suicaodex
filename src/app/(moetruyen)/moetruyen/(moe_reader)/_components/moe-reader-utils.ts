@@ -1,14 +1,23 @@
 import type { GetV2ChaptersById200Data } from "@/lib/moetruyen/model/getV2ChaptersById200Data";
 import type { GetV2ChaptersById200DataNextChapter } from "@/lib/moetruyen/model/getV2ChaptersById200DataNextChapter";
 import type { GetV2ChaptersById200DataPrevChapter } from "@/lib/moetruyen/model/getV2ChaptersById200DataPrevChapter";
-import type { GetV2MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChapters200DataChaptersItem";
+import type { GetV2MangaByIdChaptersAggregate200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChaptersAggregate200DataChaptersItem";
 
-type ChapterTitleInput = {
+export interface MoeChapterListItem {
+  id: GetV2MangaByIdChaptersAggregate200DataChaptersItem["id"];
+  number: GetV2MangaByIdChaptersAggregate200DataChaptersItem["number"];
+  numberText: GetV2MangaByIdChaptersAggregate200DataChaptersItem["numberText"];
+  title: GetV2MangaByIdChaptersAggregate200DataChaptersItem["title"];
+  date: GetV2MangaByIdChaptersAggregate200DataChaptersItem["date"];
+  access: GetV2MangaByIdChaptersAggregate200DataChaptersItem["access"];
+}
+
+interface ChapterTitleInput {
   number: number;
   numberText: string | null;
   title: string | null;
   isOneshot?: boolean;
-};
+}
 
 export function getMoeChapterNumber(
   chapter: Pick<ChapterTitleInput, "number" | "numberText" | "isOneshot">,
@@ -49,9 +58,7 @@ export function getAdjacentChapterHref(
   return getMoeChapterHref(chapter.id);
 }
 
-export function sortMoeChaptersForSelect(
-  chapters: GetV2MangaByIdChapters200DataChaptersItem[],
-) {
+export function sortMoeChaptersForSelect(chapters: MoeChapterListItem[]) {
   return [...chapters].sort((a, b) => {
     const aNumber = a.number;
     const bNumber = b.number;

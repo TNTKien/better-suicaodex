@@ -92,7 +92,7 @@ export default function MoeMangaCommentItem({
                   <div key={reply.id} className="relative pl-10">
                     <div className="absolute left-4 top-4 h-0.5 w-6 bg-border" />
                     {isLast ? (
-                      <div className="absolute bottom-0 left-4 top-[17px] w-0.5 bg-sidebar" />
+                      <div className="absolute bottom-0 left-4 top-[17px] w-0.5 bg-background" />
                     ) : null}
                     <ReplyItem reply={reply} />
                   </div>

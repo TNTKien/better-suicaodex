@@ -3,7 +3,6 @@
 import useKeyDown from "@/hooks/use-keydown";
 import { useReaderImages } from "@/hooks/use-reader-images";
 import type { GetV2ChaptersById200Data } from "@/lib/moetruyen/model/getV2ChaptersById200Data";
-import type { GetV2MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChapters200DataChaptersItem";
 import { useReaderStore } from "@/store/reader-store";
 import { useRouter } from "@bprogress/next";
 import { useCallback, useMemo, useState } from "react";
@@ -13,14 +12,14 @@ import MoeChapterNav from "./moe-chapter-nav";
 import MoeDoublePage from "./moe-double-page";
 import MoeLongStrip from "./moe-long-strip";
 import MoeSinglePage from "./moe-single-page";
-import { getMoeChapterHref } from "./moe-reader-utils";
+import { getMoeChapterHref, type MoeChapterListItem } from "./moe-reader-utils";
 
 type SpreadPages = [number] | [number, number];
 
 interface MoeReaderProps {
   images: string[];
   chapterData: GetV2ChaptersById200Data;
-  chapterList?: GetV2MangaByIdChapters200DataChaptersItem[];
+  chapterList?: MoeChapterListItem[];
   isChapterListLoading?: boolean;
 }
 
