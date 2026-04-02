@@ -48,7 +48,10 @@ interface MoeMangaPageProps {
 }
 
 export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
-  const [currentPage] = useQueryState("page", parseAsInteger.withDefault(1));
+  const [currentPage, setCurrentPage] = useQueryState(
+    "page",
+    parseAsInteger.withDefault(1),
+  );
 
   const [currentTab, setCurrentTab] = useQueryState(
     "tab",
@@ -293,7 +296,13 @@ export default function MoeMangaPage({ id, initData }: MoeMangaPageProps) {
               </TabsList>
 
               <TabsContent value="chapters" className="mt-0">
-                <MoeMangaChaptersList mangaId={id} page={currentPage} />
+                <MoeMangaChaptersList
+                  mangaId={id}
+                  page={currentPage}
+                  onPageChange={(page) => {
+                    void setCurrentPage(page);
+                  }}
+                />
               </TabsContent>
 
               <TabsContent value="comments" className="mt-0">

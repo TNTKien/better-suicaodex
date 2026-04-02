@@ -1,92 +1,165 @@
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import NoPrefetchLink from "./no-prefetch-link";
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationLink,
-  PaginationPrevious,
-  PaginationNext,
   PaginationEllipsis,
+  PaginationNext,
+  PaginationPrevious,
 } from "@/components/ui/pagination";
 
-interface PaginationControlProps {
+interface PaginationControlBaseProps {
   currentPage: number;
   totalPages: number;
-  createHref: (page: number) => string;
   className?: string;
+}
+
+interface LinkPaginationControlProps extends PaginationControlBaseProps {
+  createHref: (page: number) => string;
+  onPageChange?: never;
   prefetch?: boolean;
+}
+
+interface ActionPaginationControlProps extends PaginationControlBaseProps {
+  onPageChange: (page: number) => void;
+  createHref?: never;
+  prefetch?: never;
+}
+
+type PaginationControlProps =
+  | LinkPaginationControlProps
+  | ActionPaginationControlProps;
+
+function renderPageRange(totalPages: number, currentPage: number) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  return [currentPage - 1, currentPage, currentPage + 1];
 }
 
 export default function PaginationControl({
   currentPage,
   totalPages,
-  createHref,
   className = "",
-  prefetch = false,
+  ...props
 }: PaginationControlProps) {
+  const isLinkMode = "createHref" in props;
+  const createHref = isLinkMode ? props.createHref : null;
+  const onPageChange = isLinkMode ? null : props.onPageChange;
+  const LinkComponent = isLinkMode
+    ? props.prefetch
+      ? Link
+      : NoPrefetchLink
+    : null;
+
+  const renderPageLink = (page: number) => {
+    if (createHref && LinkComponent) {
+      return (
+        <PaginationLink
+          asChild
+          className="w-8 h-8"
+          isActive={page === currentPage}
+        >
+          <LinkComponent href={createHref(page)}>{page}</LinkComponent>
+        </PaginationLink>
+      );
+    }
+
+    return (
+      <PaginationLink
+        className="w-8 h-8"
+        isActive={page === currentPage}
+        onClick={() => {
+          onPageChange?.(page);
+        }}
+      >
+        {page}
+      </PaginationLink>
+    );
+  };
+
+  const renderPrevious = () => {
+    if (currentPage === 1) {
+      return <PaginationPrevious className="w-8 h-8" disabled />;
+    }
+
+    if (createHref && LinkComponent) {
+      return (
+        <PaginationLink
+          asChild
+          aria-label="Go to previous page"
+          className="w-8 h-8"
+        >
+          <LinkComponent href={createHref(currentPage - 1)}>
+            <ChevronLeft className="h-4 w-4" />
+          </LinkComponent>
+        </PaginationLink>
+      );
+    }
+
+    return (
+      <PaginationPrevious
+        className="w-8 h-8"
+        onClick={() => {
+          onPageChange?.(currentPage - 1);
+        }}
+      />
+    );
+  };
+
+  const renderNext = () => {
+    if (currentPage === totalPages) {
+      return <PaginationNext className="w-8 h-8" disabled />;
+    }
+
+    if (createHref && LinkComponent) {
+      return (
+        <PaginationLink
+          asChild
+          aria-label="Go to next page"
+          className="w-8 h-8"
+        >
+          <LinkComponent href={createHref(currentPage + 1)}>
+            <ChevronRight className="h-4 w-4" />
+          </LinkComponent>
+        </PaginationLink>
+      );
+    }
+
+    return (
+      <PaginationNext
+        className="w-8 h-8"
+        onClick={() => {
+          onPageChange?.(currentPage + 1);
+        }}
+      />
+    );
+  };
+
   return (
     <Pagination className={className}>
       <PaginationContent>
-        <PaginationItem>
-          <Link
-            href={currentPage > 1 ? createHref(currentPage - 1) : "#"}
-            prefetch={prefetch}
-            aria-disabled={currentPage === 1}
-            tabIndex={currentPage === 1 ? -1 : undefined}
-          >
-            <PaginationPrevious
-              className="w-8 h-8"
-              disabled={currentPage === 1}
-            />
-          </Link>
-        </PaginationItem>
+        <PaginationItem>{renderPrevious()}</PaginationItem>
 
         {totalPages <= 7 ? (
-          // Show all pages if total is 7 or less
           Array.from({ length: totalPages }, (_, i) => (
-            <PaginationItem key={i + 1}>
-              <Link href={createHref(i + 1)} prefetch={prefetch}>
-                <PaginationLink
-                  className="w-8 h-8"
-                  isActive={i + 1 === currentPage}
-                >
-                  {i + 1}
-                </PaginationLink>
-              </Link>
-            </PaginationItem>
+            <PaginationItem key={i + 1}>{renderPageLink(i + 1)}</PaginationItem>
           ))
         ) : currentPage <= 4 ? (
-          // Near start: show 1, 2, 3, 4, 5, ..., lastPage
           <>
             {[1, 2, 3, 4, 5].map((num) => (
-              <PaginationItem key={num}>
-                <Link href={createHref(num)} prefetch={prefetch}>
-                  <PaginationLink
-                    className="w-8 h-8"
-                    isActive={num === currentPage}
-                  >
-                    {num}
-                  </PaginationLink>
-                </Link>
-              </PaginationItem>
+              <PaginationItem key={num}>{renderPageLink(num)}</PaginationItem>
             ))}
             <PaginationEllipsis />
-            <PaginationItem>
-              <Link href={createHref(totalPages)} prefetch={prefetch}>
-                <PaginationLink className="w-8 h-8">
-                  {totalPages}
-                </PaginationLink>
-              </Link>
-            </PaginationItem>
+            <PaginationItem>{renderPageLink(totalPages)}</PaginationItem>
           </>
         ) : currentPage >= totalPages - 3 ? (
-          // Near end: show 1, ..., lastPage-4, lastPage-3, lastPage-2, lastPage-1, lastPage
           <>
-            <PaginationItem>
-              <Link href={createHref(1)} prefetch={prefetch}>
-                <PaginationLink className="w-8 h-8">1</PaginationLink>
-              </Link>
-            </PaginationItem>
+            <PaginationItem>{renderPageLink(1)}</PaginationItem>
             <PaginationEllipsis />
             {[
               totalPages - 4,
@@ -95,63 +168,22 @@ export default function PaginationControl({
               totalPages - 1,
               totalPages,
             ].map((num) => (
-              <PaginationItem key={num}>
-                <Link href={createHref(num)} prefetch={prefetch}>
-                  <PaginationLink
-                    className="w-8 h-8"
-                    isActive={num === currentPage}
-                  >
-                    {num}
-                  </PaginationLink>
-                </Link>
-              </PaginationItem>
+              <PaginationItem key={num}>{renderPageLink(num)}</PaginationItem>
             ))}
           </>
         ) : (
-          // Middle: show 1, ..., page-1, page, page+1, ..., lastPage
           <>
-            <PaginationItem>
-              <Link href={createHref(1)} prefetch={prefetch}>
-                <PaginationLink className="w-8 h-8">1</PaginationLink>
-              </Link>
-            </PaginationItem>
+            <PaginationItem>{renderPageLink(1)}</PaginationItem>
             <PaginationEllipsis />
-            {[currentPage - 1, currentPage, currentPage + 1].map((num) => (
-              <PaginationItem key={num}>
-                <Link href={createHref(num)} prefetch={prefetch}>
-                  <PaginationLink
-                    className="w-8 h-8"
-                    isActive={num === currentPage}
-                  >
-                    {num}
-                  </PaginationLink>
-                </Link>
-              </PaginationItem>
+            {renderPageRange(totalPages, currentPage).map((num) => (
+              <PaginationItem key={num}>{renderPageLink(num)}</PaginationItem>
             ))}
             <PaginationEllipsis />
-            <PaginationItem>
-              <Link href={createHref(totalPages)} prefetch={prefetch}>
-                <PaginationLink className="w-8 h-8">
-                  {totalPages}
-                </PaginationLink>
-              </Link>
-            </PaginationItem>
+            <PaginationItem>{renderPageLink(totalPages)}</PaginationItem>
           </>
         )}
 
-        <PaginationItem>
-          <Link
-            href={currentPage < totalPages ? createHref(currentPage + 1) : "#"}
-            aria-disabled={currentPage === totalPages}
-            tabIndex={currentPage === totalPages ? -1 : undefined}
-            prefetch={prefetch}
-          >
-            <PaginationNext
-              className="w-8 h-8"
-              disabled={currentPage === totalPages}
-            />
-          </Link>
-        </PaginationItem>
+        <PaginationItem>{renderNext()}</PaginationItem>
       </PaginationContent>
     </Pagination>
   );

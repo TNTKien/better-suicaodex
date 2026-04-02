@@ -31,7 +31,6 @@ import {
   MessagesSquare,
   Users,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
 
 const LIMIT = 30;
 
@@ -181,11 +180,12 @@ function MoeChapterCard({
 export default function MoeMangaChaptersList({
   mangaId,
   page,
+  onPageChange,
 }: {
   mangaId: number;
   page: number;
+  onPageChange: (page: number) => void;
 }) {
-  const pathname = usePathname();
   const currentPage = Math.max(page, 1);
   const { data, isLoading, error } = useGetV2MangaByIdChapters(
     mangaId,
@@ -248,21 +248,11 @@ export default function MoeMangaChaptersList({
 
   return (
     <>
-    {totalPages > 1 ? (
+      {totalPages > 1 ? (
         <PaginationControl
           currentPage={resolvedCurrentPage}
           totalPages={totalPages}
-          createHref={(targetPage) => {
-            const params = new URLSearchParams();
-
-            params.set("tab", "chapters");
-
-            if (targetPage > 1) {
-              params.set("page", String(targetPage));
-            }
-
-            return `${pathname}?${params.toString()}`;
-          }}
+          onPageChange={onPageChange}
           className="mt-2 justify-start"
         />
       ) : null}
@@ -277,17 +267,7 @@ export default function MoeMangaChaptersList({
         <PaginationControl
           currentPage={resolvedCurrentPage}
           totalPages={totalPages}
-          createHref={(targetPage) => {
-            const params = new URLSearchParams();
-
-            params.set("tab", "chapters");
-
-            if (targetPage > 1) {
-              params.set("page", String(targetPage));
-            }
-
-            return `${pathname}?${params.toString()}`;
-          }}
+          onPageChange={onPageChange}
           className="mt-2 justify-start"
         />
       ) : null}
