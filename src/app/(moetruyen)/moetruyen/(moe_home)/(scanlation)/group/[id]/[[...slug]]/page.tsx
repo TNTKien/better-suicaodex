@@ -5,3 +5,5 @@ export default function Page() {
     </div>
   );
 }
+
+//TODO: group detail page
