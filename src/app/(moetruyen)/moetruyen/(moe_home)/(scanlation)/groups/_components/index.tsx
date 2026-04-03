@@ -4,7 +4,18 @@ import { useEffect } from "react";
 
 import { useDebouncedValue } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BugIcon, Search, Users, X } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  BugIcon,
+  CalendarArrowDown,
+  ChevronDownIcon,
+  MessagesSquare,
+  SearchIcon,
+  SwatchBook,
+  Users,
+  X,
+} from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 
 import NoPrefetchLink from "@/components/common/no-prefetch-link";
@@ -17,12 +28,46 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getV2Teams } from "@/lib/moetruyen/hooks/teams/teams";
 import { generateSlug } from "@/lib/utils";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
-const LIMIT = 100;
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { GetV2TeamsSort } from "@/lib/moetruyen/model/getV2TeamsSort";
+
+const LIMIT = 36;
+
+type TeamsSortValue = (typeof GetV2TeamsSort)[keyof typeof GetV2TeamsSort];
+
+const TEAM_SORT_OPTIONS = [
+  { value: GetV2TeamsSort.updated_at, label: "Mới nhất", icon: CalendarArrowDown },
+  { value: GetV2TeamsSort.member_count, label: "Số thành viên", icon: Users },
+  { value: GetV2TeamsSort.manga_count, label: "Số truyện", icon: BookOpen },
+  { value: GetV2TeamsSort.chapter_count, label: "Số chapter", icon: SwatchBook },
+  { value: GetV2TeamsSort.comment_count, label: "Số bình luận", icon: MessagesSquare },
+] as const satisfies readonly {
+  value: TeamsSortValue;
+  label: string;
+  icon: React.ComponentType;
+}[];
+
+function isTeamSortValue(value: string): value is TeamsSortValue {
+  return TEAM_SORT_OPTIONS.some((option) => option.value === value);
+}
 
 export default function MoeGroupsSearch() {
   const [inputValue, setInputValue] = useQueryState(
@@ -35,7 +80,17 @@ export default function MoeGroupsSearch() {
     "page",
     parseAsInteger.withDefault(1).withOptions({ shallow: false }),
   );
+  const [sort, setSort] = useQueryState(
+    "sort",
+    parseAsString.withDefault(GetV2TeamsSort.updated_at).withOptions({
+      shallow: false,
+    }),
+  );
   const safePage = Math.max(1, page);
+  const safeSort = isTeamSortValue(sort) ? sort : GetV2TeamsSort.updated_at;
+  const activeSortLabel =
+    TEAM_SORT_OPTIONS.find((option) => option.value === safeSort)?.label ??
+    TEAM_SORT_OPTIONS[0].label;
 
   const [debouncedQuery] = useDebouncedValue(inputValue, 500);
 
@@ -46,12 +101,13 @@ export default function MoeGroupsSearch() {
   }, [page, setPage]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["moetruyen", "teams", debouncedQuery, safePage],
+    queryKey: ["moetruyen", "teams", debouncedQuery, safePage, safeSort],
     queryFn: async () => {
       const res = await getV2Teams({
         q: debouncedQuery || undefined,
         limit: LIMIT,
         page: safePage,
+        sort: safeSort,
       });
 
       if (res.status !== 200) {
@@ -68,6 +124,13 @@ export default function MoeGroupsSearch() {
 
   const handleClear = () => {
     void setInputValue("");
+    void setPage(null);
+  };
+
+  const handleSortChange = (
+    nextSort: (typeof TEAM_SORT_OPTIONS)[number]["value"],
+  ) => {
+    void setSort(nextSort);
     void setPage(null);
   };
 
@@ -136,11 +199,13 @@ export default function MoeGroupsSearch() {
 
   return (
     <>
-      <div className="relative w-full">
-        <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          className="bg-secondary h-10 w-full pr-10 pl-7"
-          placeholder="Nhập từ khóa..."
+      <InputGroup className="h-10">
+        <InputGroupAddon>
+          <SearchIcon />
+        </InputGroupAddon>
+        <InputGroupInput
+          className="h-10"
+          placeholder="Nhập tên nhóm, mô tả..."
           autoComplete="off"
           value={inputValue}
           onChange={(event) => {
@@ -148,14 +213,49 @@ export default function MoeGroupsSearch() {
             void setPage(null);
           }}
         />
-        <Button
-          size="icon"
-          className="absolute top-1/2 right-1 size-8 -translate-y-1/2 rounded-sm bg-primary"
-          onClick={inputValue ? handleClear : undefined}
-        >
-          {inputValue ? <X /> : <ArrowRight />}
-        </Button>
-      </div>
+
+        <InputGroupAddon align="inline-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <InputGroupButton variant="secondary" className="h-7" size="sm">
+                {activeSortLabel} <ChevronDownIcon />
+              </InputGroupButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-40">
+              <DropdownMenuLabel>Sắp xếp theo</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={safeSort}
+                onValueChange={(value) => {
+                  if (isTeamSortValue(value)) {
+                    handleSortChange(value);
+                  }
+                }}
+              >
+                {TEAM_SORT_OPTIONS.map((option) => (
+                  <DropdownMenuRadioItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    <option.icon />
+                    {option.label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </InputGroupAddon>
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            className="size-7"
+            variant="secondary"
+            size="icon-sm"
+            onClick={inputValue ? handleClear : undefined}
+          >
+            {inputValue ? <X /> : <ArrowRight />}
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
 
       <div className="mt-4 w-full">{renderResults()}</div>
 
@@ -163,18 +263,13 @@ export default function MoeGroupsSearch() {
         <PaginationControl
           currentPage={safePage}
           totalPages={totalPages}
-          createHref={(targetPage) => {
-            const params = new URLSearchParams();
-
-            if (debouncedQuery) {
-              params.set("q", debouncedQuery);
+          onPageChange={(targetPage) => {
+            if (targetPage <= 1) {
+              void setPage(null);
+              return;
             }
 
-            if (targetPage > 1) {
-              params.set("page", String(targetPage));
-            }
-
-            return `/moetruyen/groups${params.size ? `?${params}` : ""}`;
+            void setPage(targetPage);
           }}
           className="mt-4"
         />
