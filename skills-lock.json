@@ -75,6 +75,11 @@
       "source": "better-auth/skills",
       "sourceType": "github",
       "computedHash": "c4f3a299c62c1985b774b7c28e53b7e55c565dbf973fd52b08899e4bcfffa3f9"
+    },
+    "vercel-react-view-transitions": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "db55fee57546ae8b7cee3d9cc08e8e810bf78cce43e2d3dd26eea69e1bf357ae"
     }
   }
 }
