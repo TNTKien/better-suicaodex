@@ -16,7 +16,7 @@ import { Streamdown } from "streamdown";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useGetV2MangaRandom } from "@/lib/moetruyen/hooks/manga/manga";
+import { useGetV2Manga, useGetV2MangaRandom } from "@/lib/moetruyen/hooks/manga/manga";
 import type { GetV2MangaRandom200DataItem } from "@/lib/moetruyen/model/getV2MangaRandom200DataItem";
 import { cn } from "@/lib/utils";
 
@@ -431,7 +431,7 @@ export default function MoetruyenSection() {
   const isMounted = useMounted();
   const sectionTitleId = useId();
 
-  const { data, isLoading, isError } = useGetV2MangaRandom(
+  const { data, isLoading, isError } = useGetV2Manga(
     { limit: MOETRUYEN_PAIR_COUNT * 2, include: "genres" },
     {
       query: {
