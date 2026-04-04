@@ -32,7 +32,7 @@ export type GetV2MangaRandomParams = {
    */
   limit?: number;
   /**
-   * Comma-separated expansions. Supported values: `stats`, `genres`. Example: `stats,genres`.
+   * Comma-separated expansions. Supported values: `stats`, `genres`, `groups`. Example: `stats,genres,groups`.
    */
   include?: string;
 };

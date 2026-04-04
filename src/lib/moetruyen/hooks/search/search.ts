@@ -43,7 +43,7 @@ import type {
 } from "../../model";
 
 /**
- * A light-weight search endpoint, use `/v2/manga` for full filtering support.
+ * A light-weight search endpoint, use `/v2/manga` for full filtering support. `include` supports `stats`, `genres`, and `groups`.
  * @summary Search public manga (v2)
  */
 export type getV2SearchMangaResponse200 = {

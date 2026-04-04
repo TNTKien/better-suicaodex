@@ -23,27 +23,13 @@ Use the `/v2` routes for the current stable surface.
 - Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
  * OpenAPI spec version: 0.2.0
  */
-import type { GetV2ChaptersById200DataChapterAccess } from "./getV2ChaptersById200DataChapterAccess";
-import type { GetV2ChaptersById200DataChapterGroupsItem } from "./getV2ChaptersById200DataChapterGroupsItem";
 
-export type GetV2ChaptersById200DataChapter = {
+export type GetV2ChaptersById200DataChapterGroupsItem = {
   /**
    * @maximum 9007199254740991
    * @exclusiveMinimum 0
    */
   id: number;
-  number: number;
-  numberText: string | null;
-  title: string | null;
-  date: string | null;
-  pages: number | null;
-  groupName: string | null;
-  groups: GetV2ChaptersById200DataChapterGroupsItem[];
-  /**
-   * @minimum 0
-   * @maximum 9007199254740991
-   */
-  viewCount: number;
-  access: GetV2ChaptersById200DataChapterAccess;
-  isOneshot: boolean;
+  /** @minLength 1 */
+  name: string;
 };

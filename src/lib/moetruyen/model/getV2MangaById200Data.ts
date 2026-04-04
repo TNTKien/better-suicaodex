@@ -24,6 +24,7 @@ Use the `/v2` routes for the current stable surface.
  * OpenAPI spec version: 0.2.0
  */
 import type { GetV2MangaById200DataGenresItem } from "./getV2MangaById200DataGenresItem";
+import type { GetV2MangaById200DataGroupsItem } from "./getV2MangaById200DataGroupsItem";
 import type { GetV2MangaById200DataStats } from "./getV2MangaById200DataStats";
 import type { GetV2MangaById200DataStatus } from "./getV2MangaById200DataStatus";
 
@@ -45,6 +46,7 @@ export type GetV2MangaById200Data = {
   coverUrl: string | null;
   coverUpdatedAt: string | null;
   groupName: string | null;
+  altTitles: string[];
   createdAt: string | null;
   updatedAt: string | null;
   isOneshot: boolean;
@@ -58,4 +60,5 @@ export type GetV2MangaById200Data = {
   /** Optional aggregate statistics. Present only when `include=stats` is requested. */
   stats?: GetV2MangaById200DataStats;
   genres?: GetV2MangaById200DataGenresItem[];
+  groups?: GetV2MangaById200DataGroupsItem[];
 };

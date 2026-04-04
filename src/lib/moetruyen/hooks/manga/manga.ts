@@ -59,7 +59,7 @@ import type {
 } from "../../model";
 
 /**
- * Returns paginated top manga using the shared v2 manga base shape. Use `sort_by=views` with `time=24h|7d|30d|all_time`, or `sort_by=bookmarks|comments` with `time=all_time`. If `time` is omitted, it defaults to `24h` for `views` and `all_time` for `bookmarks` or `comments`. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand each manga item.
+ * Returns paginated top manga using the shared v2 manga base shape. Use `sort_by=views` with `time=24h|7d|30d|all_time`, or `sort_by=bookmarks|comments` with `time=all_time`. If `time` is omitted, it defaults to `24h` for `views` and `all_time` for `bookmarks` or `comments`. Use `include=stats`, `include=genres`, `include=groups`, or combine them to expand each manga item.
  * @summary List top public manga (v2)
  */
 export type getV2MangaTopResponse200 = {
@@ -248,7 +248,7 @@ export function useGetV2MangaTop<
 }
 
 /**
- * Returns 1 to 10 random public manga items using the shared v2 manga base shape. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand each manga item.
+ * Returns 1 to 10 random public manga items using the shared v2 manga base shape. Use `include=stats`, `include=genres`, `include=groups`, or combine them to expand each manga item.
  * @summary List random public manga (v2)
  */
 export type getV2MangaRandomResponse200 = {
@@ -460,7 +460,7 @@ export function useGetV2MangaRandom<
 }
 
 /**
- * Returns paginated public manga using the shared v2 manga base shape. `genre` accepts comma-separated genre ids with OR semantics, `genrex` excludes manga that have any listed genre ids, and `include` controls optional expansions such as `stats` and `genres`.
+ * Returns paginated public manga using the shared v2 manga base shape. `genre` accepts comma-separated genre ids with OR semantics, `genrex` excludes manga that have any listed genre ids, and `include` controls optional expansions such as `stats`, `genres`, and `groups`.
  * @summary List public manga (v2)
  */
 export type getV2MangaResponse200 = {
@@ -649,7 +649,7 @@ export function useGetV2Manga<
 }
 
 /**
- * Returns a single manga using the shared v2 manga base shape. Use `include=stats`, `include=genres`, or `include=stats,genres` to expand the response with optional aggregates and genre metadata.
+ * Returns a single manga using the shared v2 manga base shape. Use `include=stats`, `include=genres`, `include=groups`, or combine them to expand the response with optional aggregates, genre metadata, and resolved translation team metadata.
  * @summary Get manga detail (v2)
  */
 export type getV2MangaByIdResponse200 = {

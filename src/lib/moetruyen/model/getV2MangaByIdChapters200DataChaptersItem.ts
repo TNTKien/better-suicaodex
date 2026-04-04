@@ -24,6 +24,7 @@ Use the `/v2` routes for the current stable surface.
  * OpenAPI spec version: 0.2.0
  */
 import type { GetV2MangaByIdChapters200DataChaptersItemAccess } from "./getV2MangaByIdChapters200DataChaptersItemAccess";
+import type { GetV2MangaByIdChapters200DataChaptersItemGroupsItem } from "./getV2MangaByIdChapters200DataChaptersItemGroupsItem";
 
 export type GetV2MangaByIdChapters200DataChaptersItem = {
   /**
@@ -37,6 +38,7 @@ export type GetV2MangaByIdChapters200DataChaptersItem = {
   date: string | null;
   pages: number | null;
   groupName: string | null;
+  groups: GetV2MangaByIdChapters200DataChaptersItemGroupsItem[];
   /**
    * @minimum 0
    * @maximum 9007199254740991

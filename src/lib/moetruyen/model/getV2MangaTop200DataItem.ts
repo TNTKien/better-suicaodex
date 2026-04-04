@@ -24,6 +24,7 @@ Use the `/v2` routes for the current stable surface.
  * OpenAPI spec version: 0.2.0
  */
 import type { GetV2MangaTop200DataItemGenresItem } from "./getV2MangaTop200DataItemGenresItem";
+import type { GetV2MangaTop200DataItemGroupsItem } from "./getV2MangaTop200DataItemGroupsItem";
 import type { GetV2MangaTop200DataItemRanking } from "./getV2MangaTop200DataItemRanking";
 import type { GetV2MangaTop200DataItemStats } from "./getV2MangaTop200DataItemStats";
 import type { GetV2MangaTop200DataItemStatus } from "./getV2MangaTop200DataItemStatus";
@@ -46,6 +47,7 @@ export type GetV2MangaTop200DataItem = {
   coverUrl: string | null;
   coverUpdatedAt: string | null;
   groupName: string | null;
+  altTitles: string[];
   createdAt: string | null;
   updatedAt: string | null;
   isOneshot: boolean;
@@ -59,6 +61,7 @@ export type GetV2MangaTop200DataItem = {
   /** Optional aggregate statistics. Present only when `include=stats` is requested. */
   stats?: GetV2MangaTop200DataItemStats;
   genres?: GetV2MangaTop200DataItemGenresItem[];
+  groups?: GetV2MangaTop200DataItemGroupsItem[];
   /** Route-specific ranking metadata for `/v2/manga/top`. */
   ranking: GetV2MangaTop200DataItemRanking;
 };

@@ -57,7 +57,7 @@ import type {
 } from "../../model";
 
 /**
- * Returns paginated manga associated with a team using the shared v2 manga base shape. `genre` accepts comma-separated genre ids with OR semantics, `genrex` excludes listed genre ids, and `include` controls optional `stats` and `genres` expansions.
+ * Returns paginated manga associated with a team using the shared v2 manga base shape. `genre` accepts comma-separated genre ids with OR semantics, `genrex` excludes listed genre ids, and `include` controls optional `stats`, `genres`, and `groups` expansions.
  * @summary List public team manga (v2)
  */
 export type getV2TeamsByIdMangaResponse200 = {

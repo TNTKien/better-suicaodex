@@ -66,7 +66,7 @@ export type GetV2MangaParams = {
    */
   genrex?: string | number;
   /**
-   * Comma-separated expansions. Supported values: `stats`, `genres`. Example: `stats,genres`.
+   * Comma-separated expansions. Supported values: `stats`, `genres`, `groups`. Example: `stats,genres,groups`.
    */
   include?: string;
 };
