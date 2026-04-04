@@ -432,7 +432,7 @@ export default function MoetruyenSection() {
   const sectionTitleId = useId();
 
   const { data, isLoading, isError } = useGetV2MangaRandom(
-    { limit: MOETRUYEN_PAIR_COUNT * 2 },
+    { limit: MOETRUYEN_PAIR_COUNT * 2, include: "genres" },
     {
       query: {
         enabled: isMounted,
