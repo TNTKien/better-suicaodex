@@ -7,6 +7,8 @@ interface SinglePageProps {
   pages: PageState[];
   currentIndex: number;
   retry: (index: number) => void;
+  markLoaded: (index: number) => void;
+  markFailed: (index: number) => void;
   /** RTL: click trái = next, click phải = prev */
   rtl?: boolean;
   onNavigatePrev: () => void;
@@ -17,6 +19,8 @@ export default function SinglePage({
   pages,
   currentIndex,
   retry,
+  markLoaded,
+  markFailed,
   rtl = false,
   onNavigatePrev,
   onNavigateNext,
@@ -45,19 +49,36 @@ export default function SinglePage({
       {/* Hidden preload imgs */}
       {prevBlob && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={prevBlob} alt="" aria-hidden className="absolute w-px h-px opacity-0 pointer-events-none" />
+        <img
+          src={prevBlob}
+          alt=""
+          aria-hidden
+          className="absolute w-px h-px opacity-0 pointer-events-none"
+          onLoad={() => markLoaded(currentIndex - 1)}
+          onError={() => markFailed(currentIndex - 1)}
+        />
       )}
       {nextBlob && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={nextBlob} alt="" aria-hidden className="absolute w-px h-px opacity-0 pointer-events-none" />
+        <img
+          src={nextBlob}
+          alt=""
+          aria-hidden
+          className="absolute w-px h-px opacity-0 pointer-events-none"
+          onLoad={() => markLoaded(currentIndex + 1)}
+          onError={() => markFailed(currentIndex + 1)}
+        />
       )}
       <span className="absolute top-2 text-xs text-muted-foreground z-10 bg-primary px-1 rounded opacity-25">
         {currentIndex + 1} / {pages.length}
       </span>
       <MangaImage
         page={page}
+        pageIndex={currentIndex}
         alt={`Trang ${currentIndex + 1}`}
         onRetry={() => retry(currentIndex)}
+        onLoad={markLoaded}
+        onError={markFailed}
       />
     </div>
   );

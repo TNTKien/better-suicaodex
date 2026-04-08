@@ -8,6 +8,8 @@ interface MoeSinglePageProps {
   pages: PageState[];
   currentIndex: number;
   retry: (index: number) => void;
+  markLoaded: (index: number) => void;
+  markFailed: (index: number) => void;
   rtl?: boolean;
   onNavigatePrev: () => void;
   onNavigateNext: () => void;
@@ -17,6 +19,8 @@ export default function MoeSinglePage({
   pages,
   currentIndex,
   retry,
+  markLoaded,
+  markFailed,
   rtl = false,
   onNavigatePrev,
   onNavigateNext,
@@ -54,6 +58,8 @@ export default function MoeSinglePage({
           alt=""
           aria-hidden
           className="pointer-events-none absolute h-px w-px opacity-0"
+          onLoad={() => markLoaded(currentIndex - 1)}
+          onError={() => markFailed(currentIndex - 1)}
         />
       ) : null}
       {nextBlob ? (
@@ -63,6 +69,8 @@ export default function MoeSinglePage({
           alt=""
           aria-hidden
           className="pointer-events-none absolute h-px w-px opacity-0"
+          onLoad={() => markLoaded(currentIndex + 1)}
+          onError={() => markFailed(currentIndex + 1)}
         />
       ) : null}
 
@@ -72,8 +80,11 @@ export default function MoeSinglePage({
 
       <MoeMangaImage
         page={page}
+        pageIndex={currentIndex}
         alt={`Trang ${currentIndex + 1}`}
         onRetry={() => retry(currentIndex)}
+        onLoad={markLoaded}
+        onError={markFailed}
       />
     </div>
   );

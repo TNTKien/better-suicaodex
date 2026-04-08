@@ -9,12 +9,16 @@ import MoeMangaImage from "./moe-manga-image";
 interface MoeLongStripProps {
   pages: PageState[];
   retry: (index: number) => void;
+  markLoaded: (index: number) => void;
+  markFailed: (index: number) => void;
   onCurrentIndexChange: (index: number) => void;
 }
 
 export default function MoeLongStrip({
   pages,
   retry,
+  markLoaded,
+  markFailed,
   onCurrentIndexChange,
 }: MoeLongStripProps) {
   const imageGap = useReaderStore((state) => state.imageGap);
@@ -87,8 +91,11 @@ export default function MoeLongStrip({
         >
           <MoeMangaImage
             page={page}
+            pageIndex={index}
             alt={`Trang ${index + 1}`}
             onRetry={() => retry(index)}
+            onLoad={markLoaded}
+            onError={markFailed}
           />
         </div>
       ))}

@@ -9,6 +9,8 @@ interface DoublePageProps {
   /** Indices của spread hiện tại - [left] hoặc [left, right] */
   spreadPages: [number] | [number, number];
   retry: (index: number) => void;
+  markLoaded: (index: number) => void;
+  markFailed: (index: number) => void;
   /** RTL: đảo thứ tự hiển thị */
   rtl?: boolean;
   onNavigatePrev: () => void;
@@ -19,12 +21,16 @@ export default function DoublePage({
   pages,
   spreadPages,
   retry,
+  markLoaded,
+  markFailed,
   rtl = false,
   onNavigatePrev,
   onNavigateNext,
 }: DoublePageProps) {
   // RTL đảo thứ tự: trang phải hiển thị trước (trang trái = số nhỏ hơn)
-  const displayIndices = rtl ? ([...spreadPages].reverse() as typeof spreadPages) : spreadPages;
+  const displayIndices = rtl
+    ? ([...spreadPages].reverse() as typeof spreadPages)
+    : spreadPages;
   const isDouble = spreadPages.length === 2;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -53,11 +59,25 @@ export default function DoublePage({
       {/* Hidden preload imgs */}
       {prevSpreadBlob && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={prevSpreadBlob} alt="" aria-hidden className="absolute w-px h-px opacity-0 pointer-events-none" />
+        <img
+          src={prevSpreadBlob}
+          alt=""
+          aria-hidden
+          className="absolute w-px h-px opacity-0 pointer-events-none"
+          onLoad={() => markLoaded(firstIdxInSpread - 1)}
+          onError={() => markFailed(firstIdxInSpread - 1)}
+        />
       )}
       {nextSpreadBlob && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={nextSpreadBlob} alt="" aria-hidden className="absolute w-px h-px opacity-0 pointer-events-none" />
+        <img
+          src={nextSpreadBlob}
+          alt=""
+          aria-hidden
+          className="absolute w-px h-px opacity-0 pointer-events-none"
+          onLoad={() => markLoaded(lastIdxInSpread + 1)}
+          onError={() => markFailed(lastIdxInSpread + 1)}
+        />
       )}
       {/* page index */}
       <span className="absolute top-2 text-xs text-muted-foreground z-10 bg-primary px-1 rounded opacity-25">
@@ -81,8 +101,11 @@ export default function DoublePage({
           >
             <MangaImage
               page={pages[idx]}
+              pageIndex={idx}
               alt={`Trang ${idx + 1}`}
               onRetry={() => retry(idx)}
+              onLoad={markLoaded}
+              onError={markFailed}
               isDouble={isDouble}
             />
           </div>

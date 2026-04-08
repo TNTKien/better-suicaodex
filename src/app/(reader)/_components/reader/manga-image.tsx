@@ -11,13 +11,24 @@ import { useEffect, useState } from "react";
 interface MangaImageProps {
   /** Trạng thái tải của trang này từ useReaderImages */
   page: PageState;
+  pageIndex: number;
   alt: string;
   onRetry: () => void;
+  onLoad: (index: number) => void;
+  onError: (index: number) => void;
   /** Dùng trong chế độ 2 trang - căn ảnh vào giữa spread */
   isDouble?: boolean;
 }
 
-export default function MangaImage({ page, alt, onRetry, isDouble }: MangaImageProps) {
+export default function MangaImage({
+  page,
+  pageIndex,
+  alt,
+  onRetry,
+  onLoad,
+  onError,
+  isDouble,
+}: MangaImageProps) {
   const scale = useReaderStore((s) => s.scale);
   const imgClasses = getImageScaleClasses(scale);
   const [imgVisible, setImgVisible] = useState(false);
@@ -47,8 +58,12 @@ export default function MangaImage({ page, alt, onRetry, isDouble }: MangaImageP
             isDouble && "mx-auto",
           )}
           loading="eager"
-          onLoad={() => setImgVisible(true)}
+          onLoad={() => {
+            onLoad(pageIndex);
+            setImgVisible(true);
+          }}
           onError={(e) => {
+            onError(pageIndex);
             e.currentTarget.src = "/images/xidoco.webp";
             setImgVisible(true);
           }}
@@ -65,7 +80,10 @@ export default function MangaImage({ page, alt, onRetry, isDouble }: MangaImageP
       {/* Error + retry */}
       {page.isFailed && (
         <Button
-          onClick={(e) => { e.stopPropagation(); onRetry(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRetry();
+          }}
           variant="outline"
           size="sm"
         >

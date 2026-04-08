@@ -8,13 +8,21 @@ import MangaImage from "./manga-image";
 interface LongStripProps {
   pages: PageState[];
   retry: (index: number) => void;
+  markLoaded: (index: number) => void;
+  markFailed: (index: number) => void;
   /** Báo về Reader index mỗi khi trang hiển thị thay đổi (dùng để ưu tiên load) */
   onCurrentIndexChange: (index: number) => void;
 }
 
-export default function LongStrip({ pages, retry, onCurrentIndexChange }: LongStripProps) {
+export default function LongStrip({
+  pages,
+  retry,
+  markLoaded,
+  markFailed,
+  onCurrentIndexChange,
+}: LongStripProps) {
   const imageGap = useReaderStore((s) => s.imageGap);
-  const itemRefs   = useRef<Map<number, HTMLElement>>(new Map());
+  const itemRefs = useRef<Map<number, HTMLElement>>(new Map());
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // IntersectionObserver - track trang hiện đang hiển thị nhiều nhất
@@ -25,13 +33,17 @@ export default function LongStrip({ pages, retry, onCurrentIndexChange }: LongSt
       (entries) => {
         entries.forEach((entry) => {
           const idx = Number(entry.target.getAttribute("data-page-index"));
-          if (!Number.isNaN(idx)) visibleRatios.set(idx, entry.intersectionRatio);
+          if (!Number.isNaN(idx))
+            visibleRatios.set(idx, entry.intersectionRatio);
         });
 
         let maxRatio = 0;
         let mostVisible = 0;
         visibleRatios.forEach((ratio, idx) => {
-          if (ratio > maxRatio) { maxRatio = ratio; mostVisible = idx; }
+          if (ratio > maxRatio) {
+            maxRatio = ratio;
+            mostVisible = idx;
+          }
         });
         if (maxRatio > 0) onCurrentIndexChange(mostVisible);
       },
@@ -41,7 +53,7 @@ export default function LongStrip({ pages, retry, onCurrentIndexChange }: LongSt
     observerRef.current = observer;
     itemRefs.current.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const registerRef = (index: number, el: HTMLElement | null) => {
@@ -57,7 +69,10 @@ export default function LongStrip({ pages, retry, onCurrentIndexChange }: LongSt
   };
 
   return (
-    <div className="flex flex-col items-center w-full" style={{ gap: `${imageGap}px` }}>
+    <div
+      className="flex flex-col items-center w-full"
+      style={{ gap: `${imageGap}px` }}
+    >
       {pages.map((page, index) => (
         <div
           key={index}
@@ -67,8 +82,11 @@ export default function LongStrip({ pages, retry, onCurrentIndexChange }: LongSt
         >
           <MangaImage
             page={page}
+            pageIndex={index}
             alt={`Trang ${index + 1}`}
             onRetry={() => retry(index)}
+            onLoad={markLoaded}
+            onError={markFailed}
           />
         </div>
       ))}

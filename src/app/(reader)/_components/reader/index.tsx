@@ -73,7 +73,10 @@ export default function Reader({ images, chapterData }: ReaderProps) {
 
   // ── Page state ────────────────────────────────────────────────────────
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { pages, retry } = useReaderImages(images, currentIndex);
+  const { pages, retry, markLoaded, markFailed } = useReaderImages(
+    images,
+    currentIndex,
+  );
 
   // Reset to page 0 only when the chapter itself changes, not on SWR background revalidation
   // (which may swap in a new array reference for the same chapter and would reset mid-session)
@@ -273,6 +276,8 @@ export default function Reader({ images, chapterData }: ReaderProps) {
           <LongStrip
             pages={pages}
             retry={retry}
+            markLoaded={markLoaded}
+            markFailed={markFailed}
             onCurrentIndexChange={setCurrentIndex}
           />
         );
@@ -282,6 +287,8 @@ export default function Reader({ images, chapterData }: ReaderProps) {
             pages={pages}
             currentIndex={currentIndex}
             retry={retry}
+            markLoaded={markLoaded}
+            markFailed={markFailed}
             onNavigatePrev={goPrevPage}
             onNavigateNext={goNextPage}
           />
@@ -292,6 +299,8 @@ export default function Reader({ images, chapterData }: ReaderProps) {
             pages={pages}
             currentIndex={currentIndex}
             retry={retry}
+            markLoaded={markLoaded}
+            markFailed={markFailed}
             rtl
             onNavigatePrev={goPrevPage}
             onNavigateNext={goNextPage}
@@ -303,6 +312,8 @@ export default function Reader({ images, chapterData }: ReaderProps) {
             pages={pages}
             spreadPages={spreads[currentSpreadIdx] ?? [currentIndex]}
             retry={retry}
+            markLoaded={markLoaded}
+            markFailed={markFailed}
             onNavigatePrev={goPrevPage}
             onNavigateNext={goNextPage}
           />
