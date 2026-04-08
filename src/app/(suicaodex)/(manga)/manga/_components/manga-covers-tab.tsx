@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetMangaIdCovers } from "@/lib/weebdex/hooks/cover/cover";
+// import { useGetMangaIdCovers } from "@/lib/weebdex/hooks/cover/cover";
 import { siteConfig } from "@/config/site";
 import { BugIcon, Expand, ImageOff, Loader2 } from "lucide-react";
 import { useState } from "react";

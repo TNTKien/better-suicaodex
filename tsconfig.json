@@ -17,6 +17,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "noUncheckedSideEffectImports": false,
     "plugins": [
       {
         "name": "next"

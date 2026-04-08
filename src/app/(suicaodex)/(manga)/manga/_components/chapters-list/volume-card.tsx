@@ -14,7 +14,7 @@ export interface VolumeGroup {
 
 interface VolumeCardProps {
   volume: VolumeGroup;
-  finalChapter?: string;
+  finalChapter?: string | null;
   readChapterIds?: Set<string>;
 }
 

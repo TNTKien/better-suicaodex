@@ -28,13 +28,13 @@ export interface ChapterGroup {
 
 interface ChapterCardProps {
   chapters: ChapterGroup;
-  finalChapter?: string;
+  finalChapter?: string | null;
   readChapterIds?: Set<string>;
 }
 
 interface SingleCardProps {
   chapter: Chapter;
-  finalChapter?: string;
+  finalChapter?: string | null;
   className?: string;
   readChapterIds?: Set<string>;
 }
@@ -191,7 +191,7 @@ export const SingleCard = ({
             <div className="flex flex-auto items-center gap-1">
               <User size={16} className="shrink-0" />
               <span className="text-sm font-light line-clamp-1 break-all">
-                {uploader.name}
+                {String(uploader.name)}
               </span>
             </div>
 

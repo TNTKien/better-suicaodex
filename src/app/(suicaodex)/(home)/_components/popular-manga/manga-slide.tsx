@@ -2,7 +2,6 @@
 
 import { cn, generateSlug } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
-import { Manga } from "@/lib/weebdex/model";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { Streamdown } from "streamdown";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -13,9 +12,10 @@ import {
   NormalTag,
   StatusTag,
 } from "@/app/(suicaodex)/(manga)/manga/_components/manga-tags";
+import type { Cover, MangaListItem } from "@/lib/weebdex/model";
 
 interface MangaSlideProps {
-  manga: Manga;
+  manga: MangaListItem;
 }
 
 export default function MangaSlide({ manga }: MangaSlideProps) {
@@ -52,7 +52,7 @@ export default function MangaSlide({ manga }: MangaSlideProps) {
         >
           <MangaCover
             manga_id={manga.id || ""}
-            cover={manga.relationships?.cover}
+            cover={manga.relationships?.cover as Cover}
             alt={title}
             placeholder="/images/place-doro.webp"
             className="shadow-md drop-shadow-md aspect-7/10 object-cover!"

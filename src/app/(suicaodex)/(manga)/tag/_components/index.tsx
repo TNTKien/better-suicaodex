@@ -22,17 +22,17 @@ import type { Tag } from "@/lib/weebdex/model";
 import { useQuery } from "@tanstack/react-query";
 
 const GROUP_NAME_MAP: Record<string, string> = {
-  [Group.NamespaceContent]: "Nội dung",
-  [Group.NamespaceFormat]: "Định dạng",
-  [Group.NamespaceGenre]: "Thể loại",
-  [Group.NamespaceTheme]: "Chủ đề",
+  [Group.content]: "Nội dung",
+  [Group.format]: "Định dạng",
+  [Group.genre]: "Thể loại",
+  [Group.theme]: "Chủ đề",
 };
 
 const GROUP_ORDER = [
-  Group.NamespaceContent,
-  Group.NamespaceFormat,
-  Group.NamespaceGenre,
-  Group.NamespaceTheme,
+  Group.content,
+  Group.format,
+  Group.genre,
+  Group.theme,
 ];
 
 interface TagGroup {

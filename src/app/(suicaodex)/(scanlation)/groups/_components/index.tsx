@@ -13,15 +13,16 @@ import {
 import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import PaginationControl from "@/components/common/pagination-control";
 import { generateSlug } from "@/lib/utils";
-import {
-  getGroup,
-  getGroupResponseSuccess,
-} from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
+// import {
+//   getGroup,
+//   getGroupResponseSuccess,
+// } from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
 import { useQuery } from "@tanstack/react-query";
 import { useDebouncedValue } from "@mantine/hooks";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useEffect } from "react";
 import { ArrowRight, BugIcon, Search, Users, X } from "lucide-react";
+import { getGroup, getGroupResponseSuccess } from "@/lib/weebdex/hooks/group/group";
 
 const LIMIT = 100;
 
