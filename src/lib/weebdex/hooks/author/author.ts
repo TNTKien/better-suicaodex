@@ -73,8 +73,8 @@ export const getGetAuthorUrl = (params?: GetAuthorParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/author?${stringifiedParams}`
-    : `http://wd.suicaodex.com/author`;
+    ? `https://wd.suicaodex.com/author?${stringifiedParams}`
+    : `https://wd.suicaodex.com/author`;
 };
 
 export const getAuthor = async (
@@ -98,7 +98,7 @@ export const getAuthor = async (
 
 export const getGetAuthorQueryKey = (params?: GetAuthorParams) => {
   return [
-    `http://wd.suicaodex.com/author`,
+    `https://wd.suicaodex.com/author`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -260,7 +260,7 @@ export type getAuthorIdResponse =
   | getAuthorIdResponseError;
 
 export const getGetAuthorIdUrl = (id: string) => {
-  return `http://wd.suicaodex.com/author/${id}`;
+  return `https://wd.suicaodex.com/author/${id}`;
 };
 
 export const getAuthorId = async (
@@ -283,7 +283,7 @@ export const getAuthorId = async (
 };
 
 export const getGetAuthorIdQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/author/${id}`] as const;
+  return [`https://wd.suicaodex.com/author/${id}`] as const;
 };
 
 export const getGetAuthorIdQueryOptions = <

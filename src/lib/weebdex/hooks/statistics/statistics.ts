@@ -66,7 +66,7 @@ export type getChapterIdStatisticsResponse =
   | getChapterIdStatisticsResponseError;
 
 export const getGetChapterIdStatisticsUrl = (id: string) => {
-  return `http://wd.suicaodex.com/chapter/${id}/statistics`;
+  return `https://wd.suicaodex.com/chapter/${id}/statistics`;
 };
 
 export const getChapterIdStatistics = async (
@@ -91,7 +91,7 @@ export const getChapterIdStatistics = async (
 };
 
 export const getGetChapterIdStatisticsQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/chapter/${id}/statistics`] as const;
+  return [`https://wd.suicaodex.com/chapter/${id}/statistics`] as const;
 };
 
 export const getGetChapterIdStatisticsQueryOptions = <
@@ -278,7 +278,7 @@ export type getGroupIdStatisticsResponse =
   | getGroupIdStatisticsResponseError;
 
 export const getGetGroupIdStatisticsUrl = (id: string) => {
-  return `http://wd.suicaodex.com/group/${id}/statistics`;
+  return `https://wd.suicaodex.com/group/${id}/statistics`;
 };
 
 export const getGroupIdStatistics = async (
@@ -303,7 +303,7 @@ export const getGroupIdStatistics = async (
 };
 
 export const getGetGroupIdStatisticsQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/group/${id}/statistics`] as const;
+  return [`https://wd.suicaodex.com/group/${id}/statistics`] as const;
 };
 
 export const getGetGroupIdStatisticsQueryOptions = <
@@ -491,7 +491,7 @@ export type getMangaIdStatisticsResponse =
   | getMangaIdStatisticsResponseError;
 
 export const getGetMangaIdStatisticsUrl = (id: string) => {
-  return `http://wd.suicaodex.com/manga/${id}/statistics`;
+  return `https://wd.suicaodex.com/manga/${id}/statistics`;
 };
 
 export const getMangaIdStatistics = async (
@@ -516,7 +516,7 @@ export const getMangaIdStatistics = async (
 };
 
 export const getGetMangaIdStatisticsQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/manga/${id}/statistics`] as const;
+  return [`https://wd.suicaodex.com/manga/${id}/statistics`] as const;
 };
 
 export const getGetMangaIdStatisticsQueryOptions = <

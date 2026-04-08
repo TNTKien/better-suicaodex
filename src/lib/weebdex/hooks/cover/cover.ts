@@ -59,7 +59,7 @@ export type getCoverIdResponse =
   | getCoverIdResponseError;
 
 export const getGetCoverIdUrl = (id: string) => {
-  return `http://wd.suicaodex.com/cover/${id}`;
+  return `https://wd.suicaodex.com/cover/${id}`;
 };
 
 export const getCoverId = async (
@@ -82,7 +82,7 @@ export const getCoverId = async (
 };
 
 export const getGetCoverIdQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/cover/${id}`] as const;
+  return [`https://wd.suicaodex.com/cover/${id}`] as const;
 };
 
 export const getGetCoverIdQueryOptions = <

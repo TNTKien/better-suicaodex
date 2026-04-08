@@ -81,8 +81,8 @@ export const getGetChapterUrl = (params?: GetChapterParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/chapter?${stringifiedParams}`
-    : `http://wd.suicaodex.com/chapter`;
+    ? `https://wd.suicaodex.com/chapter?${stringifiedParams}`
+    : `https://wd.suicaodex.com/chapter`;
 };
 
 export const getChapter = async (
@@ -106,7 +106,7 @@ export const getChapter = async (
 
 export const getGetChapterQueryKey = (params?: GetChapterParams) => {
   return [
-    `http://wd.suicaodex.com/chapter`,
+    `https://wd.suicaodex.com/chapter`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -279,8 +279,8 @@ export const getGetChapterFeedUrl = (params?: GetChapterFeedParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/chapter/feed?${stringifiedParams}`
-    : `http://wd.suicaodex.com/chapter/feed`;
+    ? `https://wd.suicaodex.com/chapter/feed?${stringifiedParams}`
+    : `https://wd.suicaodex.com/chapter/feed`;
 };
 
 export const getChapterFeed = async (
@@ -304,7 +304,7 @@ export const getChapterFeed = async (
 
 export const getGetChapterFeedQueryKey = (params?: GetChapterFeedParams) => {
   return [
-    `http://wd.suicaodex.com/chapter/feed`,
+    `https://wd.suicaodex.com/chapter/feed`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -478,8 +478,8 @@ export const getGetChapterUpdatesUrl = (params?: GetChapterUpdatesParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/chapter/updates?${stringifiedParams}`
-    : `http://wd.suicaodex.com/chapter/updates`;
+    ? `https://wd.suicaodex.com/chapter/updates?${stringifiedParams}`
+    : `https://wd.suicaodex.com/chapter/updates`;
 };
 
 export const getChapterUpdates = async (
@@ -505,7 +505,7 @@ export const getGetChapterUpdatesQueryKey = (
   params?: GetChapterUpdatesParams,
 ) => {
   return [
-    `http://wd.suicaodex.com/chapter/updates`,
+    `https://wd.suicaodex.com/chapter/updates`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -700,8 +700,8 @@ export const getGetChapterTopUrl = (params?: GetChapterTopParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/chapter/top?${stringifiedParams}`
-    : `http://wd.suicaodex.com/chapter/top`;
+    ? `https://wd.suicaodex.com/chapter/top?${stringifiedParams}`
+    : `https://wd.suicaodex.com/chapter/top`;
 };
 
 export const getChapterTop = async (
@@ -725,7 +725,7 @@ export const getChapterTop = async (
 
 export const getGetChapterTopQueryKey = (params?: GetChapterTopParams) => {
   return [
-    `http://wd.suicaodex.com/chapter/top`,
+    `https://wd.suicaodex.com/chapter/top`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -887,7 +887,7 @@ export type getChapterIdResponse =
   | getChapterIdResponseError;
 
 export const getGetChapterIdUrl = (id: string) => {
-  return `http://wd.suicaodex.com/chapter/${id}`;
+  return `https://wd.suicaodex.com/chapter/${id}`;
 };
 
 export const getChapterId = async (
@@ -910,7 +910,7 @@ export const getChapterId = async (
 };
 
 export const getGetChapterIdQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/chapter/${id}`] as const;
+  return [`https://wd.suicaodex.com/chapter/${id}`] as const;
 };
 
 export const getGetChapterIdQueryOptions = <
@@ -1097,8 +1097,8 @@ export const getGetMangaIdAggregateUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/manga/${id}/aggregate?${stringifiedParams}`
-    : `http://wd.suicaodex.com/manga/${id}/aggregate`;
+    ? `https://wd.suicaodex.com/manga/${id}/aggregate?${stringifiedParams}`
+    : `https://wd.suicaodex.com/manga/${id}/aggregate`;
 };
 
 export const getMangaIdAggregate = async (
@@ -1128,7 +1128,7 @@ export const getGetMangaIdAggregateQueryKey = (
   params?: GetMangaIdAggregateParams,
 ) => {
   return [
-    `http://wd.suicaodex.com/manga/${id}/aggregate`,
+    `https://wd.suicaodex.com/manga/${id}/aggregate`,
     ...(params ? [params] : []),
   ] as const;
 };

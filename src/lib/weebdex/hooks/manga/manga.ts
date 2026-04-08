@@ -77,8 +77,8 @@ export const getGetMangaUrl = (params?: GetMangaParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/manga?${stringifiedParams}`
-    : `http://wd.suicaodex.com/manga`;
+    ? `https://wd.suicaodex.com/manga?${stringifiedParams}`
+    : `https://wd.suicaodex.com/manga`;
 };
 
 export const getManga = async (
@@ -98,7 +98,7 @@ export const getManga = async (
 
 export const getGetMangaQueryKey = (params?: GetMangaParams) => {
   return [
-    `http://wd.suicaodex.com/manga`,
+    `https://wd.suicaodex.com/manga`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -278,8 +278,8 @@ export const getGetMangaRandomUrl = (params?: GetMangaRandomParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/manga/random?${stringifiedParams}`
-    : `http://wd.suicaodex.com/manga/random`;
+    ? `https://wd.suicaodex.com/manga/random?${stringifiedParams}`
+    : `https://wd.suicaodex.com/manga/random`;
 };
 
 export const getMangaRandom = async (
@@ -303,7 +303,7 @@ export const getMangaRandom = async (
 
 export const getGetMangaRandomQueryKey = (params?: GetMangaRandomParams) => {
   return [
-    `http://wd.suicaodex.com/manga/random`,
+    `https://wd.suicaodex.com/manga/random`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -493,8 +493,8 @@ export const getGetMangaTopUrl = (params?: GetMangaTopParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/manga/top?${stringifiedParams}`
-    : `http://wd.suicaodex.com/manga/top`;
+    ? `https://wd.suicaodex.com/manga/top?${stringifiedParams}`
+    : `https://wd.suicaodex.com/manga/top`;
 };
 
 export const getMangaTop = async (
@@ -518,7 +518,7 @@ export const getMangaTop = async (
 
 export const getGetMangaTopQueryKey = (params?: GetMangaTopParams) => {
   return [
-    `http://wd.suicaodex.com/manga/top`,
+    `https://wd.suicaodex.com/manga/top`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -681,7 +681,7 @@ export type getMangaIdResponse =
   | getMangaIdResponseError;
 
 export const getGetMangaIdUrl = (id: string) => {
-  return `http://wd.suicaodex.com/manga/${id}`;
+  return `https://wd.suicaodex.com/manga/${id}`;
 };
 
 export const getMangaId = async (
@@ -704,7 +704,7 @@ export const getMangaId = async (
 };
 
 export const getGetMangaIdQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/manga/${id}`] as const;
+  return [`https://wd.suicaodex.com/manga/${id}`] as const;
 };
 
 export const getGetMangaIdQueryOptions = <
@@ -871,7 +871,7 @@ export type getMangaIdRelationsResponse =
   | getMangaIdRelationsResponseError;
 
 export const getGetMangaIdRelationsUrl = (id: string) => {
-  return `http://wd.suicaodex.com/manga/${id}/relations`;
+  return `https://wd.suicaodex.com/manga/${id}/relations`;
 };
 
 export const getMangaIdRelations = async (
@@ -896,7 +896,7 @@ export const getMangaIdRelations = async (
 };
 
 export const getGetMangaIdRelationsQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/manga/${id}/relations`] as const;
+  return [`https://wd.suicaodex.com/manga/${id}/relations`] as const;
 };
 
 export const getGetMangaIdRelationsQueryOptions = <
@@ -1083,7 +1083,7 @@ export type getMangaIdRecommendationsResponse =
   | getMangaIdRecommendationsResponseError;
 
 export const getGetMangaIdRecommendationsUrl = (id: string) => {
-  return `http://wd.suicaodex.com/manga/${id}/recommendations`;
+  return `https://wd.suicaodex.com/manga/${id}/recommendations`;
 };
 
 export const getMangaIdRecommendations = async (
@@ -1108,7 +1108,7 @@ export const getMangaIdRecommendations = async (
 };
 
 export const getGetMangaIdRecommendationsQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/manga/${id}/recommendations`] as const;
+  return [`https://wd.suicaodex.com/manga/${id}/recommendations`] as const;
 };
 
 export const getGetMangaIdRecommendationsQueryOptions = <
@@ -1317,8 +1317,8 @@ export const getGetMangaIdChaptersUrl = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/manga/${id}/chapters?${stringifiedParams}`
-    : `http://wd.suicaodex.com/manga/${id}/chapters`;
+    ? `https://wd.suicaodex.com/manga/${id}/chapters?${stringifiedParams}`
+    : `https://wd.suicaodex.com/manga/${id}/chapters`;
 };
 
 export const getMangaIdChapters = async (
@@ -1346,7 +1346,7 @@ export const getGetMangaIdChaptersQueryKey = (
   params?: GetMangaIdChaptersParams,
 ) => {
   return [
-    `http://wd.suicaodex.com/manga/${id}/chapters`,
+    `https://wd.suicaodex.com/manga/${id}/chapters`,
     ...(params ? [params] : []),
   ] as const;
 };

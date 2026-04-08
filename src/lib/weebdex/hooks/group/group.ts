@@ -71,8 +71,8 @@ export const getGetGroupUrl = (params?: GetGroupParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/group?${stringifiedParams}`
-    : `http://wd.suicaodex.com/group`;
+    ? `https://wd.suicaodex.com/group?${stringifiedParams}`
+    : `https://wd.suicaodex.com/group`;
 };
 
 export const getGroup = async (
@@ -92,7 +92,7 @@ export const getGroup = async (
 
 export const getGetGroupQueryKey = (params?: GetGroupParams) => {
   return [
-    `http://wd.suicaodex.com/group`,
+    `https://wd.suicaodex.com/group`,
     ...(params ? [params] : []),
   ] as const;
 };
@@ -254,7 +254,7 @@ export type getGroupIdResponse =
   | getGroupIdResponseError;
 
 export const getGetGroupIdUrl = (id: string) => {
-  return `http://wd.suicaodex.com/group/${id}`;
+  return `https://wd.suicaodex.com/group/${id}`;
 };
 
 export const getGroupId = async (
@@ -277,7 +277,7 @@ export const getGroupId = async (
 };
 
 export const getGetGroupIdQueryKey = (id: string) => {
-  return [`http://wd.suicaodex.com/group/${id}`] as const;
+  return [`https://wd.suicaodex.com/group/${id}`] as const;
 };
 
 export const getGetGroupIdQueryOptions = <

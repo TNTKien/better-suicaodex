@@ -72,8 +72,8 @@ export const getGetMangaTagUrl = (params?: GetMangaTagParams) => {
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `http://wd.suicaodex.com/manga/tag?${stringifiedParams}`
-    : `http://wd.suicaodex.com/manga/tag`;
+    ? `https://wd.suicaodex.com/manga/tag?${stringifiedParams}`
+    : `https://wd.suicaodex.com/manga/tag`;
 };
 
 export const getMangaTag = async (
@@ -97,7 +97,7 @@ export const getMangaTag = async (
 
 export const getGetMangaTagQueryKey = (params?: GetMangaTagParams) => {
   return [
-    `http://wd.suicaodex.com/manga/tag`,
+    `https://wd.suicaodex.com/manga/tag`,
     ...(params ? [params] : []),
   ] as const;
 };
