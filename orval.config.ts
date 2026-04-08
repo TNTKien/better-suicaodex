@@ -3,7 +3,7 @@ import { defineConfig } from "orval";
 export default defineConfig({
   weebdex: {
     output: {
-      baseUrl: process.env.API_URL || "https://wd.memaydex.online",
+      baseUrl: process.env.API_URL || "https://wd.suicaodex.com",
       mode: "tags-split",
       target: "./src/lib/weebdex/hooks",
       schemas: "./src/lib/weebdex/model",
@@ -12,7 +12,7 @@ export default defineConfig({
       prettier: true,
     },
     input: {
-      target: "./src/lib/weebdex/docs/weebdex-api-docs-v3.json",
+      target: "./src/lib/weebdex/docs/weebdex-api-detem.json",
     },
   },
   moetruyen: {
