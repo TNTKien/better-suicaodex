@@ -27,11 +27,6 @@ function createImageCacheHandler({
 }) {
   return new CacheFirst({
     cacheName,
-    // Force CORS mode để tránh opaque response (status 0) từ no-cors requests
-    fetchOptions: {
-      mode: "cors",
-      credentials: "omit",
-    },
     plugins: [
       new ExpirationPlugin({
         maxEntries,
@@ -39,8 +34,10 @@ function createImageCacheHandler({
         purgeOnQuotaError: true,
       }),
       {
-        // Không cache ảnh lỗi (< 1KB) hoặc status !== 200
+        // Allow opaque responses for cross-origin image requests without CORS headers.
         async cacheWillUpdate({ response }) {
+          if (response.type === "opaque") return response;
+
           try {
             if (response.status !== 200) return null;
             const blob = await response.clone().blob();
