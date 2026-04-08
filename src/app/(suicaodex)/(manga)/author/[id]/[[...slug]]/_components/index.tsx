@@ -39,6 +39,9 @@ interface AuthorPageProps {
 
 const LIMIT = 36;
 
+const getOptionalString = (value: unknown): string | undefined =>
+  typeof value === "string" && value.length > 0 ? value : undefined;
+
 export default function AuthorPage({ id, page }: AuthorPageProps) {
   const isMounted = useMounted();
   const [config] = useConfig();
@@ -60,6 +63,15 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
     },
     refetchOnWindowFocus: false,
   });
+  const authorRecord = author as Record<string, unknown> | undefined;
+  const authorDescription = getOptionalString(authorRecord?.description);
+  const authorWebsite = getOptionalString(authorRecord?.website);
+  const authorTwitter = getOptionalString(authorRecord?.twitter);
+  const authorPixiv = getOptionalString(authorRecord?.pixiv);
+  const authorFanbox = getOptionalString(authorRecord?.fanbox);
+  const authorFantia = getOptionalString(authorRecord?.fantia);
+  const authorSkeb = getOptionalString(authorRecord?.skeb);
+  const authorYoutube = getOptionalString(authorRecord?.youtube);
 
   const { data, isLoading, error } = useQuery({
     enabled: isMounted,
@@ -88,13 +100,13 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
   });
 
   const hasLinks =
-    !!author?.website ||
-    !!author?.twitter ||
-    !!author?.pixiv ||
-    !!author?.fanbox ||
-    !!author?.fantia ||
-    !!author?.skeb ||
-    !!author?.youtube;
+    !!authorWebsite ||
+    !!authorTwitter ||
+    !!authorPixiv ||
+    !!authorFanbox ||
+    !!authorFantia ||
+    !!authorSkeb ||
+    !!authorYoutube;
 
   const totalPages = Math.ceil((data?.total ?? 0) / LIMIT);
 
@@ -203,14 +215,14 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
           <p className="text-sm text-muted-foreground">@{id}</p>
         </div>
 
-        {!!author.description && (
+        {!!authorDescription && (
           <div className="flex flex-col gap-2">
             <Label className="text-lg font-bold">Mô tả</Label>
             <Streamdown
               controls={{ table: false }}
               className="text-sm text-muted-foreground"
             >
-              {author.description}
+              {authorDescription}
             </Streamdown>
           </div>
         )}
@@ -219,11 +231,11 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
           <div className="flex flex-col gap-2">
             <Label className="text-lg font-bold">Liên hệ</Label>
             <div className="flex flex-wrap gap-2">
-              {!!author.website && (
+              {!!authorWebsite && (
                 <Button asChild variant="secondary" size="sm">
-                  <Link href={author.website} target="_blank">
+                  <Link href={authorWebsite} target="_blank">
                     <img
-                      src={generateFaviconURL(author.website, 16)}
+                      src={generateFaviconURL(authorWebsite, 16)}
                       height={16}
                       width={16}
                       alt="Website Favicon"
@@ -233,27 +245,27 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
                   </Link>
                 </Button>
               )}
-              {!!author.twitter && (
+              {!!authorTwitter && (
                 <Button asChild variant="secondary" size="sm">
-                  <Link href={author.twitter} target="_blank">
+                  <Link href={authorTwitter} target="_blank">
                     <SiX className="size-4" />
                     Twitter / X
                   </Link>
                 </Button>
               )}
-              {!!author.pixiv && (
+              {!!authorPixiv && (
                 <Button asChild variant="secondary" size="sm">
-                  <Link href={author.pixiv} target="_blank">
+                  <Link href={authorPixiv} target="_blank">
                     <SiPixiv className="size-4" />
                     Pixiv
                   </Link>
                 </Button>
               )}
-              {!!author.fanbox && (
+              {!!authorFanbox && (
                 <Button asChild variant="secondary" size="sm">
-                  <Link href={author.fanbox} target="_blank">
+                  <Link href={authorFanbox} target="_blank">
                     <img
-                      src={generateFaviconURL(author.fanbox, 16)}
+                      src={generateFaviconURL(authorFanbox, 16)}
                       height={16}
                       width={16}
                       alt="Fanbox Favicon"
@@ -263,11 +275,11 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
                   </Link>
                 </Button>
               )}
-              {!!author.fantia && (
+              {!!authorFantia && (
                 <Button asChild variant="secondary" size="sm">
-                  <Link href={author.fantia} target="_blank">
+                  <Link href={authorFantia} target="_blank">
                     <img
-                      src={generateFaviconURL(author.fantia, 16)}
+                      src={generateFaviconURL(authorFantia, 16)}
                       height={16}
                       width={16}
                       alt="Fantia Favicon"
@@ -277,11 +289,11 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
                   </Link>
                 </Button>
               )}
-              {!!author.skeb && (
+              {!!authorSkeb && (
                 <Button asChild variant="secondary" size="sm">
-                  <Link href={author.skeb} target="_blank">
+                  <Link href={authorSkeb} target="_blank">
                     <img
-                      src={generateFaviconURL(author.skeb, 16)}
+                      src={generateFaviconURL(authorSkeb, 16)}
                       height={16}
                       width={16}
                       alt="Skeb Favicon"
@@ -291,9 +303,9 @@ export default function AuthorPage({ id, page }: AuthorPageProps) {
                   </Link>
                 </Button>
               )}
-              {!!author.youtube && (
+              {!!authorYoutube && (
                 <Button asChild variant="secondary" size="sm">
-                  <Link href={author.youtube} target="_blank">
+                  <Link href={authorYoutube} target="_blank">
                     <SiYoutube className="size-4" />
                     YouTube
                   </Link>

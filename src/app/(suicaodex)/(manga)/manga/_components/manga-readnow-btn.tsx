@@ -19,10 +19,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SingleCard } from "./chapters-list/chapter-card";
-import {
-  getMangaIdAggregate,
-  getMangaIdChapters,
-} from "@/lib/weebdex/hooks/chapter/chapter";
+import { getMangaIdAggregate } from "@/lib/weebdex/hooks/chapter/chapter";
+import { getMangaIdChapters } from "@/lib/weebdex/hooks/manga/manga";
+// import {
+//   getMangaIdAggregate,
+//   getMangaIdChapters,
+// } from "@/lib/weebdex/hooks/chapter/chapter";
 
 interface MangaReadNowBtnProps {
   id: string;

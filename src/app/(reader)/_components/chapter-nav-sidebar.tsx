@@ -24,7 +24,11 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { useConfig } from "@/hooks/use-config";
 import useScrollOffset from "@/hooks/use-scroll-offset";
-import { useGetMangaIdAggregate } from "@/lib/weebdex/hooks/chapter/chapter";
+import {
+  type getMangaIdAggregateResponse,
+  type getMangaIdAggregateResponseSuccess,
+  useGetMangaIdAggregate,
+} from "@/lib/weebdex/hooks/chapter/chapter";
 import { cn, formatChapterTitle } from "@/lib/utils";
 import { toReaderAggregate } from "@/lib/weebdex/utils";
 import { Chapter } from "@/lib/weebdex/model";
@@ -63,6 +67,10 @@ interface ChapterNavProps {
 }
 
 const MAX_RETRIES = 3;
+
+const isAggregateSuccess = (
+  response?: getMangaIdAggregateResponse,
+): response is getMangaIdAggregateResponseSuccess => response?.status === 200;
 
 function ReaderSettingsDialog() {
   const {
@@ -318,13 +326,13 @@ export default function ChapterNavSidebar({ chapter }: ChapterNavProps) {
     },
   );
 
-  const chapterAggregate = useMemo(
-    () =>
-      aggregateRes?.data
-        ? toReaderAggregate(aggregateRes.data, chapter.id)
-        : undefined,
-    [aggregateRes, chapter.id],
-  );
+  const chapterAggregate = useMemo(() => {
+    if (!isAggregateSuccess(aggregateRes)) {
+      return undefined;
+    }
+
+    return toReaderAggregate(aggregateRes.data, chapter.id);
+  }, [aggregateRes, chapter.id]);
 
   // Check if current chapter exists in the aggregate data
   const chapterId = chapter.id ?? "";

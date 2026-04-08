@@ -12,12 +12,13 @@ import {
   generateFaviconURL,
   normalizeMangaLinks,
 } from "@/lib/weebdex/manga-links";
-import { Manga } from "@/lib/weebdex/model";
+import { MangaListItem } from "@/lib/weebdex/model";
+// import { Manga } from "@/lib/weebdex/model";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import Link from "next/link";
 
 interface MangaSubInfoProps {
-  manga: Manga;
+  manga: MangaListItem;
 }
 
 export default function MangaSubInfo({ manga }: MangaSubInfoProps) {

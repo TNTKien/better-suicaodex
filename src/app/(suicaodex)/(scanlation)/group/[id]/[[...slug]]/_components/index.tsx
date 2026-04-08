@@ -5,11 +5,11 @@ import {
   getManga,
   getMangaResponseSuccess,
 } from "@/lib/weebdex/hooks/manga/manga";
-import {
-  getGroupId,
-  getGroupIdResponseSuccess,
-} from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
-import { GetMangaContentRatingItem } from "@/lib/weebdex/model";
+// import {
+//   getGroupId,
+//   getGroupIdResponseSuccess,
+// } from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
+import { Cover, GetMangaContentRatingItem } from "@/lib/weebdex/model";
 import { useQuery } from "@tanstack/react-query";
 import { useMounted } from "@mantine/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,6 +31,7 @@ import { generateSlug } from "@/lib/utils";
 import { generateFaviconURL } from "@/lib/weebdex/utils";
 import RecentlySkeletonCard from "@/app/(suicaodex)/(home)/_components/recently-manga/recently-skeleton-card";
 import MangaCard from "@/app/(suicaodex)/(manga)/manga/_components/manga-card";
+import { getGroupId, getGroupIdResponseSuccess } from "@/lib/weebdex/hooks/group/group";
 
 interface GroupPageProps {
   id: string;
@@ -147,7 +148,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
               <MangaCard
                 manga_id={manga.id!}
                 title={manga.title ?? ""}
-                cover={manga.relationships?.cover}
+                cover={manga.relationships?.cover as Cover}
               />
             </Link>
           ))}
@@ -220,7 +221,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
               controls={{ table: false }}
               className="flex flex-col gap-1 text-sm text-muted-foreground"
             >
-              {group.description}
+              {String(group.description)}
             </Streamdown>
           </div>
         )}
@@ -234,7 +235,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
                   <Link href={group.website} target="_blank">
                     {/* <Globe className="size-4" /> */}
                     <img
-                      src={generateFaviconURL(group.website, 16)}
+                      src={generateFaviconURL(String(group.website), 16)}
                       height={16}
                       width={16}
                       alt="Website Favicon"
@@ -278,7 +279,7 @@ export default function GroupPage({ id, page }: GroupPageProps) {
                 <Button asChild variant="secondary" size="sm">
                   <Link href={group.mangaupdates} target="_blank">
                     <img
-                      src={generateFaviconURL(group.mangaupdates, 16)}
+                      src={generateFaviconURL(String(group.mangaupdates), 16)}
                       width={16}
                       height={16}
                       alt="MangaUpdates Favicon"

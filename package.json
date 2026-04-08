@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "gen:api": "bunx --bun orval --config ./orval.config.ts && node scripts/patch-orval.mjs",
+    "gen:api": "bunx --bun orval --config ./orval.config.ts",
     "dev": "next dev",
     "build": "next build && serwist build",
     "postbuild": "next-sitemap",

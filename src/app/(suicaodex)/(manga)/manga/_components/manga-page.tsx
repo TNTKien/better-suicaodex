@@ -3,7 +3,7 @@
 import MangaSkeleton from "./manga-skeleton";
 import dynamic from "next/dynamic";
 import { parseAsInteger, parseAsStringLiteral, useQueryState } from "nuqs";
-import { MANGA_PAGE_TABS } from "@/types/types";
+import { Artist, MANGA_PAGE_TABS } from "@/types/types";
 import {
   getMangaIdResponse,
   useGetMangaId,
@@ -25,7 +25,7 @@ import {
 import Link from "next/link";
 import MangaBanner from "./manga-banner";
 import MangaCover from "./manga-cover";
-import { Author } from "@/lib/weebdex/model";
+import { Author, Cover } from "@/lib/weebdex/model";
 import { useMemo } from "react";
 import MangaStats from "./manga-stats";
 import { MangaAddToLibBtn } from "./manga-add-to-lib-btn";
@@ -110,20 +110,20 @@ const CommentSection = dynamic(
   },
 );
 
-const MangaCoversTab = dynamic(() => import("./manga-covers-tab"), {
-  ssr: false,
-  loading: () => <MangaTabSpinnerLoading />,
-});
+// const MangaCoversTab = dynamic(() => import("./manga-covers-tab"), {
+//   ssr: false,
+//   loading: () => <MangaTabSpinnerLoading />,
+// });
 
 const MangaRcms = dynamic(() => import("./manga-rcms"), {
   ssr: false,
   loading: () => <MangaTabSpinnerLoading />,
 });
 
-const MangaRelated = dynamic(() => import("./manga-related"), {
-  ssr: false,
-  loading: () => <MangaRelatedLoading />,
-});
+// const MangaRelated = dynamic(() => import("../../../../../../deprecated/manga-related"), {
+//   ssr: false,
+//   loading: () => <MangaRelatedLoading />,
+// });
 
 interface PageProps {
   id: string;
@@ -203,14 +203,17 @@ export default function MangaPage({ id, initData }: PageProps) {
       )}
 
       <div className="grid">
-        <MangaBanner manga_id={id} cover={manga.relationships?.cover} />
+        <MangaBanner
+          manga_id={id}
+          cover={manga.relationships?.cover as Cover}
+        />
 
         <div className="col-start-1 row-start-1 grid grid-cols-1 gap-4 px-4 md:px-8 lg:px-12">
           <div className="grid grid-cols-[auto_1fr] gap-4 w-full">
             <div className="relative">
               <MangaCover
                 manga_id={id}
-                cover={manga.relationships?.cover}
+                cover={manga.relationships?.cover as Cover}
                 alt={title}
                 placeholder="/images/place-doro.webp"
                 className="shadow-md drop-shadow-md"
@@ -247,8 +250,8 @@ export default function MangaPage({ id, initData }: PageProps) {
 
                 {!!manga.relationships && (
                   <AuthorArtistNames
-                    authors={manga.relationships.authors || []}
-                    artists={manga.relationships.artists || []}
+                    authors={manga.relationships.authors as Author[] || []}
+                    artists={manga.relationships.artists as Author[] || []}
                     className="text-base line-clamp-1 max-w-[80%]"
                   />
                 )}
@@ -294,8 +297,8 @@ export default function MangaPage({ id, initData }: PageProps) {
 
                 {!!manga.relationships && (
                   <AuthorArtistNames
-                    authors={manga.relationships.authors || []}
-                    artists={manga.relationships.artists || []}
+                    authors={manga.relationships.authors as Author[] || []}
+                    artists={manga.relationships.artists as Author[] || []}
                     className="text-lg line-clamp-1 max-w-[80%]"
                   />
                 )}
@@ -439,12 +442,12 @@ export default function MangaPage({ id, initData }: PageProps) {
                       Bình luận
                     </TabsTrigger>
 
-                    <TabsTrigger value="covers" className="flex gap-1 px-2">
+                    {/* <TabsTrigger value="covers" className="flex gap-1 px-2">
                       <ImagesIcon size={18} />
                       Ảnh bìa
-                    </TabsTrigger>
+                    </TabsTrigger> */}
 
-                    {!!manga.relationships?.relations &&
+                    {/* {!!manga.relationships?.relations &&
                       manga.relationships.relations.length > 0 && (
                         <TabsTrigger
                           value="related"
@@ -453,7 +456,7 @@ export default function MangaPage({ id, initData }: PageProps) {
                           <LinkIcon size={18} />
                           Truyện liên quan
                         </TabsTrigger>
-                      )}
+                      )} */}
 
                     <TabsTrigger
                       value="recommendations"
@@ -478,16 +481,16 @@ export default function MangaPage({ id, initData }: PageProps) {
                   <CommentSection id={id} type="manga" title={title} />
                 </TabsContent>
 
-                <TabsContent value="covers" className="mt-0">
+                {/* <TabsContent value="covers" className="mt-0">
                   <MangaCoversTab id={id} />
-                </TabsContent>
+                </TabsContent> */}
 
-                {!!manga.relationships?.relations &&
+                {/* {!!manga.relationships?.relations &&
                   manga.relationships.relations.length > 0 && (
                     <TabsContent value="related" className="mt-0">
                       <MangaRelated relations={manga.relationships.relations} />
                     </TabsContent>
-                  )}
+                  )} */}
 
                 <TabsContent value="recommendations" className="mt-0">
                   <MangaRcms id={id} />

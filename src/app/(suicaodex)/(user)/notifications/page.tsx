@@ -18,6 +18,12 @@ import {
 import { Streamdown } from "streamdown";
 const items = [
   {
+    value: "weebdex_down",
+    trigger: "08/04/2026 - WeebDex dừng hoạt động",
+    content:
+      "[WeebDex](https://weebdex.org) đã chính thức dừng hoạt động vào 06/04/2026 (sớm hơn 1 ngày so với thông báo). Ở cả vị trí dịch giả lẫn dev, tôi thực sự khá tiếc nuối biết tin này.\n\nSuicaoDex đã chuyển sang dùng data từ WeebDex như trong các thông báo trước đây, thành ra chả gì 'chết lâm sàng'. Dù đã cố gắng hết sức, nhưng WeebDex dừng hoạt động quá đột ngột, thậm chí là sớm hơn thông báo nên tôi không kịp cứu toàn bộ dữ liệu.\n\nHiện tại, chỉ còn lại khoảng ~1000 manga, ~5600 chapter (trong đó chỉ có ~2780 chap còn đầy đủ trang truyện). Trước mắt SuicaoDex vẫn sẽ hoạt động được với lượng data ít ỏi kể trên, nhưng sẽ không có cập nhật mới gì cả (làm gì còn nguồn là update).\n\nTrong tương lai, tôi sẽ cân nhắc tới việc phát triển SuicaoDex thành 1 trang web hoàn chỉnh, không cần phụ thuộc vào nguồn bên ngoài nữa. Còn giờ thì cứ dùng tạm đi hoặc qua [MoèTruyện](https://moetruyen.net/) nhé 🤪",
+  },
+  {
     value: "data_src_change",
     trigger: "01/03/2026 - Thay đổi nguồn dữ liệu",
     content:
@@ -93,33 +99,12 @@ export default async function Page() {
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
-          {/* <Accordion
-            type="single"
-            collapsible
-            className="bg-secondary rounded-md px-2 mb-2"
-          >
-            <AccordionItem value="item-1" className="border-none">
-              <AccordionTrigger className="py-2">
-                <div className="flex items-center gap-1.5">
-                  <CircleHelp size={18} /> Có thể bạn cần biết:
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-2">
-                Thông báo truyện mới sẽ được lưu trên thiết bị của bạn; nếu bạn
-                xóa dữ liệu trình duyệt, thông báo cũng sẽ bị xóa theo.
-                <br />
-                Chính vì hạn chế trên, đôi khi sẽ không có thông báo dù truyện
-                có chương mới
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          <Notifications page={page} /> */}
         </TabsContent>
         <TabsContent value="system">
           <Accordion
             type="multiple"
             className=""
-            defaultValue={["data_src_change", "user_data", "what_affected"]}
+            defaultValue={["data_src_change", "weebdex_down"]}
           >
             {items.map((item) => (
               <AccordionItem key={item.value} value={item.value}>

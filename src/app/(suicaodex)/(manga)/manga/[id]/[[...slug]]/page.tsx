@@ -49,20 +49,20 @@ export async function generateMetadata({
       url: path,
       siteName: "SuicaoDex",
       description,
-      images: [
-        {
-          url: `${siteConfig.weebdex.ogURL}/og-image/manga/${manga.id}`,
-          width: 1200,
-          height: 630,
-          alt: "SuicaoDex",
-        },
-      ],
+      // images: [
+      //   {
+      //     url: `${siteConfig.weebdex.ogURL}/og-image/manga/${manga.id}`,
+      //     width: 1200,
+      //     height: 630,
+      //     alt: "SuicaoDex",
+      //   },
+      // ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${title}`,
       description,
-      images: [`${siteConfig.weebdex.ogURL}/og-image/manga/${manga.id}`],
+      // images: [`${siteConfig.weebdex.ogURL}/og-image/manga/${manga.id}`],
     },
   };
 }

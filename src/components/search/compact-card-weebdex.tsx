@@ -2,15 +2,16 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
-import { Manga } from "@/lib/weebdex/model";
+// import { Manga } from "@/lib/weebdex/model";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { StatusTag } from "@/app/(suicaodex)/(manga)/manga/_components/manga-tags";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Streamdown } from "streamdown";
+import { MangaListItem } from "@/lib/weebdex/model";
 
 interface CompactCardWeebdexProps {
-  manga: Manga;
+  manga: MangaListItem;
 }
 
 export default function CompactCardWeebdex({ manga }: CompactCardWeebdexProps) {

@@ -6,6 +6,7 @@ import {
   getMangaResponseSuccess,
 } from "@/lib/weebdex/hooks/manga/manga";
 import {
+  Cover,
   GetMangaContentRatingItem,
   GetMangaOrder,
   GetMangaSort,
@@ -101,7 +102,7 @@ export default function Recent({ page }: RecentProps) {
             <MangaCard
               manga_id={manga.id!}
               title={manga.title ?? ""}
-              cover={manga.relationships?.cover!}
+              cover={manga.relationships?.cover! as Cover}
             />
           </Link>
         ))}

@@ -46,7 +46,7 @@ export async function generateMetadata({
         title: title,
         siteName: "SuicaoDex",
         description: `Đọc ngay ${title}`,
-        images: `${siteConfig.weebdex.ogURL}/og-image/chapter/${id}`,
+        // images: `${siteConfig.weebdex.ogURL}/og-image/chapter/${id}`,
       },
     };
   } catch (error: any) {

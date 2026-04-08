@@ -64,7 +64,7 @@ const serwist = new Serwist({
     // Không cache API calls từ weebdex
     {
       matcher: ({ url }) =>
-        url.hostname === "wd.memaydex.online" &&
+        url.hostname === "wd.suicaodex.com" &&
         !url.pathname.startsWith("/covers/"),
       handler: new NetworkOnly(),
     },
@@ -77,7 +77,7 @@ const serwist = new Serwist({
     // Cache ảnh cover từ weebdex proxy (CacheFirst, 5 ngày, tối đa 500 ảnh)
     {
       matcher: ({ url }) =>
-        url.hostname === "wd.memaydex.online" &&
+        url.hostname === "i.suicaodex.com" &&
         url.pathname.startsWith("/covers/"),
       handler: createImageCacheHandler({
         cacheName: "weebdex-covers",

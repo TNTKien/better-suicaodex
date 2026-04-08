@@ -1,10 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  getMangaIdChapters,
-  getMangaIdChaptersResponse,
-} from "@/lib/weebdex/hooks/chapter/chapter";
+// import {
+//   getMangaIdChapters,
+//   getMangaIdChaptersResponse,
+// } from "@/lib/weebdex/hooks/chapter/chapter";
 import { GetMangaIdChaptersParams } from "@/lib/weebdex/model/getMangaIdChaptersParams";
 import { Chapter } from "@/lib/weebdex/model";
 import { useEffect, useState } from "react";
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/empty";
 import { useMounted } from "@mantine/hooks";
 import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
+import { getMangaIdChapters, getMangaIdChaptersResponse } from "@/lib/weebdex/hooks/manga/manga";
 
 const LIMIT = 100;
 
@@ -62,7 +63,7 @@ function groupChaptersByVolume(chapters: Chapter[]): VolumeGroup[] {
 
 interface MangaChaptersListProps {
   mangaId: string;
-  finalChapter?: string;
+  finalChapter?: string | null;
   page: number;
   onPageChange: (page: number) => void;
 }

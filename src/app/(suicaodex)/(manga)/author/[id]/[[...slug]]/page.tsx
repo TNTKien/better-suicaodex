@@ -15,6 +15,9 @@ interface PageProps {
   searchParams: Promise<SearchParams>;
 }
 
+const getOptionalString = (value: unknown): string | undefined =>
+  typeof value === "string" && value.length > 0 ? value : undefined;
+
 const getCachedAuthor = cache(async (id: string) => {
   const res = await getAuthorId(id);
   if (res.status !== 200) return null;
@@ -33,13 +36,15 @@ export async function generateMetadata({
   try {
     const author = await getCachedAuthor(id);
     if (!author) return { title: "404 Not Found" };
+    const description = getOptionalString(
+      (author as Record<string, unknown>).description,
+    );
     const title =
       page > 1 ? `Trang ${page} - ${author.name}` : `${author.name}`;
     return {
       title,
-      description: author.description
-        ? author.description.slice(0, 160)
-        : `Tác giả ${author.name} trên WeebDex`,
+      description:
+        description?.slice(0, 160) ?? `Tác giả ${author.name} trên WeebDex`,
       keywords: ["Tác giả", "Author", author.name ?? "", "WeebDex"],
     };
   } catch {
@@ -50,7 +55,12 @@ export async function generateMetadata({
 export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
   if (isValidUUID(id)) {
-    return <ErrorPage statusCode={404} message="Có vẻ bạn đang dùng link chứa uuid của MangaDex (không còn hỗ trợ nữa)" />;
+    return (
+      <ErrorPage
+        statusCode={404}
+        message="Có vẻ bạn đang dùng link chứa uuid của MangaDex (không còn hỗ trợ nữa)"
+      />
+    );
   }
   let { page } = await loadSearchParams(searchParams);
   if (page < 1 || isNaN(page)) page = 1;

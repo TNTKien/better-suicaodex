@@ -412,7 +412,7 @@ export default function AdvancedSearchPage() {
           ? committed.contentRating
           : undefined,
         lang: committed.lang.length ? committed.lang : undefined,
-        hasChapters: committed.hasChapters ? "true" : undefined,
+        hasChapters: committed.hasChapters || undefined,
         availableTranslatedLang:
           committed.hasChapters && committed.availableTranslatedLang.length
             ? committed.availableTranslatedLang

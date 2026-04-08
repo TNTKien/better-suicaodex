@@ -1,7 +1,7 @@
-import {
-  getGroupId,
-  getGroupIdResponseSuccess,
-} from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
+// import {
+//   getGroupId,
+//   getGroupIdResponseSuccess,
+// } from "@/lib/weebdex/hooks/scanlation-group/scanlation-group";
 import { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
 import { loadSearchParams } from "./searchParams";
@@ -9,6 +9,7 @@ import { cache } from "react";
 import GroupPage from "./_components";
 import ErrorPage from "@/components/error-page";
 import { validate as isValidUUID } from "uuid";
+import { getGroupId, getGroupIdResponseSuccess } from "@/lib/weebdex/hooks/group/group";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -38,7 +39,7 @@ export async function generateMetadata({
     return {
       title,
       description: group.description
-        ? group.description.slice(0, 160)
+        ? String(group.description).slice(0, 160)
         : `Nhóm dịch ${group.name} trên WeebDex`,
       keywords: ["Nhóm dịch", "Scanlation", group.name ?? "", "WeebDex"],
     };

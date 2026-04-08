@@ -1,0 +1,4592 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Suicaodex API",
+    "version": "1.0.0",
+    "description": "WeebDex API đè tem, ăn quả úp bô nên không backup kịp data.\n\nPhải gì ạ? Phải chịuuuuuu...."
+  },
+  "servers": [
+    {
+      "url": "https://wd.suicaodex.com",
+      "description": "Configured API base URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Manga",
+      "description": "WeebDex-compatible manga endpoints"
+    }
+  ],
+  "x-derived-from": "weebdex-api-docs.json",
+  "x-compatibility-source": "archived-weebdex-reference-plus-zod-contract",
+  "components": {
+    "schemas": {
+      "AuthorFeedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Author"
+            }
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data",
+          "limit",
+          "page",
+          "total"
+        ]
+      },
+      "Author": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "enum": [
+              "author"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "group",
+          "id",
+          "name"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "AuthorValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR"
+                ]
+              },
+              "details": {
+                "nullable": true
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "AuthorInternalErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "INTERNAL_SERVER_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "AuthorNotFoundErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "AUTHOR_NOT_FOUND"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "MappedChapterFeedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChapterFeedItem"
+            }
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data",
+          "limit",
+          "page",
+          "total"
+        ]
+      },
+      "ChapterFeedItem": {
+        "type": "object",
+        "properties": {
+          "chapter": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "is_full": {
+            "type": "boolean"
+          },
+          "is_unavailable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "language": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/ChapterFeedRelationships"
+          },
+          "source_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "nullable": true
+          },
+          "volume": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterFeedRelationships": {
+        "type": "object",
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChapterGroupSummary"
+            }
+          },
+          "manga": {
+            "$ref": "#/components/schemas/ChapterMangaSummary"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ChapterStats"
+          },
+          "uploader": {
+            "$ref": "#/components/schemas/ChapterUserSummary"
+          }
+        },
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterGroupSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterMangaSummary": {
+        "type": "object",
+        "properties": {
+          "content_rating": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/ChapterMangaRelationships"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterMangaRelationships": {
+        "type": "object",
+        "properties": {
+          "cover": {
+            "$ref": "#/components/schemas/ChapterMangaCover"
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChapterMangaTag"
+            }
+          }
+        },
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterMangaCover": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "ext": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ext",
+          "id"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterMangaTag": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "group",
+          "id",
+          "name"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterStats": {
+        "type": "object",
+        "properties": {
+          "views": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "views"
+        ]
+      },
+      "ChapterUserSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "details": {
+                "nullable": true
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "ChapterInternalErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "INTERNAL_SERVER_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "Chapter": {
+        "type": "object",
+        "properties": {
+          "chapter": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Page"
+            }
+          },
+          "data_optimized": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Page"
+            }
+          },
+          "deleted_at": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "is_full": {
+            "type": "boolean"
+          },
+          "is_unavailable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "language": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/ChapterDetailRelationships"
+          },
+          "source_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "nullable": true
+          },
+          "volume": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "ChapterDetailRelationships": {
+        "type": "object",
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChapterGroupSummary"
+            }
+          },
+          "manga": {
+            "$ref": "#/components/schemas/ChapterMangaSummary"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ChapterStats"
+          },
+          "thread": {
+            "$ref": "#/components/schemas/ChapterThreadSummary"
+          },
+          "uploader": {
+            "$ref": "#/components/schemas/ChapterUserSummary"
+          }
+        },
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterThreadSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterNotFoundErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "CHAPTER_NOT_FOUND"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "Cover": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "ext": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "manga_id": {
+            "type": "string"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/CoverRelationships"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "uploader_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "nullable": true
+          },
+          "volume": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "created_at",
+          "ext",
+          "id",
+          "language",
+          "manga_id",
+          "updated_at"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CoverRelationships": {
+        "type": "object",
+        "properties": {
+          "uploader": {
+            "$ref": "#/components/schemas/CoverUploader"
+          }
+        },
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CoverUploader": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CoverNotFoundErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "COVER_NOT_FOUND"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "CoverInternalErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "INTERNAL_SERVER_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "ScanlationGroupFeedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScanlationGroup"
+            }
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data",
+          "limit",
+          "page",
+          "total"
+        ]
+      },
+      "ScanlationGroup": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "enum": [
+              "group"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "group",
+          "id",
+          "name"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "GroupValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR"
+                ]
+              },
+              "details": {
+                "nullable": true
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "GroupInternalErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "INTERNAL_SERVER_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "GroupNotFoundErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "GROUP_NOT_FOUND"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "ScanlationGroupStats": {
+        "type": "object",
+        "properties": {
+          "chapters": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "chapters"
+        ]
+      },
+      "MangaFeedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MangaListItem"
+            }
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data",
+          "limit",
+          "page",
+          "total"
+        ]
+      },
+      "MangaListItem": {
+        "type": "object",
+        "properties": {
+          "alt_titles": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "content_rating": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "demographic": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "last_chapter": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_uploaded_chapter_at": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_volume": {
+            "type": "string",
+            "nullable": true
+          },
+          "published_at": {
+            "type": "string"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/MangaRelationships"
+          },
+          "state": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "nullable": true
+          },
+          "year": {
+            "type": "integer",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "MangaRelationships": {
+        "type": "object",
+        "properties": {
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MangaRelationshipNamedItem"
+            }
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MangaRelationshipNamedItem"
+            }
+          },
+          "available_groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MangaGroupSummary"
+            }
+          },
+          "available_languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cover": {
+            "$ref": "#/components/schemas/MangaCoverSummary"
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "stats": {
+            "$ref": "#/components/schemas/MangaStatsSummary"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          }
+        },
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "MangaRelationshipNamedItem": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "MangaGroupSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "MangaCoverSummary": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "ext": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ext",
+          "id",
+          "language"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "MangaStatsSummary": {
+        "type": "object",
+        "properties": {
+          "chapters": {
+            "type": "integer"
+          },
+          "follows": {
+            "type": "integer"
+          },
+          "views": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "chapters",
+          "follows",
+          "views"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/Group"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "group",
+          "id",
+          "name"
+        ]
+      },
+      "Group": {
+        "type": "string",
+        "enum": [
+          "content",
+          "format",
+          "genre",
+          "theme",
+          "author",
+          "tag"
+        ]
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "details": {
+                "nullable": true
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "InternalErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "INTERNAL_SERVER_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "TagFeedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data",
+          "limit",
+          "page",
+          "total"
+        ]
+      },
+      "MangaNotFoundErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "MANGA_NOT_FOUND"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "MangaStats": {
+        "type": "object",
+        "properties": {
+          "chapters": {
+            "type": "integer"
+          },
+          "follows": {
+            "type": "integer"
+          },
+          "views": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "chapters",
+          "follows",
+          "views"
+        ]
+      },
+      "RelationsResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Relation"
+        }
+      },
+      "Relation": {
+        "type": "object",
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterFeedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MangaChapterFeedItem"
+            }
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data",
+          "limit",
+          "page",
+          "total"
+        ]
+      },
+      "MangaChapterFeedItem": {
+        "type": "object",
+        "properties": {
+          "chapter": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "is_full": {
+            "type": "boolean"
+          },
+          "is_unavailable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "language": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/MangaChapterFeedRelationships"
+          },
+          "source_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "nullable": true
+          },
+          "volume": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "MangaChapterFeedRelationships": {
+        "type": "object",
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChapterGroupSummary"
+            }
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ChapterStats"
+          },
+          "uploader": {
+            "$ref": "#/components/schemas/ChapterUserSummary"
+          }
+        },
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "ChapterAggregateResponse": {
+        "type": "object",
+        "properties": {
+          "chapters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChapterAggregate"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            }
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "chapters",
+          "groups",
+          "languages"
+        ]
+      },
+      "ChapterAggregate": {
+        "type": "object",
+        "properties": {
+          "chapter": {
+            "type": "string",
+            "nullable": true
+          },
+          "volume": {
+            "type": "string",
+            "nullable": true
+          },
+          "entries": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ChapterAggregateEntry"
+            }
+          }
+        },
+        "required": [
+          "chapter",
+          "volume",
+          "entries"
+        ]
+      },
+      "ChapterAggregateEntry": {
+        "type": "object",
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "language": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "groups",
+          "language",
+          "published_at"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/author": {
+      "get": {
+        "tags": [
+          "Author"
+        ],
+        "summary": "Get Author List",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 100,
+              "default": []
+            },
+            "required": false,
+            "in": "query",
+            "name": "id"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 100,
+              "default": 100
+            },
+            "required": false,
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "in": "query",
+            "name": "name"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "in": "query",
+            "name": "page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Author feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/author/{id}": {
+      "get": {
+        "tags": [
+          "Author"
+        ],
+        "summary": "Get Author",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path",
+            "name": "id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Author detail response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Author not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter": {
+      "get": {
+        "tags": [
+          "Chapter"
+        ],
+        "summary": "Search Chapters",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Artists to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Artists to filter by (array of IDs)",
+            "in": "query",
+            "name": "artist"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Authors to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Authors to filter by (array of IDs)",
+            "in": "query",
+            "name": "author"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "in": "query",
+            "name": "authorOrArtist"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "safe",
+                  "suggestive",
+                  "erotica",
+                  "pornographic"
+                ]
+              },
+              "default": [
+                "safe",
+                "suggestive",
+                "erotica"
+              ],
+              "description": "Default: safe, suggestive, erotica"
+            },
+            "required": false,
+            "description": "Default: safe, suggestive, erotica",
+            "in": "query",
+            "name": "contentRating"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "shounen",
+                  "shoujo",
+                  "josei",
+                  "seinen",
+                  "none"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "in": "query",
+            "name": "demographic"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Groups to include (array of IDs)"
+            },
+            "required": false,
+            "description": "Groups to include (array of IDs)",
+            "in": "query",
+            "name": "group"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Groups to exclude (array of IDs)"
+            },
+            "required": false,
+            "description": "Groups to exclude (array of IDs)",
+            "in": "query",
+            "name": "groupx"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to include"
+            },
+            "required": false,
+            "description": "Original language(s) to include",
+            "in": "query",
+            "name": "lang"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to exclude"
+            },
+            "required": false,
+            "description": "Original language(s) to exclude",
+            "in": "query",
+            "name": "langx"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "asc",
+                "desc",
+                null
+              ],
+              "default": "desc"
+            },
+            "required": false,
+            "in": "query",
+            "name": "order"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "in": "query",
+            "name": "page"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ongoing",
+                  "completed",
+                  "hiatus",
+                  "cancelled"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "in": "query",
+            "name": "status"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to include"
+            },
+            "required": false,
+            "description": "Tags to include",
+            "in": "query",
+            "name": "tag"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to exclude"
+            },
+            "required": false,
+            "description": "Tags to exclude",
+            "in": "query",
+            "name": "tagx"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Translated language(s) to include"
+            },
+            "required": false,
+            "description": "Translated language(s) to include",
+            "in": "query",
+            "name": "tlang"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Translated language(s) to exclude"
+            },
+            "required": false,
+            "description": "Translated language(s) to exclude",
+            "in": "query",
+            "name": "tlangx"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag inclusion"
+            },
+            "required": false,
+            "description": "Mode for tag inclusion",
+            "in": "query",
+            "name": "tmod"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag exclusion"
+            },
+            "required": false,
+            "description": "Mode for tag exclusion",
+            "in": "query",
+            "name": "txmod"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Uploaders to include"
+            },
+            "required": false,
+            "description": "Uploaders to include",
+            "in": "query",
+            "name": "uploader"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Uploaders to exclude"
+            },
+            "required": false,
+            "description": "Uploaders to exclude",
+            "in": "query",
+            "name": "uploaderx"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chapter feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappedChapterFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter/feed": {
+      "get": {
+        "tags": [
+          "Chapter"
+        ],
+        "summary": "Get Latest Feed",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Artists to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Artists to filter by (array of IDs)",
+            "in": "query",
+            "name": "artist"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Authors to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Authors to filter by (array of IDs)",
+            "in": "query",
+            "name": "author"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "in": "query",
+            "name": "authorOrArtist"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "safe",
+                  "suggestive",
+                  "erotica",
+                  "pornographic"
+                ]
+              },
+              "default": [
+                "safe",
+                "suggestive",
+                "erotica"
+              ],
+              "description": "Default: safe, suggestive, erotica"
+            },
+            "required": false,
+            "description": "Default: safe, suggestive, erotica",
+            "in": "query",
+            "name": "contentRating"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "shounen",
+                  "shoujo",
+                  "josei",
+                  "seinen",
+                  "none"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "in": "query",
+            "name": "demographic"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Groups to include (array of IDs)"
+            },
+            "required": false,
+            "description": "Groups to include (array of IDs)",
+            "in": "query",
+            "name": "group"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Groups to exclude (array of IDs)"
+            },
+            "required": false,
+            "description": "Groups to exclude (array of IDs)",
+            "in": "query",
+            "name": "groupx"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to include"
+            },
+            "required": false,
+            "description": "Original language(s) to include",
+            "in": "query",
+            "name": "lang"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to exclude"
+            },
+            "required": false,
+            "description": "Original language(s) to exclude",
+            "in": "query",
+            "name": "langx"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "asc",
+                "desc",
+                null
+              ],
+              "default": "desc"
+            },
+            "required": false,
+            "in": "query",
+            "name": "order"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "in": "query",
+            "name": "page"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ongoing",
+                  "completed",
+                  "hiatus",
+                  "cancelled"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "in": "query",
+            "name": "status"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to include"
+            },
+            "required": false,
+            "description": "Tags to include",
+            "in": "query",
+            "name": "tag"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to exclude"
+            },
+            "required": false,
+            "description": "Tags to exclude",
+            "in": "query",
+            "name": "tagx"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Translated language(s) to include"
+            },
+            "required": false,
+            "description": "Translated language(s) to include",
+            "in": "query",
+            "name": "tlang"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Translated language(s) to exclude"
+            },
+            "required": false,
+            "description": "Translated language(s) to exclude",
+            "in": "query",
+            "name": "tlangx"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag inclusion"
+            },
+            "required": false,
+            "description": "Mode for tag inclusion",
+            "in": "query",
+            "name": "tmod"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag exclusion"
+            },
+            "required": false,
+            "description": "Mode for tag exclusion",
+            "in": "query",
+            "name": "txmod"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Uploaders to include"
+            },
+            "required": false,
+            "description": "Uploaders to include",
+            "in": "query",
+            "name": "uploader"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Uploaders to exclude"
+            },
+            "required": false,
+            "description": "Uploaders to exclude",
+            "in": "query",
+            "name": "uploaderx"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chapter feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappedChapterFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter/updates": {
+      "get": {
+        "tags": [
+          "Chapter"
+        ],
+        "summary": "Get Latest Updates",
+        "description": "Returns only the most recent chapter of each manga. Use this endpoint if you don't want your feed to be filled with multiple chapters from the same manga.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Artists to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Artists to filter by (array of IDs)",
+            "in": "query",
+            "name": "artist"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Authors to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Authors to filter by (array of IDs)",
+            "in": "query",
+            "name": "author"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "in": "query",
+            "name": "authorOrArtist"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "safe",
+                  "suggestive",
+                  "erotica",
+                  "pornographic"
+                ]
+              },
+              "default": [
+                "safe",
+                "suggestive",
+                "erotica"
+              ],
+              "description": "Default: safe, suggestive, erotica"
+            },
+            "required": false,
+            "description": "Default: safe, suggestive, erotica",
+            "in": "query",
+            "name": "contentRating"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "shounen",
+                  "shoujo",
+                  "josei",
+                  "seinen",
+                  "none"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "in": "query",
+            "name": "demographic"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Groups to include (array of IDs)"
+            },
+            "required": false,
+            "description": "Groups to include (array of IDs)",
+            "in": "query",
+            "name": "group"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Groups to exclude (array of IDs)"
+            },
+            "required": false,
+            "description": "Groups to exclude (array of IDs)",
+            "in": "query",
+            "name": "groupx"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to include"
+            },
+            "required": false,
+            "description": "Original language(s) to include",
+            "in": "query",
+            "name": "lang"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to exclude"
+            },
+            "required": false,
+            "description": "Original language(s) to exclude",
+            "in": "query",
+            "name": "langx"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "asc",
+                "desc",
+                null
+              ],
+              "default": "desc"
+            },
+            "required": false,
+            "in": "query",
+            "name": "order"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "in": "query",
+            "name": "page"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ongoing",
+                  "completed",
+                  "hiatus",
+                  "cancelled"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "in": "query",
+            "name": "status"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to include"
+            },
+            "required": false,
+            "description": "Tags to include",
+            "in": "query",
+            "name": "tag"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to exclude"
+            },
+            "required": false,
+            "description": "Tags to exclude",
+            "in": "query",
+            "name": "tagx"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Translated language(s) to include"
+            },
+            "required": false,
+            "description": "Translated language(s) to include",
+            "in": "query",
+            "name": "tlang"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Translated language(s) to exclude"
+            },
+            "required": false,
+            "description": "Translated language(s) to exclude",
+            "in": "query",
+            "name": "tlangx"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag inclusion"
+            },
+            "required": false,
+            "description": "Mode for tag inclusion",
+            "in": "query",
+            "name": "tmod"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag exclusion"
+            },
+            "required": false,
+            "description": "Mode for tag exclusion",
+            "in": "query",
+            "name": "txmod"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Uploaders to include"
+            },
+            "required": false,
+            "description": "Uploaders to include",
+            "in": "query",
+            "name": "uploader"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Uploaders to exclude"
+            },
+            "required": false,
+            "description": "Uploaders to exclude",
+            "in": "query",
+            "name": "uploaderx"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest updates feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappedChapterFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter/top": {
+      "get": {
+        "tags": [
+          "Chapter"
+        ],
+        "summary": "Get Top Chapters",
+        "description": "Fetch top chapters from the archived dataset ordered by chapter_stats.views desc. time is accepted as a compatibility no-op.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "safe",
+                  "suggestive",
+                  "erotica",
+                  "pornographic"
+                ]
+              },
+              "default": [
+                "safe",
+                "suggestive",
+                "erotica"
+              ],
+              "description": "Default: safe, suggestive, erotica"
+            },
+            "required": false,
+            "description": "Default: safe, suggestive, erotica",
+            "in": "query",
+            "name": "contentRating"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "in": "query",
+            "name": "page"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "24h",
+                "7d",
+                "30d",
+                null
+              ],
+              "default": "7d"
+            },
+            "required": false,
+            "in": "query",
+            "name": "time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Top chapter feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappedChapterFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter/{id}": {
+      "get": {
+        "tags": [
+          "Chapter"
+        ],
+        "summary": "Get Chapter",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path",
+            "name": "id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chapter detail response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Chapter"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Chapter not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter/{id}/statistics": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get Chapter Statistics",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path",
+            "name": "id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chapter statistics response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterStats"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Chapter not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cover/{id}": {
+      "get": {
+        "tags": [
+          "Cover"
+        ],
+        "summary": "Get Cover",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path",
+            "name": "id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cover detail response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cover"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cover not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoverNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoverInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group": {
+      "get": {
+        "tags": [
+          "Group"
+        ],
+        "summary": "Get Scanlation Group List",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 100,
+              "default": []
+            },
+            "required": false,
+            "in": "query",
+            "name": "id"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 100,
+              "default": 100
+            },
+            "required": false,
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "in": "query",
+            "name": "name"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "in": "query",
+            "name": "page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scanlation group feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanlationGroupFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/{id}": {
+      "get": {
+        "tags": [
+          "Group"
+        ],
+        "summary": "Get Scanlation Group",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path",
+            "name": "id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scanlation group detail response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanlationGroup"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Scanlation group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/{id}/statistics": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get Group Statistics",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path",
+            "name": "id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Group statistics response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanlationGroupStats"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupInternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga": {
+      "get": {
+        "tags": [
+          "Manga"
+        ],
+        "summary": "Search Manga",
+        "description": "Read-only WeebDex-compatible manga listing backed by archived normalized_ready data.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Artists to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Artists to filter by (array of IDs)",
+            "name": "artist",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Authors to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Authors to filter by (array of IDs)",
+            "name": "author",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "name": "authorOrArtist",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "required": false,
+            "name": "availableTranslatedLang",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "safe",
+                  "suggestive",
+                  "erotica",
+                  "pornographic"
+                ]
+              },
+              "default": [
+                "safe",
+                "suggestive",
+                "erotica"
+              ],
+              "description": "Default: safe, suggestive, erotica"
+            },
+            "required": false,
+            "description": "Default: safe, suggestive, erotica",
+            "name": "contentRating",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "shounen",
+                  "shoujo",
+                  "josei",
+                  "seinen",
+                  "none"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "name": "demographic",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "name": "group",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "required": false,
+            "name": "hasChapters",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to include"
+            },
+            "required": false,
+            "description": "Original language(s) to include",
+            "name": "lang",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to exclude"
+            },
+            "required": false,
+            "description": "Original language(s) to exclude",
+            "name": "langx",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "asc",
+                "desc",
+                null
+              ],
+              "default": "desc",
+              "description": "Sort order"
+            },
+            "required": false,
+            "description": "Sort order",
+            "name": "order",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "createdAt",
+                "updatedAt",
+                "lastUploadedChapterAt",
+                "relevance",
+                "title",
+                "year",
+                "rating",
+                "views",
+                "follows",
+                "chapters",
+                null
+              ],
+              "default": "lastUploadedChapterAt",
+              "description": "Field to sort by"
+            },
+            "required": false,
+            "description": "Field to sort by",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ongoing",
+                  "completed",
+                  "hiatus",
+                  "cancelled"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to include (array of IDs)"
+            },
+            "required": false,
+            "description": "Tags to include (array of IDs)",
+            "name": "tag",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to exclude (array of IDs)"
+            },
+            "required": false,
+            "description": "Tags to exclude (array of IDs)",
+            "name": "tagx",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "name": "title",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag inclusion"
+            },
+            "required": false,
+            "description": "Mode for tag inclusion",
+            "name": "tmod",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag exclusion"
+            },
+            "required": false,
+            "description": "Mode for tag exclusion",
+            "name": "txmod",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1900,
+              "maximum": 2100,
+              "description": "Start of the release year range"
+            },
+            "required": false,
+            "description": "Start of the release year range",
+            "name": "yearFrom",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1900,
+              "maximum": 2100,
+              "description": "End of the release year range"
+            },
+            "required": false,
+            "description": "End of the release year range",
+            "name": "yearTo",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manga feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/tag": {
+      "get": {
+        "tags": [
+          "Tag"
+        ],
+        "summary": "Get Tag List",
+        "description": "Fetch the normalized tag list from the archived dataset.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 100,
+              "default": []
+            },
+            "required": false,
+            "name": "id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 100,
+              "default": 100
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "name": "name",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/random": {
+      "get": {
+        "tags": [
+          "Manga"
+        ],
+        "summary": "Get Random Manga",
+        "description": "Pick a random manga from the locally filtered archive dataset using manga filters.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Artists to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Artists to filter by (array of IDs)",
+            "name": "artist",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Authors to filter by (array of IDs)"
+            },
+            "required": false,
+            "description": "Authors to filter by (array of IDs)",
+            "name": "author",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "name": "authorOrArtist",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "safe",
+                  "suggestive",
+                  "erotica",
+                  "pornographic"
+                ]
+              },
+              "default": [
+                "safe",
+                "suggestive",
+                "erotica"
+              ],
+              "description": "Default: safe, suggestive, erotica"
+            },
+            "required": false,
+            "description": "Default: safe, suggestive, erotica",
+            "name": "contentRating",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "shounen",
+                  "shoujo",
+                  "josei",
+                  "seinen",
+                  "none"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "name": "demographic",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "required": false,
+            "name": "group",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "required": false,
+            "name": "hasChapters",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to include"
+            },
+            "required": false,
+            "description": "Original language(s) to include",
+            "name": "lang",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Original language(s) to exclude"
+            },
+            "required": false,
+            "description": "Original language(s) to exclude",
+            "name": "langx",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ongoing",
+                  "completed",
+                  "hiatus",
+                  "cancelled"
+                ]
+              },
+              "default": []
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to include (array of IDs)"
+            },
+            "required": false,
+            "description": "Tags to include (array of IDs)",
+            "name": "tag",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Tags to exclude (array of IDs)"
+            },
+            "required": false,
+            "description": "Tags to exclude (array of IDs)",
+            "name": "tagx",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag inclusion"
+            },
+            "required": false,
+            "description": "Mode for tag inclusion",
+            "name": "tmod",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "0",
+                "1",
+                "AND",
+                "OR",
+                null
+              ],
+              "description": "Mode for tag exclusion"
+            },
+            "required": false,
+            "description": "Mode for tag exclusion",
+            "name": "txmod",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1900,
+              "maximum": 2100,
+              "description": "Start of the release year range"
+            },
+            "required": false,
+            "description": "Start of the release year range",
+            "name": "yearFrom",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1900,
+              "maximum": 2100,
+              "description": "End of the release year range"
+            },
+            "required": false,
+            "description": "End of the release year range",
+            "name": "yearTo",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Random manga response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaListItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Manga not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/top": {
+      "get": {
+        "tags": [
+          "Manga"
+        ],
+        "summary": "Get Top Manga",
+        "description": "Fetch top manga from the local archived dataset. The time parameter is accepted for compatibility and ignored in v1.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "safe",
+                  "suggestive",
+                  "erotica",
+                  "pornographic"
+                ]
+              },
+              "default": [
+                "safe",
+                "suggestive",
+                "erotica"
+              ],
+              "description": "Default: safe, suggestive, erotica"
+            },
+            "required": false,
+            "description": "Default: safe, suggestive, erotica",
+            "name": "contentRating",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "views",
+                "read",
+                null
+              ],
+              "default": "views"
+            },
+            "required": false,
+            "name": "rank",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "24h",
+                "7d",
+                "30d",
+                null
+              ],
+              "default": "7d"
+            },
+            "required": false,
+            "name": "time",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Top manga feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/{id}": {
+      "get": {
+        "tags": [
+          "Manga"
+        ],
+        "summary": "Get Manga by ID",
+        "description": "Fetch a single manga record by MangaDex-compatible ID.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manga detail response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaListItem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Manga not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/{id}/statistics": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get Manga Statistics",
+        "description": "Fetch normalized manga statistics from the archived dataset.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manga statistics response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaStats"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Manga not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/{id}/relations": {
+      "get": {
+        "tags": [
+          "Manga"
+        ],
+        "summary": "Get Manga Relations",
+        "description": "Fetch related manga entries from the archived relationship payload.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manga relations response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelationsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Manga not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/{id}/recommendations": {
+      "get": {
+        "tags": [
+          "Manga"
+        ],
+        "summary": "Get Recommendations",
+        "description": "Fetch local recommendation results for a manga using archived relations and dataset heuristics.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manga recommendations response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaFeedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Manga not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/{id}/chapters": {
+      "get": {
+        "tags": [
+          "Manga"
+        ],
+        "summary": "Get Manga Chapters",
+        "description": "Fetch chapters for a single manga with basic feed filters.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Include only chapters from these groups"
+            },
+            "required": false,
+            "description": "Include only chapters from these groups",
+            "name": "group",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Exclude chapters from these groups"
+            },
+            "required": false,
+            "description": "Exclude chapters from these groups",
+            "name": "groupx",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0,
+              "maximum": 500,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "asc",
+                "desc",
+                null
+              ],
+              "default": "desc",
+              "description": "Sort order"
+            },
+            "required": false,
+            "description": "Sort order",
+            "name": "order",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "publishedAt",
+                "name",
+                null
+              ],
+              "default": "name",
+              "description": "Field to sort by"
+            },
+            "required": false,
+            "description": "Field to sort by",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Include only translated chapter languages"
+            },
+            "required": false,
+            "description": "Include only translated chapter languages",
+            "name": "tlang",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Exclude translated chapter languages"
+            },
+            "required": false,
+            "description": "Exclude translated chapter languages",
+            "name": "tlangx",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Include only these uploaders"
+            },
+            "required": false,
+            "description": "Include only these uploaders",
+            "name": "uploader",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Exclude these uploaders"
+            },
+            "required": false,
+            "description": "Exclude these uploaders",
+            "name": "uploaderx",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chapter feed response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Manga not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manga/{id}/aggregate": {
+      "get": {
+        "tags": [
+          "Chapter"
+        ],
+        "summary": "Get Aggregated Chapter List",
+        "description": "Aggregate chapter entries for a manga, grouped by chapter and volume.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Translated language(s)"
+            },
+            "required": false,
+            "description": "Translated language(s)",
+            "name": "tlang",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chapter aggregate response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterAggregateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Manga not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MangaNotFoundErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
