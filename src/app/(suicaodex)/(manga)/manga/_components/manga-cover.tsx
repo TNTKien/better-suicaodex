@@ -2,7 +2,7 @@
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import { Cover } from "@/lib/weebdex/model";
+import type { Cover } from "@/lib/weebdex/model";
 import { MANGA_COVER_EXT } from "@/types/types";
 import {
   Dialog,
@@ -16,9 +16,11 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Expand, Loader2 } from "lucide-react";
 import { useState } from "react";
 
+type CoverLike = Pick<Cover, "ext" | "id">;
+
 interface MangaCoverProps {
   manga_id: string;
-  cover?: Cover;
+  cover?: CoverLike;
   ext?: (typeof MANGA_COVER_EXT)[number];
   isExpandable?: boolean;
   alt: string;

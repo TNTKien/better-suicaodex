@@ -1,7 +1,15 @@
 import { siteConfig } from "@/config/site";
-import { Manga, Relation, ChapterAggregateResponse } from "./model";
+import { ChapterAggregateResponse, MangaListItem } from "./model";
 import { generateSlug } from "../utils";
 import { ChapterAggregate } from "@/types/types";
+
+type MangaTitleSource = {
+  title?: string | null;
+  alt_titles?: Record<string, string[] | undefined> | null;
+};
+
+const isNonEmptyString = (value: string | undefined): value is string =>
+  typeof value === "string" && value.length > 0;
 
 /**
  * parse manga title from manga data
@@ -9,7 +17,7 @@ import { ChapterAggregate } from "@/types/types";
  * - altTitles: flattened from alt_titles
  */
 export const parseMangaTitle = (
-  manga: Manga,
+  manga: MangaTitleSource,
 ): {
   title: string;
   altTitles: string[];
@@ -26,7 +34,8 @@ export const parseMangaTitle = (
   const altTitlesRaw = Object.entries(manga.alt_titles ?? {})
     .filter(([lang]) => lang !== "vi")
     .sort(([a], [b]) => langPriority(a) - langPriority(b))
-    .flatMap(([, values]) => values);
+    .flatMap(([, values]) => values ?? [])
+    .filter(isNonEmptyString);
 
   const altTitles =
     viTitle && manga.title ? [manga.title, ...altTitlesRaw] : altTitlesRaw;
@@ -34,36 +43,35 @@ export const parseMangaTitle = (
   return { title, altTitles };
 };
 
-export const parseRelationTitle = (
-  rel: Relation,
-): {
-  title: string;
-  altTitles: string[];
-} => {
-  const viTitle = rel.alt_titles?.["vi"]?.[0];
-  const title = viTitle ?? rel.title ?? "";
+// export const parseRelationTitle = (
+//   rel: Relation,
+// ): {
+//   title: string;
+//   altTitles: string[];
+// } => {
+//   const viTitle = rel.alt_titles?.["vi"]?.[0];
+//   const title = viTitle ?? rel.title ?? "";
 
-  const langPriority = (lang: string) => {
-    if (lang === "en") return 0;
-    if (lang === "ja") return 1;
-    return 2;
-  };
+//   const langPriority = (lang: string) => {
+//     if (lang === "en") return 0;
+//     if (lang === "ja") return 1;
+//     return 2;
+//   };
 
-  const altTitlesRaw = Object.entries(rel.alt_titles ?? {})
-    .filter(([lang]) => lang !== "vi")
-    .sort(([a], [b]) => langPriority(a) - langPriority(b))
-    .flatMap(([, values]) => values);
+//   const altTitlesRaw = Object.entries(rel.alt_titles ?? {})
+//     .filter(([lang]) => lang !== "vi")
+//     .sort(([a], [b]) => langPriority(a) - langPriority(b))
+//     .flatMap(([, values]) => values);
 
-  const altTitles =
-    viTitle && rel.title ? [rel.title, ...altTitlesRaw] : altTitlesRaw;
+//   const altTitles =
+//     viTitle && rel.title ? [rel.title, ...altTitlesRaw] : altTitlesRaw;
 
-  return { title, altTitles };
-};
+//   return { title, altTitles };
+// };
 
-export const generateJsonLd = (manga: Manga) => {
+export const generateJsonLd = (manga: MangaListItem) => {
   const { title } = parseMangaTitle(manga);
-  const description =
-    manga.description || `Đọc truyện ${manga.title}`;
+  const description = manga.description || `Đọc truyện ${manga.title}`;
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -72,12 +80,12 @@ export const generateJsonLd = (manga: Manga) => {
     )}`,
     headline: `${title}`,
     description: description,
-    image: {
-      "@type": "ImageObject",
-      url: `${siteConfig.weebdex.ogURL}/og-image/manga/${manga.id}`,
-      width: 1280,
-      height: 960,
-    },
+    // image: {
+    //   "@type": "ImageObject",
+    //   url: `${siteConfig.weebdex.ogURL}/og-image/manga/${manga.id}`,
+    //   width: 1280,
+    //   height: 960,
+    // },
   };
 };
 

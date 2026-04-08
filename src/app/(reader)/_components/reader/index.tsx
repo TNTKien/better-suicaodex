@@ -2,7 +2,11 @@
 
 import useKeyDown from "@/hooks/use-keydown";
 import { useReaderImages } from "@/hooks/use-reader-images";
-import { useGetMangaIdAggregate } from "@/lib/weebdex/hooks/chapter/chapter";
+import {
+  type getMangaIdAggregateResponse,
+  type getMangaIdAggregateResponseSuccess,
+  useGetMangaIdAggregate,
+} from "@/lib/weebdex/hooks/chapter/chapter";
 import { cn } from "@/lib/utils";
 import { useReaderStore } from "@/store/reader-store";
 import { Chapter as WeebdexChapter } from "@/lib/weebdex/model";
@@ -58,6 +62,10 @@ function makeSpreads(count: number, offset: number): SpreadPages[] {
 
 const MAX_RETRIES = 3;
 
+const isAggregateSuccess = (
+  response?: getMangaIdAggregateResponse,
+): response is getMangaIdAggregateResponseSuccess => response?.status === 200;
+
 // ── Component ──────────────────────────────────────────────────────────────
 export default function Reader({ images, chapterData }: ReaderProps) {
   const router = useRouter();
@@ -100,21 +108,29 @@ export default function Reader({ images, chapterData }: ReaderProps) {
     isFetching: isMutating,
     error,
     refetch: trigger,
-  } = useGetMangaIdAggregate(mangaId, { tlang: language ? [language] : undefined }, {
-    query: {
-      enabled: !!mangaId,
-      refetchOnWindowFocus: false,
+  } = useGetMangaIdAggregate(
+    mangaId,
+    { tlang: language ? [language] : undefined },
+    {
+      query: {
+        enabled: !!mangaId,
+        refetchOnWindowFocus: false,
+      },
     },
-  });
-
-  const chapterAggregate = useMemo(
-    () => (aggregateRes?.data ? toReaderAggregate(aggregateRes.data, chapterData.id) : undefined),
-    [aggregateRes, chapterData.id],
   );
+
+  const chapterAggregate = useMemo(() => {
+    if (!isAggregateSuccess(aggregateRes)) {
+      return undefined;
+    }
+
+    return toReaderAggregate(aggregateRes.data, chapterData.id);
+  }, [aggregateRes, chapterData.id]);
 
   const chapterExists = chapterAggregate?.some((vol) =>
     vol.chapters.some(
-      (ch) => ch.id === chapterData.id || ch.other?.includes(chapterData.id ?? ""),
+      (ch) =>
+        ch.id === chapterData.id || ch.other?.includes(chapterData.id ?? ""),
     ),
   );
 
@@ -157,9 +173,7 @@ export default function Reader({ images, chapterData }: ReaderProps) {
         v.chapters.some((c) => c.other?.includes(chId)),
       );
     const chIdx =
-      chapterAggregate[volIdx]?.chapters.findIndex(
-        (c) => c.id === chId,
-      ) ?? -1;
+      chapterAggregate[volIdx]?.chapters.findIndex((c) => c.id === chId) ?? -1;
     const prev =
       chapterAggregate[volIdx]?.chapters[chIdx + 1]?.id ??
       chapterAggregate[volIdx + 1]?.chapters[0]?.id;
@@ -171,14 +185,22 @@ export default function Reader({ images, chapterData }: ReaderProps) {
 
   const goPrevChapter = useCallback(() => {
     if (prevChapterId) {
-      toast.info("Đang chuyển chương...", { duration: 3000, closeButton: false, icon: <Spinner/> });
+      toast.info("Đang chuyển chương...", {
+        duration: 3000,
+        closeButton: false,
+        icon: <Spinner />,
+      });
       router.push(`/chapter/${prevChapterId}`);
     } else toast.warning("Đây là chương đầu tiên mà!");
   }, [prevChapterId, router]);
 
   const goNextChapter = useCallback(() => {
     if (nextChapterId) {
-      toast.info("Đang chuyển chương...", { duration: 3000, closeButton: false, icon: <Spinner/> });
+      toast.info("Đang chuyển chương...", {
+        duration: 3000,
+        closeButton: false,
+        icon: <Spinner />,
+      });
       router.push(`/chapter/${nextChapterId}`);
     } else toast.warning("Đây là chương mới nhất rồi nha!");
   }, [nextChapterId, router]);

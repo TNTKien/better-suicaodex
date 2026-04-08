@@ -13,6 +13,7 @@ import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { BugIcon, Loader2, StarOff } from "lucide-react";
 import Link from "next/link";
 import MangaCard from "./manga-card";
+import { Cover } from "@/lib/weebdex/model";
 
 interface MangaRcmsProps {
   id: string;
@@ -83,7 +84,7 @@ export default function MangaRcms({ id }: MangaRcmsProps) {
             <MangaCard
               manga_id={manga.id}
               title={title}
-              cover={cover}
+              cover={cover as Cover}
               className="w-full h-full"
             />
           </Link>

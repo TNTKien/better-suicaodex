@@ -2,7 +2,11 @@
 
 import Reader from "./reader";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetChapterId } from "@/lib/weebdex/hooks/chapter/chapter";
+import {
+  type getChapterIdResponse,
+  type getChapterIdResponseSuccess,
+  useGetChapterId,
+} from "@/lib/weebdex/hooks/chapter/chapter";
 import useReadingHistoryV2 from "@/hooks/use-reading-history-v2";
 import { useEffect } from "react";
 import { type Chapter } from "@/lib/weebdex/model";
@@ -17,6 +21,10 @@ interface ChapterProps {
   id: string;
   initialData?: Chapter;
 }
+
+const isChapterSuccess = (
+  response?: getChapterIdResponse,
+): response is getChapterIdResponseSuccess => response?.status === 200;
 
 export default function ChapterPage({ id, initialData }: ChapterProps) {
   const { addHistory: addHistoryV2 } = useReadingHistoryV2();
@@ -36,7 +44,8 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
     },
   });
 
-  const data = res?.data;
+  const responseStatus = res?.status;
+  const data = isChapterSuccess(res) ? res.data : undefined;
 
   const mangaId = data?.relationships?.manga?.id;
 
@@ -52,7 +61,7 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
 
   useEffect(() => {
     try {
-      if (data && mangaId) {
+      if (responseStatus === 200 && data && mangaId) {
         const now = new Date().toISOString();
         const meta = mangaData
           ? {
@@ -80,7 +89,15 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
       console.error(error);
       return;
     }
-  }, [addHistoryV2, data, id, mangaData, mangaId]);
+  }, [addHistoryV2, data, id, mangaData, mangaId, responseStatus]);
+
+  if (responseStatus === 404) {
+    return <ErrorPage statusCode={404} />;
+  }
+
+  if (responseStatus === 500) {
+    return <ErrorPage statusCode={500} />;
+  }
 
   if (error) {
     if ((error as any).status === 404) return <ErrorPage statusCode={404} />;

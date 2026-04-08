@@ -120,10 +120,10 @@ const MangaRcms = dynamic(() => import("./manga-rcms"), {
   loading: () => <MangaTabSpinnerLoading />,
 });
 
-const MangaRelated = dynamic(() => import("./manga-related"), {
-  ssr: false,
-  loading: () => <MangaRelatedLoading />,
-});
+// const MangaRelated = dynamic(() => import("../../../../../../deprecated/manga-related"), {
+//   ssr: false,
+//   loading: () => <MangaRelatedLoading />,
+// });
 
 interface PageProps {
   id: string;

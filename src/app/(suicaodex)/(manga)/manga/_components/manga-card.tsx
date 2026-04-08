@@ -3,14 +3,16 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import { Cover } from "@/lib/weebdex/model";
+import type { Cover } from "@/lib/weebdex/model";
 import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+
+type CoverLike = Pick<Cover, "id">;
 
 interface MangaCardProps {
   manga_id: string;
   title: string;
-  cover?: Cover;
+  cover?: CoverLike;
   className?: string;
 }
 

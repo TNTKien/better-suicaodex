@@ -6,7 +6,7 @@ import { siteConfig } from "@/config/site";
 import type { MangaLibraryEntry } from "@/lib/suicaodex/db";
 import { saveMangaMetadata, updateMangaCategory } from "@/lib/suicaodex/db";
 import { getGetMangaIdUrl } from "@/lib/weebdex/hooks/manga/manga";
-import type { Manga } from "@/lib/weebdex/model";
+import type { MangaListItem } from "@/lib/weebdex/model";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { generateSlug } from "@/lib/utils";
 import { RefreshCw, X } from "lucide-react";
@@ -52,7 +52,7 @@ export default function AccountLibraryCard({
         toast.error(`Lỗi API: ${res.status}`);
         return;
       }
-      const manga: Manga = await res.json();
+      const manga: MangaListItem = await res.json();
       const { title: newTitle } = parseMangaTitle(manga);
       const newCoverId = (manga as any).relationships?.cover?.id ?? null;
 

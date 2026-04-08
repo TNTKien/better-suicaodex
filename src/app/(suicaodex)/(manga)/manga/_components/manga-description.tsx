@@ -1,7 +1,7 @@
 "use client";
 
 import useContentHeight from "@/hooks/use-content-height";
-import { Manga } from "@/lib/weebdex/model";
+// import { Manga } from "@/lib/weebdex/model";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Streamdown } from "streamdown";
@@ -11,11 +11,12 @@ import { ChevronsDown, ChevronsUp, Undo2 } from "lucide-react";
 import { SiGoogletranslate } from "@icons-pack/react-simple-icons";
 import { useQuery } from "@tanstack/react-query";
 import MangaSubInfo from "./manga-subinfo";
+import { MangaListItem } from "@/lib/weebdex/model";
 
 interface MangaDescriptionProps {
   content: string;
   maxHeight: number;
-  manga?: Manga;
+  manga?: MangaListItem;
 }
 
 export default function MangaDescription({
