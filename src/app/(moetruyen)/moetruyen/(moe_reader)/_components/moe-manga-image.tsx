@@ -6,25 +6,34 @@ import type { PageState } from "@/hooks/use-reader-images";
 import { cn } from "@/lib/utils";
 import { getImageScaleClasses, useReaderStore } from "@/store/reader-store";
 import { RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface MoeMangaImageProps {
   page: PageState;
+  pageIndex: number;
   alt: string;
   onRetry: () => void;
+  onLoad: (index: number) => void;
+  onError: (index: number) => void;
   isDouble?: boolean;
 }
 
 export default function MoeMangaImage({
   page,
+  pageIndex,
   alt,
   onRetry,
+  onLoad,
+  onError,
   isDouble,
 }: MoeMangaImageProps) {
   const scale = useReaderStore((state) => state.scale);
   const imgClasses = getImageScaleClasses(scale);
-  const [loadedBlob, setLoadedBlob] = useState<string | null>(page.blob);
-  const imgVisible = loadedBlob === page.blob;
+  const [imgVisible, setImgVisible] = useState(false);
+
+  useEffect(() => {
+    setImgVisible(false);
+  }, [page.blob]);
 
   return (
     <div
@@ -48,10 +57,14 @@ export default function MoeMangaImage({
             isDouble && "mx-auto",
           )}
           loading="eager"
-          onLoad={() => setLoadedBlob(page.blob)}
+          onLoad={() => {
+            onLoad(pageIndex);
+            setImgVisible(true);
+          }}
           onError={(event) => {
+            onError(pageIndex);
             event.currentTarget.src = "/images/xidoco.webp";
-            setLoadedBlob(page.blob);
+            setImgVisible(true);
           }}
         />
       ) : null}

@@ -1,48 +1,44 @@
 "use client";
 
 /**
- * `useReaderImages` - tải ảnh reader qua XHR và quản lý blob URLs.
+ * `useReaderImages` - quản lý thứ tự kích hoạt ảnh reader qua URL trực tiếp.
  *
- * From weebdex-reader:
- * - Tối đa MAX_PARALLEL XHR đồng thời
+ * - Tối đa MAX_PARALLEL ảnh được kích hoạt tải đồng thời
  * - Hàng đợi ưu tiên: trang hiện tại trước, rồi lan dần ra hai phía
- * - Retry tự động tối đa MAX_ATTEMPTS lần, delay 3 s mỗi lần
- * - Trả về blob URL; giải phóng URL khi unmount
+ * - Reader component sẽ báo ngược lại khi ảnh load xong / lỗi
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export interface PageState {
-  blob: string | null;    // blob URL khi đã tải xong
+  blob: string | null;
   isLoaded: boolean;
   isLoading: boolean;
   isFailed: boolean;
 }
 
 const MAX_PARALLEL = 3;
-const MAX_ATTEMPTS = 3;
-const RETRY_DELAY_MS = 3000;
-
-/** Set NEXT_PUBLIC_IMAGE_PROXY_URL in .env.development if got CORS issue*/
-// TODO: fix CORS issue in suicaodex-api
-const IMAGE_PROXY = process.env.NEXT_PUBLIC_IMAGE_PROXY_URL ?? "";
 
 export function useReaderImages(images: string[], currentIndex: number) {
   const [pages, setPages] = useState<PageState[]>(() =>
-    images.map(() => ({ blob: null, isLoaded: false, isLoading: false, isFailed: false })),
+    images.map(() => ({
+      blob: null,
+      isLoaded: false,
+      isLoading: false,
+      isFailed: false,
+    })),
   );
 
   // Ref mirror của state - không cần re-render để đọc
-  const stateRef    = useRef<PageState[]>(pages);
-  const parallelRef  = useRef(0);
-  const xhrsRef      = useRef<XMLHttpRequest[]>([]);
-  const blobsRef     = useRef<(string | null)[]>(new Array(images.length).fill(null));
-  const queueRef     = useRef<number[]>([]);
-  const mountedRef   = useRef(true);
-  const retryTimers  = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const stateRef = useRef<PageState[]>(pages);
+  const parallelRef = useRef(0);
+  const queueRef = useRef<number[]>([]);
+  const mountedRef = useRef(true);
 
   // Sync state → ref
-  useEffect(() => { stateRef.current = pages; }, [pages]);
+  useEffect(() => {
+    stateRef.current = pages;
+  }, [pages]);
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -60,7 +56,7 @@ export function useReaderImages(images: string[], currentIndex: number) {
   const buildQueue = useCallback(
     (cIdx: number): number[] => {
       const total = images.length;
-      const seen  = new Set<number>();
+      const seen = new Set<number>();
       const queue: number[] = [];
 
       const tryAdd = (i: number) => {
@@ -80,7 +76,7 @@ export function useReaderImages(images: string[], currentIndex: number) {
     [images.length],
   );
 
-  // ── Core loader ──────────────────────────────────────────────────────────
+  // ── Core activator ───────────────────────────────────────────────────────
 
   const processQueue = useCallback(() => {
     while (queueRef.current.length > 0 && parallelRef.current < MAX_PARALLEL) {
@@ -89,43 +85,12 @@ export function useReaderImages(images: string[], currentIndex: number) {
       if (!page || page.isLoaded || page.isLoading || page.isFailed) continue;
 
       parallelRef.current++;
-      updatePage(idx, { isLoading: true });
-
-      const load = (attempt: number) => {
-        const xhr = new XMLHttpRequest();
-        xhrsRef.current.push(xhr);
-        xhr.responseType = "blob";
-        xhr.open("GET", IMAGE_PROXY + images[idx]);
-
-        xhr.addEventListener("load", () => {
-          xhrsRef.current.splice(xhrsRef.current.indexOf(xhr), 1);
-          if (blobsRef.current[idx]) URL.revokeObjectURL(blobsRef.current[idx]!);
-          const blobUrl = URL.createObjectURL(xhr.response as Blob);
-          blobsRef.current[idx] = blobUrl;
-          updatePage(idx, { blob: blobUrl, isLoaded: true, isLoading: false });
-          parallelRef.current--;
-          processQueue();
-        });
-
-        xhr.addEventListener("error", () => {
-          xhrsRef.current.splice(xhrsRef.current.indexOf(xhr), 1);
-          if (attempt < MAX_ATTEMPTS - 1) {
-            const t = setTimeout(() => {
-              retryTimers.current.delete(t);
-              if (mountedRef.current) load(attempt + 1);
-            }, RETRY_DELAY_MS);
-            retryTimers.current.add(t);
-          } else {
-            updatePage(idx, { isFailed: true, isLoading: false });
-            parallelRef.current--;
-            processQueue();
-          }
-        });
-
-        xhr.send();
-      };
-
-      load(0);
+      updatePage(idx, {
+        blob: images[idx],
+        isLoading: true,
+        isLoaded: false,
+        isFailed: false,
+      });
     }
   }, [images, updatePage]);
 
@@ -147,15 +112,40 @@ export function useReaderImages(images: string[], currentIndex: number) {
 
   const retry = useCallback(
     (index: number) => {
-      if (blobsRef.current[index]) {
-        URL.revokeObjectURL(blobsRef.current[index]!);
-        blobsRef.current[index] = null;
-      }
-      updatePage(index, { blob: null, isFailed: false, isLoading: false, isLoaded: false });
+      updatePage(index, {
+        blob: null,
+        isFailed: false,
+        isLoading: false,
+        isLoaded: false,
+      });
       queueRef.current.unshift(index);
       processQueue();
     },
     [updatePage, processQueue],
+  );
+
+  const markLoaded = useCallback(
+    (index: number) => {
+      const page = stateRef.current[index];
+      if (!mountedRef.current || !page || !page.isLoading) return;
+
+      parallelRef.current = Math.max(0, parallelRef.current - 1);
+      updatePage(index, { isLoaded: true, isLoading: false });
+      processQueue();
+    },
+    [processQueue, updatePage],
+  );
+
+  const markFailed = useCallback(
+    (index: number) => {
+      const page = stateRef.current[index];
+      if (!mountedRef.current || !page || !page.isLoading) return;
+
+      parallelRef.current = Math.max(0, parallelRef.current - 1);
+      updatePage(index, { isFailed: true, isLoading: false });
+      processQueue();
+    },
+    [processQueue, updatePage],
   );
 
   // ── Cleanup ──────────────────────────────────────────────────────────────
@@ -164,12 +154,8 @@ export function useReaderImages(images: string[], currentIndex: number) {
     mountedRef.current = true;
     return () => {
       mountedRef.current = false;
-      retryTimers.current.forEach((t) => clearTimeout(t));
-      retryTimers.current.clear();
-      xhrsRef.current.forEach((xhr) => xhr.abort());
-      blobsRef.current.forEach((b) => { if (b) URL.revokeObjectURL(b); });
     };
   }, []);
 
-  return { pages, retry };
+  return { pages, retry, markLoaded, markFailed };
 }

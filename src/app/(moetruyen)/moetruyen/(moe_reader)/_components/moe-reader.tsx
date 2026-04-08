@@ -54,7 +54,10 @@ export default function MoeReader({
   const router = useRouter();
   const { mode, spreadOffset } = useReaderStore();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { pages, retry } = useReaderImages(images, currentIndex);
+  const { pages, retry, markLoaded, markFailed } = useReaderImages(
+    images,
+    currentIndex,
+  );
 
   const spreads = useMemo(
     () => makeSpreads(images.length, spreadOffset),
@@ -173,6 +176,8 @@ export default function MoeReader({
           <MoeLongStrip
             pages={pages}
             retry={retry}
+            markLoaded={markLoaded}
+            markFailed={markFailed}
             onCurrentIndexChange={setCurrentIndex}
           />
         );
@@ -182,6 +187,8 @@ export default function MoeReader({
             pages={pages}
             currentIndex={currentIndex}
             retry={retry}
+            markLoaded={markLoaded}
+            markFailed={markFailed}
             onNavigatePrev={goPrevPage}
             onNavigateNext={goNextPage}
           />
@@ -192,6 +199,8 @@ export default function MoeReader({
             pages={pages}
             currentIndex={currentIndex}
             retry={retry}
+            markLoaded={markLoaded}
+            markFailed={markFailed}
             rtl
             onNavigatePrev={goPrevPage}
             onNavigateNext={goNextPage}
@@ -203,6 +212,8 @@ export default function MoeReader({
             pages={pages}
             spreadPages={spreads[currentSpreadIndex] ?? [currentIndex]}
             retry={retry}
+            markLoaded={markLoaded}
+            markFailed={markFailed}
             onNavigatePrev={goPrevPage}
             onNavigateNext={goNextPage}
           />

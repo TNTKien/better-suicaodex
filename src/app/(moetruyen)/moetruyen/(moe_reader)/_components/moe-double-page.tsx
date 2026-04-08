@@ -9,6 +9,8 @@ interface MoeDoublePageProps {
   pages: PageState[];
   spreadPages: [number] | [number, number];
   retry: (index: number) => void;
+  markLoaded: (index: number) => void;
+  markFailed: (index: number) => void;
   rtl?: boolean;
   onNavigatePrev: () => void;
   onNavigateNext: () => void;
@@ -18,6 +20,8 @@ export default function MoeDoublePage({
   pages,
   spreadPages,
   retry,
+  markLoaded,
+  markFailed,
   rtl = false,
   onNavigatePrev,
   onNavigateNext,
@@ -58,6 +62,8 @@ export default function MoeDoublePage({
           alt=""
           aria-hidden
           className="pointer-events-none absolute h-px w-px opacity-0"
+          onLoad={() => markLoaded(firstIndex - 1)}
+          onError={() => markFailed(firstIndex - 1)}
         />
       ) : null}
       {nextBlob ? (
@@ -67,6 +73,8 @@ export default function MoeDoublePage({
           alt=""
           aria-hidden
           className="pointer-events-none absolute h-px w-px opacity-0"
+          onLoad={() => markLoaded(lastIndex + 1)}
+          onError={() => markFailed(lastIndex + 1)}
         />
       ) : null}
 
@@ -90,8 +98,11 @@ export default function MoeDoublePage({
           >
             <MoeMangaImage
               page={pages[index]}
+              pageIndex={index}
               alt={`Trang ${index + 1}`}
               onRetry={() => retry(index)}
+              onLoad={markLoaded}
+              onError={markFailed}
               isDouble={isDouble}
             />
           </div>
