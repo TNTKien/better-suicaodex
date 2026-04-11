@@ -1,6 +1,5 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
 export function ServiceWorkerRegistrar() {
@@ -11,7 +10,7 @@ export function ServiceWorkerRegistrar() {
     navigator.serviceWorker
       .register("/sw.js", { scope: "/" })
       .catch((error) => {
-        Sentry.captureException(error);
+        console.error(error);
       });
   }, []);
 

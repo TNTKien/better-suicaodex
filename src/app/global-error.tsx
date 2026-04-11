@@ -1,6 +1,5 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 import ErrorPage from "@/components/error-page";
 
@@ -12,7 +11,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    console.error(error);
   }, [error]);
 
   return (
@@ -23,7 +22,7 @@ export default function GlobalError({
           reset={reset}
           statusCode={500}
           title="Oops! Đã xảy ra lỗi nghiêm trọng"
-          message="Bugsink đã ghi nhận lỗi này. Hãy thử tải lại trang hoặc quay lại sau."
+          message="Lỗi này đã được ghi nhận. Hãy thử tải lại trang hoặc quay lại sau."
         />
       </body>
     </html>
