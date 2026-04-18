@@ -1,4 +1,3 @@
-import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -60,16 +59,4 @@ const nextConfig: NextConfig = {
   ],
 };
 
-export default withSentryConfig(nextConfig, {
-  silent: !process.env.CI,
-  telemetry: false,
-  webpack: {
-    treeshake: {
-      removeDebugLogging: true,
-      removeTracing: true,
-      excludeReplayCompressionWorker: true,
-      excludeReplayIframe: true,
-      excludeReplayShadowDOM: true,
-    },
-  },
-});
+export default nextConfig;
