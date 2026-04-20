@@ -89,7 +89,7 @@ export default function Page() {
           <PopularMangaSwiper />
         </section>
 
-        <section className="mt-9 mx-4 md:mx-8 lg:mx-12">
+        {/* <section className="mt-9 mx-4 md:mx-8 lg:mx-12">
           <Alert className="border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
             <OctagonAlert strokeWidth={3} />
             <AlertTitle className="font-semibold uppercase">
@@ -106,7 +106,7 @@ export default function Page() {
               <span className="text-xs font-medium">08/04/2026</span>
             </AlertDescription>
           </Alert>
-        </section>
+        </section> */}
 
         <section className="mt-9 mx-4 md:mx-8 lg:mx-12">
           <MoetruyenSection />
