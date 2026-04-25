@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "gen:api": "bunx --bun orval --config ./orval.config.ts",
-    "dev": "next dev",
-    "build": "next build && serwist build",
+    "dev": "bun --bun next dev",
+    "build": "bun --bun next build && serwist build",
     "postbuild": "next-sitemap",
-    "start": "next start -p 3636",
+    "start": "bun --bun next start -p 3636",
     "upgrade": "next upgrade",
     "analyze": "next experimental-analyze",
     "lint": "eslint .",
