@@ -1,0 +1,13 @@
+{
+    "apps": [
+        {
+            "name": "better-suicaodex",
+            "script": "bun",
+            "args": [
+                "--bun",
+                "run",
+                "start"
+            ]
+        }
+    ]
+}
