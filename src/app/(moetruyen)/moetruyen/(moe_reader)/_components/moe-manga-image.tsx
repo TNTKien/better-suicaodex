@@ -6,7 +6,7 @@ import type { PageState } from "@/hooks/use-reader-images";
 import { cn } from "@/lib/utils";
 import { getImageScaleClasses, useReaderStore } from "@/store/reader-store";
 import { RotateCcw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface MoeMangaImageProps {
   page: PageState;
@@ -29,11 +29,8 @@ export default function MoeMangaImage({
 }: MoeMangaImageProps) {
   const scale = useReaderStore((state) => state.scale);
   const imgClasses = getImageScaleClasses(scale);
-  const [imgVisible, setImgVisible] = useState(false);
-
-  useEffect(() => {
-    setImgVisible(false);
-  }, [page.blob]);
+  const [visibleBlob, setVisibleBlob] = useState<string | null>(null);
+  const imgVisible = page.blob !== null && visibleBlob === page.blob;
 
   return (
     <div
@@ -59,12 +56,11 @@ export default function MoeMangaImage({
           loading="eager"
           onLoad={() => {
             onLoad(pageIndex);
-            setImgVisible(true);
+            setVisibleBlob(page.blob);
           }}
-          onError={(event) => {
+          onError={() => {
             onError(pageIndex);
-            event.currentTarget.src = "/images/xidoco.webp";
-            setImgVisible(true);
+            setVisibleBlob(null);
           }}
         />
       ) : null}

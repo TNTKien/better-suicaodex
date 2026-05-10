@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { RotateCcw } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface MangaImageProps {
   /** Trạng thái tải của trang này từ useReaderImages */
@@ -31,10 +31,8 @@ export default function MangaImage({
 }: MangaImageProps) {
   const scale = useReaderStore((s) => s.scale);
   const imgClasses = getImageScaleClasses(scale);
-  const [imgVisible, setImgVisible] = useState(false);
-  useEffect(() => {
-    setImgVisible(false);
-  }, [page.blob]);
+  const [visibleBlob, setVisibleBlob] = useState<string | null>(null);
+  const imgVisible = page.blob !== null && visibleBlob === page.blob;
 
   return (
     <div
@@ -60,12 +58,11 @@ export default function MangaImage({
           loading="eager"
           onLoad={() => {
             onLoad(pageIndex);
-            setImgVisible(true);
+            setVisibleBlob(page.blob);
           }}
-          onError={(e) => {
+          onError={() => {
             onError(pageIndex);
-            e.currentTarget.src = "/images/xidoco.webp";
-            setImgVisible(true);
+            setVisibleBlob(null);
           }}
         />
       )}
