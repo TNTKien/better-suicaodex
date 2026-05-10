@@ -46,7 +46,7 @@ function isRankingTabValue(value: string): value is RankingTabValue {
 export default function MoeLeaderboard() {
   const isMounted = useMounted();
   const [activeSort, setActiveSort] = useState<RankingSortValue>("views");
-  const [activeTab, setActiveTab] = useState<RankingTabValue>("24h");
+  const [activeTab, setActiveTab] = useState<RankingTabValue>("all_time");
   const activeTime = activeSort === "views" ? activeTab : "all_time";
 
   const { data, isLoading, error } = useGetV2MangaTop(
