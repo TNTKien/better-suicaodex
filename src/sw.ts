@@ -24,8 +24,10 @@ declare const self: ServiceWorkerGlobalScope;
 const COVER_CACHE_MAX_ENTRIES = 200;
 const COVER_CACHE_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
 const SUICAODEX_COVER_CACHE_NAME = "suicaodex-cover-images";
-const TRUYEN_MOE_COVER_CACHE_NAME = "truyen-moe-cover-images";
-const LEGACY_COVER_CACHE_NAMES = ["moetruyen-cover-images"] as const;
+const LEGACY_COVER_CACHE_NAMES = [
+  "moetruyen-cover-images",
+  "truyen-moe-cover-images",
+] as const;
 const DEFAULT_IMAGE_CACHE_NAMES = [
   "cross-origin",
   "static-image-assets",
@@ -92,17 +94,6 @@ async function pruneSuicaodexCoverCache(existingCacheNames: string[]) {
   );
 }
 
-async function pruneTruyenMoeCoverCache(existingCacheNames: string[]) {
-  await pruneCoverCache(
-    TRUYEN_MOE_COVER_CACHE_NAME,
-    existingCacheNames,
-    (url) =>
-      url.protocol === "https:" &&
-      url.hostname === "u.truyen.moe" &&
-      url.pathname.startsWith("/uploads/covers/"),
-  );
-}
-
 async function deleteOversizedCoverCache(
   cacheName: string,
   existingCacheNames: string[],
@@ -123,11 +114,9 @@ async function cleanupCoverCaches() {
   const existingCacheNames = await caches.keys();
 
   await pruneSuicaodexCoverCache(existingCacheNames);
-  await pruneTruyenMoeCoverCache(existingCacheNames);
-  await Promise.all(
-    [SUICAODEX_COVER_CACHE_NAME, TRUYEN_MOE_COVER_CACHE_NAME].map(
-      (cacheName) => deleteOversizedCoverCache(cacheName, existingCacheNames),
-    ),
+  await deleteOversizedCoverCache(
+    SUICAODEX_COVER_CACHE_NAME,
+    existingCacheNames,
   );
 }
 
@@ -194,16 +183,8 @@ const serwist = new Serwist({
         request.destination === "image" && isSuicaodex512CoverUrl(url),
       handler: createCorsCoverCacheHandler(SUICAODEX_COVER_CACHE_NAME),
     },
-    {
-      matcher: ({ request, url }) =>
-        request.destination === "image" &&
-        url.protocol === "https:" &&
-        url.hostname === "u.truyen.moe" &&
-        url.pathname.startsWith("/uploads/covers/"),
-      handler: createCorsCoverCacheHandler(TRUYEN_MOE_COVER_CACHE_NAME),
-    },
-    // Chặn defaultCache của Serwist cache ảnh cross-origin ngoài các cover
-    // cache chủ đích ở trên; vẫn cho phép cache ảnh tối ưu Next cùng origin.
+    // Chặn defaultCache của Serwist cache ảnh cross-origin ngoài cover
+    // SuicaoDex chủ đích ở trên; vẫn cho phép cache ảnh tối ưu Next cùng origin.
     {
       matcher: ({ request, sameOrigin }) =>
         request.destination === "image" && !sameOrigin,
