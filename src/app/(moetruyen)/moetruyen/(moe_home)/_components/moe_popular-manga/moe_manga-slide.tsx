@@ -104,7 +104,6 @@ export default function MoeMangaSlide({
           <LazyLoadImage
             placeholderSrc={FALLBACK_COVER}
             src={thumbnailCoverUrl}
-            crossOrigin="anonymous"
             alt={`Ảnh bìa ${manga.title}`}
             onError={(event) => {
               event.currentTarget.src = FALLBACK_COVER;

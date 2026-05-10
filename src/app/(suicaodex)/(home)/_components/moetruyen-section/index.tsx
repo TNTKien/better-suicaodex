@@ -148,7 +148,6 @@ function RotatingBackground({
           >
             <LazyLoadImage
               src={coverUrl}
-              crossOrigin="anonymous"
               alt={manga.title}
               wrapperClassName="block! absolute inset-0 h-full w-full overflow-hidden rounded-md"
               placeholderSrc={FALLBACK_COVER}

@@ -29,7 +29,6 @@ export default function GroupMangaCard({ manga }: GroupMangaCardProps) {
               "h-auto w-full rounded-sm block object-cover aspect-5/7",
             )}
             src={coverUrl}
-            crossOrigin="anonymous"
             alt={`Ảnh bìa ${manga.title}`}
             onError={(e) => {
               e.currentTarget.src = "/images/xidoco.webp";

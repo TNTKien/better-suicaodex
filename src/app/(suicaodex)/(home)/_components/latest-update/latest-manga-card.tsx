@@ -40,7 +40,6 @@ export default function LatestMangaCard({ chapter }: LatestMangaCardProps) {
           <LazyLoadImage
             wrapperClassName="block! w-full h-full absolute inset-0"
             src={coverUrl}
-            crossOrigin="anonymous"
             alt={title}
             placeholderSrc="/images/place-doro.webp"
             className="w-full h-full object-cover"

@@ -26,7 +26,6 @@ export default function CompactCardMoetruyen({
         <LazyLoadImage
           wrapperClassName="block! shrink-0"
           src={coverUrl}
-          crossOrigin="anonymous"
           alt={manga.title}
           placeholderSrc="/images/place-doro.webp"
           className="w-16! h-auto! aspect-5/7 object-cover! rounded-sm border"
