@@ -54,6 +54,7 @@ export default function MoeMangaCover({
               </div>
               <LazyLoadImage
                 src={coverUrl}
+                crossOrigin="anonymous"
                 alt={`Ảnh bìa ${alt}`}
                 className="z-20 max-h-full max-w-full object-cover"
                 visibleByDefault
@@ -74,6 +75,7 @@ export default function MoeMangaCover({
         )}
         placeholderSrc={placeholder}
         src={thumbnailCoverUrl}
+        crossOrigin="anonymous"
         alt={`Ảnh bìa ${alt}`}
         className={cn("block h-auto w-full rounded-sm", className)}
         onLoad={() => setLoaded(true)}

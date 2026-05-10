@@ -104,6 +104,7 @@ export default function MoeMangaSlide({
           <LazyLoadImage
             placeholderSrc={FALLBACK_COVER}
             src={thumbnailCoverUrl}
+            crossOrigin="anonymous"
             alt={`Ảnh bìa ${manga.title}`}
             onError={(event) => {
               event.currentTarget.src = FALLBACK_COVER;
@@ -130,8 +131,7 @@ export default function MoeMangaSlide({
 
           <div className="hidden md:flex flex-wrap gap-1">
             <MoeStatusTag status={manga.status} />
-            {manga.genres &&
-              manga.genres.map((genre) => (
+            {manga.genres?.map((genre) => (
                 <MoeNormalTag key={genre.id} className="uppercase">
                   {genre.name}
                 </MoeNormalTag>

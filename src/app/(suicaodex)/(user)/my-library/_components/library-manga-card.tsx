@@ -34,6 +34,7 @@ export default function LibraryMangaCard({
             placeholderSrc="/images/place-doro.webp"
             className="w-full h-auto aspect-5/7 object-cover rounded-sm"
             src={coverUrl}
+            crossOrigin="anonymous"
             alt={`Ảnh bìa ${title}`}
             onError={(e) => {
               e.currentTarget.src = "/images/xidoco.webp";

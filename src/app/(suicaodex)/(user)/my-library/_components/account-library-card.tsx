@@ -52,12 +52,12 @@ export default function AccountLibraryCard({
         toast.error(`Lỗi API: ${res.status}`);
         return;
       }
-      const manga: MangaListItem = await res.json();
+      const manga = (await res.json()) as MangaListItem;
       const { title: newTitle } = parseMangaTitle(manga);
-      const newCoverId = (manga as any).relationships?.cover?.id ?? null;
+      const newCoverId = manga.relationships?.cover?.id ?? null;
 
       // Lưu vào DB (background, không cần await để UI phản hồi ngay)
-      saveMangaMetadata(session.user.id, id, newTitle, newCoverId);
+      void saveMangaMetadata(session.user.id, id, newTitle, newCoverId);
 
       onRefreshed?.(id, newTitle, newCoverId);
       toast.success("Đã cập nhật thông tin truyện!");
@@ -96,6 +96,7 @@ export default function AccountLibraryCard({
             placeholderSrc="/images/place-doro.webp"
             className="w-full h-auto aspect-5/7 object-cover rounded-sm"
             src={coverUrl}
+            crossOrigin="anonymous"
             alt={`Ảnh bìa ${displayTitle}`}
             onError={(e) => {
               e.currentTarget.src = "/images/xidoco.webp";
@@ -115,7 +116,9 @@ export default function AccountLibraryCard({
         variant="secondary"
         size="icon-sm"
         className="absolute top-1 left-1 size-6"
-        onClick={handleRefresh}
+        onClick={(event) => {
+          void handleRefresh(event);
+        }}
         disabled={isRefreshing}
         aria-label="Cập nhật thông tin truyện"
       >
@@ -129,7 +132,9 @@ export default function AccountLibraryCard({
         variant="destructive"
         size="icon-sm"
         className="absolute top-1 right-1 size-6"
-        onClick={handleRemove}
+        onClick={(event) => {
+          void handleRemove(event);
+        }}
         disabled={isRemoving}
         aria-label="Xóa khỏi thư viện"
       >
