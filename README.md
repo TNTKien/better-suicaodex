@@ -86,6 +86,9 @@ Tôi rất hoan nghênh và thậm chí là khuyến khích cmn luôn, làm mộ
 Cài đặt các package cần thiết:
 ```bash
 bun install
+
+//optional, run this if got build error
+bun add -D @types/web
 ```
 
 Gen API client:
