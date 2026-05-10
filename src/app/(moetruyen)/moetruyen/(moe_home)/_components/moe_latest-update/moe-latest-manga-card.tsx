@@ -32,6 +32,7 @@ export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
           <LazyLoadImage
             wrapperClassName="block! w-full h-full absolute inset-0"
             src={coverUrl}
+            crossOrigin="anonymous"
             alt={manga.title}
             placeholderSrc="/images/place-doro.webp"
             className="w-full h-full object-cover"

@@ -24,6 +24,11 @@ const COVER_CACHE_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
 const SUICAODEX_COVER_CACHE_NAME = "suicaodex-cover-images";
 const TRUYEN_MOE_COVER_CACHE_NAME = "truyen-moe-cover-images";
 const LEGACY_COVER_CACHE_NAMES = ["moetruyen-cover-images"] as const;
+const DEFAULT_IMAGE_CACHE_NAMES = [
+  "next-image",
+  "cross-origin",
+  "static-image-assets",
+] as const;
 
 function isSuicaodex512CoverUrl(url: URL) {
   return (
@@ -40,22 +45,59 @@ async function deleteLegacyCoverCaches() {
   );
 }
 
-async function pruneSuicaodexCoverCache(existingCacheNames: string[]) {
-  if (!existingCacheNames.includes(SUICAODEX_COVER_CACHE_NAME)) return;
+async function deleteDefaultImageCaches() {
+  await Promise.all(
+    DEFAULT_IMAGE_CACHE_NAMES.map((cacheName) => caches.delete(cacheName)),
+  );
+}
 
-  const cache = await caches.open(SUICAODEX_COVER_CACHE_NAME);
+async function pruneCoverCache(
+  cacheName: string,
+  existingCacheNames: string[],
+  isAllowedUrl: (url: URL) => boolean,
+) {
+  if (!existingCacheNames.includes(cacheName)) return;
+
+  const cache = await caches.open(cacheName);
   const requests = await cache.keys();
 
   await Promise.all(
-    requests.map((request) => {
+    requests.map(async (request) => {
       const url = new URL(request.url);
 
-      if (isSuicaodex512CoverUrl(url)) {
-        return Promise.resolve(false);
+      if (!isAllowedUrl(url)) {
+        return cache.delete(request);
       }
 
-      return cache.delete(request);
+      const response = await cache.match(request);
+
+      if (response?.type === "opaque") {
+        return cache.delete(request);
+      }
+
+      return false;
     }),
+  );
+}
+
+async function pruneSuicaodexCoverCache(existingCacheNames: string[]) {
+  if (!existingCacheNames.includes(SUICAODEX_COVER_CACHE_NAME)) return;
+
+  await pruneCoverCache(
+    SUICAODEX_COVER_CACHE_NAME,
+    existingCacheNames,
+    isSuicaodex512CoverUrl,
+  );
+}
+
+async function pruneTruyenMoeCoverCache(existingCacheNames: string[]) {
+  await pruneCoverCache(
+    TRUYEN_MOE_COVER_CACHE_NAME,
+    existingCacheNames,
+    (url) =>
+      url.protocol === "https:" &&
+      url.hostname === "u.truyen.moe" &&
+      url.pathname.startsWith("/uploads/covers/"),
   );
 }
 
@@ -74,11 +116,12 @@ async function deleteOversizedCoverCache(
 }
 
 async function cleanupCoverCaches() {
-  await deleteLegacyCoverCaches();
+  await Promise.all([deleteLegacyCoverCaches(), deleteDefaultImageCaches()]);
 
   const existingCacheNames = await caches.keys();
 
   await pruneSuicaodexCoverCache(existingCacheNames);
+  await pruneTruyenMoeCoverCache(existingCacheNames);
   await Promise.all(
     [SUICAODEX_COVER_CACHE_NAME, TRUYEN_MOE_COVER_CACHE_NAME].map(
       (cacheName) => deleteOversizedCoverCache(cacheName, existingCacheNames),
@@ -88,7 +131,7 @@ async function cleanupCoverCaches() {
 
 const coverCachePlugins = [
   new CacheableResponsePlugin({
-    statuses: [0, 200],
+    statuses: [200],
   }),
   new ExpirationPlugin({
     maxEntries: COVER_CACHE_MAX_ENTRIES,
@@ -104,14 +147,16 @@ const serwist = new Serwist({
   navigationPreload: true,
   runtimeCaching: [
     {
-      matcher: ({ url }) => isSuicaodex512CoverUrl(url),
+      matcher: ({ request, url }) =>
+        request.mode === "cors" && isSuicaodex512CoverUrl(url),
       handler: new CacheFirst({
         cacheName: SUICAODEX_COVER_CACHE_NAME,
         plugins: coverCachePlugins,
       }),
     },
     {
-      matcher: ({ url }) =>
+      matcher: ({ request, url }) =>
+        request.mode === "cors" &&
         url.protocol === "https:" &&
         url.hostname === "u.truyen.moe" &&
         url.pathname.startsWith("/uploads/covers/"),
@@ -119,6 +164,14 @@ const serwist = new Serwist({
         cacheName: TRUYEN_MOE_COVER_CACHE_NAME,
         plugins: coverCachePlugins,
       }),
+    },
+    // Chặn defaultCache của Serwist cache ảnh tối ưu Next và ảnh cross-origin
+    // ngoài các cover cache chủ đích ở trên; các cache này dễ phình rất lớn.
+    {
+      matcher: ({ request, sameOrigin, url }) =>
+        request.destination === "image" &&
+        (url.pathname === "/_next/image" || !sameOrigin),
+      handler: new NetworkOnly(),
     },
     // Không cache API calls từ weebdex
     {
