@@ -46,7 +46,6 @@ export default function MangaCard({
             "h-auto w-full rounded-sm block object-cover aspect-5/7",
           )}
           src={cover_url}
-          crossOrigin="anonymous"
           alt={`Ảnh bìa ${title}`}
           onLoad={() => setLoaded(true)}
           onError={(e) => {

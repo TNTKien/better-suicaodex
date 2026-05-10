@@ -54,7 +54,6 @@ export default function HistoryMangaCard({
       <NoPrefetchLink href={mangaHref} className="shrink-0">
         <Image
           src={coverUrl}
-          crossOrigin="anonymous"
           alt={title}
           width={80}
           height={112}

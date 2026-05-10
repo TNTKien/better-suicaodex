@@ -49,7 +49,6 @@ export default function MoeLeaderboardItem({
           <LazyLoadImage
             wrapperClassName="block! absolute inset-0 h-full w-full"
             src={coverUrl}
-            crossOrigin="anonymous"
             alt={manga.title}
             placeholderSrc={FALLBACK_COVER}
             className="h-full w-full object-cover"
