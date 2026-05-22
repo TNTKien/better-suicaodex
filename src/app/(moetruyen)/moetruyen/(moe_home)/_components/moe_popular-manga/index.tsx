@@ -23,7 +23,7 @@ export default function MoePopularManga() {
     {
       limit: 10,
       sort_by: "views",
-      time: "all_time",
+      time: "24h",
       include: "genres",
     },
     {
