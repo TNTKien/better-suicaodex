@@ -7,7 +7,7 @@ import {
   isImgxUrl,
   unwrapImgxGrantDecodeKey,
   type ImgxGrant,
-} from "./imgx";
+} from "@/lib/moetruyen/imgx";
 
 const IMGX_HEADER_BYTES = 13;
 
