@@ -8,9 +8,12 @@
  * - Fetch thành công tạo `blob:` URL; component vẫn báo ngược khi ảnh decode xong / lỗi
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { loadMoetruyenReaderImage } from "@/lib/moetruyen/reader-image";
+import {
+  createMoetruyenPageAccessFetcher,
+  loadMoetruyenReaderImage,
+} from "@/lib/moetruyen/reader-image";
 
 export interface PageState {
   blob: string | null;
@@ -50,6 +53,16 @@ export function useReaderImagesWithOptions(
   options: { chapterId?: number },
 ) {
   const chapterId = options.chapterId;
+  const pageAccessFetcher = useMemo(
+    () =>
+      chapterId === undefined
+        ? undefined
+        : createMoetruyenPageAccessFetcher({
+            chapterId,
+            imageUrls: images,
+          }),
+    [chapterId, images],
+  );
   const [pages, setPages] = useState<PageState[]>(() =>
     createInitialPages(images),
   );
@@ -180,6 +193,7 @@ export function useReaderImagesWithOptions(
           pageIndex: index,
           chapterId,
           signal: controller.signal,
+          pageAccessFetcher,
         });
 
         if (
@@ -246,7 +260,14 @@ export function useReaderImagesWithOptions(
         }
       }
     },
-    [chapterId, enqueueIndex, images, revokePageBlob, updatePage],
+    [
+      chapterId,
+      enqueueIndex,
+      images,
+      pageAccessFetcher,
+      revokePageBlob,
+      updatePage,
+    ],
   );
 
   const processQueue = useCallback(() => {
