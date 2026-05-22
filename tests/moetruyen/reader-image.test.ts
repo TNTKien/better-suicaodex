@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { createMoetruyenPageAccessFetcher } from "./reader-image";
-import type { PostV2ChaptersByIdPageAccess200DataPagesItem } from "./model/postV2ChaptersByIdPageAccess200DataPagesItem";
+import { createMoetruyenPageAccessFetcher } from "@/lib/moetruyen/reader-image";
+import type { PostV2ChaptersByIdPageAccess200DataPagesItem } from "@/lib/moetruyen/model/postV2ChaptersByIdPageAccess200DataPagesItem";
 
 const makePage = (
   pageIndex: number,

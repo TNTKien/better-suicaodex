@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { PageState } from "@/hooks/use-reader-images";
+import type { PageState } from "@/types/reader-image";
 
 import MoeMangaImage from "./moe-manga-image";
 

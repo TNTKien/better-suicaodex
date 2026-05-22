@@ -1,7 +1,7 @@
 "use client";
 
-import type { PageState } from "@/hooks/use-reader-images";
 import { useReaderStore } from "@/store/reader-store";
+import type { PageState } from "@/types/reader-image";
 import { useEffect, useRef } from "react";
 
 import MoeMangaImage from "./moe-manga-image";

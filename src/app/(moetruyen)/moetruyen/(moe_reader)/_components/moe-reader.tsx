@@ -1,7 +1,7 @@
 "use client";
 
 import useKeyDown from "@/hooks/use-keydown";
-import { useReaderImagesWithOptions } from "@/hooks/use-reader-images";
+import { useMoeReaderImages } from "@/hooks/use-moe-reader-images";
 import type { GetV2ChaptersById200Data } from "@/lib/moetruyen/model/getV2ChaptersById200Data";
 import { useReaderStore } from "@/store/reader-store";
 import { useRouter } from "@bprogress/next";
@@ -54,7 +54,7 @@ export default function MoeReader({
   const router = useRouter();
   const { mode, spreadOffset } = useReaderStore();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { pages, retry, markLoaded, markFailed } = useReaderImagesWithOptions(
+  const { pages, retry, markLoaded, markFailed } = useMoeReaderImages(
     images,
     currentIndex,
     { chapterId: chapterData.chapter.id },
