@@ -8,6 +8,8 @@
     "build": "next build && serwist build",
     "postbuild": "next-sitemap",
     "start": "next start -p 3636",
+    "test": "bun test",
+    "test:file": "bun test",
     "upgrade": "next upgrade",
     "analyze": "next experimental-analyze",
     "lint": "eslint .",

@@ -10,6 +10,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { loadMoetruyenReaderImage } from "@/lib/moetruyen/reader-image";
+
 export interface PageState {
   blob: string | null;
   isLoaded: boolean;
@@ -39,6 +41,15 @@ function noopProcessQueue() {
 }
 
 export function useReaderImages(images: string[], currentIndex: number) {
+  return useReaderImagesWithOptions(images, currentIndex, {});
+}
+
+export function useReaderImagesWithOptions(
+  images: string[],
+  currentIndex: number,
+  options: { chapterId?: number },
+) {
+  const chapterId = options.chapterId;
   const [pages, setPages] = useState<PageState[]>(() =>
     createInitialPages(images),
   );
@@ -164,13 +175,12 @@ export function useReaderImages(images: string[], currentIndex: number) {
       });
 
       try {
-        const response = await fetch(source, { signal: controller.signal });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch reader image: ${response.status}`);
-        }
-
-        const blob = await response.blob();
+        const blob = await loadMoetruyenReaderImage({
+          source,
+          pageIndex: index,
+          chapterId,
+          signal: controller.signal,
+        });
 
         if (
           !mountedRef.current ||
@@ -236,7 +246,7 @@ export function useReaderImages(images: string[], currentIndex: number) {
         }
       }
     },
-    [enqueueIndex, images, revokePageBlob, updatePage],
+    [chapterId, enqueueIndex, images, revokePageBlob, updatePage],
   );
 
   const processQueue = useCallback(() => {
