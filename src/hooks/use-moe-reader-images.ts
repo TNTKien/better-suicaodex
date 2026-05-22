@@ -1,22 +1,33 @@
 "use client";
 
 /**
- * `useReaderImages` - tải ảnh reader bằng Blob URL.
+ * `useMoeReaderImages` - tải ảnh MoeTruyen, bao gồm IMGX page-access/decode.
  *
- * - Tối đa MAX_PARALLEL ảnh được fetch đồng thời
- * - Hàng đợi ưu tiên: trang hiện tại trước, rồi lan dần ra hai phía
- * - Fetch thành công tạo `blob:` URL; component vẫn báo ngược khi ảnh decode xong / lỗi
+ * - Cửa sổ ưu tiên quanh trang hiện tại được tải ngay
+ * - Phần còn lại tải nền từng trang để tránh burst request toàn chapter
+ * - Page-access vẫn được gom theo batch/cached trong `reader-image`
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import {
+  createMoetruyenPageAccessFetcher,
+  loadMoetruyenReaderImage,
+  MOETRUYEN_PAGE_ACCESS_BATCH_SIZE,
+} from "@/lib/moetruyen/reader-image";
+import { buildMoeReaderLoadQueues } from "@/lib/moetruyen/reader-queue";
 import type { PageState } from "@/types/reader-image";
 
-export type { PageState } from "@/types/reader-image";
+interface UseMoeReaderImagesOptions {
+  chapterId: number;
+}
 
 const MAX_PARALLEL = 3;
+const BACKGROUND_PARALLEL = 1;
 const MAX_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 3000;
+const BACKGROUND_LOAD_DELAY_MS = 700;
+const PRELOAD_BACKWARD = 3;
 
 function createInitialPages(images: string[]): PageState[] {
   return images.map(() => ({
@@ -35,14 +46,32 @@ function noopProcessQueue() {
   return undefined;
 }
 
-export function useReaderImages(images: string[], currentIndex: number) {
+export function useMoeReaderImages(
+  images: string[],
+  currentIndex: number,
+  { chapterId }: UseMoeReaderImagesOptions,
+) {
+  const pageAccessFetcher = useMemo(
+    () =>
+      createMoetruyenPageAccessFetcher({
+        chapterId,
+        imageUrls: images,
+      }),
+    [chapterId, images],
+  );
   const [pages, setPages] = useState<PageState[]>(() =>
     createInitialPages(images),
   );
 
   const stateRef = useRef<PageState[]>(pages);
   const parallelRef = useRef(0);
-  const queueRef = useRef<number[]>([]);
+  const backgroundActiveRef = useRef(0);
+  const urgentQueueRef = useRef<number[]>([]);
+  const backgroundQueueRef = useRef<number[]>([]);
+  const backgroundTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const backgroundReadyRef = useRef(false);
   const mountedRef = useRef(true);
   const controllersRef = useRef<Map<number, AbortController>>(new Map());
   const pendingRetryRef = useRef<Set<number>>(new Set());
@@ -76,6 +105,15 @@ export function useReaderImages(images: string[], currentIndex: number) {
     if (isBlobUrl(blobUrl)) {
       URL.revokeObjectURL(blobUrl);
     }
+  }, []);
+
+  const clearBackgroundTimer = useCallback(() => {
+    if (backgroundTimeoutRef.current !== null) {
+      clearTimeout(backgroundTimeoutRef.current);
+      backgroundTimeoutRef.current = null;
+    }
+
+    backgroundReadyRef.current = false;
   }, []);
 
   const clearRetryTimer = useCallback((index: number) => {
@@ -114,23 +152,55 @@ export function useReaderImages(images: string[], currentIndex: number) {
     );
   }, []);
 
-  const enqueueIndex = useCallback(
-    (index: number, front = false) => {
+  const enqueueUrgentIndex = useCallback(
+    (index: number) => {
       if (index < 0 || index >= images.length) return;
 
-      queueRef.current = queueRef.current.filter((queued) => queued !== index);
-
-      if (front) {
-        queueRef.current.unshift(index);
-      } else {
-        queueRef.current.push(index);
-      }
+      urgentQueueRef.current = urgentQueueRef.current.filter(
+        (queued) => queued !== index,
+      );
+      backgroundQueueRef.current = backgroundQueueRef.current.filter(
+        (queued) => queued !== index,
+      );
+      urgentQueueRef.current.unshift(index);
+      clearBackgroundTimer();
     },
-    [images.length],
+    [clearBackgroundTimer, images.length],
   );
 
+  const scheduleBackgroundQueue = useCallback(() => {
+    if (
+      !mountedRef.current ||
+      backgroundTimeoutRef.current !== null ||
+      backgroundReadyRef.current
+    ) {
+      return;
+    }
+
+    backgroundTimeoutRef.current = setTimeout(() => {
+      backgroundTimeoutRef.current = null;
+      backgroundReadyRef.current = true;
+      processQueueRef.current();
+    }, BACKGROUND_LOAD_DELAY_MS);
+  }, []);
+
   const loadPage = useCallback(
-    async (index: number) => {
+    async (index: number, isBackground = false) => {
+      const completeLoad = () => {
+        if (isBackground) {
+          backgroundActiveRef.current = Math.max(
+            0,
+            backgroundActiveRef.current - 1,
+          );
+        }
+
+        parallelRef.current = Math.max(0, parallelRef.current - 1);
+
+        if (mountedRef.current) {
+          processQueueRef.current();
+        }
+      };
+
       const source = images[index];
 
       if (!source) {
@@ -140,8 +210,7 @@ export function useReaderImages(images: string[], currentIndex: number) {
           isLoaded: false,
           isLoading: false,
         });
-        parallelRef.current = Math.max(0, parallelRef.current - 1);
-        processQueueRef.current();
+        completeLoad();
         return;
       }
 
@@ -161,13 +230,13 @@ export function useReaderImages(images: string[], currentIndex: number) {
       });
 
       try {
-        const response = await fetch(source, { signal: controller.signal });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch reader image: ${response.status}`);
-        }
-
-        const blob = await response.blob();
+        const blob = await loadMoetruyenReaderImage({
+          source,
+          pageIndex: index,
+          chapterId,
+          signal: controller.signal,
+          pageAccessFetcher,
+        });
 
         if (
           !mountedRef.current ||
@@ -204,7 +273,7 @@ export function useReaderImages(images: string[], currentIndex: number) {
 
             if (!mountedRef.current) return;
 
-            enqueueIndex(index, true);
+            enqueueUrgentIndex(index);
             processQueueRef.current();
           }, RETRY_DELAY_MS);
 
@@ -226,69 +295,95 @@ export function useReaderImages(images: string[], currentIndex: number) {
           controllersRef.current.delete(index);
         }
 
-        parallelRef.current = Math.max(0, parallelRef.current - 1);
-
-        if (mountedRef.current) {
-          processQueueRef.current();
-        }
+        completeLoad();
       }
     },
-    [enqueueIndex, images, revokePageBlob, updatePage],
+    [
+      chapterId,
+      enqueueUrgentIndex,
+      images,
+      pageAccessFetcher,
+      revokePageBlob,
+      updatePage,
+    ],
   );
 
   const processQueue = useCallback(() => {
-    while (queueRef.current.length > 0 && parallelRef.current < MAX_PARALLEL) {
-      const index = queueRef.current.shift()!;
+    while (
+      urgentQueueRef.current.length > 0 &&
+      parallelRef.current < MAX_PARALLEL
+    ) {
+      const index = urgentQueueRef.current.shift()!;
 
       if (!canStartLoad(index)) continue;
 
       parallelRef.current += 1;
       void loadPage(index);
     }
-  }, [canStartLoad, loadPage]);
+
+    if (
+      urgentQueueRef.current.length > 0 ||
+      parallelRef.current >= MAX_PARALLEL ||
+      backgroundActiveRef.current >= BACKGROUND_PARALLEL ||
+      backgroundQueueRef.current.length === 0
+    ) {
+      return;
+    }
+
+    if (!backgroundReadyRef.current) {
+      scheduleBackgroundQueue();
+      return;
+    }
+
+    backgroundReadyRef.current = false;
+
+    let startedBackgroundLoads = 0;
+
+    while (
+      backgroundQueueRef.current.length > 0 &&
+      startedBackgroundLoads < BACKGROUND_PARALLEL &&
+      backgroundActiveRef.current < BACKGROUND_PARALLEL &&
+      parallelRef.current < MAX_PARALLEL
+    ) {
+      const index = backgroundQueueRef.current.shift()!;
+
+      if (!canStartLoad(index)) continue;
+
+      parallelRef.current += 1;
+      backgroundActiveRef.current += 1;
+      startedBackgroundLoads += 1;
+      void loadPage(index, true);
+    }
+
+    if (startedBackgroundLoads === 0 && backgroundQueueRef.current.length > 0) {
+      scheduleBackgroundQueue();
+    }
+  }, [canStartLoad, loadPage, scheduleBackgroundQueue]);
 
   useEffect(() => {
     processQueueRef.current = processQueue;
   }, [processQueue]);
 
-  const buildQueue = useCallback(
-    (centerIndex: number): number[] => {
-      const total = images.length;
-      const seen = new Set<number>();
-      const queue: number[] = [];
-
-      const tryAdd = (index: number) => {
-        if (index < 0 || index >= total || seen.has(index)) return;
-
-        seen.add(index);
-
-        if (canStartLoad(index)) {
-          queue.push(index);
-        }
-      };
-
-      tryAdd(centerIndex);
-
-      for (let distance = 1; distance < total; distance++) {
-        tryAdd(centerIndex + distance);
-        tryAdd(centerIndex - distance);
-      }
-
-      return queue;
-    },
-    [canStartLoad, images.length],
-  );
-
   useEffect(() => {
-    const priority = buildQueue(currentIndex);
-    const prioritySet = new Set(priority);
-    const remaining = queueRef.current.filter(
-      (index) => !prioritySet.has(index) && canStartLoad(index),
-    );
+    const { urgent, background } = buildMoeReaderLoadQueues({
+      total: images.length,
+      currentIndex,
+      preloadForward: MOETRUYEN_PAGE_ACCESS_BATCH_SIZE,
+      preloadBackward: PRELOAD_BACKWARD,
+      canStart: canStartLoad,
+    });
 
-    queueRef.current = [...priority, ...remaining];
+    urgentQueueRef.current = urgent;
+    backgroundQueueRef.current = background;
+    clearBackgroundTimer();
     processQueue();
-  }, [buildQueue, canStartLoad, currentIndex, processQueue]);
+  }, [
+    canStartLoad,
+    clearBackgroundTimer,
+    currentIndex,
+    images.length,
+    processQueue,
+  ]);
 
   const retry = useCallback(
     (index: number) => {
@@ -305,10 +400,10 @@ export function useReaderImages(images: string[], currentIndex: number) {
         isLoading: false,
       });
 
-      enqueueIndex(index, true);
+      enqueueUrgentIndex(index);
       processQueueRef.current();
     },
-    [enqueueIndex, invalidateRequest, revokePageBlob, updatePage],
+    [enqueueUrgentIndex, invalidateRequest, revokePageBlob, updatePage],
   );
 
   const markLoaded = useCallback(
@@ -353,6 +448,8 @@ export function useReaderImages(images: string[], currentIndex: number) {
     return () => {
       mountedRef.current = false;
 
+      clearBackgroundTimer();
+
       controllers.forEach((controller) => controller.abort());
       controllers.clear();
 
@@ -364,7 +461,7 @@ export function useReaderImages(images: string[], currentIndex: number) {
         revokePageBlob(index);
       });
     };
-  }, [revokePageBlob]);
+  }, [clearBackgroundTimer, revokePageBlob]);
 
   return { pages, retry, markLoaded, markFailed };
 }

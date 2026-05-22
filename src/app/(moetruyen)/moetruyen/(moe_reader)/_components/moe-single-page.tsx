@@ -1,6 +1,6 @@
 "use client";
 
-import type { PageState } from "@/hooks/use-reader-images";
+import type { PageState } from "@/types/reader-image";
 
 import MoeMangaImage from "./moe-manga-image";
 

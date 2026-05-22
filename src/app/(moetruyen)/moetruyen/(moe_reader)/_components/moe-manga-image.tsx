@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import type { PageState } from "@/hooks/use-reader-images";
 import { cn } from "@/lib/utils";
 import { getImageScaleClasses, useReaderStore } from "@/store/reader-store";
+import type { PageState } from "@/types/reader-image";
 import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 
