@@ -23,15 +23,18 @@ Use the `/v2` routes for the current stable surface.
 - Original site repo: [dex593/web1 (MoeTruyen)](https://github.com/dex593/web1)
  * OpenAPI spec version: 0.2.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
@@ -40,6 +43,12 @@ import type {
   GetV2ChaptersById200,
   GetV2ChaptersById403,
   GetV2ChaptersById404,
+  PostV2ChaptersByIdPageAccess200,
+  PostV2ChaptersByIdPageAccess400,
+  PostV2ChaptersByIdPageAccess403,
+  PostV2ChaptersByIdPageAccess404,
+  PostV2ChaptersByIdPageAccess503,
+  PostV2ChaptersByIdPageAccessBody,
 } from "../../model";
 
 /**
@@ -250,3 +259,163 @@ export function useGetV2ChaptersById<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * Returns short-lived IMGX page download URLs and wrapped decode-key grants for selected chapter pages.
+ * @summary Create IMGX page access grants (v2)
+ */
+export type postV2ChaptersByIdPageAccessResponse200 = {
+  data: PostV2ChaptersByIdPageAccess200;
+  status: 200;
+};
+
+export type postV2ChaptersByIdPageAccessResponse400 = {
+  data: PostV2ChaptersByIdPageAccess400;
+  status: 400;
+};
+
+export type postV2ChaptersByIdPageAccessResponse403 = {
+  data: PostV2ChaptersByIdPageAccess403;
+  status: 403;
+};
+
+export type postV2ChaptersByIdPageAccessResponse404 = {
+  data: PostV2ChaptersByIdPageAccess404;
+  status: 404;
+};
+
+export type postV2ChaptersByIdPageAccessResponse503 = {
+  data: PostV2ChaptersByIdPageAccess503;
+  status: 503;
+};
+
+export type postV2ChaptersByIdPageAccessResponseSuccess =
+  postV2ChaptersByIdPageAccessResponse200 & {
+    headers: Headers;
+  };
+export type postV2ChaptersByIdPageAccessResponseError = (
+  | postV2ChaptersByIdPageAccessResponse400
+  | postV2ChaptersByIdPageAccessResponse403
+  | postV2ChaptersByIdPageAccessResponse404
+  | postV2ChaptersByIdPageAccessResponse503
+) & {
+  headers: Headers;
+};
+
+export type postV2ChaptersByIdPageAccessResponse =
+  | postV2ChaptersByIdPageAccessResponseSuccess
+  | postV2ChaptersByIdPageAccessResponseError;
+
+export const getPostV2ChaptersByIdPageAccessUrl = (id: number) => {
+  return `https://moe.suicaodex.com/v2/chapters/${id}/page-access`;
+};
+
+export const postV2ChaptersByIdPageAccess = async (
+  id: number,
+  postV2ChaptersByIdPageAccessBody: PostV2ChaptersByIdPageAccessBody,
+  options?: RequestInit,
+): Promise<postV2ChaptersByIdPageAccessResponse> => {
+  const res = await fetch(getPostV2ChaptersByIdPageAccessUrl(id), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(postV2ChaptersByIdPageAccessBody),
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: postV2ChaptersByIdPageAccessResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postV2ChaptersByIdPageAccessResponse;
+};
+
+export const getPostV2ChaptersByIdPageAccessMutationOptions = <
+  TError =
+    | PostV2ChaptersByIdPageAccess400
+    | PostV2ChaptersByIdPageAccess403
+    | PostV2ChaptersByIdPageAccess404
+    | PostV2ChaptersByIdPageAccess503,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postV2ChaptersByIdPageAccess>>,
+    TError,
+    { id: number; data: PostV2ChaptersByIdPageAccessBody },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postV2ChaptersByIdPageAccess>>,
+  TError,
+  { id: number; data: PostV2ChaptersByIdPageAccessBody },
+  TContext
+> => {
+  const mutationKey = ["postV2ChaptersByIdPageAccess"];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postV2ChaptersByIdPageAccess>>,
+    { id: number; data: PostV2ChaptersByIdPageAccessBody }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return postV2ChaptersByIdPageAccess(id, data, fetchOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostV2ChaptersByIdPageAccessMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postV2ChaptersByIdPageAccess>>
+>;
+export type PostV2ChaptersByIdPageAccessMutationBody =
+  PostV2ChaptersByIdPageAccessBody;
+export type PostV2ChaptersByIdPageAccessMutationError =
+  | PostV2ChaptersByIdPageAccess400
+  | PostV2ChaptersByIdPageAccess403
+  | PostV2ChaptersByIdPageAccess404
+  | PostV2ChaptersByIdPageAccess503;
+
+/**
+ * @summary Create IMGX page access grants (v2)
+ */
+export const usePostV2ChaptersByIdPageAccess = <
+  TError =
+    | PostV2ChaptersByIdPageAccess400
+    | PostV2ChaptersByIdPageAccess403
+    | PostV2ChaptersByIdPageAccess404
+    | PostV2ChaptersByIdPageAccess503,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postV2ChaptersByIdPageAccess>>,
+      TError,
+      { id: number; data: PostV2ChaptersByIdPageAccessBody },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postV2ChaptersByIdPageAccess>>,
+  TError,
+  { id: number; data: PostV2ChaptersByIdPageAccessBody },
+  TContext
+> => {
+  return useMutation(
+    getPostV2ChaptersByIdPageAccessMutationOptions(options),
+    queryClient,
+  );
+};
