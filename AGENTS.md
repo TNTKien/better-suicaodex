@@ -1,11 +1,11 @@
 # AGENTS.md
 
 <!-- BEGIN:nextjs-agent-rules -->
- 
+
 # Next.js: ALWAYS read docs before coding
- 
+
 Before any Next.js work, find and read the relevant doc in `node_modules/next/dist/docs/`. Your training data is outdated — the docs are the source of truth.
- 
+
 <!-- END:nextjs-agent-rules -->
 
 ## Overview
@@ -92,10 +92,9 @@ bun run verify:auth-migration
 
 ## Tests
 
-- There is currently no `test` script in `package.json`.
-- No Jest, Vitest, Playwright, or other repo-level test config was found.
-- Single-test command: not available because no test runner is configured.
-- If you add tests later, add both a full-suite command and a single-file command to `package.json`, then update this file.
+- Bun's test runner is available through `bun run test`.
+- Run a single test file with `bun run test:file <path>`.
+- No Jest, Vitest, Playwright, or other repo-level test config is currently used.
 
 ## Code Style
 
