@@ -3,6 +3,7 @@
 import NoPrefetchLink from "@/components/common/no-prefetch-link";
 import PaginationControl from "@/components/common/pagination-control";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Empty,
@@ -17,6 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useGetV2MangaByIdChapters } from "@/lib/moetruyen/hooks/manga/manga";
+import { getMoeGroupHref } from "@/lib/moetruyen/group-url";
 import type { GetV2MangaByIdChapters200DataChaptersItem } from "@/lib/moetruyen/model/getV2MangaByIdChapters200DataChaptersItem";
 import { cn, formatNumber, formatTimeToNow } from "@/lib/utils";
 import {
@@ -61,7 +63,7 @@ function MoeChapterCard({
   const timestamp = chapter.date;
   const chapterText = `${getChapterLabel(chapter)}${chapter.title ? ` - ${chapter.title}` : ""}`;
   const accessLabel = getAccessLabel(chapter.access);
-  const groupName = chapter.groupName?.trim();
+  const groups = chapter.groups ?? [];
   const card = (
     <Card
       aria-disabled={isUnavailable}
@@ -72,7 +74,19 @@ function MoeChapterCard({
         isUnavailable && "cursor-not-allowed text-muted-foreground opacity-90",
       )}
     >
-      <div className="flex items-center gap-2">
+      {isUnavailable ? null : (
+        <NoPrefetchLink
+          suppressHydrationWarning
+          href={`/moetruyen/chapter/${chapter.id}`}
+          target="_self"
+          aria-label={chapterText}
+          className="absolute inset-0 z-0"
+        >
+          <span className="sr-only">{chapterText}</span>
+        </NoPrefetchLink>
+      )}
+
+      <div className="relative z-10 flex items-center gap-2 pointer-events-none">
         <div className="flex min-w-0 flex-auto items-center space-x-2">
           {isUnavailable ? (
             <EyeOff className="size-4 shrink-0 text-muted-foreground" />
@@ -116,13 +130,31 @@ function MoeChapterCard({
         ) : null}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="relative z-10 flex items-center gap-2 pointer-events-none">
         <div className="flex min-w-0 flex-auto items-center space-x-1">
           <Users size={16} className="shrink-0" />
 
-          <span className="line-clamp-1 px-1 text-sm font-normal">
-            {groupName ?? "No Group"}
-          </span>
+          {groups.length === 0 ? (
+            <span className="line-clamp-1 px-1 text-sm font-normal">
+              No Group
+            </span>
+          ) : (
+            <div className="flex min-w-0 items-center space-x-1">
+              {groups.map((group) => (
+                <Button
+                  asChild
+                  key={group.id}
+                  variant="ghost"
+                  className="pointer-events-auto whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary break-all"
+                  size="sm"
+                >
+                  <NoPrefetchLink href={getMoeGroupHref(group)}>
+                    {group.name}
+                  </NoPrefetchLink>
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
 
         {chapter.pages || accessLabel ? (
@@ -166,15 +198,7 @@ function MoeChapterCard({
     );
   }
 
-  return (
-    <NoPrefetchLink
-      suppressHydrationWarning
-      href={`/moetruyen/chapter/${chapter.id}`}
-      target="_self"
-    >
-      {card}
-    </NoPrefetchLink>
-  );
+  return card;
 }
 
 export default function MoeMangaChaptersList({

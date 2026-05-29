@@ -54,6 +54,7 @@ export default function MoeLeaderboard() {
       limit: 10,
       sort_by: activeSort,
       time: activeTime,
+      include: "groups",
     },
     {
       query: {

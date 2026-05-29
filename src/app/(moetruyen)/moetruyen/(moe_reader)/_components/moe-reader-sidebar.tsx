@@ -23,6 +23,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import NoPrefetchLink from "@/components/common/no-prefetch-link";
+import { getMoeGroupHref } from "@/lib/moetruyen/group-url";
 import { cn } from "@/lib/utils";
 import type { GetV2ChaptersById200Data } from "@/lib/moetruyen/model/getV2ChaptersById200Data";
 import {
@@ -56,7 +57,7 @@ export default function MoeReaderSidebar({
   ...props
 }: MoeReaderSidebarProps) {
   const { state, isMobile, toggleSidebar } = useSidebar();
-  const groupName = chapter.chapter.groupName?.trim();
+  const groups = chapter.chapter.groups ?? [];
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -132,8 +133,11 @@ export default function MoeReaderSidebar({
           <Collapsible asChild defaultOpen className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip="Nhóm dịch" disabled={!groupName}>
-                  {groupName ? (
+                <SidebarMenuButton
+                  tooltip="Nhóm dịch"
+                  disabled={groups.length === 0}
+                >
+                  {groups.length > 0 ? (
                     <>
                       <UsersIcon />
                       <span>Nhóm dịch</span>
@@ -147,14 +151,21 @@ export default function MoeReaderSidebar({
                 </SidebarMenuButton>
               </CollapsibleTrigger>
 
-              {groupName ? (
+              {groups.length > 0 ? (
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton className="h-auto w-fit whitespace-normal! text-primary hover:bg-transparent hover:text-primary hover:underline">
-                        {groupName}
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
+                    {groups.map((group) => (
+                      <SidebarMenuSubItem key={group.id}>
+                        <SidebarMenuSubButton
+                          asChild
+                          className="h-auto w-fit whitespace-normal! text-primary hover:bg-transparent hover:text-primary hover:underline"
+                        >
+                          <NoPrefetchLink href={getMoeGroupHref(group)}>
+                            {group.name}
+                          </NoPrefetchLink>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               ) : null}
