@@ -171,7 +171,7 @@ export const SingleCard = ({
                 <Button
                   key={group.id}
                   variant="ghost"
-                  className="whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary hover:bg-none! dark:hover:bg-none! break-all"
+                  className="whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary break-all"
                   size="sm"
                   onClick={(e: React.MouseEvent) => {
                     e.preventDefault();

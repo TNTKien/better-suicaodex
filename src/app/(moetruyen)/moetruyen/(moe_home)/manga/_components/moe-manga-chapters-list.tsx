@@ -145,7 +145,7 @@ function MoeChapterCard({
                   asChild
                   key={group.id}
                   variant="ghost"
-                  className="pointer-events-auto whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary hover:bg-none! dark:hover:bg-none! break-all"
+                  className="pointer-events-auto whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary break-all"
                   size="sm"
                 >
                   <NoPrefetchLink href={getMoeGroupHref(group)}>
