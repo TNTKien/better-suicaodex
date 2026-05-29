@@ -4,82 +4,74 @@
     "better-auth-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
+      "skillPath": "better-auth/best-practices/SKILL.md",
       "computedHash": "9ab075b5061be2a5f299c10505667345cc1ec76e8de4120901cfd586643e776f"
     },
     "better-auth-security-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
+      "skillPath": "security/SKILL.md",
       "computedHash": "ed38caef4b297cc399d717258d6ea4e6ecb8894c453c83450064c7e7c6e5cc02"
     },
     "create-auth-skill": {
       "source": "better-auth/skills",
       "sourceType": "github",
+      "skillPath": "better-auth/create-auth/SKILL.md",
       "computedHash": "393e8d2d795fa5797c9a4e0665f29183ea2e140233db59746d510340a10456e6"
     },
     "drizzle-orm": {
       "source": "mindrally/skills",
       "sourceType": "github",
+      "skillPath": "drizzle-orm/SKILL.md",
       "computedHash": "9d5a53ffff9a69b164d9729347a0c4a90c76248a8f25da3a6c7df47a69ac6f0f"
     },
     "email-and-password-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
+      "skillPath": "better-auth/emailAndPassword/SKILL.md",
       "computedHash": "7786d722fa682b3d6a99793e73a9d51b59becefa595676134a993020633e068f"
     },
     "next-browser": {
       "source": "vercel-labs/next-browser",
       "sourceType": "github",
-      "computedHash": "c0b614395a826c558427c88f29a9630151fa796d3ded86ecd69d87e80820b896"
+      "skillPath": "skills/next-browser/SKILL.md",
+      "computedHash": "d8e316eaad3004a1de8f6f4e1b1f774a180a65f22bc821ec07eb492a3f2689ae"
     },
     "organization-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
+      "skillPath": "better-auth/organization/SKILL.md",
       "computedHash": "fa7a76e45a1f9632e6d63e92b476cf566e64f6e93a2c8ee00bc77b4a74008fbd"
-    },
-    "prisma-cli": {
-      "source": "prisma/skills",
-      "sourceType": "github",
-      "computedHash": "0f613c8d46027714ec40300d2ece024a31f9d17b1a380eb408d40ef7b8c53849"
-    },
-    "prisma-client-api": {
-      "source": "prisma/skills",
-      "sourceType": "github",
-      "computedHash": "a982b2a15dc9d4223be7844f082e6481e1e24df1f379fbcf66b82d5b58e80bec"
-    },
-    "prisma-database-setup": {
-      "source": "prisma/skills",
-      "sourceType": "github",
-      "computedHash": "72e2360923e949261a15ca1dbcfac5662ec5e851f6045ffb13163a55a083bcea"
-    },
-    "prisma-driver-adapter-implementation": {
-      "source": "prisma/skills",
-      "sourceType": "github",
-      "computedHash": "c4dd750d1e0629d9def6719330b773917b3f6649e4ed954100907275a1bb98ad"
-    },
-    "prisma-postgres": {
-      "source": "prisma/skills",
-      "sourceType": "github",
-      "computedHash": "072f06690854c4db5dfc0e812105d83dadf2dfcbe2949a2e8af84d9174a018ea"
-    },
-    "prisma-upgrade-v7": {
-      "source": "prisma/skills",
-      "sourceType": "github",
-      "computedHash": "c849747348f37b3a63db4b663b85358d0d1ac8a45ec8f860c1b8ed95334d84a8"
     },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",
-      "computedHash": "b1cc1defe03f0e8f78652b7d20e4d4e6421babc2b45835d4f361afe684dc47a2"
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "f0fdd03f4755cbb3b57e20fe6fd4a97c00d34e6780187b6559316986e8d848db"
     },
     "two-factor-authentication-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
+      "skillPath": "better-auth/twoFactor/SKILL.md",
       "computedHash": "c4f3a299c62c1985b774b7c28e53b7e55c565dbf973fd52b08899e4bcfffa3f9"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
     },
     "vercel-react-view-transitions": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
-      "computedHash": "db55fee57546ae8b7cee3d9cc08e8e810bf78cce43e2d3dd26eea69e1bf357ae"
+      "skillPath": "skills/react-view-transitions/SKILL.md",
+      "computedHash": "c8952fc9127fa0564d0cb71dccb4215a5608ac933b5831104f09173a97a46f85"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
     }
   }
 }
