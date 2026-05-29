@@ -77,7 +77,7 @@ export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
             {primaryGroup ? (
               <Button
                 asChild
-                variant="ghost"
+                variant="link"
                 className="whitespace-normal! font-normal text-start text-xs rounded-sm h-auto py-0 px-0.5 hover:text-primary line-clamp-1 break-all shrink! min-w-0"
                 size="sm"
               >
