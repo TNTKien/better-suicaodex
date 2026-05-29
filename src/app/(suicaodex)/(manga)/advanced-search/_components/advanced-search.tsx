@@ -820,7 +820,7 @@ export default function AdvancedSearchPage() {
           </div>
         </Collapsible>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 justify-end gap-2">
+        <div className="grid grid-cols-1 md:flex justify-end gap-2">
           <Button
             variant="default"
             size="lg"
