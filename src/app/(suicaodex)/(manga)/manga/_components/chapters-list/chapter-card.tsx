@@ -103,7 +103,7 @@ export const SingleCard = ({
     <Card
       aria-disabled={isUnavailable}
       className={cn(
-        "flex flex-col justify-between rounded-none px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent/50",
+        "flex flex-col justify-between rounded-none px-1.5 py-1.5 shadow-xs relative min-h-14 hover:bg-accent/15",
         isUnavailable && "opacity-90 cursor-not-allowed text-muted-foreground",
         !isRead && "border-l-2 border-l-primary",
         className,
@@ -171,7 +171,7 @@ export const SingleCard = ({
                 <Button
                   key={group.id}
                   variant="ghost"
-                  className="whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary break-all"
+                  className="whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary hover:bg-none! dark:hover:bg-none! break-all"
                   size="sm"
                   onClick={(e: React.MouseEvent) => {
                     e.preventDefault();

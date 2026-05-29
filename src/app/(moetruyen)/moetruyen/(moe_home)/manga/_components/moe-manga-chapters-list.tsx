@@ -69,7 +69,7 @@ function MoeChapterCard({
       aria-disabled={isUnavailable}
       className={cn(
         "relative flex min-h-14 flex-col justify-between rounded-none px-1.5 py-1.5 shadow-xs",
-        "hover:bg-accent/50",
+        "hover:bg-accent/15",
         "border-l-2 border-l-primary",
         isUnavailable && "cursor-not-allowed text-muted-foreground opacity-90",
       )}
@@ -145,7 +145,7 @@ function MoeChapterCard({
                   asChild
                   key={group.id}
                   variant="ghost"
-                  className="pointer-events-auto whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary break-all"
+                  className="pointer-events-auto whitespace-normal! shrink! font-normal text-start text-sm line-clamp-1 rounded-sm h-auto! py-0! px-1! hover:underline hover:text-primary hover:bg-none! dark:hover:bg-none! break-all"
                   size="sm"
                 >
                   <NoPrefetchLink href={getMoeGroupHref(group)}>
