@@ -510,6 +510,7 @@ export default function AdvancedSearchPage() {
             </div>
             <CollapsibleTrigger asChild>
               <Button
+                size="lg"
                 variant={isOpen ? "secondary" : "default"}
                 className="transition-all [&[data-state=open]>svg]:rotate-180 [&_svg]:transition-transform"
               >
@@ -819,17 +820,18 @@ export default function AdvancedSearchPage() {
           </div>
         </Collapsible>
 
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 justify-end gap-2">
           <Button
             variant="default"
-            className="bg-[#FF4040]/20 text-[#FF4040] hover:bg-[#FF4040]/10"
+            size="lg"
+            className="bg-[#FF4040]/20 text-[#FF4040] hover:bg-[#FF4040]/10 w-full md:w-auto"
             onClick={handleReset}
             disabled={isFilterEmpty}
           >
             <Eraser />
             Đặt lại
           </Button>
-          <Button onClick={handleSearch} disabled={isLoading}>
+          <Button onClick={handleSearch} disabled={isLoading} size="lg" className="w-full md:w-auto">
             {isLoading ? <Loader2 className="animate-spin" /> : <Search />}
             Tìm kiếm
           </Button>
