@@ -4,9 +4,11 @@ import Link from "next/link";
 import { Clock, EyeIcon, MessagesSquare, Users } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { GetV2Manga200DataItem } from "@/lib/moetruyen/model";
 import { getMoetruyenThumbnailCoverUrl } from "@/lib/moetruyen/cover-url";
+import { getMoeGroupHref, getMoePrimaryGroup } from "@/lib/moetruyen/group-url";
 import { formatNumber, formatTimeToNow } from "@/lib/utils";
 import { VN } from "country-flag-icons/react/3x2";
 
@@ -19,6 +21,7 @@ export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
     manga.coverUrl ?? "/images/no-cover.webp",
   );
   const mangaHref = `/moetruyen/manga/${manga.id}/${manga.slug}`;
+  const primaryGroup = getMoePrimaryGroup(manga.groups);
   const chapterLabel = manga.latestChapterNumber
     ? `Ch. ${manga.latestChapterNumber}`
     : manga.isOneshot
@@ -71,9 +74,26 @@ export default function MoeLatestMangaCard({ manga }: MoeLatestMangaCardProps) {
         <div className="space-y-1">
           <div className="flex items-center space-x-1 min-w-0">
             <Users size={16} className="shrink-0" />
-            <span className="text-xs font-normal truncate px-0.5">
-              {manga.groupName ?? "No Group"}
-            </span>
+            {primaryGroup ? (
+              <Button
+                asChild
+                variant="ghost"
+                className="whitespace-normal! font-normal text-start text-xs rounded-sm h-auto py-0 px-0.5 hover:text-primary line-clamp-1 break-all shrink! min-w-0"
+                size="sm"
+              >
+                <Link
+                  href={getMoeGroupHref(primaryGroup)}
+                  prefetch={false}
+                  className="truncate"
+                >
+                  {primaryGroup.name}
+                </Link>
+              </Button>
+            ) : (
+              <span className="text-xs font-normal truncate px-0.5">
+                No Group
+              </span>
+            )}
           </div>
 
           <div className="flex items-center space-x-1 min-w-0 justify-between">

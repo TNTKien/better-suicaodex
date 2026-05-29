@@ -41,7 +41,7 @@ export default function MoeLatestUpdate({
       limit: LIMIT,
       page,
       sort: "updated_at",
-      include: "stats",
+      include: "stats,groups",
     },
     {
       query: {
