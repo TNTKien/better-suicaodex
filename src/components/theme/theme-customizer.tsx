@@ -97,7 +97,7 @@ function Customizer() {
   return (
     <ThemeWrapper
       defaultTheme="zinc"
-      className="flex flex-col space-y-4 md:space-y-6"
+      className="flex flex-col space-y-4"
     >
       <div className="flex items-start pt-4 md:pt-0">
         <div className="space-y-1 pr-2">
@@ -124,13 +124,13 @@ function Customizer() {
           <span className="sr-only">Reset</span>
         </Button>
       </div>
-      <div className="flex flex-1 flex-col space-y-4 md:space-y-6">
+      <div className="flex flex-1 flex-col space-y-4">
         <div className="space-y-1.5">
-          <Label className="font-semibold">Màu sắc</Label>
+          <Label className="font-semibold">Preset</Label>
           <div className="grid grid-cols-3 gap-2">
             {baseColors
               .filter(
-                (theme) => !["stone", "gray", "neutral"].includes(theme.name)
+                (theme) => !["stone", "gray", "neutral", "yellow", "red", "orange"].includes(theme.name)
               )
               .map((theme) => {
                 const isActive = config.theme === theme.name;
@@ -171,10 +171,49 @@ function Customizer() {
                   <Skeleton className="h-8 w-full" key={theme.name} />
                 );
               })}
+
+              {presetThemes.map((theme) => {
+              const isActive = config.theme === theme.name;
+              return mounted ? (
+                <Button
+                  key={theme.name}
+                  variant={"outline"}
+                  size="sm"
+                  onClick={() => {
+                    setConfig({
+                      ...config,
+                      theme: theme.name,
+                    });
+                  }}
+                  className={cn(
+                    "justify-start",
+                    isActive && "border-2 border-primary!"
+                  )}
+                  style={
+                    {
+                      "--theme-primary": `hsl(${
+                        theme?.activeColor[mode === "dark" ? "dark" : "light"]
+                      })`,
+                    } as React.CSSProperties
+                  }
+                >
+                  <span
+                    className={cn(
+                      "flex size-4 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-(--theme-primary)"
+                    )}
+                  >
+                    {isActive && <Check className="size-3 text-white" />}
+                  </span>
+                  {theme.label}
+                </Button>
+              ) : (
+                <Skeleton className="h-8 w-full" key={theme.name} />
+              );
+            })}
           </div>
         </div>
 
-        <div className="space-y-1.5">
+        {/* <div className="space-y-1.5">
           <Label className="font-semibold">Preset</Label>
           <div className="grid grid-cols-3 gap-2">
             {presetThemes.map((theme) => {
@@ -216,7 +255,7 @@ function Customizer() {
               );
             })}
           </div>
-        </div>
+        </div> */}
 
         <div className="space-y-1.5">
           <Label className="font-semibold">Chế độ</Label>
