@@ -279,7 +279,7 @@ export function AuthorPicker({
               ) : null}
 
               {results.length > 0 ? (
-                <CommandGroup heading="Kết quả">
+                <CommandGroup heading="Kết quả" className="space-y-1">
                   {results.map((author) => {
                     const isSelected = selectedSet.has(author.value);
 
