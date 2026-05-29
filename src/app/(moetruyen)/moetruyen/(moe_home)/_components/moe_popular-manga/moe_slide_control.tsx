@@ -31,7 +31,7 @@ export default function MoeSlideControl() {
         </Button>
 
         <span className="text-sm md:hidden">
-          {swiper.realIndex + 1} / {swiper.slides.length}
+          {swiper.realIndex + 1} / 10
         </span>
 
         <Button
