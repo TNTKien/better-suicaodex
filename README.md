@@ -8,7 +8,7 @@
 > SuicaoDex chỉ xây dựng giao diện, trừ một số chức năng liên quan đến tài khoản, mọi dữ liệu khác đều thuộc về ~~MangaDex~~ WeebDex.
 
 
-Như đã nói, SuicaoDex chỉ là 1 dự án "cho vui", phục vụ sở thích của cá nhân tôi, và tôi cũng chả cao siêu gì, nên nó sẽ không thể trọn vẹn như các web truyện chuyên nghiệp khác.
+Như đã nói, SuicaoDex chỉ là 1 dự án phục vụ sở thích của cá nhân tôi, nên nó có thể sẽ không trọn vẹn như các web truyện chuyên nghiệp khác.
 
 Tuy vậy, SuicaoDex sẽ luôn:
 - Không quảng cáo & phi lợi nhuận.
@@ -16,6 +16,10 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Thân thiện với độc giả Việt Nam (cụ thể là tôi).
 
 ## BREAKING CHANGES
+
+### 08/04/2026
+- WeebDex ngừng hoạt động, do chỉ kịp cứu 1 phần (nhỏ) data nên SuicaoDex vẫn có thể hoạt động nhưng sẽ không có cập nhật truyện mới.
+- Tạm thời tôi đã thêm [SuicaoDex x MoeTruyen](https://suicaodex.com/moetruyen) như 1 biện pháp chữa cháy, sử dụng [moetruyen-public-api](https://github.com/TNTKien/moetruyen-public-api)
 
 ### 12/03/2026
 - Chuyển database sang PostgreSQL, xem [MIGRATE_TO_POSTGRES.md](https://github.com/TNTKien/better-suicaodex/blob/master/MIGRATE_TO_POSTGRES.md) để biết thêm chi tiết. Còn không thì cứ để nguyên cho lành.
@@ -29,21 +33,12 @@ Tuy vậy, SuicaoDex sẽ luôn:
 
 ## Vài lỗi đã biết
 - Nút `Đọc ngay` hoạt động bất thường khi chuyển ngôn ngữ.
-- ~~Thông báo bị đần, ngoài ra chưa có chỗ để xem danh sách các truyện đã đăng ký nhận thông báo~~ Tạm thời tắt chức năng này
-- Nhiều chỗ param bị đần hoặc méo có, mà giờ sửa thì lười vc 🐧, thôi thì cứ từ từ 🐧🐧
+- ~~Thông báo chưa hoàn thiện, ngoài ra chưa có chỗ để xem danh sách các truyện đã đăng ký nhận thông báo~~ Tạm thời tắt chức năng này
 
 ## Dự kiến
-☑️ Chuyển sang Weebdex API: Đã hoàn thành, tuy nhiên do sự khác biệt về dữ liệu giữa 2 API, một số chức năng sẽ bị ảnh hưởng, cụ thể như sau:
+⬛ Xây dựng Backend hoàn thiện để có thể hoạt động độc lập
 
-| Chức năng | Trạng thái | Chi tiết |
-|---|---|---|
-| Link | Tạm khắc phục | - Các link truyện uuid của MangaDex sẽ tự động được chuyển về url mới tương ứng (trừ truyện không có trên WeebDex).<br>Ví dụ: https://suicaodex.com/manga/e1e38166-20e4-4468-9370-187f985c550e → https://suicaodex.com/manga/bx5udigu0h/mato-seihei-no-slave <br>- Link chapter do không có map nên chịu, sẽ dẫn thẳng sang mangadex. |
-| Thư viện | Tạm khắc phục | - Đối với thư viện lưu trên thiết bị trước ngày **02/03/2026** sẽ không hiển thị<br>- Đã khắc phục thư viện trong tài khoản, chức năng này hiện đã hoạt động bình thường, 1 số đầu truyện không có trên WeebDex thì chịu, có thể đợi có hoặc xóa cho rảnh nợ. |
-| Lịch sử đọc | Hạn chế | Lịch sử đọc trước ngày **02/03/2026** sẽ không hiển thị. |
-| Thông báo chương mới | Tạm tắt | Vốn dĩ từ trước đã không ổn, tiện thể tắt luôn để tìm giải pháp tối ưu hơn. |
-| Truyện đề cử & Bảng xếp hạng | Tạm ẩn | WeebDex chỉ mới đi vào hoạt động gần đây, dữ liệu chưa có quá nhiều nên chưa thể tính toán được. |
-| Bình luận | Tạm khắc phục | - Trừ 1 số truyện không/chưa có trên WeebDex, các bình luận **tại truyện** sẽ hiển thị bình thường.<br> - Bình luận trong chapter thì chịu, tạm chưa có giải pháp (vẫn sẽ hiển thị trong mục `Bình luận gần đây` cho đến khi nó trôi mất). |",
-
+☑️ Chuyển sang Weebdex API
 
 ☑️ Làm lại reader: cơ bản đã xong, cần thử nghiệm thêm để cải thiện UI/UX
 
@@ -85,6 +80,7 @@ Tôi rất hoan nghênh và thậm chí là khuyến khích cmn luôn, làm mộ
 Cài đặt các package cần thiết:
 ```bash
 bun install
+bun add -D @types/web //optional, run if u got build error
 ```
 
 Gen API client:
