@@ -3,7 +3,10 @@ import type { PostV2ChaptersByIdPageAccess200DataPagesItemGrant } from "./model/
 const IMGX_HEADER_BYTES = 13;
 const IMGX_KEY_BYTES = 32;
 const IMGX_MAGIC = [0x49, 0x4d, 0x47, 0x58] as const;
-const IMGX_VERSION = 2;
+const IMGX_LEGACY_VERSION = 2;
+const IMGX_VERSION = 3;
+const IMGX_V3_NONCE_BYTES = 12;
+const IMGX_V3_AUTH_TAG_BYTES = 16;
 
 export type ImgxGrant = PostV2ChaptersByIdPageAccess200DataPagesItemGrant;
 
@@ -103,7 +106,7 @@ function seedFromKey(key: Uint8Array): number {
 }
 
 function createGrantKeyWrapMaterial(
-  grant: Omit<ImgxGrant, "wrappedDecodeKey">,
+  grant: ImgxGrant,
   storageKey: string,
 ): string {
   return [
@@ -178,7 +181,9 @@ function parseImgxHeader(binary: Uint8Array) {
     }
   }
 
-  if (binary[4] !== IMGX_VERSION) {
+  const version = Number(binary[4]) || 0;
+
+  if (version !== IMGX_LEGACY_VERSION && version !== IMGX_VERSION) {
     throw new Error("IMGX version invalid");
   }
 
@@ -194,17 +199,20 @@ function parseImgxHeader(binary: Uint8Array) {
     throw new Error("IMGX dimensions invalid");
   }
 
-  return { width, height };
+  return { version, width, height };
 }
 
-export async function unwrapImgxGrantDecodeKey(
+async function unwrapImgxGrantWrappedKey(
   grant: ImgxGrant,
   storageKey: string,
+  fieldName: "wrappedDecodeKey" | "wrappedContentKey",
+  hashFieldName: "keyHash" | "contentKeyHash",
+  label: string,
 ): Promise<Uint8Array> {
-  const wrapped = base64UrlToBytes(grant.wrappedDecodeKey);
+  const wrapped = base64UrlToBytes(grant[fieldName]);
 
   if (wrapped.byteLength !== IMGX_KEY_BYTES) {
-    throw new Error("IMGX wrapped grant invalid");
+    throw new Error(`${label} invalid`);
   }
 
   const mask = createGrantKeyMask(
@@ -213,11 +221,107 @@ export async function unwrapImgxGrantDecodeKey(
   );
   xorBytesInPlace(wrapped, mask);
 
-  if ((await sha256Base64Url(wrapped)) !== grant.keyHash) {
-    throw new Error("IMGX wrapped decode key hash mismatch");
+  if ((await sha256Base64Url(wrapped)) !== grant[hashFieldName]) {
+    throw new Error(`${label} hash mismatch`);
   }
 
   return wrapped;
+}
+
+export async function unwrapImgxGrantDecodeKey(
+  grant: ImgxGrant,
+  storageKey: string,
+): Promise<Uint8Array> {
+  return unwrapImgxGrantWrappedKey(
+    grant,
+    storageKey,
+    "wrappedDecodeKey",
+    "keyHash",
+    "IMGX wrapped decode key",
+  );
+}
+
+export async function unwrapImgxGrantContentKey(
+  grant: ImgxGrant,
+  storageKey: string,
+): Promise<Uint8Array> {
+  return unwrapImgxGrantWrappedKey(
+    grant,
+    storageKey,
+    "wrappedContentKey",
+    "contentKeyHash",
+    "IMGX wrapped content key",
+  );
+}
+
+function createImgxV3AdditionalData(
+  grant: ImgxGrant,
+  storageKey: string,
+  header: { width: number; height: number },
+): Uint8Array {
+  const imageId = grant.imageId.trim();
+
+  if (!imageId) {
+    throw new Error("IMGX v3 image id missing");
+  }
+
+  return textEncoder.encode(
+    [
+      "IMGX-v3",
+      imageId,
+      normalizeStorageKey(storageKey),
+      Math.max(1, Math.floor(Number(header.width) || 0)),
+      Math.max(1, Math.floor(Number(header.height) || 0)),
+    ].join("."),
+  );
+}
+
+async function decodeImgxV3ToWebp(
+  binary: Uint8Array,
+  grant: ImgxGrant,
+  storageKey: string,
+  header: { width: number; height: number },
+): Promise<Uint8Array> {
+  if (!globalThis.crypto?.subtle) {
+    throw new Error("IMGX v3 requires WebCrypto");
+  }
+
+  if (
+    binary.byteLength <=
+    IMGX_HEADER_BYTES + IMGX_V3_NONCE_BYTES + IMGX_V3_AUTH_TAG_BYTES
+  ) {
+    throw new Error("IMGX v3 payload empty");
+  }
+
+  const contentKey = await unwrapImgxGrantContentKey(grant, storageKey);
+  const nonce = binary.slice(
+    IMGX_HEADER_BYTES,
+    IMGX_HEADER_BYTES + IMGX_V3_NONCE_BYTES,
+  );
+  const encryptedWithTag = binary.slice(
+    IMGX_HEADER_BYTES + IMGX_V3_NONCE_BYTES,
+  );
+  const cryptoKey = await globalThis.crypto.subtle.importKey(
+    "raw",
+    bytesToArrayBuffer(contentKey),
+    { name: "AES-GCM" },
+    false,
+    ["decrypt"],
+  );
+  const decrypted = await globalThis.crypto.subtle.decrypt(
+    {
+      name: "AES-GCM",
+      iv: bytesToArrayBuffer(nonce),
+      additionalData: bytesToArrayBuffer(
+        createImgxV3AdditionalData(grant, storageKey, header),
+      ),
+      tagLength: 128,
+    },
+    cryptoKey,
+    bytesToArrayBuffer(encryptedWithTag),
+  );
+
+  return new Uint8Array(decrypted);
 }
 
 export async function decodeImgxToWebp(
@@ -227,14 +331,24 @@ export async function decodeImgxToWebp(
 ): Promise<DecodedImgxPage> {
   const binary = source instanceof Uint8Array ? source : new Uint8Array(source);
   const header = parseImgxHeader(binary);
-  const decodeKey = await unwrapImgxGrantDecodeKey(grant, storageKey);
-  const payload = binary.slice(IMGX_HEADER_BYTES);
 
-  unshuffleBytesInPlace(payload, decodeKey);
-  xorBytesInPlace(payload, decodeKey);
+  if (header.version === IMGX_VERSION) {
+    return {
+      width: header.width,
+      height: header.height,
+      webp: await decodeImgxV3ToWebp(binary, grant, storageKey, header),
+    };
+  }
+
+  const decodeKey = await unwrapImgxGrantDecodeKey(grant, storageKey);
+  const webp = binary.slice(IMGX_HEADER_BYTES);
+
+  unshuffleBytesInPlace(webp, decodeKey);
+  xorBytesInPlace(webp, decodeKey);
 
   return {
-    ...header,
-    webp: payload,
+    width: header.width,
+    height: header.height,
+    webp,
   };
 }

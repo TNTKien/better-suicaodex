@@ -261,8 +261,8 @@ export function useGetV2ChaptersById<
 }
 
 /**
- * Returns short-lived IMGX page download URLs and wrapped decode-key grants for selected chapter pages.
- * @summary Create IMGX page access grants (v2)
+ * Returns short-lived IMGX page download URLs and wrapped v2/v3 key grants for selected chapter pages.
+ * @summary Create IMGX page access grants
  */
 export type postV2ChaptersByIdPageAccessResponse200 = {
   data: PostV2ChaptersByIdPageAccess200;
@@ -388,7 +388,7 @@ export type PostV2ChaptersByIdPageAccessMutationError =
   | PostV2ChaptersByIdPageAccess503;
 
 /**
- * @summary Create IMGX page access grants (v2)
+ * @summary Create IMGX page access grants
  */
 export const usePostV2ChaptersByIdPageAccess = <
   TError =
