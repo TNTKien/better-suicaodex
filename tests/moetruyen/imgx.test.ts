@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
+import { createCipheriv, createHash } from "node:crypto";
 import { describe, it } from "node:test";
 
 import {
@@ -10,6 +10,8 @@ import {
 } from "@/lib/moetruyen/imgx";
 
 const IMGX_HEADER_BYTES = 13;
+const IMGX_V3_NONCE_BYTES = 12;
+const IMGX_V3_AUTH_TAG_BYTES = 16;
 
 const base64UrlEncode = (bytes: Uint8Array) =>
   Buffer.from(bytes).toString("base64url");
@@ -81,7 +83,7 @@ const createGrantKeyMask = (material: string, byteLength = 32) => {
 };
 
 const createGrantKeyWrapMaterial = (
-  grant: Omit<ImgxGrant, "wrappedDecodeKey">,
+  grant: Omit<ImgxGrant, "wrappedDecodeKey" | "wrappedContentKey">,
   storageKey: string,
 ) =>
   [
@@ -100,28 +102,37 @@ const createGrantKeyWrapMaterial = (
 const createWrappedGrant = (
   decodeKey: Uint8Array,
   storageKey: string,
+  contentKey = Uint8Array.from({ length: 32 }, (_, index) => 255 - index),
 ): ImgxGrant => {
   const grantWithoutKey = {
-    version: 2,
-    algorithm: "IMGX-HMAC-SHA256-v2",
+    version: 1,
+    algorithm: "IMGX-GRANT-WRAP-v1",
+    codecVersions: [2, 3],
+    defaultCodecVersion: 3,
+    contentAlgorithm: "IMGX-AES-256-GCM-HKDF-v3",
+    legacyAlgorithm: "IMGX-HMAC-SHA256-v2",
     imageId: "test-image-id",
     issuedAt: 1_779_440_000_000,
     expiresAt: 1_779_440_060_000,
     nonce: "nonce",
     keyNonce: "key-nonce",
     keyHash: sha256Base64Url(decodeKey),
+    contentKeyHash: sha256Base64Url(contentKey),
     signature: "signature",
-  } satisfies Omit<ImgxGrant, "wrappedDecodeKey">;
+  } satisfies Omit<ImgxGrant, "wrappedDecodeKey" | "wrappedContentKey">;
   const mask = createGrantKeyMask(
     createGrantKeyWrapMaterial(grantWithoutKey, storageKey),
     decodeKey.byteLength,
   );
   const wrappedDecodeKey = Uint8Array.from(decodeKey);
+  const wrappedContentKey = Uint8Array.from(contentKey);
   xorInPlace(wrappedDecodeKey, mask);
+  xorInPlace(wrappedContentKey, mask);
 
   return {
     ...grantWithoutKey,
     wrappedDecodeKey: base64UrlEncode(wrappedDecodeKey),
+    wrappedContentKey: base64UrlEncode(wrappedContentKey),
   };
 };
 
@@ -144,6 +155,57 @@ const createImgxBinary = (webp: Uint8Array, key: Uint8Array) => {
   return binary;
 };
 
+const createImgxV3Binary = (
+  webp: Uint8Array,
+  contentKey: Uint8Array,
+  grant: ImgxGrant,
+  storageKey: string,
+) => {
+  const width = 640;
+  const height = 960;
+  const header = new Uint8Array(IMGX_HEADER_BYTES);
+  header.set([0x49, 0x4d, 0x47, 0x58], 0);
+  header[4] = 3;
+  const headerView = new DataView(header.buffer);
+  headerView.setUint32(5, width, false);
+  headerView.setUint32(9, height, false);
+
+  const nonce = Buffer.alloc(IMGX_V3_NONCE_BYTES, 0xcd);
+  const cipher = createCipheriv("aes-256-gcm", Buffer.from(contentKey), nonce);
+  cipher.setAAD(
+    Buffer.from(
+      [
+        "IMGX-v3",
+        grant.imageId,
+        storageKey.trim().replace(/^\/+/, ""),
+        width,
+        height,
+      ].join("."),
+      "utf8",
+    ),
+  );
+  const ciphertext = Buffer.concat([
+    cipher.update(Buffer.from(webp)),
+    cipher.final(),
+  ]);
+  const tag = cipher.getAuthTag();
+
+  assert.equal(tag.byteLength, IMGX_V3_AUTH_TAG_BYTES);
+
+  const binary = new Uint8Array(
+    header.byteLength +
+      nonce.byteLength +
+      ciphertext.byteLength +
+      tag.byteLength,
+  );
+  binary.set(header, 0);
+  binary.set(nonce, header.byteLength);
+  binary.set(ciphertext, header.byteLength + nonce.byteLength);
+  binary.set(tag, header.byteLength + nonce.byteLength + ciphertext.byteLength);
+
+  return binary;
+};
+
 void describe("MoeTruyen IMGX decoder", () => {
   void it("detects IMGX page URLs", () => {
     assert.equal(isImgxUrl("https://i.truyen.moe/001.js?t=1"), true);
@@ -162,6 +224,24 @@ void describe("MoeTruyen IMGX decoder", () => {
       await unwrapImgxGrantDecodeKey(grant, storageKey),
       decodeKey,
     );
+    assert.deepEqual(await decodeImgxToWebp(binary, grant, storageKey), {
+      width: 640,
+      height: 960,
+      webp,
+    });
+  });
+
+  void it("unwraps content grants and decodes IMGX v3 AES-GCM payloads", async () => {
+    const storageKey = "chapters/manga-873/ch-52/001_ysXot.js";
+    const decodeKey = Uint8Array.from({ length: 32 }, (_, index) => index + 1);
+    const contentKey = Uint8Array.from(
+      { length: 32 },
+      (_, index) => index + 33,
+    );
+    const webp = Uint8Array.from([0x52, 0x49, 0x46, 0x46, 9, 8, 7, 6]);
+    const grant = createWrappedGrant(decodeKey, storageKey, contentKey);
+    const binary = createImgxV3Binary(webp, contentKey, grant, storageKey);
+
     assert.deepEqual(await decodeImgxToWebp(binary, grant, storageKey), {
       width: 640,
       height: 960,
