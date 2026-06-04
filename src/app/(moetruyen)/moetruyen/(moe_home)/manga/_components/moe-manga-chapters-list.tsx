@@ -25,8 +25,8 @@ import {
   BadgeAlert,
   Clock,
   Eye,
-  EyeOff,
   FileImage,
+  KeySquare,
   ListX,
   Loader2,
   Lock,
@@ -40,21 +40,27 @@ function getChapterLabel(chapter: GetV2MangaByIdChapters200DataChaptersItem) {
   return `Ch. ${chapter.number ?? chapter.number}`;
 }
 
-function getAccessLabel(
+function getAccessDisplay(
   access: GetV2MangaByIdChapters200DataChaptersItem["access"],
 ) {
   if (access === "password_required") {
-    return "Có mật khẩu";
+    return {
+      Icon: KeySquare,
+      label: "Có mật khẩu",
+    } as const;
   }
 
   if (access === "locked") {
-    return "Khoá";
+    return {
+      Icon: Lock,
+      label: "Đã khoá",
+    } as const;
   }
 
   return null;
 }
 
-function MoeChapterCard({
+export function MoeChapterCard({
   chapter,
 }: {
   chapter: GetV2MangaByIdChapters200DataChaptersItem;
@@ -62,7 +68,8 @@ function MoeChapterCard({
   const isUnavailable = chapter.access !== "public";
   const timestamp = chapter.date;
   const chapterText = `${getChapterLabel(chapter)}${chapter.title ? ` - ${chapter.title}` : ""}`;
-  const accessLabel = getAccessLabel(chapter.access);
+  const accessDisplay = getAccessDisplay(chapter.access);
+  const AccessIcon = accessDisplay?.Icon;
   const groups = chapter.groups ?? [];
   const card = (
     <Card
@@ -88,8 +95,8 @@ function MoeChapterCard({
 
       <div className="relative z-10 flex items-center gap-2 pointer-events-none">
         <div className="flex min-w-0 flex-auto items-center space-x-2">
-          {isUnavailable ? (
-            <EyeOff className="size-4 shrink-0 text-muted-foreground" />
+          {AccessIcon ? (
+            <AccessIcon className="size-4 shrink-0 text-muted-foreground" />
           ) : (
             <Eye className="size-4 shrink-0" />
           )}
@@ -98,12 +105,12 @@ function MoeChapterCard({
             {chapterText}
           </p>
 
-          {accessLabel ? (
+          {accessDisplay ? (
             <Badge
               variant="secondary"
               className="max-h-4 rounded px-1 py-0 text-[0.625rem] font-bold"
             >
-              {accessLabel}
+              {accessDisplay.label}
             </Badge>
           ) : null}
         </div>
@@ -157,7 +164,7 @@ function MoeChapterCard({
           )}
         </div>
 
-        {chapter.pages || accessLabel ? (
+        {chapter.pages || accessDisplay ? (
           <div className="flex w-40 shrink-0 items-center justify-end gap-2 sm:w-48 md:w-52">
             <div className="flex flex-auto items-center gap-1">
               {chapter.pages ? (
@@ -167,11 +174,11 @@ function MoeChapterCard({
                     {chapter.pages} trang
                   </span>
                 </>
-              ) : accessLabel ? (
+              ) : AccessIcon && accessDisplay ? (
                 <>
-                  <Lock size={16} className="shrink-0" />
+                  <AccessIcon size={16} className="shrink-0" />
                   <span className="line-clamp-1 break-all text-sm font-light">
-                    {accessLabel}
+                    {accessDisplay.label}
                   </span>
                 </>
               ) : null}
