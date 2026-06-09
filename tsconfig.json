@@ -41,6 +41,7 @@
   ],
   "exclude": [
     "node_modules",
-    "deprecated"
+    "deprecated",
+    "temp"
   ]
 }
