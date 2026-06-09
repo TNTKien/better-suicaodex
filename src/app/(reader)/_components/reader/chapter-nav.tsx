@@ -14,7 +14,7 @@ import {
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import useScrollOffset from "@/hooks/use-scroll-offset";
 import { cn } from "@/lib/utils";
-import { Chapter as WeebdexChapter, } from "@/lib/weebdex/model";
+import { Chapter as WeebdexChapter } from "@/lib/weebdex/model";
 import { ChapterAggregate } from "@/types/types";
 import {
   ArrowLeft,
@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useConfig } from "@/hooks/use-config";
 import { useSidebar } from "@/components/ui/sidebar-2-reader";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 interface ChapterNavProps {
   chapterData: WeebdexChapter;
@@ -62,9 +63,9 @@ export default function ChapterNav({
         ),
       );
     }
-    const currentChapterIndex = chapterAggregate[currentVolIndex].chapters.findIndex(
-      (chapter) => chapter.id === chapterData.id,
-    );
+    const currentChapterIndex = chapterAggregate[
+      currentVolIndex
+    ].chapters.findIndex((chapter) => chapter.id === chapterData.id);
     prevChapter ??=
       chapterAggregate[currentVolIndex].chapters[currentChapterIndex + 1]?.id ??
       chapterAggregate[currentVolIndex + 1]?.chapters[0]?.id;
@@ -91,84 +92,92 @@ export default function ChapterNav({
         )}
       >
         <CardContent className="flex gap-2 p-2 md:gap-1.5 md:p-1.5 w-full">
-          <Button
-            asChild={!!prevChapter}
-            disabled={!prevChapter}
-            size="icon"
-            className="shrink-0 disabled:cursor-not-allowed [&_svg]:size-5"
-          >
-            <Link href={prevChapter ? `/chapter/${prevChapter}` : "#"}>
-              <ArrowLeft />
-            </Link>
-          </Button>
+          <ButtonGroup className="h-9 w-full">
+            <ButtonGroup className="h-9 flex-1">
+              <Button
+                asChild={!!prevChapter}
+                disabled={!prevChapter}
+                size="icon"
+                className="shrink-0 disabled:cursor-not-allowed [&_svg]:size-5"
+              >
+                <Link href={prevChapter ? `/chapter/${prevChapter}` : "#"}>
+                  <ArrowLeft />
+                </Link>
+              </Button>
 
-          <Select
-            defaultValue={chapterData.id}
-            onValueChange={(id) => router.push(`/chapter/${id}`)}
-          >
-            <SelectTrigger
-              className="focus:ring-0 flex-1 h-9! min-w-min md:min-w-48 [&_svg]:size-5 [&[data-state=open]>svg]:rotate-180 bg-card shadow-xs"
-              // disabled={!chapterData.chapter}
-            >
-              <SelectValue placeholder={ChapterTitle(chapterData)} />
-            </SelectTrigger>
-            <SelectContent
-              position="popper"
-              sideOffset={isMobile ? 10 : 7}
-              className={cn("max-h-[350px]", `theme-${config.theme}`)}
-            >
-              {chapterAggregate.map((vol) => (
-                <SelectGroup key={vol.vol}>
-                  <div className="flex items-center pr-2">
-                    <SelectLabel className="shrink-0">
-                      {vol.vol !== "none" ? `Volume ${vol.vol}` : "No Volume"}
-                    </SelectLabel>
-                    <hr className="w-full" />
-                  </div>
+              <Select
+                defaultValue={chapterData.id}
+                onValueChange={(id) => router.push(`/chapter/${id}`)}
+              >
+                <SelectTrigger
+                  className="focus:ring-0 flex-1 h-9! min-w-min md:min-w-48 [&_svg]:size-5 [&[data-state=open]>svg]:rotate-180 bg-card shadow-xs"
+                  // disabled={!chapterData.chapter}
+                >
+                  <SelectValue placeholder={ChapterTitle(chapterData)} />
+                </SelectTrigger>
+                <SelectContent
+                  position="popper"
+                  sideOffset={isMobile ? 10 : 7}
+                  className={cn("max-h-[350px]", `theme-${config.theme}`)}
+                >
+                  {chapterAggregate.map((vol) => (
+                    <SelectGroup key={vol.vol}>
+                      <div className="flex items-center pr-2">
+                        <SelectLabel className="shrink-0">
+                          {vol.vol !== "none"
+                            ? `Volume ${vol.vol}`
+                            : "No Volume"}
+                        </SelectLabel>
+                        <hr className="w-full" />
+                      </div>
 
-                  {vol.chapters.map((chapter) => (
-                    <SelectItem
-                      key={chapter.id}
-                      value={chapter.id}
-                      disabled={chapter.id === chapterData.id}
-                    >
-                      {chapter.chapter !== "none"
-                        ? `Ch. ${chapter.chapter}`
-                        : "Oneshot"}
-                    </SelectItem>
+                      {vol.chapters.map((chapter) => (
+                        <SelectItem
+                          key={chapter.id}
+                          value={chapter.id}
+                          disabled={chapter.id === chapterData.id}
+                        >
+                          {chapter.chapter !== "none"
+                            ? `Ch. ${chapter.chapter}`
+                            : "Oneshot"}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   ))}
-                </SelectGroup>
-              ))}
-            </SelectContent>
-          </Select>
+                </SelectContent>
+              </Select>
 
-          <Button
-            asChild={!!nextChapter}
-            disabled={!nextChapter}
-            size="icon"
-            className="shrink-0 disabled:cursor-not-allowed [&_svg]:size-5"
-          >
-            <Link href={nextChapter ? `/chapter/${nextChapter}` : "#"}>
-              <ArrowRight />
-            </Link>
-          </Button>
+              <Button
+                asChild={!!nextChapter}
+                disabled={!nextChapter}
+                size="icon"
+                className="shrink-0 disabled:cursor-not-allowed [&_svg]:size-5"
+              >
+                <Link href={nextChapter ? `/chapter/${nextChapter}` : "#"}>
+                  <ArrowRight />
+                </Link>
+              </Button>
+            </ButtonGroup>
+          </ButtonGroup>
 
-          <Button
-            size="icon"
-            className="shrink-0 [&_svg]:size-5"
-            onClick={toggleSidebar}
-          >
-            <PanelRightClose />
-          </Button>
+          <ButtonGroup>
+            <Button
+              size="icon"
+              className="shrink-0 [&_svg]:size-5"
+              onClick={toggleSidebar}
+            >
+              <PanelRightClose />
+            </Button>
 
-          <Button
-            size="icon"
-            disabled={isAtTop}
-            className="shrink-0 [&_svg]:size-5"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            <ChevronsUp />
-          </Button>
+            <Button
+              size="icon"
+              disabled={isAtTop}
+              className="shrink-0 [&_svg]:size-5"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
+              <ChevronsUp />
+            </Button>
+          </ButtonGroup>
         </CardContent>
       </Card>
     </>
