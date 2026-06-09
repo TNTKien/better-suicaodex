@@ -98,7 +98,7 @@ export default function ChapterNav({
                 asChild={!!prevChapter}
                 disabled={!prevChapter}
                 size="icon"
-                className="shrink-0 disabled:cursor-not-allowed [&_svg]:size-5"
+                className="size-9 shrink-0 disabled:cursor-not-allowed [&_svg]:size-5"
               >
                 <Link href={prevChapter ? `/chapter/${prevChapter}` : "#"}>
                   <ArrowLeft />
@@ -151,7 +151,7 @@ export default function ChapterNav({
                 asChild={!!nextChapter}
                 disabled={!nextChapter}
                 size="icon"
-                className="shrink-0 disabled:cursor-not-allowed [&_svg]:size-5"
+                className="size-9 shrink-0 disabled:cursor-not-allowed [&_svg]:size-5"
               >
                 <Link href={nextChapter ? `/chapter/${nextChapter}` : "#"}>
                   <ArrowRight />
@@ -163,7 +163,7 @@ export default function ChapterNav({
           <ButtonGroup>
             <Button
               size="icon"
-              className="shrink-0 [&_svg]:size-5"
+              className="size-9 shrink-0 [&_svg]:size-5"
               onClick={toggleSidebar}
             >
               <PanelRightClose />
@@ -172,7 +172,7 @@ export default function ChapterNav({
             <Button
               size="icon"
               disabled={isAtTop}
-              className="shrink-0 [&_svg]:size-5"
+              className="size-9 shrink-0 [&_svg]:size-5"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               <ChevronsUp />
