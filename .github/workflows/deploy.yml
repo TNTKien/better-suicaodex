@@ -3,7 +3,7 @@ name: Deploy SuicaoDex
 on:
   push:
     branches:
-      - main
+      - master
 
   workflow_dispatch:
 
