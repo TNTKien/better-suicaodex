@@ -26,8 +26,8 @@
     "verify:auth-migration": "bun run scripts/verify-auth-migration-safety.mjs"
   },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "^1.5.5",
-    "@better-auth/infra": "^0.1.8",
+    "@better-auth/drizzle-adapter": "1.6.17",
+    "@better-auth/infra": "0.2.14",
     "@bprogress/next": "^3.2.4",
     "@hookform/resolvers": "^5.2.2",
     "@icons-pack/react-simple-icons": "^10.2.0",
@@ -38,7 +38,7 @@
     "@radix-ui/react-select": "^2.2.6",
     "@serwist/next": "^9.5.6",
     "@tanstack/react-query": "^5.90.21",
-    "better-auth": "^1.5.6",
+    "better-auth": "1.6.17",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
