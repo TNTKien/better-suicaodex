@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/lib/db";
 import { betterAuthSchema } from "@/lib/db/schema";
-import { dash } from "@better-auth/infra";
+import { dash, sentinel } from "@better-auth/infra";
 
 const baseURL =
   process.env.BETTER_AUTH_URL ??
@@ -32,7 +32,7 @@ export const auth = betterAuth({
   baseURL,
   secret,
   // experimental: { joins: true },
-  plugins: [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })],
+  plugins: [dash({ apiKey: process.env.BETTER_AUTH_API_KEY }), sentinel()],
   advanced: {
     useSecureCookies: baseURL.startsWith("https://"),
     ipAddress: {
