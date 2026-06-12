@@ -199,8 +199,8 @@ export default function CommentFormSimple({
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="text-sm dark:bg-secondary dark:hover:bg-secondary"
-                        size="sm"
+                        className="text-sm dark:bg-secondary dark:hover:bg-secondary h-8!"
+                        // size="sm"
                         variant="outline"
                       >
                         {loading ? <Spinner /> : <Send />}
