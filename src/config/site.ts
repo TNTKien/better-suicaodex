@@ -12,6 +12,8 @@ export const siteConfig = {
     domain: "https://suicaodex.com",
     mato_domain: "https://mato.suicaodex.com",
     apiURL: "https://api2.suicaodex.com", //pls use your own proxy server; or use built-in proxy, see /lib/axios.ts
+    mato_id: "bx5udigu0h",
+    mato_url: "https://mato.suicaodex.com",
   },
   weebdex: {
     domain: "https://weebdex.org",
