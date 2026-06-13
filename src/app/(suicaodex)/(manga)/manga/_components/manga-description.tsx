@@ -10,20 +10,12 @@ import { Spinner } from "@/components/ui/spinner";
 import {
   ChevronsDown,
   ChevronsUp,
-  ExternalLinkIcon,
   Undo2,
 } from "lucide-react";
 import { SiGoogletranslate } from "@icons-pack/react-simple-icons";
 import { useQuery } from "@tanstack/react-query";
 import MangaSubInfo from "./manga-subinfo";
 import { MangaListItem } from "@/lib/weebdex/model";
-import { siteConfig } from "@/config/site";
-import {
-  ScrollVelocityContainer,
-  ScrollVelocityRow,
-} from "@/components/ui/scroll-based-velocity";
-import Link from "next/link";
-import { AuroraText } from "@/components/ui/aurora-text";
 
 interface MangaDescriptionProps {
   content: string;
@@ -39,8 +31,6 @@ export default function MangaDescription({
   const [expanded, setExpanded] = useState(false);
   const [translated, setTranslated] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(false);
-
-  const isMatoSeihei = manga?.id === siteConfig.suicaodex.mato_id;
 
   const { data: translatedDesc, isFetching } = useQuery({
     queryKey: ["translate", content],
@@ -87,33 +77,6 @@ export default function MangaDescription({
               : "linear-gradient(black 0%, black 60%, transparent 100%)",
         }}
       >
-        <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
-          <ScrollVelocityContainer className="text-3xl font-semibold tracking-[-0.02em]">
-            <ScrollVelocityRow baseVelocity={6} direction={1}>
-              Đọc&nbsp;
-              <AuroraText className="font-bold">
-                Mato Seihei no Slave
-              </AuroraText>
-              &nbsp;cập nhật mới nhất tại đây&nbsp;-&nbsp;
-            </ScrollVelocityRow>
-            <Button asChild className="w-full font-bold" size="lg">
-              <Link href={siteConfig.suicaodex.mato_url} target="_blank">
-                <ExternalLinkIcon />
-                MatoDex
-              </Link>
-            </Button>
-            <ScrollVelocityRow baseVelocity={6} direction={-1}>
-              Đọc&nbsp;
-              <AuroraText className="font-bold">
-                Mato Seihei no Slave
-              </AuroraText>
-              &nbsp;cập nhật mới nhất tại đây&nbsp;-&nbsp;
-            </ScrollVelocityRow>
-          </ScrollVelocityContainer>
-          <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r"></div>
-          <div className="from-background pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l"></div>
-        </div>
-
         <div ref={contentRef}>
           {!!content && (
             <Streamdown controls={{ table: false }} className="text-pretty">
