@@ -3,7 +3,7 @@
 import MangaSkeleton from "./manga-skeleton";
 import dynamic from "next/dynamic";
 import { parseAsInteger, parseAsStringLiteral, useQueryState } from "nuqs";
-import { Artist, MANGA_PAGE_TABS } from "@/types/types";
+import { MANGA_PAGE_TABS } from "@/types/types";
 import {
   getMangaIdResponse,
   useGetMangaId,
@@ -37,8 +37,6 @@ import { Button } from "@/components/ui/button";
 import {
   Ellipsis,
   Flag,
-  ImagesIcon,
-  LinkIcon,
   List,
   Loader2,
   MessageSquare,
@@ -89,18 +87,18 @@ const MangaTabSpinnerLoading = () => (
   </div>
 );
 
-const MangaRelatedLoading = () => (
-  <div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-    {Array.from({ length: 6 }).map((_, i) => (
-      <Card
-        key={i}
-        className="rounded-sm shadow-xs transition-colors duration-200 overflow-hidden border-none"
-      >
-        <Skeleton className="w-full aspect-5/7 rounded-none bg-gray-500" />
-      </Card>
-    ))}
-  </div>
-);
+// const MangaRelatedLoading = () => (
+//   <div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+//     {Array.from({ length: 6 }).map((_, i) => (
+//       <Card
+//         key={i}
+//         className="rounded-sm shadow-xs transition-colors duration-200 overflow-hidden border-none"
+//       >
+//         <Skeleton className="w-full aspect-5/7 rounded-none bg-gray-500" />
+//       </Card>
+//     ))}
+//   </div>
+// );
 
 const CommentSection = dynamic(
   () => import("@/components/comment/comment-section"),
