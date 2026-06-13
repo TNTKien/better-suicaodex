@@ -36,6 +36,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Ellipsis,
+  ExternalLinkIcon,
   Flag,
   List,
   Loader2,
@@ -58,6 +59,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MangaChaptersList } from "./chapters-list/manga-chapters-list";
 import MangaReadNowBtn from "./manga-readnow-btn";
+import {
+  ScrollVelocityContainer,
+  ScrollVelocityRow,
+} from "@/components/ui/scroll-based-velocity";
+import { AuroraText } from "@/components/ui/aurora-text";
 
 const CommentSectionLoading = () => (
   <div className="space-y-4 px-1">
@@ -164,6 +170,7 @@ export default function MangaPage({ id, initData }: PageProps) {
 
   const manga = response.data;
   const { title, altTitles } = parseMangaTitle(manga);
+  const isMatoSeihei = manga.id === siteConfig.suicaodex.mato_id;
 
   return (
     <>
@@ -248,8 +255,8 @@ export default function MangaPage({ id, initData }: PageProps) {
 
                 {!!manga.relationships && (
                   <AuthorArtistNames
-                    authors={manga.relationships.authors as Author[] || []}
-                    artists={manga.relationships.artists as Author[] || []}
+                    authors={(manga.relationships.authors as Author[]) || []}
+                    artists={(manga.relationships.artists as Author[]) || []}
                     className="text-base line-clamp-1 max-w-[80%]"
                   />
                 )}
@@ -295,8 +302,8 @@ export default function MangaPage({ id, initData }: PageProps) {
 
                 {!!manga.relationships && (
                   <AuthorArtistNames
-                    authors={manga.relationships.authors as Author[] || []}
-                    artists={manga.relationships.artists as Author[] || []}
+                    authors={(manga.relationships.authors as Author[]) || []}
+                    artists={(manga.relationships.artists as Author[]) || []}
                     className="text-lg line-clamp-1 max-w-[80%]"
                   />
                 )}
@@ -410,6 +417,35 @@ export default function MangaPage({ id, initData }: PageProps) {
               </DropdownMenu>
             </ButtonGroup>
           </div>
+
+          {isMatoSeihei && (
+            <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+              <ScrollVelocityContainer className="text-3xl font-semibold tracking-[-0.02em]">
+                <ScrollVelocityRow baseVelocity={6} direction={1}>
+                  Đọc&nbsp;
+                  <AuroraText className="font-bold">
+                    Mato Seihei no Slave
+                  </AuroraText>
+                  &nbsp;cập nhật mới nhất tại đây&nbsp;-&nbsp;
+                </ScrollVelocityRow>
+                <Button asChild className="w-full font-bold" size="lg">
+                  <Link href={siteConfig.suicaodex.mato_url} target="_blank">
+                    <ExternalLinkIcon />
+                    MatoDex
+                  </Link>
+                </Button>
+                <ScrollVelocityRow baseVelocity={6} direction={-1}>
+                  Đọc&nbsp;
+                  <AuroraText className="font-bold">
+                    Mato Seihei no Slave
+                  </AuroraText>
+                  &nbsp;cập nhật mới nhất tại đây&nbsp;-&nbsp;
+                </ScrollVelocityRow>
+              </ScrollVelocityContainer>
+              <div className="md:hidden from-background pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r"></div>
+              <div className="md:hidden from-background pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l"></div>
+            </div>
+          )}
 
           <MangaDescription
             content={manga.description || ""}
