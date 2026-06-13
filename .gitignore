@@ -54,6 +54,7 @@ next-env.d.ts
 
 #temp folder
 /temp
+/temp-*
 
 # stupid code, can not share
 migrate-manga-ids-to-weebdex.mjs 
