@@ -220,7 +220,7 @@ function LargeMangaPairCard({
 
           {!!activeManga.description && (
             <div className="flex items-center gap-2 text-sm sm:text-base">
-              <Streamdown className="line-clamp-3">
+              <Streamdown className="line-clamp-3 break-all">
                 {activeManga.description}
               </Streamdown>
             </div>
