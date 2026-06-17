@@ -128,11 +128,11 @@ export default function MangaSubInfo({ manga }: MangaSubInfoProps) {
       </div>
 
       {altTitles.length > 0 && (
-        <Collapsible className="w-full" defaultOpen={altTitles.length <= 5}>
+        <Collapsible className="w-full" defaultOpen>
           <CollapsibleTrigger asChild>
             <Button
               variant="ghost"
-              className="group w-full pl-0! text-base font-bold justify-start"
+              className="group w-full pl-0! text-base font-bold justify-start aria-expanded:bg-transparent!"
             >
               Tên khác ({altTitles.length})
               {/* <ChevronDownIcon className="ml-auto group-data-[state=open]:rotate-180" /> */}
