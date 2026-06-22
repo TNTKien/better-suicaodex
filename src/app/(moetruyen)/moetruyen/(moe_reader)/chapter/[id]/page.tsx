@@ -6,7 +6,7 @@ import { cache } from "react";
 
 import MoeChapterPage from "../../_components/moe-chapter-page";
 import { formatMoeChapterTitle } from "../../_components/moe-reader-utils";
-import NotFoundPage from "@/components/not-found";
+import NotFound from "@/app/not-found";
 
 interface PageProps {
   params: Promise<{
@@ -40,6 +40,10 @@ export async function generateMetadata({
 
   const response = await getCachedChapterData(chapterId);
 
+  if (response.status === 404) {
+    return { title: "404 Not Found" };
+  }
+
   if (response.status !== 200) {
     return { title: "Ehe! 🤪" };
   }
@@ -71,13 +75,13 @@ export default async function Page({ params }: PageProps) {
   const chapterId = parseChapterId(id);
 
   if (chapterId === null) {
-    return <NotFoundPage />;
+    return <NotFound />;
   }
 
   const response = await getCachedChapterData(chapterId);
 
   if (response.status === 404) {
-    return <NotFoundPage />;
+    return <NotFound />;
   }
 
   if (response.status === 403) {

@@ -15,7 +15,7 @@ const pixelify = Pixelify_Sans({ subsets: ["latin"] });
 
 export default function NotFoundPage() {
   return (
-    <section className="relative isolate min-h-svh overflow-hidden bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <section className="relative isolate min-h-svh  overflow-hidden bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       {/* Backdrop: gradient blobs */}
       {/* <div
         aria-hidden

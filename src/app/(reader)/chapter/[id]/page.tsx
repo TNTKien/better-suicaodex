@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { cache } from "react";
 import ErrorPage from "@/components/error-page";
 import { validate as isValidUUID } from "uuid";
+import NotFound from "@/app/not-found";
 
 interface PageProps {
   params: Promise<{
@@ -16,7 +17,9 @@ interface PageProps {
 
 const getCachedChapterData = cache(async (id: string) => {
   const res = await getChapterId(id);
-  if (res.status !== 200) throw new Error(`Chapter fetch failed: ${res.status}`);
+  if (res.status !== 200)
+    throw new Error(`Chapter fetch failed: ${res.status}`);
+
   return res.data;
 });
 
@@ -49,6 +52,10 @@ export async function generateMetadata({
       },
     };
   } catch (error: any) {
+    //tempfix
+    if (error.message.includes("404")) {
+      return { title: "404 Not Found" };
+    }
     return {
       title: "Ehe! 🤪",
     };
@@ -58,14 +65,21 @@ export async function generateMetadata({
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
   if (isValidUUID(id)) {
-    return <ErrorPage statusCode={404} message="Có vẻ bạn đang dùng link chứa uuid của MangaDex (không còn hỗ trợ nữa)" />;
+    return (
+      <ErrorPage
+        statusCode={404}
+        message="Có vẻ bạn đang dùng link chứa uuid của MangaDex (không còn hỗ trợ nữa)"
+      />
+    );
   }
   try {
     const initialData = await getCachedChapterData(id);
     return <ChapterPage id={id} initialData={initialData} />;
-  } catch (error) {
-    console.log("Error loading chapter", error);
+  } catch (error: any) {
+    //tempfix
+    if (error.message.includes("404")) {
+      return <NotFound />;
+    }
     return <ChapterPage id={id} />;
   }
 }
-

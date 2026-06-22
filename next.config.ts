@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     optimizePackageImports: ["lucide-react"],
+    // globalNotFound: true
     // webpackMemoryOptimizations: true,
   },
   // cacheComponents: true,

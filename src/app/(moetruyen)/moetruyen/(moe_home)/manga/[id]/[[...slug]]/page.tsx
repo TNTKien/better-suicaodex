@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 
 import MoeMangaPage from "../../_components/moe-manga-page";
-import NotFoundPage from "@/components/not-found";
+import NotFound from "@/app/not-found";
 
 export const revalidate = 86400;
 
@@ -47,6 +47,10 @@ export async function generateMetadata({
 
   const path = `/moetruyen/manga/${mangaId}${slug.length ? `/${slug.join("/")}` : ""}`;
   const { data: mangaResponse, status } = await getCachedMangaData(mangaId);
+
+  if (status === 404) {
+    return { title: "404 Not Found" };
+  }
 
   if (status !== 200) {
     return { title: "Ehe! 🤪" };
@@ -87,13 +91,13 @@ export default async function Page({ params }: PageProps) {
   const mangaId = parseMangaId(id);
 
   if (mangaId === null) {
-    return <ErrorPage statusCode={404} />;
+    return <NotFound />;
   }
 
   const res = await getCachedMangaData(mangaId);
 
   if (res.status === 404) {
-    return <NotFoundPage />;
+    return <NotFound />;
   }
 
   if (res.status !== 200) {

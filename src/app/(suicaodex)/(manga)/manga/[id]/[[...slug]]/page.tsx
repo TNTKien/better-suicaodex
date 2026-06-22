@@ -1,4 +1,3 @@
-import { siteConfig } from "@/config/site";
 import { getMangaId } from "@/lib/weebdex/hooks/manga/manga";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { Metadata } from "next";
@@ -8,7 +7,8 @@ import ErrorPage from "@/components/error-page";
 // import { loadSearchParams } from "./searchParams";
 import MangaPage from "../../_components/manga-page";
 import { validate as isValidUUID } from "uuid";
-import NotFoundPage from "@/components/not-found";
+import NotFound from "@/app/not-found";
+
 // Revalidate the page every 24 hours (86400 seconds)
 export const revalidate = 86400;
 
@@ -35,7 +35,7 @@ export async function generateMetadata({
   }`;
 
   const { data: manga, status } = await getCachedMangaData(id);
-  if (status !== 200 || !manga) return { title: "Ehe! 🤪" };
+  if (status !== 200 || !manga) return { title: "404 Not Found" };
 
   const { title, altTitles } = parseMangaTitle(manga);
   const description = manga.description || `Đọc truyện ${title}`;
@@ -83,9 +83,9 @@ export default async function Page({
   }
   const res = await getCachedMangaData(id);
   // const { page, tab } = await loadSearchParams(searchParams);
-  
+
   if (res.status === 404) {
-    return <NotFoundPage />;
+    return <NotFound />;
   }
 
   if (res.status !== 200) {
