@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
+// import Script from "next/script";
 import "@/styles/globals.css";
 import "@/styles/themes.css";
 import { ThemeProvider } from "@/components/providers";
@@ -67,7 +67,7 @@ export default function RootLayout({
       </head>
       {/* <body className={`${leagueSpartan.className} antialiased`}> */}
       <body className={`${inter.className} antialiased`}>
-        <Script id="theme-color-bootstrap" strategy="beforeInteractive">
+        {/* <Script id="theme-color-bootstrap" strategy="beforeInteractive">
           {`
             try {
               if (window.localStorage && (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches))) {
@@ -75,7 +75,8 @@ export default function RootLayout({
               }
             } catch (_) {}
           `}
-        </Script>
+        </Script> */}
+
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"
@@ -91,6 +92,7 @@ export default function RootLayout({
           </ThemeProvider>
         </NuqsAdapter>
       </body>
+
       <GoogleAnalytics gaId="G-GHG1HN9493" />
     </html>
   );

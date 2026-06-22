@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import {
   Status,
@@ -15,18 +15,7 @@ const pixelify = Pixelify_Sans({ subsets: ["latin"] });
 
 export default function NotFoundPage() {
   return (
-    <section className="relative isolate min-h-svh  overflow-hidden bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-      {/* Backdrop: gradient blobs */}
-      {/* <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-20 opacity-70 dark:opacity-60"
-      >
-        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-[radial-gradient(closest-side,theme(colors.blue.400),transparent)] blur-2xl" />
-        <div className="absolute -bottom-16 -right-16 h-96 w-96 rounded-full bg-[radial-gradient(closest-side,theme(colors.purple.500),transparent)] blur-3xl" />
-        <div className="absolute top-1/3 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,theme(colors.teal.400),transparent)] blur-2xl" />
-      </div> */}
-
-      {/* Backdrop: animated grid using conic gradient mask */}
+    <section className="absolute inset-0 overflow-hidden bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 z-9999">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 mask-[radial-gradient(60%_60%_at_50%_40%,black,transparent)]"
@@ -46,7 +35,7 @@ export default function NotFoundPage() {
         }}
       />
 
-      <section className="relative h-svh mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-24 sm:py-28 lg:py-32">
+      <section className="relative h-full mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-24 sm:py-28 lg:py-32">
         <div className="mx-auto w-full max-w-2xl rounded-lg border border-zinc-200/60 bg-white/70 p-6 md:p-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] backdrop-blur-md dark:border-zinc-800/60 dark:bg-zinc-900/60">
           <div
             className={`flex flex-wrap items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400 ${pixelify.className}`}
@@ -82,15 +71,6 @@ export default function NotFoundPage() {
           </div>
         </div>
       </section>
-
-      {/* Keyframes */}
-      {/* <style jsx>{`
-        @keyframes grid-pan {
-          to {
-            transform: translateY(-40px);
-          }
-        }
-      `}</style> */}
     </section>
   );
 }

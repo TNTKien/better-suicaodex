@@ -7,7 +7,8 @@ import ErrorPage from "@/components/error-page";
 // import { loadSearchParams } from "./searchParams";
 import MangaPage from "../../_components/manga-page";
 import { validate as isValidUUID } from "uuid";
-import NotFound from "@/app/not-found";
+// import NotFound from "@/app/not-found";
+import { notFound } from "next/navigation";
 
 // Revalidate the page every 24 hours (86400 seconds)
 export const revalidate = 86400;
@@ -85,7 +86,8 @@ export default async function Page({
   // const { page, tab } = await loadSearchParams(searchParams);
 
   if (res.status === 404) {
-    return <NotFound />;
+    // return <NotFound />;
+    notFound();
   }
 
   if (res.status !== 200) {
