@@ -9,7 +9,7 @@ import {
   Repeat,
   Sun,
 } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@teispace/next-themes";
 import { cn } from "@/lib/utils";
 import { useConfig } from "@/hooks/use-config";
 import "@/styles/mdx.css";

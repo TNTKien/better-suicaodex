@@ -17,6 +17,7 @@
         "@radix-ui/react-select": "^2.2.6",
         "@serwist/next": "^9.5.6",
         "@tanstack/react-query": "^5.90.21",
+        "@teispace/next-themes": "^2.0.3",
         "better-auth": "1.6.17",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -724,6 +725,8 @@
     "@tanstack/query-core": ["@tanstack/query-core@5.90.20", "", {}, "sha512-OMD2HLpNouXEfZJWcKeVKUgQ5n+n3A2JFmBaScpNDUqSrQSjiveC7dKMe53uJUg1nDG16ttFPz2xfilz6i2uVg=="],
 
     "@tanstack/react-query": ["@tanstack/react-query@5.90.21", "", { "dependencies": { "@tanstack/query-core": "5.90.20" }, "peerDependencies": { "react": "^18 || ^19" } }, "sha512-0Lu6y5t+tvlTJMTO7oh5NSpJfpg/5D41LlThfepTixPYkJ0sE2Jj0m0f6yYqujBwIXlId87e234+MxG3D3g7kg=="],
+
+    "@teispace/next-themes": ["@teispace/next-themes@2.0.3", "", { "peerDependencies": { "next": ">=13.0.0", "react": ">=18.0.0", "react-dom": ">=18.0.0" }, "optionalPeers": ["next"] }, "sha512-3sQv1bGzrQX03Y6e9PR3VVaXDIYG7T4fM1YZ/Fivomg2lQD52d5GX2kWhTqhxKIt4bNA3Bmp+RBELyOvgjz7Ig=="],
 
     "@ts-morph/common": ["@ts-morph/common@0.27.0", "", { "dependencies": { "fast-glob": "^3.3.3", "minimatch": "^10.0.1", "path-browserify": "^1.0.1" } }, "sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ=="],
 

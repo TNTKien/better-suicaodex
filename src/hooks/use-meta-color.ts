@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@teispace/next-themes";
 
 import { META_THEME_COLORS } from "@/config/site";
 
