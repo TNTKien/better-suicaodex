@@ -1,5 +1,4 @@
 import ChapterPage from "../../_components/chapter-page";
-import { siteConfig } from "@/config/site";
 import { getChapterId } from "@/lib/weebdex/hooks/chapter/chapter";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import { Metadata } from "next";
