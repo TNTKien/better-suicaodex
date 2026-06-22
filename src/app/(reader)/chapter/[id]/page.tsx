@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { cache } from "react";
 import ErrorPage from "@/components/error-page";
 import { validate as isValidUUID } from "uuid";
-import NotFound from "@/app/not-found";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{
@@ -78,7 +78,7 @@ export default async function Page({ params }: PageProps) {
   } catch (error: any) {
     //tempfix
     if (error.message.includes("404")) {
-      return <NotFound />;
+      notFound();
     }
     return <ChapterPage id={id} />;
   }

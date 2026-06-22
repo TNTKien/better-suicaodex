@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 
 import MoeMangaPage from "../../_components/moe-manga-page";
-import NotFound from "@/app/not-found";
+import { notFound } from "next/navigation";
 
 export const revalidate = 86400;
 
@@ -91,13 +91,13 @@ export default async function Page({ params }: PageProps) {
   const mangaId = parseMangaId(id);
 
   if (mangaId === null) {
-    return <NotFound />;
+    return notFound();
   }
 
   const res = await getCachedMangaData(mangaId);
 
   if (res.status === 404) {
-    return <NotFound />;
+    return notFound();
   }
 
   if (res.status !== 200) {

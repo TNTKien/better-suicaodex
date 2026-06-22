@@ -16,7 +16,7 @@ import { siteConfig } from "@/config/site";
 import { useGetMangaId } from "@/lib/weebdex/hooks/manga/manga";
 import { parseMangaTitle } from "@/lib/weebdex/utils";
 import ErrorPage from "@/components/error-page";
-import NotFoundPage from "@/components/not-found";
+import { notFound } from "next/navigation";
 
 interface ChapterProps {
   id: string;
@@ -94,7 +94,7 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
 
   if (responseStatus === 404) {
     // return <ErrorPage statusCode={404} />;
-    return <NotFoundPage />;
+    notFound();
   }
 
   if (responseStatus === 500) {
@@ -102,7 +102,7 @@ export default function ChapterPage({ id, initialData }: ChapterProps) {
   }
 
   if (error) {
-    if ((error as any).status === 404) return <NotFoundPage />;
+    if ((error as any).status === 404) notFound();
     if ((error as any).status === 503) return <ErrorPage statusCode={503} />;
     return <div>Lỗi mất rồi 😭</div>;
   }
