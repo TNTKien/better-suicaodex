@@ -20,7 +20,7 @@ export default function MoetruyenPage() {
 
       <section className="mt-9 mx-4 md:mx-8 lg:mx-12 grid grid-cols-1 gap-3 lg:grid-cols-2">
         <MoeLeaderboard />
-        {/* <MoeRecentComments /> */}
+        <MoeRecentComments />
       </section>
     </div>
   );
