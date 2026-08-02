@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
-const authRoutes = ["/login"];
+const authRoutes = ["/login", "/login/error"];
 const protectedRoutes = ["/my-profile", "/settings"];
 
 export function proxy(req: NextRequest) {

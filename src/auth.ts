@@ -31,6 +31,9 @@ export const auth = betterAuth({
   appName: "Suicaodex",
   baseURL,
   secret,
+  onAPIError: {
+    errorURL: "/login/error",
+  },
   // experimental: { joins: true },
   plugins: [dash({ apiKey: process.env.BETTER_AUTH_API_KEY }), sentinel()],
   advanced: {
