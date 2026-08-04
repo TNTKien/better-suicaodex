@@ -95,7 +95,7 @@ bun dev
 
 Mở [http://localhost:3000](http://localhost:3000)
 
-## Ít ⭐ nhưng nhìn nó hay hay
+## Ít ⭐ nhưng nhìn nó hay hay 
 
 <a href="https://www.star-history.com/#TNTKien/better-suicaodex&type=date&legend=top-left">
  <picture>
