@@ -1,0 +1,15 @@
+{
+	"apps": [
+		{
+			"name": "suicaodex",
+			"script": "node_modules/next/dist/bin/next",
+			"args": "start -p 3636",
+			"cwd": "./",
+			"env": {
+				"PORT": 3636
+			},
+			"instances": "max",
+			"exec_mode": "cluster"
+		}
+	]
+}
