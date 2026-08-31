@@ -97,10 +97,10 @@ Mở [http://localhost:3000](http://localhost:3000)
 
 ## Ít ⭐ nhưng nhìn nó hay hay 
 
-<a href="https://www.star-history.com/#TNTKien/better-suicaodex&type=date&legend=top-left">
+<a href="https://www.star-history.com/?repos=TNTKien%2Fbetter-suicaodex&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=TNTKien/better-suicaodex&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=TNTKien/better-suicaodex&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=TNTKien/better-suicaodex&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=TNTKien/better-suicaodex&type=date&theme=dark&legend=top-left&sealed_token=6fdx7b5yBZqh0Yze5IwnKHrVJ47oJ6UtlrXzU31lpRVgpzI2--UxquxkwmJ3FqP2O1Hh8Oue51Qz-edXm2oULzF1fOp1990Nd1xC6YPVBsTo-D18-V-uZQ" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=TNTKien/better-suicaodex&type=date&legend=top-left&sealed_token=6fdx7b5yBZqh0Yze5IwnKHrVJ47oJ6UtlrXzU31lpRVgpzI2--UxquxkwmJ3FqP2O1Hh8Oue51Qz-edXm2oULzF1fOp1990Nd1xC6YPVBsTo-D18-V-uZQ" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=TNTKien/better-suicaodex&type=date&legend=top-left&sealed_token=6fdx7b5yBZqh0Yze5IwnKHrVJ47oJ6UtlrXzU31lpRVgpzI2--UxquxkwmJ3FqP2O1Hh8Oue51Qz-edXm2oULzF1fOp1990Nd1xC6YPVBsTo-D18-V-uZQ" />
  </picture>
 </a>
