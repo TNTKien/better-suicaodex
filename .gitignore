@@ -69,3 +69,5 @@ migrate-manga-ids-to-weebdex.mjs
 prisma/generated
 # next-agents-md
 .next-docs/
+# CocoIndex Code (ccc)
+/.cocoindex_code/
