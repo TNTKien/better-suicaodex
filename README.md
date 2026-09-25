@@ -99,8 +99,8 @@ Mở [http://localhost:3000](http://localhost:3000)
 
 <a href="https://www.star-history.com/?repos=TNTKien%2Fbetter-suicaodex&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=TNTKien/better-suicaodex&type=date&theme=dark&legend=top-left&sealed_token=6fdx7b5yBZqh0Yze5IwnKHrVJ47oJ6UtlrXzU31lpRVgpzI2--UxquxkwmJ3FqP2O1Hh8Oue51Qz-edXm2oULzF1fOp1990Nd1xC6YPVBsTo-D18-V-uZQ" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=TNTKien/better-suicaodex&type=date&legend=top-left&sealed_token=6fdx7b5yBZqh0Yze5IwnKHrVJ47oJ6UtlrXzU31lpRVgpzI2--UxquxkwmJ3FqP2O1Hh8Oue51Qz-edXm2oULzF1fOp1990Nd1xC6YPVBsTo-D18-V-uZQ" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=TNTKien/better-suicaodex&type=date&legend=top-left&sealed_token=6fdx7b5yBZqh0Yze5IwnKHrVJ47oJ6UtlrXzU31lpRVgpzI2--UxquxkwmJ3FqP2O1Hh8Oue51Qz-edXm2oULzF1fOp1990Nd1xC6YPVBsTo-D18-V-uZQ" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/chart/github/stars/tntkien/better-suicaodex.svg?theme=rose&font=jetbrains-mono&border=false&logo=false&yScale=log" />
+   <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/chart/github/stars/tntkien/better-suicaodex.svg?mode=light&theme=rose&font=jetbrains-mono&border=false&logo=false&yScale=log" />
+   <img alt="Star History Chart" src="https://shieldcn.dev/chart/github/stars/tntkien/better-suicaodex.svg?theme=rose&font=jetbrains-mono&border=false&logo=false&yScale=log" />
  </picture>
 </a>
