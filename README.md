@@ -97,10 +97,8 @@ Mở [http://localhost:3000](http://localhost:3000)
 
 ## Ít ⭐ nhưng nhìn nó hay hay 
 
-<a href="https://www.star-history.com/?repos=TNTKien%2Fbetter-suicaodex&type=date&legend=top-left">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/chart/github/stars/tntkien/better-suicaodex.svg?theme=rose&font=jetbrains-mono&border=false&logo=false&yScale=log" />
    <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/chart/github/stars/tntkien/better-suicaodex.svg?mode=light&theme=rose&font=jetbrains-mono&border=false&logo=false&yScale=log" />
    <img alt="Star History Chart" src="https://shieldcn.dev/chart/github/stars/tntkien/better-suicaodex.svg?theme=rose&font=jetbrains-mono&border=false&logo=false&yScale=log" />
  </picture>
-</a>
