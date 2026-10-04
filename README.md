@@ -5,9 +5,6 @@
 
 > [suicaodex](https://github.com/TNTKien/suicaodex) vốn dĩ là 1 đống hổ lốn, better-suicaodex sinh ra để giải quyết đống hổ lốn đó (hoặc không 🐧).
 
-> SuicaoDex chỉ xây dựng giao diện, trừ một số chức năng liên quan đến tài khoản, mọi dữ liệu khác đều thuộc về ~~MangaDex~~ WeebDex.
-
-
 Như đã nói, SuicaoDex chỉ là 1 dự án phục vụ sở thích của cá nhân tôi, nên nó có thể sẽ không trọn vẹn như các web truyện chuyên nghiệp khác.
 
 Tuy vậy, SuicaoDex sẽ luôn:
@@ -16,6 +13,10 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Thân thiện với độc giả Việt Nam (cụ thể là tôi).
 
 ## BREAKING CHANGES
+
+### 29/09/2026
+- Hoạt động độc lập không phụ thuộc vào bên thứ 3.
+- Hoàn thiện các chức năng Đăng truyện và liên quan.
 
 ### 08/04/2026
 - WeebDex ngừng hoạt động, do chỉ kịp cứu 1 phần (nhỏ) data nên SuicaoDex vẫn có thể hoạt động nhưng sẽ không có cập nhật truyện mới.
@@ -31,25 +32,14 @@ Tuy vậy, SuicaoDex sẽ luôn:
 - Chuyển sang dùng [WeebDex API](https://api.weebdex.org/docs), đa phần các config, code...liên quan đến MangaDex đã bị xóa hoặc đưa vào thư mục `deprecated`.
 - Mapping giữa WeebDex và MangaDex chưa hoàn chỉnh ~~(thực ra là lười chưa làm 🐧)~~, dẫn đến 1 số chức năng bị ảnh hưởng (Thư viện, Lịch sử đọc...) → Tạm tắt hoặc sử dụng bị hạn chế, sẽ khắc phục trong tương lai.
 
-## Vài lỗi đã biết
-- Nút `Đọc ngay` hoạt động bất thường khi chuyển ngôn ngữ.
-- ~~Thông báo chưa hoàn thiện, ngoài ra chưa có chỗ để xem danh sách các truyện đã đăng ký nhận thông báo~~ Tạm thời tắt chức năng này
-
 ## Dự kiến
-⬛ Xây dựng Backend hoàn thiện để có thể hoạt động độc lập
+✅ Xây dựng Backend hoàn thiện để có thể hoạt động độc lập
 
-☑️ Chuyển sang Weebdex API
+✅ Làm lại reader.
 
-☑️ Làm lại reader: cơ bản đã xong, cần thử nghiệm thêm để cải thiện UI/UX
+✅ Hoàn thiện Thông báo.
 
-⬛ Hoàn thiện Thông báo.
-
-☑️ Hoàn thiện bình luận:
-1. ✅ Thêm bình luận từng chương.
-2. ✅ Chỉnh sửa/Trả lời
-3. ⬛ Thả like
-4. ✅ Sticker...
-5. ~~✅ Richtext editor~~ bỏ đi vì không cần thiết
+✅ Hoàn thiện bình luận.
 
 
 ## Góp ý/Báo lỗi
