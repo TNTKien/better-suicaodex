@@ -8,7 +8,7 @@
 An independent, ad-free manga platform for Vietnamese readers, with two reading
 interfaces, publishing tools, and a shared backend.
 
-[Live Demo](https://suicaodex.com) · [GitHub](https://github.com/TNTKien/better-suicaodex)
+[Live Website](https://suicaodex.com) · [GitHub](https://github.com/TNTKien/better-suicaodex)
 
 ## Features
 
