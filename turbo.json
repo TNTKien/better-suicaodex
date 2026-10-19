@@ -1,0 +1,71 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "API_URL",
+    "DATABASE_URL",
+    "GACHA_ENABLED",
+    "INTERNAL_API_KEY",
+    "INTERNAL_API_RATE_LIMIT_PER_SECOND",
+    "IMAGE_SERVER2_ENABLED",
+    "IMAGE_SERVER2_UPLOAD_ENABLED",
+    "IMAGE_SERVER2_READ_ENABLED",
+    "NODE_ENV",
+    "OG_IMAGE_URL",
+    "REDIS_PREFIX",
+    "SHOP_MAINTENANCE_DATABASE_URL",
+    "TEST_DATABASE_URL",
+    "TRUSTED_PROXY_IPS",
+    "WEB_URL",
+    "NEXT_PUBLIC_WEB_URL",
+    "NEXT_PUBLIC_ASSET_URL",
+    "ASSET_BASE_URL",
+    "NEXT_PUBLIC_API_URL"
+  ],
+  "globalPassThroughEnv": [
+    "TIKTOK_COOKIE",
+    "TIKTOK_CSRF_TOKEN"
+  ],
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "public/sw.js",
+        "public/sw.js.map"
+      ]
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^test"
+      ]
+    },
+    "format": {
+      "dependsOn": [
+        "^format"
+      ]
+    },
+    "typecheck": {
+      "dependsOn": [
+        "^typecheck"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

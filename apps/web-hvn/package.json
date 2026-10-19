@@ -1,0 +1,50 @@
+{
+  "name": "web-hvn",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3002",
+    "build": "next build && serwist build",
+    "start": "next start --port 3002",
+    "test": "bun ./test/service-worker.test.tsx && bun ./test/shell.test.tsx && bun ./test/tags.test.ts && bun ./test/account.test.tsx && bun ./test/account-state.test.jsx && bun ./test/notifications.test.tsx && bun ./test/home.test.tsx && bun ./test/catalog.test.tsx && bun ./test/tag-page.test.tsx && bun ./test/history.test.tsx && bun ./test/library.test.tsx && bun ./test/manga-detail.test.tsx && bun ./test/manga-chapter-header.test.tsx && bun ./test/manga-chapters.test.tsx && bun ./test/manga-read-actions.test.tsx && bun ./test/comments-api.test.ts && bun ./test/comments-state.test.ts && bun ./test/comments.test.tsx && bun ./test/chapter-page.test.tsx && bun ./test/reader.test.tsx && bun ./test/lazy-comments.test.tsx && bun ./test/back-to-top.test.tsx && bun ./test/person-page.test.tsx && bun ./test/group-page.test.tsx && bun ./test/profile.test.tsx && bun ./test/quick-search.test.tsx && bun ./test/quick-search-state.test.ts",
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.{ts,tsx,css,json,md}\" \"!src/lib/generated/**\"",
+    "typecheck": "next typegen && tsc --noEmit",
+    "contract:generate": "bun scripts/contract.ts",
+    "contract:check": "bun scripts/contract.ts --check"
+  },
+  "dependencies": {
+    "@date-fns/tz": "^1.5.0",
+    "@icons-pack/react-simple-icons": "^13.15.1",
+    "@mantine/hooks": "^9.6.0",
+    "@tanstack/react-query": "^5.102.8",
+    "@workspace/account": "workspace:*",
+    "@workspace/catalog": "workspace:*",
+    "@workspace/ui": "workspace:*",
+    "better-auth": "1.7.2",
+    "date-fns": "4.4.0",
+    "lucide-react": "^1.34.0",
+    "next": "16.4.2",
+    "nuqs": "^2.10.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "streamdown": "^2.6.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@serwist/cli": "^9.5.12",
+    "@serwist/next": "^9.5.12",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@workspace/eslint-config": "workspace:^",
+    "@workspace/typescript-config": "workspace:*",
+    "esbuild": "^0.28.2",
+    "eslint": "^9",
+    "openapi-typescript": "7.13.0",
+    "typescript": "^5"
+  },
+  "license": "MIT"
+}

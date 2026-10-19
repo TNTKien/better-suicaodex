@@ -1,0 +1,8 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "dev": {
+      "env": ["HOST", "PORT", "CACHE_DIR", "MAX_CONCURRENT_RENDERS"]
+    }
+  }
+}

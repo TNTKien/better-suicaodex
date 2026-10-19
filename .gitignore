@@ -1,25 +1,38 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+node_modules
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-package-lock.json
 
 # testing
-/coverage
+coverage
+.playwright-cli/
+playwright-report/
+test-results/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # production
-/build
+build
+dist
+/apps/og-image/.cache/
+
+# Serwist build output
+/apps/web/public/sw.js
+/apps/web/public/sw.js.map
+/apps/web-hvn/public/sw.js
+/apps/web-hvn/public/sw.js.map
+
+# turbo
+.turbo
 
 # misc
 .DS_Store
@@ -33,6 +46,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -41,33 +55,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# sitemap
-/public/sitemap.xml
-/public/sitemap-*.xml
-/public/robots.txt
-
-# serwist generated service worker
-/public/sw*
-/public/sw.js.map
-/public/workbox-*.js
-/public/workbox-*.js.map
-
-#temp folder
-/temp
-
-# stupid code, can not share
-migrate-manga-ids-to-weebdex.mjs 
-
-# AI config files
-/.cursor
-# /.opencode
-# /.agents
-/.codex
-# opencode.json
-/.sisyphus
-
-prisma/generated
-# next-agents-md
-.next-docs/
 # CocoIndex Code (ccc)
 /.cocoindex_code/
+
+# Local tools and files retained from older checkouts
+temp/
+.cocoindex_code/
+*.tsbuildinfo
