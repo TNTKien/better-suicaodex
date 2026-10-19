@@ -1,0 +1,54 @@
+{
+  "name": "@workspace/account",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mantine/hooks": "^9.6.0",
+    "@date-fns/tz": "^1.5.0",
+    "@tanstack/react-query": "^5.102.8",
+    "@workspace/ui": "workspace:*",
+    "better-auth": "1.7.2",
+    "date-fns": "4.4.0",
+    "next": "16.4.2",
+    "nuqs": "^2.10.1",
+    "react": "19.2.4",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "eslint": "^9",
+    "typescript": "^5"
+  },
+  "exports": {
+    "./api": "./src/api.ts",
+    "./client": "./src/client.ts",
+    "./comments": "./src/comments.ts",
+    "./comments-api": "./src/comments-api.ts",
+    "./comment-stickers": "./src/comment-stickers.ts",
+    "./login": "./src/login.ts",
+    "./library": "./src/library.ts",
+    "./library-api": "./src/library-api.ts",
+    "./library-item": "./src/library-item.ts",
+    "./notifications": "./src/notifications.ts",
+    "./notifications-api": "./src/notifications-api.ts",
+    "./notifications-presentation": "./src/notifications-presentation.ts",
+    "./provider": "./src/provider.ts",
+    "./reader-navigation": "./src/reader-navigation.ts",
+    "./reader-progress": "./src/reader-progress.ts",
+    "./reader-position": "./src/reader-position.ts",
+    "./chapter-view": "./src/chapter-view.ts",
+    "./reading-api": "./src/reading-api.ts",
+    "./reading-entry": "./src/reading-entry.ts",
+    "./reading-history": "./src/reading-history.ts",
+    "./reading-local-history": "./src/reading-local-history.ts",
+    "./reading-sync": "./src/reading-sync.ts"
+  },
+  "license": "MIT"
+}

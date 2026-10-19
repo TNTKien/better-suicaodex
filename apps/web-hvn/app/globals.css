@@ -1,0 +1,551 @@
+@import "@workspace/ui/globals.css";
+
+@source "../app";
+@source "../components";
+@source "../modules";
+@source "../node_modules/streamdown/dist/*.js";
+
+:root.dark {
+  color-scheme: dark;
+  --radius: 0rem;
+  --background: oklch(0.212 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(1 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+}
+
+.hvn-mobile-gradient {
+  background: linear-gradient(to bottom, #454545, #232323);
+}
+
+.hvn-mobile-navigation {
+  background: linear-gradient(to bottom, #444444, #252525);
+}
+
+/* Match the reference skin while retaining Re:Dive's Base UI components. */
+.hvn-button,
+.hvn-search-submit {
+  border-width: 0;
+  padding-inline: 0.75rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.hvn-button:hover {
+  background: color-mix(in oklab, var(--primary) 90%, transparent);
+}
+
+.hvn-desktop-navigation > :not(:last-child) {
+  border-right: 1px solid var(--color-gray-600);
+}
+
+.hvn-mobile-button {
+  border: 1px solid #151515;
+  border-radius: 0.75rem;
+  background: inherit;
+  color: #ffffff;
+  box-shadow: inset 0 1px #151515;
+}
+
+.hvn-mobile-navigation .hvn-mobile-button {
+  padding-inline: 0.25rem;
+  font-size: var(--text-xs);
+}
+
+.hvn-mobile-button:hover {
+  background: inherit;
+}
+
+.hvn-search-input,
+.hvn-search-select {
+  background: #ffffff;
+  color: #000000;
+  padding-inline: 0.75rem;
+}
+
+.hvn-search-select svg {
+  opacity: 0.5;
+}
+
+.hvn-search-select {
+  gap: 0.5rem;
+}
+
+.hvn-search-submit {
+  background: var(--color-blue-400);
+  color: #ffffff;
+}
+
+.hvn-advanced-search {
+  color: var(--color-blue-400);
+}
+
+.hvn-genre-link:hover {
+  background: var(--background);
+  color: #297ed9;
+}
+
+.hvn-utility-bar {
+  background: #2b2a2b;
+}
+
+/* shortcut: Preserve the reference appearance until these controls are wired up. */
+.hvn-placeholder:disabled,
+.hvn-placeholder[data-disabled] {
+  opacity: 1;
+}
+
+.hvn-footer {
+  background: #000000;
+}
+
+.hvn-footer-link {
+  color: #44b9fa;
+}
+
+.hvn-footer-separator {
+  height: 60%;
+  align-self: auto;
+  background: #ffffff80;
+}
+
+.hvn-rss {
+  background: var(--color-orange-400);
+  color: #ffffff;
+}
+
+.hvn-login-panel,
+.hvn-home-heading-frame {
+  border: 1px solid #666666;
+  background: #111111;
+  padding: 2px;
+}
+
+.hvn-login-heading,
+.hvn-home-heading {
+  padding: 0.25rem 1.25rem;
+  color: #ffffff;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.hvn-login-heading-main {
+  background: #22ad5c;
+}
+
+.hvn-login-heading-info {
+  background: #e74c3c;
+}
+
+.hvn-manga-read {
+  width: 100%;
+  height: 40px;
+  border: 0;
+  border-radius: 0;
+  background: #2196f3;
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.hvn-manga-read[data-kind="latest"] {
+  background: #22ad5c;
+}
+
+.hvn-reading-dialog {
+  gap: 0;
+  border: 1px solid #666666;
+  border-radius: 0;
+  background: #111111;
+  padding: 2px;
+}
+
+.hvn-reading-dialog [data-slot="dialog-description"] {
+  padding: 0.5rem 1rem 1rem;
+  color: #ffffff;
+}
+
+.hvn-reading-dialog [data-slot="dialog-close"] {
+  top: 0.25rem;
+  right: 0.25rem;
+  color: #ffffff;
+}
+
+.hvn-comment-editor {
+  border: 1px solid #666666;
+  border-radius: 0;
+  background: #ffffff;
+  color: #000000;
+}
+
+.hvn-comment-editor textarea {
+  color: #000000;
+}
+
+.hvn-comment-editor [data-slot="input-group-addon"] {
+  color: #444444;
+}
+
+.hvn-comment-action {
+  height: auto;
+  border-radius: 0;
+  padding: 0;
+  color: #44b9fa;
+  font-size: 0.875rem;
+}
+
+.hvn-comment-action:hover {
+  background: transparent;
+  text-decoration: underline;
+}
+
+.hvn-comment-action[data-kind="reply"] {
+  color: #999999;
+}
+
+.hvn-comment-content a {
+  color: #00bfff;
+}
+
+.hvn-manga-follow {
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: #00bfff;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.hvn-manga-follow:hover {
+  background: transparent;
+  text-decoration: underline;
+}
+
+.hvn-manga-description a {
+  color: #00bfff;
+}
+
+.hvn-copy-manga-link {
+  height: auto;
+  border: 1px solid #767676;
+  border-radius: 0;
+  background: #eaeaea;
+  padding: 0.125rem 0.375rem;
+  color: #000000;
+  font-size: 1rem;
+  font-weight: 400;
+  box-shadow: none;
+}
+
+.hvn-copy-manga-link:hover {
+  background: #ffffff;
+}
+
+.hvn-notification-panel {
+  border: 1px solid #666666;
+  background: #111111;
+  color: #ffffff;
+}
+
+.hvn-notification-heading {
+  background: #22ad5c;
+  color: #ffffff;
+}
+
+.hvn-notification-item + .hvn-notification-item {
+  border-top: 1px solid #444444;
+}
+
+.hvn-notification-item[data-unread="true"] {
+  background: #1c2b23;
+}
+
+.hvn-notification-item:hover {
+  background: #2b2a2b;
+}
+
+.hvn-home-heading {
+  background: #103f4b;
+  color: #ffffff;
+}
+
+@media (width >= 48rem) {
+  .hvn-home-heading[data-kind="featured"] {
+    background: #e94c3f;
+  }
+
+  .hvn-home-heading[data-kind="latest"],
+  .hvn-home-heading[data-kind="recent"],
+  .hvn-home-heading[data-kind="random"] {
+    background: #1e77bc;
+  }
+}
+
+.hvn-home-heading[data-kind="top-view"] {
+  background: #ec4c3c;
+}
+
+.hvn-home-heading[data-kind="top-groups"] {
+  background: #1e77bc;
+}
+
+.hvn-home-heading[data-kind="comments"] {
+  background: #22ad5c;
+}
+
+.hvn-home-heading[data-kind="catalog"] {
+  background: #22ad5c;
+}
+
+.hvn-library-tabs {
+  border: 1px solid #666666;
+  border-radius: 0;
+  background: #111111;
+  padding: 2px;
+  gap: 2px;
+}
+
+.hvn-library-tabs [data-slot="tabs-trigger"] {
+  border-radius: 0;
+  padding: 0.5rem 0.75rem;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.hvn-library-tabs [data-slot="tabs-trigger"][data-active] {
+  border-color: transparent;
+  background: #22ad5c;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.hvn-library-input {
+  border: 1px solid #666666;
+  border-radius: 0;
+  background: #ffffff;
+  color: #000000;
+}
+
+.hvn-library-input input {
+  background: transparent;
+  color: #000000;
+}
+
+.hvn-library-select {
+  border: 1px solid #666666;
+  border-radius: 0;
+  background: #eaeaea;
+  color: #455a64;
+}
+
+.hvn-pagination,
+.hvn-pagination [data-slot="pagination-content"] {
+  justify-content: flex-start;
+}
+
+.hvn-pagination [data-slot="pagination-content"] {
+  gap: 5px;
+}
+
+.hvn-pagination [data-slot="pagination-link"],
+.hvn-pagination [data-slot="pagination-ellipsis"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 34px;
+  height: 32px;
+  border: 1px solid #b5b5b5;
+  border-radius: 0;
+  background: #eaeaea;
+  padding: 0 8px;
+  color: #455a64;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 30px;
+  box-shadow: none;
+}
+
+.hvn-pagination [data-slot="pagination-link"][data-active="true"] {
+  background: #4caf50;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.hvn-pagination [data-slot="pagination-link"]:not([aria-current="page"]):hover {
+  background: #ffffff;
+}
+
+.hvn-pagination [data-slot="pagination-link"] > svg {
+  display: none;
+}
+
+.hvn-pagination [data-slot="pagination-link"] > span {
+  display: inline;
+}
+
+.hvn-ranking-periods {
+  background: #111111;
+  padding: 2px;
+}
+
+.hvn-ranking-period {
+  color: #ffffff;
+}
+
+.hvn-ranking-period[data-active] {
+  background: #ffffff;
+  color: #1f76be;
+  box-shadow: none;
+}
+
+.hvn-home-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  border: 0;
+  border-radius: 5px;
+  background: #f0eeee;
+  padding: 0.625rem 1rem;
+}
+
+.hvn-home-notice-label {
+  flex-shrink: 0;
+  border-radius: 5px;
+  background: #26a0e2;
+  padding: 0.25rem 0.375rem;
+  color: #ffffff;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+}
+
+.hvn-home-notice-text {
+  flex: 1 1 16rem;
+  min-width: 0;
+  color: #000000;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+}
+
+@layer base {
+  a:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+}
+
+.hvn-reader-notice {
+  border: 0;
+  border-radius: 5px;
+  background: #e6f2f8;
+  padding: 0.375rem 1rem;
+  color: #20b8e7;
+}
+
+.hvn-reader-notice [data-slot="alert-description"] {
+  color: #000000;
+  font-size: 1rem;
+}
+
+.hvn-reader-server {
+  height: auto;
+  border-radius: 5px;
+  background: #337ab7;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.hvn-reader-server:hover {
+  background: #286090;
+}
+
+.hvn-reader-arrow {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  background: transparent;
+  padding: 0.25rem;
+  box-shadow: none;
+}
+
+.hvn-reader-arrow:hover {
+  background: transparent;
+}
+
+.hvn-reader-arrow:disabled {
+  filter: grayscale(1);
+}
+
+.hvn-reader-picker,
+.hvn-reader-chapter-choice {
+  height: auto;
+  border: 1px solid #767676;
+  border-radius: 0;
+  background: #ffffff;
+  padding: 0.25rem 0.375rem;
+  color: #000000;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.hvn-reader-picker:hover,
+.hvn-reader-chapter-choice:hover {
+  background: #eaeaea;
+}
+
+.hvn-reader-chapter-choice[aria-current="page"] {
+  border-color: #22ad5c;
+  background: #22ad5c;
+  color: #ffffff;
+}
+
+.hvn-back-to-top {
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 0;
+  background: #2d98cc;
+  color: #ffffff;
+  box-shadow: none;
+  transform: translateX(calc(100% + 1rem));
+  transition: transform 200ms ease;
+  pointer-events: none;
+}
+
+.hvn-back-to-top[data-visible="true"] {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.hvn-back-to-top:hover {
+  background: #247aa3;
+}
+
+.hvn-back-to-top > svg {
+  width: 28px;
+  height: 28px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hvn-back-to-top {
+    transition: none;
+  }
+}
