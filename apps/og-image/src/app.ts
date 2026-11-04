@@ -36,7 +36,6 @@ export function createApp(
 
   app.use("*", async (c, next) => {
     c.header("X-Content-Type-Options", "nosniff")
-    c.header("X-Robots-Tag", "noindex, nofollow")
     c.header("Cache-Control", "no-store")
     await next()
   })
