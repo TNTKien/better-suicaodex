@@ -1,8 +1,10 @@
 import assert from "node:assert/strict"
+// @ts-expect-error Bun supplies this module at test runtime.
+import { mock } from "bun:test"
+import type { ComponentProps } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { PathnameContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime"
 
-import { AppSidebar } from "../components/app-sidebar"
 import { siteConfig } from "../config/site"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
@@ -10,6 +12,23 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { AccountProvider } from "../modules/account/provider"
 import { resolveAdminRedirect } from "../modules/account/admin-gate"
 import { resolveGroupView } from "../modules/groups/workspace"
+
+mock.module("next/link", () => ({
+  default: ({
+    onNavigate,
+    prefetch,
+    href,
+    ...props
+  }: ComponentProps<"a"> & {
+    onNavigate?: unknown
+    prefetch?: unknown
+  }) => {
+    void onNavigate
+    void prefetch
+    return <a {...props} href={href} data-next-link="true" />
+  },
+}))
+const { AppSidebar } = await import("../components/app-sidebar")
 
 const destinations = [
   ["Trang chủ", "/"],
@@ -187,6 +206,14 @@ assert.match(collapsed, /data-slot="sidebar-menu-button"[^>]*href="\/shop"/)
 const siteNavigation = renderSidebar("/").match(
   /<nav aria-label="Điều hướng chính">([\s\S]*?)<\/nav>/
 )![1]!
+const randomAttributes = siteNavigation.match(
+  /<a\b([^>]*href="\/random"[^>]*)>/
+)![1]!
+assert.doesNotMatch(randomAttributes, /data-next-link|target=/)
+const latestAttributes = siteNavigation.match(
+  /<a\b([^>]*href="\/latest"[^>]*)>/
+)![1]!
+assert.match(latestAttributes, /data-next-link="true"/)
 for (const [title, href] of sidebarLinks) {
   const attributes = siteNavigation.match(
     new RegExp(`<a\\b([^>]*href="${href}"[^>]*)>`)

@@ -190,6 +190,17 @@ try {
   assert.deepEqual(requests, ["/v1/comments/recent?limit=10"])
 
   requests.length = 0
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input))
+    requests.push(url.pathname + url.search)
+    assert.equal(init?.cache, "no-store")
+    assert.equal(init?.redirect, "error")
+    assert.equal(
+      new Headers(init?.headers).get("x-internal-api-key"),
+      internalApiKey
+    )
+    return Response.json(response)
+  }
   assert.deepEqual(await getRandomManga(), response)
   assert.deepEqual(requests, ["/v1/manga/random?limit=1"])
 

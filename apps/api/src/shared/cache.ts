@@ -12,9 +12,9 @@ export type CacheResource =
   | "chapter:detail"
   | "manga:route-lookup"
   | "manga:ranking"
-  | "manga:random"
+  | "manga:random-pool"
 
-export const randomMangaTtlSeconds = 600
+export const randomMangaPoolTtlSeconds = 600
 
 type CacheState = "disabled" | "healthy" | "degraded"
 
@@ -57,7 +57,7 @@ export class BusinessCache {
       "chapter:detail": env.ENDPOINT_CACHE_CHAPTER_DETAIL_TTL_SECONDS,
       "manga:route-lookup": env.ENDPOINT_CACHE_MANGA_ROUTE_LOOKUP_TTL_SECONDS,
       "manga:ranking": env.ENDPOINT_CACHE_MANGA_RANKING_TTL_SECONDS,
-      "manga:random": randomMangaTtlSeconds,
+      "manga:random-pool": randomMangaPoolTtlSeconds,
     }
 
     if (!env.REDIS_CACHE_ENABLED) {

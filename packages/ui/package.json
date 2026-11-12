@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "peerDependencies": {
-    "next": "16.4.2"
+    "next": "16.4.6"
   },
   "scripts": {
     "lint": "eslint",
@@ -37,7 +37,7 @@
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "eslint": "^9",
-    "next": "16.4.2",
+    "next": "16.4.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

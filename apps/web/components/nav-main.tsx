@@ -92,9 +92,7 @@ function Navigation({
             <SidebarMenuButton
               aria-current={pathname === "/shop" ? "page" : undefined}
               isActive={pathname === "/shop"}
-              render={
-                <Link href="/shop" onNavigate={closeMobile} />
-              }
+              render={<Link href="/shop" onNavigate={closeMobile} />}
               tooltip={{ children: "Cửa hàng", side: "left" }}
             >
               <StoreIcon aria-hidden="true" />
@@ -147,11 +145,14 @@ function Navigation({
                               rel="noopener noreferrer"
                               target="_blank"
                             />
+                          ) : subItem.url === "/random" ? (
+                            // A document navigation avoids reusing a cached random redirect.
+                            <a href={subItem.url} onClick={closeMobile} />
                           ) : (
                             <Link
                               href={subItem.url}
                               onNavigate={closeMobile}
-                              prefetch={subItem.url === "/random" ? false : "auto"}
+                              prefetch="auto"
                             />
                           )
                         }
