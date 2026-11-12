@@ -12569,7 +12569,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Up to 10 random visible manga, selected once per limit every 10 minutes */
+                /** @description Up to 10 random visible manga, sampled per request from an ID pool cached for 10 minutes */
                 200: {
                     headers: {
                         [name: string]: unknown;

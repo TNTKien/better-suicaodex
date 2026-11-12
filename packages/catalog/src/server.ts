@@ -17,8 +17,12 @@ export class CatalogApiError extends Error {
   }
 }
 
-export async function catalogRequest<T>(path: string): Promise<T> {
+export async function catalogRequest<T>(
+  path: string,
+  options: Pick<RequestInit, "cache"> = {}
+): Promise<T> {
   const response = await fetch(new URL(path, apiBaseUrl), {
+    ...options,
     headers: {
       accept: "application/json",
       ...(internalApiKey
@@ -197,5 +201,7 @@ export async function getRecentComments<T>(limit = 10) {
 }
 
 export async function getRandomManga<T>(limit = 1) {
-  return catalogRequest<T>(`/v1/manga/random?limit=${limit}`)
+  return catalogRequest<T>(`/v1/manga/random?limit=${limit}`, {
+    cache: "no-store",
+  })
 }

@@ -711,6 +711,7 @@ describe.serial("Phase 4A public catalog", () => {
 
     const random = await app.request("/v1/manga/random")
     expect(random.status).toBe(200)
+    expect(random.headers.get("Cache-Control")).toBe("no-store")
     const randomBody = (await random.json()) as {
       data: Array<{ id: string; latestChapter: unknown }>
     }
@@ -727,14 +728,23 @@ describe.serial("Phase 4A public catalog", () => {
     const repeat = (await (
       await app.request("/v1/manga/random?limit=10")
     ).json()) as typeof randomBody
-    expect(repeat.data.map(({ id }) => id)).toEqual(
-      batch.data.map(({ id }) => id)
+    expect(repeat.data).toHaveLength(batch.data.length)
+    expect(new Set(repeat.data.map(({ id }) => id)).size).toBe(
+      repeat.data.length
     )
+    expect(
+      repeat.data.every(({ latestChapter }) => latestChapter !== null)
+    ).toBe(true)
     for (const limit of ["0", "11", "1.5", "abc"])
       expect(
         (await app.request(`/v1/manga/random?limit=${limit}`)).status
       ).toBe(400)
 
+    const catalog = (await (
+      await app.request("/v1/manga?limit=100")
+    ).json()) as {
+      meta: { total: number }
+    }
     const selectedId = batch.data[0]!.id
     await runtime.database
       .update(manga)
@@ -745,8 +755,9 @@ describe.serial("Phase 4A public catalog", () => {
         await app.request("/v1/manga/random?limit=10")
       ).json()) as typeof randomBody
       expect(moderated.data.some(({ id }) => id === selectedId)).toBe(false)
-      expect(moderated.data.map(({ id }) => id)).toEqual(
-        batch.data.map(({ id }) => id).filter((id) => id !== selectedId)
+      expect(moderated.data).toHaveLength(Math.min(10, catalog.meta.total - 1))
+      expect(new Set(moderated.data.map(({ id }) => id)).size).toBe(
+        moderated.data.length
       )
     } finally {
       await runtime.database

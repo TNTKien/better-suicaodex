@@ -396,7 +396,7 @@ export const getRandomMangaRoute = createRoute({
     200: {
       content: { "application/json": { schema: RandomMangaSchema } },
       description:
-        "Up to 10 random visible manga, selected once per limit every 10 minutes",
+        "Up to 10 random visible manga, sampled per request from an ID pool cached for 10 minutes",
     },
     400: {
       content: { "application/json": { schema: ApiErrorSchema } },

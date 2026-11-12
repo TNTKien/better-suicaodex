@@ -1963,15 +1963,15 @@ export function registerCatalogRoutes(
   const selectRandomManga = createRandomMangaSelector(
     cache,
     visibility,
-    async (limit) => {
+    async () => {
       const rows = await database
         .select({ id: manga.id })
         .from(manga)
         .where(catalogManga(database, visibility))
-        .orderBy(sql`random()`)
-        .limit(limit)
       return rows.map(({ id }) => id)
-    }
+    },
+    async (ids) =>
+      (await loadRandomManga(database, assetBaseUrl, visibility, ids)).data
   )
 
   app.openapi(listMangaRoute, async (c) => {
@@ -1983,13 +1983,9 @@ export function registerCatalogRoutes(
   })
 
   app.openapi(getRandomMangaRoute, async (c) => {
+    c.header("Cache-Control", "no-store")
     const { limit } = c.req.valid("query")
-    const ids = await selectRandomManga(limit)
-    // Cached IDs are rechecked so moderation/deletion takes effect immediately.
-    return c.json(
-      await loadRandomManga(database, assetBaseUrl, visibility, ids),
-      200
-    )
+    return c.json({ data: await selectRandomManga(limit) }, 200)
   })
 
   app.openapi(getMangaRoute, async (c) => {

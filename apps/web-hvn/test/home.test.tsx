@@ -218,6 +218,8 @@ try {
       )
       assert.equal(init?.redirect, "error")
       assert.notEqual(init?.credentials, "include")
+      if (path.startsWith("/v1/manga/random?"))
+        assert.equal(init?.cache, "no-store")
       releases.push(() => resolve(responseFor(path)))
     })) as typeof fetch
   const pending = getHomeCatalog()
@@ -606,11 +608,7 @@ try {
   assert.equal((groups.match(/<li /g) ?? []).length, 5)
   assert.match(groups, /href="\/group\/group-0\/nhom-0"/)
   assert.match(groups, /12\.345 views/)
-  assert.match(
-    groups,
-    /0 views/,
-    "Keep groups with zero views like Re:Dive"
-  )
+  assert.match(groups, /0 views/, "Keep groups with zero views like Re:Dive")
   const refetch = async () => {
     throw new Error("Not invoked during SSR")
   }
