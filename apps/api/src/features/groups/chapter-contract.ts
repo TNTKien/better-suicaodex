@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 
 import {
@@ -20,7 +21,7 @@ const optionalDecimal = decimal.nullable().default(null)
 const optionalTitle = z
   .string()
   .trim()
-  .max(255)
+  .check(...utf16MaxLength(255))
   .nullable()
   .default(null)
   .transform((value) => value || null)
@@ -28,7 +29,7 @@ const language = z
   .string()
   .trim()
   .min(2)
-  .max(35)
+  .check(...utf16MaxLength(35))
   .regex(/^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/)
   .default("vi")
 

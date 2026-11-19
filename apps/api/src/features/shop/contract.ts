@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 import {
   ApiErrorSchema,
@@ -12,7 +13,12 @@ import { CoinAmountSchema, PositiveCoinAmountSchema } from "../coin/contract.js"
 import { CoinHistoryQuerySchema } from "../coin/api-contract.js"
 
 export const ShopCatalogQuerySchema = PageQuerySchema.extend({
-  q: z.string().trim().min(1).max(160).optional(),
+  q: z
+    .string()
+    .trim()
+    .min(1)
+    .check(...utf16MaxLength(160))
+    .optional(),
   rarity: z.enum(["R", "SR", "SSR"]).optional(),
   topicId: z.union([IdSchema, z.literal("none")]).optional(),
 }).strict()

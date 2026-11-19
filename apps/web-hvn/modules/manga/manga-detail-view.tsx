@@ -1,11 +1,12 @@
 import Link from "next/link"
-import { coverSrcSet } from "@workspace/catalog/images"
+import { coverSrcSet, originalCover } from "@workspace/catalog/images"
 import { Fragment, type ReactNode } from "react"
 import { formatVietnamDateTime } from "@workspace/catalog/date"
 
 import { tagPath } from "@workspace/catalog/routing"
 import { AssetImage } from "@workspace/ui/components/asset-image"
 import { Badge } from "@workspace/ui/components/badge"
+import { ImagePreview } from "@workspace/ui/components/image-preview"
 import type { components } from "@/src/lib/generated/api"
 import { MangaLibraryAction } from "@/modules/library/manga-library-action"
 import { MangaReadActions } from "@/modules/reading/manga-read-actions"
@@ -199,16 +200,24 @@ export function MangaDetailView({
             </h2>
             <div className="p-1.5">
               <div className="border border-white/50 p-0.5">
-                <AssetImage
-                  src={manga.cover?.url ?? null}
-                  srcSet={coverSrcSet(manga.cover)}
-                  sizes="(min-width: 768px) 244px, 300px"
+                <ImagePreview
                   alt={`Bìa truyện ${manga.title}`}
+                  fallbackSrc={manga.cover?.url ?? null}
                   width={manga.cover?.width ?? 700}
                   height={manga.cover?.height ?? 1000}
-                  className="h-auto w-full"
-                  eager
-                />
+                  src={originalCover(manga.cover?.url ?? null)}
+                >
+                  <AssetImage
+                    src={manga.cover?.url ?? null}
+                    srcSet={coverSrcSet(manga.cover)}
+                    sizes="(min-width: 768px) 244px, 300px"
+                    alt={`Bìa truyện ${manga.title}`}
+                    width={manga.cover?.width ?? 700}
+                    height={manga.cover?.height ?? 1000}
+                    className="h-auto w-full"
+                    eager
+                  />
+                </ImagePreview>
               </div>
             </div>
           </section>

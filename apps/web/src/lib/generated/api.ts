@@ -531,6 +531,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Image processor is busy */
                 429: {
                     headers: {
@@ -650,6 +659,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Image processor is busy */
                 429: {
                     headers: {
@@ -748,6 +766,15 @@ export interface paths {
                 };
                 /** @description Request body exceeds limit */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -980,6 +1007,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Image processor is busy */
                 429: {
                     headers: {
@@ -1111,6 +1147,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Image processor is busy */
                 429: {
                     headers: {
@@ -1219,6 +1264,15 @@ export interface paths {
                 };
                 /** @description Request body exceeds limit */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1343,6 +1397,15 @@ export interface paths {
                 };
                 /** @description Request body exceeds limit */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1538,6 +1601,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         options?: never;
@@ -1631,6 +1703,15 @@ export interface paths {
                 };
                 /** @description Request body is too large */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1741,6 +1822,15 @@ export interface paths {
                 };
                 /** @description Request body is too large */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1948,6 +2038,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         post?: never;
@@ -2114,6 +2213,15 @@ export interface paths {
                 };
                 /** @description Request body is too large */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -2314,6 +2422,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         post?: never;
@@ -2499,6 +2616,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -2707,6 +2833,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -2812,6 +2947,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -2899,6 +3043,15 @@ export interface paths {
                 };
                 /** @description Request rejected */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -3225,6 +3378,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         post?: never;
@@ -3508,6 +3670,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         post?: never;
@@ -3582,6 +3753,15 @@ export interface paths {
                 };
                 /** @description Request body is too large */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -3689,6 +3869,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         options?: never;
@@ -3784,6 +3973,15 @@ export interface paths {
                 };
                 /** @description Request body is too large */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -3896,6 +4094,15 @@ export interface paths {
                 };
                 /** @description Request body is too large */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -4218,6 +4425,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Rate limit exceeded */
                 429: {
                     headers: {
@@ -4392,6 +4608,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -4475,6 +4700,15 @@ export interface paths {
                 };
                 /** @description Request body is too large */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -4731,6 +4965,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -4833,6 +5076,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         post?: never;
@@ -4926,6 +5178,15 @@ export interface paths {
                 };
                 /** @description Request body is too large */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -5317,6 +5578,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         post?: never;
@@ -5530,6 +5800,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Image processor is busy */
                 429: {
                     headers: {
@@ -5628,6 +5907,15 @@ export interface paths {
                 };
                 /** @description Request body exceeds limit */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -5844,6 +6132,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Comment cooldown or duplicate content window */
                 429: {
                     headers: {
@@ -5971,6 +6268,15 @@ export interface paths {
                 };
                 /** @description Chapter not found */
                 404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -6187,6 +6493,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         options?: never;
@@ -6257,6 +6572,15 @@ export interface paths {
                 };
                 /** @description Comment state changed */
                 409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -6394,6 +6718,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -6592,6 +6925,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -6695,6 +7037,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -6890,6 +7241,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -7263,6 +7623,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description SuicaoCoin disabled */
                 503: {
                     headers: {
@@ -7360,6 +7729,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -7565,6 +7943,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -7758,6 +8145,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -7842,6 +8238,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -8274,6 +8679,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -8380,6 +8794,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -8505,6 +8928,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -8620,6 +9052,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -8956,6 +9397,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -9169,6 +9619,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -9263,6 +9722,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -9383,6 +9851,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -9712,6 +10189,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -9823,6 +10309,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -9949,6 +10444,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -10065,6 +10569,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -10305,6 +10818,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -10419,6 +10941,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -10545,6 +11076,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -10652,6 +11192,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -10773,6 +11322,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -10858,6 +11416,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -10975,6 +11542,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -11298,6 +11874,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -11492,6 +12077,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -11704,6 +12298,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Success */
                 429: {
                     headers: {
@@ -11900,6 +12503,15 @@ export interface paths {
                 };
                 /** @description Success */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -12422,6 +13034,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Comment cooldown or duplicate content window */
                 429: {
                     headers: {
@@ -12711,6 +13332,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description The image processor is busy */
                 429: {
                     headers: {
@@ -12862,6 +13492,15 @@ export interface paths {
                 };
                 /** @description Request body exceeds limit */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -13561,6 +14200,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         post?: never;
@@ -13874,6 +14522,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
             };
         };
         trace?: never;
@@ -14053,6 +14710,15 @@ export interface paths {
                 };
                 /** @description The account cannot merge history */
                 403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -14247,6 +14913,15 @@ export interface paths {
                 };
                 /** @description Content is not visible or readable */
                 404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -14654,6 +15329,15 @@ export interface paths {
                         "application/json": components["schemas"]["ApiError"];
                     };
                 };
+                /** @description Unsupported request Content-Type */
+                415: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
                 /** @description Rate limit exceeded */
                 429: {
                     headers: {
@@ -14929,6 +15613,15 @@ export interface paths {
                 };
                 /** @description Request body exceeds 16 KiB */
                 413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Unsupported request Content-Type */
+                415: {
                     headers: {
                         [name: string]: unknown;
                     };

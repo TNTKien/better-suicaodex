@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 import {
   ApiErrorSchema,
@@ -14,8 +15,15 @@ import { CurrentAccountSchema } from "../account/contract.js"
 import { PositiveCoinAmountSchema } from "../coin/contract.js"
 
 const rarity = z.enum(["R", "SR", "SSR"])
-const name = z.string().trim().min(1).max(160)
-const description = z.string().trim().max(2000)
+const name = z
+  .string()
+  .trim()
+  .min(1)
+  .check(...utf16MaxLength(160))
+const description = z
+  .string()
+  .trim()
+  .check(...utf16MaxLength(2000))
 // Use anyOf for named Id refs: allOf(Id, string|null) would exclude null.
 const nullableTopicId = z.union([IdSchema, z.null()])
 export const AvatarFrameTopicSchema = z
@@ -116,7 +124,7 @@ export const FrameOwnershipInputSchema = z
       .string()
       .trim()
       .min(1)
-      .max(500)
+      .check(...utf16MaxLength(500))
       .default("Admin avatar frame ownership change"),
   })
   .strict()
@@ -182,7 +190,12 @@ const inventoryResult = {
   content: { "application/json": { schema: AvatarFrameInventorySchema } },
 }
 const params = z.object({ id: IdSchema })
-const userParams = z.object({ userId: z.string().min(1).max(128) })
+const userParams = z.object({
+  userId: z
+    .string()
+    .min(1)
+    .check(...utf16MaxLength(128)),
+})
 const ownershipParams = userParams.extend({ frameId: IdSchema })
 const topicResult = {
   description: "Frame topic",
@@ -247,7 +260,12 @@ export const listAvatarFramesRoute = createRoute({
   tags: ["avatar-frames"],
   request: {
     query: PageQuerySchema.extend({
-      q: z.string().trim().min(1).max(160).optional(),
+      q: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
       rarity: rarity.optional(),
       active: z.enum(["true", "false"]).optional(),
       limited: z.enum(["true", "false"]).optional(),

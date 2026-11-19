@@ -73,6 +73,27 @@ describe.serial("Phase 3 infrastructure", () => {
     })
     expect(session.status).toBe(200)
     expect(await session.json()).toMatchObject({ user: { email } })
+
+    const signOut = await app.request("/api/auth/sign-out", {
+      method: "POST",
+      headers: { Cookie: cookie!, Origin: env.WEB_ORIGIN },
+    })
+    expect(signOut.status).toBe(200)
+    const signedOut = await app.request("/api/auth/get-session", {
+      headers: { Cookie: cookie!, Origin: env.WEB_ORIGIN },
+    })
+    expect(await signedOut.json()).toBeNull()
+
+    const signIn = await app.request("/api/auth/sign-in/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Origin: env.WEB_ORIGIN,
+      },
+      body: JSON.stringify({ email, password: "phase3-integration-password" }),
+    })
+    expect(signIn.status).toBe(200)
+    expect(await signIn.json()).toMatchObject({ user: { email } })
   })
 
   test("catalog invalidation changes the cache namespace", async () => {

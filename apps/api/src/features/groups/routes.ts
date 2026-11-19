@@ -833,15 +833,19 @@ export function registerGroupRoutes(
       }
       const status = action === "approve" ? "approved" : "rejected"
       if (action === "approve") {
-        const memberId = crypto.randomUUID()
-        await tx.insert(members).values({
-          id: memberId,
-          organizationId: groupId,
-          userId,
-          role: "member",
-          createdAt: new Date(),
-        })
-        await tx.insert(memberProfiles).values({ memberId, ...memberDefaults })
+        const [member] = await tx
+          .insert(members)
+          .values({
+            id: sql`public.uuid_generate_v7()::text`,
+            organizationId: groupId,
+            userId,
+            role: "member",
+            createdAt: new Date(),
+          })
+          .returning({ id: members.id })
+        await tx
+          .insert(memberProfiles)
+          .values({ memberId: member!.id, ...memberDefaults })
         await tx.delete(applications).where(eq(applications.id, application.id))
       } else
         await tx
@@ -924,15 +928,19 @@ export function registerGroupRoutes(
         if (!admin)
           groupFailure(409, "INVALID_LEADER", "Choose another approved member")
         await requireAvailableUser(tx, userId)
-        const memberId = crypto.randomUUID()
-        await tx.insert(members).values({
-          id: memberId,
-          organizationId: groupId,
-          userId,
-          role: "member",
-          createdAt: new Date(),
-        })
-        await tx.insert(memberProfiles).values({ memberId, ...memberDefaults })
+        const [createdMember] = await tx
+          .insert(members)
+          .values({
+            id: sql`public.uuid_generate_v7()::text`,
+            organizationId: groupId,
+            userId,
+            role: "member",
+            createdAt: new Date(),
+          })
+          .returning({ id: members.id })
+        await tx
+          .insert(memberProfiles)
+          .values({ memberId: createdMember!.id, ...memberDefaults })
         member = await membershipFor(tx, groupId, userId)
       }
       if (member?.role !== "member")
@@ -1073,15 +1081,19 @@ export function registerGroupRoutes(
             eq(applications.userId, userId)
           )
         )
-      const memberId = crypto.randomUUID()
-      await tx.insert(members).values({
-        id: memberId,
-        organizationId: groupId,
-        userId,
-        role: "member",
-        createdAt: new Date(),
-      })
-      await tx.insert(memberProfiles).values({ memberId, ...memberDefaults })
+      const [member] = await tx
+        .insert(members)
+        .values({
+          id: sql`public.uuid_generate_v7()::text`,
+          organizationId: groupId,
+          userId,
+          role: "member",
+          createdAt: new Date(),
+        })
+        .returning({ id: members.id })
+      await tx
+        .insert(memberProfiles)
+        .values({ memberId: member!.id, ...memberDefaults })
       await auditGroup(
         tx,
         actor,

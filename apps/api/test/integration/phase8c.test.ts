@@ -1275,6 +1275,7 @@ describe.serial("Phase 8C/8D chapter management", () => {
     ).data
     const replacementId = replacementData.id
     expect(replacementData.orderedPageIds).toHaveLength(2)
+    for (const id of replacementData.orderedPageIds) expect(id[14]).toBe("7")
     const previewById = new Map(
       replacementData.pages.map((page) => [page.id, page.previewUrl])
     )

@@ -131,6 +131,9 @@ async function group(leader: (typeof accounts)[number], approved = true) {
   expect(response.status).toBe(200)
   const body = (await response.json()) as { data: { id: string } }
   groupIds.push(body.data.id)
+  expect(body.data.id).toMatch(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+  )
   return body.data.id
 }
 async function approvedMember(groupId: string) {
@@ -518,6 +521,12 @@ describe.serial("Phase 8A group workflow", () => {
     const memberState = MyGroupSchema.parse(
       await (await request(member, "/v1/me/groups")).json()
     )
+    const memberships = await runtime.database
+      .select({ id: members.id })
+      .from(members)
+      .where(eq(members.organizationId, groupId))
+    expect(memberships).toHaveLength(2)
+    for (const membership of memberships) expect(membership.id[14]).toBe("7")
     expect(memberState.data!.membership.permissions).toEqual(memberDefaults)
     expect(JSON.stringify(memberState)).not.toContain("@example.com")
     expect(await (await request(member, "/v1/me")).json()).toMatchObject({

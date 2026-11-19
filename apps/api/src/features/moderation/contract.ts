@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 import { isAfter, parseISO } from "date-fns"
 
@@ -17,7 +18,11 @@ import {
 } from "../groups/manga-contract.js"
 import { ChapterManagementDetailSchema } from "../groups/chapter-contract.js"
 
-const reason = z.string().trim().min(1).max(500)
+const reason = z
+  .string()
+  .trim()
+  .min(1)
+  .check(...utf16MaxLength(500))
 const visibilityInput = z.discriminatedUnion("hidden", [
   z
     .object({
@@ -159,13 +164,20 @@ export const AdminCommentSchema = z
 export const ForbiddenWordSchema = z
   .object({
     id: IdSchema,
-    word: z.string().min(1).max(80),
+    word: z
+      .string()
+      .min(1)
+      .check(...utf16MaxLength(80)),
     createdAt: TimestampSchema,
   })
   .openapi("ForbiddenWord")
 
 const tagGroup = z.enum(["content", "format", "genre", "theme"])
-const tagName = z.string().trim().min(1).max(100)
+const tagName = z
+  .string()
+  .trim()
+  .min(1)
+  .check(...utf16MaxLength(100))
 
 export const AdminTagSchema = z
   .object({
@@ -307,7 +319,12 @@ export const listModerationMangaRoute = createRoute({
   tags: ["moderation"],
   request: {
     query: PageQuerySchema.extend({
-      q: z.string().trim().min(1).max(160).optional(),
+      q: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
       groupId: IdSchema.optional(),
       publicationState: z.enum(["draft", "published", "hidden"]).optional(),
       moderation: moderationFilter,
@@ -561,11 +578,21 @@ export const listModerationCommentsRoute = createRoute({
   tags: ["moderation"],
   request: {
     query: PageQuerySchema.extend({
-      q: z.string().trim().min(1).max(160).optional(),
+      q: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
       status: z.enum(["visible", "hidden"]).optional(),
       mangaId: IdSchema.optional(),
       chapterId: IdSchema.optional(),
-      userId: z.string().trim().min(1).max(160).optional(),
+      userId: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
     }),
   },
   responses: {
@@ -659,7 +686,16 @@ export const createForbiddenWordsRoute = createRoute({
         "application/json": {
           schema: z
             .object({
-              words: z.array(z.string().trim().min(1).max(80)).min(1).max(100),
+              words: z
+                .array(
+                  z
+                    .string()
+                    .trim()
+                    .min(1)
+                    .check(...utf16MaxLength(80))
+                )
+                .min(1)
+                .max(100),
             })
             .strict(),
         },
@@ -703,7 +739,12 @@ export const listModerationTagsRoute = createRoute({
   tags: ["moderation"],
   request: {
     query: z.object({
-      q: z.string().trim().min(1).max(160).optional(),
+      q: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
       group: tagGroup.optional(),
     }),
   },
@@ -785,7 +826,13 @@ export const setTagModerationVisibilityRoute = createRoute({
   },
 })
 
-const userParams = z.object({ id: z.string().trim().min(1).max(128) })
+const userParams = z.object({
+  id: z
+    .string()
+    .trim()
+    .min(1)
+    .check(...utf16MaxLength(128)),
+})
 
 export const listModerationUsersRoute = createRoute({
   method: "get",
@@ -793,7 +840,12 @@ export const listModerationUsersRoute = createRoute({
   tags: ["moderation"],
   request: {
     query: PageQuerySchema.extend({
-      q: z.string().trim().min(1).max(160).optional(),
+      q: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
       status: z.enum(["active", "suspended", "banned"]).optional(),
     }),
   },
@@ -892,9 +944,24 @@ export const listModerationAuditRoute = createRoute({
         cursor: IdSchema.optional(),
         limit: z.coerce.number().int().min(1).max(50).default(20),
         targetKind: AuditTargetKindSchema.optional(),
-        targetId: z.string().trim().min(1).max(160).optional(),
-        actorUserId: z.string().trim().min(1).max(128).optional(),
-        action: z.string().trim().min(1).max(160).optional(),
+        targetId: z
+          .string()
+          .trim()
+          .min(1)
+          .check(...utf16MaxLength(160))
+          .optional(),
+        actorUserId: z
+          .string()
+          .trim()
+          .min(1)
+          .check(...utf16MaxLength(128))
+          .optional(),
+        action: z
+          .string()
+          .trim()
+          .min(1)
+          .check(...utf16MaxLength(160))
+          .optional(),
         from: TimestampSchema.optional(),
         to: TimestampSchema.optional(),
       })

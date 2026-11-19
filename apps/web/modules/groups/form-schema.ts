@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "@workspace/ui/lib/string-length"
 import { z } from "zod"
 
 function hasAllowedHost(value: string, domains: readonly string[]) {
@@ -24,16 +25,18 @@ export const groupFormSchema = z
         z
           .string()
           .min(1, "Vui lòng nhập tên nhóm.")
-          .max(80, "Tên nhóm tối đa 80 ký tự.")
+          .check(...utf16MaxLength(80, "Tên nhóm tối đa 80 ký tự."))
       ),
     description: z
       .string()
       .transform((value) => value.replace(/\s+/g, " ").trim())
-      .pipe(z.string().max(1_000, "Mô tả tối đa 1.000 ký tự.")),
+      .pipe(
+        z.string().check(...utf16MaxLength(1_000, "Mô tả tối đa 1.000 ký tự."))
+      ),
     facebook: z
       .string()
       .trim()
-      .max(220, "Liên kết Facebook tối đa 220 ký tự.")
+      .check(...utf16MaxLength(220, "Liên kết Facebook tối đa 220 ký tự."))
       .refine(
         (value) => !value || hasAllowedHost(value, ["facebook.com", "fb.com"]),
         "Liên kết Facebook không hợp lệ."
@@ -41,7 +44,7 @@ export const groupFormSchema = z
     discord: z
       .string()
       .trim()
-      .max(220, "Liên kết Discord tối đa 220 ký tự.")
+      .check(...utf16MaxLength(220, "Liên kết Discord tối đa 220 ký tự."))
       .refine(
         (value) =>
           !value ||
@@ -57,7 +60,7 @@ export const adminGroupFormSchema = groupFormSchema.extend({
     .string()
     .trim()
     .min(1, "Vui lòng nhập ID tài khoản trưởng nhóm.")
-    .max(128, "ID tài khoản tối đa 128 ký tự."),
+    .check(...utf16MaxLength(128, "ID tài khoản tối đa 128 ký tự.")),
 })
 
 export type GroupFormInput = z.input<typeof groupFormSchema>

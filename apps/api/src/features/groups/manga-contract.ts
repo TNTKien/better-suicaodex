@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 
 import {
@@ -13,14 +14,19 @@ import { CoverSchema, PersonSummarySchema } from "../catalog/contract.js"
 const compactText = (max: number) =>
   z
     .string()
-    .max(max * 4)
+    .check(...utf16MaxLength(max * 4))
     .transform((value) => value.replace(/\s+/g, " ").trim())
-    .pipe(z.string().min(1).max(max))
+    .pipe(
+      z
+        .string()
+        .min(1)
+        .check(...utf16MaxLength(max))
+    )
 const language = z
   .string()
   .trim()
   .min(2)
-  .max(35)
+  .check(...utf16MaxLength(35))
   .regex(/^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/)
 const uniqueIds = (max: number) =>
   z
@@ -47,7 +53,7 @@ const optionalText = (max: number) =>
   z
     .string()
     .trim()
-    .max(max)
+    .check(...utf16MaxLength(max))
     .nullable()
     .default(null)
     .transform((value) => value || null)
@@ -62,7 +68,7 @@ const optionalMarkdown = optionalText(20_000)
   )
 const externalUrl = z
   .url()
-  .max(500)
+  .check(...utf16MaxLength(500))
   .refine((value) => {
     const url = new URL(value)
     return (
@@ -267,7 +273,12 @@ export const listGroupMangaRoute = createRoute({
   request: {
     params,
     query: PageQuerySchema.extend({
-      q: z.string().trim().min(1).max(160).optional(),
+      q: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
       publicationState: z.enum(["published", "hidden"]).optional(),
     }),
   },

@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "@workspace/ui/lib/string-length"
 import { z } from "zod"
 
 import type { components } from "@/src/lib/generated/api"
@@ -12,7 +13,7 @@ export const tagListSchema = z.object({
       slug: z
         .string()
         .min(1)
-        .max(160)
+        .check(...utf16MaxLength(160))
         .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
       name: z.string(),
       group: z.string(),

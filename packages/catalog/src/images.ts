@@ -2,6 +2,10 @@ export function cover256(url: string | null) {
   return url?.replace(".512.webp", ".256.webp") ?? null
 }
 
+export function originalCover(url: string | null) {
+  return url?.replace(/\.(?:256|512)\.webp$/, ".webp") ?? null
+}
+
 export function coverSrcSet(
   cover: { url: string; width: number | null } | null | undefined
 ) {

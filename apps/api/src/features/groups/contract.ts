@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 
 import {
@@ -26,10 +27,14 @@ export type GroupPermissions = z.infer<typeof GroupPermissionsSchema>
 const compactText = (max: number) =>
   z
     .string()
-    .max(max * 4)
+    .check(...utf16MaxLength(max * 4))
     .transform((value) => value.replace(/\s+/g, " ").trim())
-    .pipe(z.string().max(max))
-const link = z.string().trim().max(220).optional()
+    .pipe(z.string().check(...utf16MaxLength(max)))
+const link = z
+  .string()
+  .trim()
+  .check(...utf16MaxLength(220))
+  .optional()
 export const GroupInputSchema = z
   .object({
     name: compactText(80).pipe(z.string().min(1)),
@@ -106,7 +111,11 @@ export type GroupMembership = z.infer<typeof GroupMembershipSchema>
 export type MyGroup = z.infer<typeof MyGroupSchema>
 
 const groupParams = z.object({ groupId: z.uuid().toLowerCase() })
-const userId = z.string().trim().min(1).max(128)
+const userId = z
+  .string()
+  .trim()
+  .min(1)
+  .check(...utf16MaxLength(128))
 const memberParams = groupParams.extend({ userId })
 const reviewInput = z.object({ action: z.enum(["approve", "reject"]) }).strict()
 const json = <T extends z.ZodType>(schema: T) => ({
@@ -296,7 +305,11 @@ export const adminGroupsRoute = createRoute({
   tags,
   request: {
     query: PageQuerySchema.extend({
-      q: z.string().trim().max(100).optional(),
+      q: z
+        .string()
+        .trim()
+        .check(...utf16MaxLength(100))
+        .optional(),
       status: z.enum(["pending", "approved", "rejected"]).optional(),
     }),
   },

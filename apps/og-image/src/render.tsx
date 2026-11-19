@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises"
 import { Transformer } from "@napi-rs/image"
 import satori from "satori"
-import type { Group, Manga } from "./upstream"
+import type { Chapter, Group, Manga } from "./upstream"
 
 export const size = { width: 1200, height: 630 }
 const [regularFont, boldFont, logo, fallbackAvatar] = await Promise.all([
@@ -16,13 +16,18 @@ const [regularFont, boldFont, logo, fallbackAvatar] = await Promise.all([
 ])
 
 export async function renderImage(
-  subject: Manga | Group,
+  subject: Manga | Chapter | Group,
   cover: string | null,
   host: string
 ) {
   const isGroup = "avatarUrl" in subject
+  const isChapter = "chapterLabel" in subject
   const { title } = subject
-  const creators = isGroup ? subject.description : subject.creators
+  const subtitle = isGroup
+    ? subject.description
+    : isChapter
+      ? subject.chapterLabel
+      : subject.creators
   if (isGroup && !cover) cover = fallbackAvatar
   const svg = await satori(
     <div
@@ -84,14 +89,14 @@ export async function renderImage(
               fontSize: title.length > 100 ? 48 : 60,
               fontWeight: 700,
               lineHeight: 1.15,
-              lineClamp: isGroup ? 3 : 4,
-              maxHeight: isGroup ? 210 : 280,
+              lineClamp: isChapter ? 2 : isGroup ? 3 : 4,
+              maxHeight: isChapter ? 140 : isGroup ? 210 : 280,
               overflow: "hidden",
             }}
           >
             {title}
           </div>
-          {creators ? (
+          {subtitle ? (
             <div
               style={{
                 fontSize: 28,
@@ -102,7 +107,24 @@ export async function renderImage(
                 overflow: "hidden",
               }}
             >
-              {creators}
+              {subtitle}
+            </div>
+          ) : null}
+          {isChapter && subject.groups ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <div style={{ fontSize: 20, color: "#dedee6" }}>Nhóm dịch</div>
+              <div
+                style={{
+                  fontSize: 28,
+                  fontWeight: 700,
+                  lineHeight: 1.4,
+                  lineClamp: 2,
+                  maxHeight: 80,
+                  overflow: "hidden",
+                }}
+              >
+                {subject.groups}
+              </div>
             </div>
           ) : null}
         </div>

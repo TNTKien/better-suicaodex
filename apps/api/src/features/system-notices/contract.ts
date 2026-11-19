@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 
 import {
@@ -13,8 +14,16 @@ const params = z.object({
   id: inputId.openapi({ param: { in: "path", name: "id" } }),
 })
 const input = z.object({
-  title: z.string().trim().min(1).max(160),
-  content: z.string().trim().min(1).max(10_000),
+  title: z
+    .string()
+    .trim()
+    .min(1)
+    .check(...utf16MaxLength(160)),
+  content: z
+    .string()
+    .trim()
+    .min(1)
+    .check(...utf16MaxLength(10_000)),
 })
 const error = (description: string) => ({
   content: { "application/json": { schema: ApiErrorSchema } },
@@ -73,7 +82,12 @@ export const listAdminSystemNoticesRoute = createRoute({
   tags: ["moderation"],
   request: {
     query: PageQuerySchema.extend({
-      q: z.string().trim().min(1).max(160).optional(),
+      q: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
     }),
   },
   responses: {

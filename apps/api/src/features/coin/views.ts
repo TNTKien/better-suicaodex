@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto"
+import { v7 as uuidv7 } from "uuid"
 import { addMilliseconds, addSeconds, isBefore, subSeconds } from "date-fns"
 import { and, eq } from "drizzle-orm"
 import { chapterStats, coinViewReceipt, coinWallet } from "../../db/schema.js"
@@ -39,7 +39,7 @@ export async function acceptCoinView(
     sessionHash: input.sessionHash,
     chapterId: input.chapterId,
     mangaId: input.mangaId,
-    eventId: randomUUID(),
+    eventId: uuidv7(),
     acceptedAt: input.now,
     expiresAt: addSeconds(input.now, CHAPTER_VIEW_WINDOW_SECONDS),
   }

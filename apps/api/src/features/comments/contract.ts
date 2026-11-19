@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 
 import {
@@ -11,7 +12,7 @@ export const CommentBodySchema = z
   .string()
   .trim()
   .min(1)
-  .max(4_000)
+  .check(...utf16MaxLength(4_000))
   .refine(
     (body) => !/<(?:!--|\/?[a-z][^>]*>)/i.test(body),
     "HTML is not allowed"

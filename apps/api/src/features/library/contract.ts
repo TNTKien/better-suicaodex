@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 
 import { libraryCategory } from "../../db/schema.js"
@@ -51,7 +52,12 @@ export const listLibraryRoute = createRoute({
   request: {
     query: z.object({
       category: LibraryCategorySchema.optional(),
-      q: z.string().trim().min(1).max(160).optional(),
+      q: z
+        .string()
+        .trim()
+        .min(1)
+        .check(...utf16MaxLength(160))
+        .optional(),
       sort: LibrarySortSchema,
       cursor: inputId.optional(),
       limit: z.coerce.number().int().min(1).max(100).default(20),

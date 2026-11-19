@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "@workspace/ui/lib/string-length"
 import { tz } from "@date-fns/tz"
 import { getYear } from "date-fns"
 import { z } from "zod"
@@ -15,20 +16,20 @@ const compactText = (max: number, required = false) =>
           required ? 1 : 0,
           required ? "Vui lòng nhập tên truyện." : undefined
         )
-        .max(max, `Tối đa ${max} ký tự.`)
+        .check(...utf16MaxLength(max, `Tối đa ${max} ký tự.`))
     )
 
 const optionalText = (max: number) =>
   z
     .string()
     .trim()
-    .max(max, `Tối đa ${max} ký tự.`)
+    .check(...utf16MaxLength(max, `Tối đa ${max} ký tự.`))
     .transform((value) => value || null)
 
 const optionalUrl = z
   .string()
   .trim()
-  .max(500, "URL tối đa 500 ký tự.")
+  .check(...utf16MaxLength(500, "URL tối đa 500 ký tự."))
   .refine((value) => {
     if (!value) return true
     try {
@@ -54,7 +55,7 @@ export const mangaFormSchema = z
     description: z
       .string()
       .trim()
-      .max(20_000, "Mô tả tối đa 20.000 ký tự.")
+      .check(...utf16MaxLength(20_000, "Mô tả tối đa 20.000 ký tự."))
       .refine(
         (value) => !/<(?:!--|\/?[a-z][^>]*>)/i.test(value),
         "Mô tả không hỗ trợ HTML."
@@ -68,7 +69,7 @@ export const mangaFormSchema = z
       .string()
       .trim()
       .min(2, "Vui lòng chọn ngôn ngữ gốc.")
-      .max(35),
+      .check(...utf16MaxLength(35)),
     publicationDemographic: z
       .enum(["shounen", "shoujo", "josei", "seinen"])
       .nullable(),

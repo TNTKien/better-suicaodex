@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto"
 import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm"
 import slugify from "slugify"
 
@@ -436,14 +435,19 @@ export async function createGroup(
       "System is reserved for imported content"
     )
   for (let attempt = 0; attempt < 200; attempt++) {
-    const id = randomUUID()
     const slug = attempt ? `${base}-${attempt + 1}` : base
     const [identity] = await tx
       .insert(groups)
-      .values({ id, name: input.name, slug, createdAt: new Date() })
+      .values({
+        id: sql`public.uuid_generate_v7()::text`,
+        name: input.name,
+        slug,
+        createdAt: new Date(),
+      })
       .onConflictDoNothing({ target: groups.slug })
       .returning({ id: groups.id })
     if (!identity) continue
+    const id = identity.id
     await tx.insert(groupProfiles).values({
       organizationId: id,
       description: input.description,
@@ -454,15 +458,19 @@ export async function createGroup(
       reviewedAt: approved ? new Date() : null,
       reviewedByUserId: approved ? actor : null,
     })
-    const memberId = randomUUID()
-    await tx.insert(members).values({
-      id: memberId,
-      organizationId: id,
-      userId: leaderUserId,
-      role: "owner",
-      createdAt: new Date(),
-    })
-    await tx.insert(memberProfiles).values({ memberId, ...memberDefaults })
+    const [member] = await tx
+      .insert(members)
+      .values({
+        id: sql`public.uuid_generate_v7()::text`,
+        organizationId: id,
+        userId: leaderUserId,
+        role: "owner",
+        createdAt: new Date(),
+      })
+      .returning({ id: members.id })
+    await tx
+      .insert(memberProfiles)
+      .values({ memberId: member!.id, ...memberDefaults })
     if (!approved)
       await tx.insert(applications).values({
         organizationId: id,

@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto"
+import { v7 as uuidv7 } from "uuid"
 
 import type { OpenAPIHono } from "@hono/zod-openapi"
 import { addHours, addMinutes, isAfter, subMinutes } from "date-fns"
@@ -2592,7 +2593,7 @@ export function registerChapterRoutes(
           .where(eq(chapterPage.chapterId, chapterId))
           .orderBy(asc(chapterPage.position))
         const seededPages = currentPages.map((page) => ({
-          id: randomUUID(),
+          id: uuidv7(),
           sessionId: created.id,
           state: "ready" as const,
           stagingKey: null,

@@ -30,7 +30,7 @@ interfaces, publishing tools, and a shared backend.
 - Comments, translation groups, and group permissions.
 - Manga/chapter publishing, image uploads, and moderation tools.
 - Optional avatar frames, Coin, Shop, and Gacha.
-- Sitemap, structured data, dynamic manga/group share images, and service-worker caching.
+- Sitemap, structured data, dynamic manga/chapter/group share images, and service-worker caching.
 - Main and HVN frontends sharing the same accounts, catalog, and application logic.
 
 ## Tech Stack
@@ -86,6 +86,10 @@ The CLI prompts for a password and confirmation; there is no default account.
 Migrations create the schema, integrity checks, System group, 76 tags, and a
 closed common chest. Add manga, chapters, groups, and Shop stock through the
 management tools. No old database or content import is required.
+
+For existing installations, apply pending migrations before starting the updated
+API. The Better Auth migration stops on duplicate provider/account identities
+instead of merging accounts automatically.
 
 **4. Start development.**
 

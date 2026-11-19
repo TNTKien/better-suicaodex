@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "@workspace/ui/lib/string-length"
 import { z } from "zod"
 
 const decimal = z
@@ -23,7 +24,7 @@ export const chapterFormSchema = z
     title: z
       .string()
       .trim()
-      .max(255, "Tiêu đề tối đa 255 ký tự.")
+      .check(...utf16MaxLength(255, "Tiêu đề tối đa 255 ký tự."))
       .transform((value) => value || null),
   })
   .transform(({ oneShot, ...values }) => ({
