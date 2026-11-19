@@ -369,6 +369,32 @@ export function createApp(options: AppOptions = {}) {
     })
   )
 
+  // Media-type validation runs before handlers; document its shared response once.
+  for (const definition of app.openAPIRegistry.definitions) {
+    if (definition.type !== "route") continue
+    const content = definition.route.request?.body?.content
+    if (
+      content &&
+      Object.keys(content).some(
+        (type) =>
+          type === "application/json" ||
+          type.endsWith("+json") ||
+          type === "multipart/form-data" ||
+          type === "application/x-www-form-urlencoded"
+      )
+    )
+      definition.route = {
+        ...definition.route,
+        responses: {
+          415: {
+            description: "Unsupported request Content-Type",
+            content: { "application/json": { schema: ApiErrorSchema } },
+          },
+          ...definition.route.responses,
+        },
+      }
+  }
+
   app.doc31("/openapi.json", {
     openapi: "3.1.0",
     info: { title: "SuicaoDex Re:Dive API", version: "0.1.0" },
@@ -392,6 +418,24 @@ export function createApp(options: AppOptions = {}) {
           c.get("requestId")
         ),
         400
+      )
+    if (error instanceof HTTPException && error.status === 413)
+      return c.json(
+        apiError(
+          "PAYLOAD_TOO_LARGE",
+          "Request body exceeds the size limit",
+          c.get("requestId")
+        ),
+        413
+      )
+    if (error instanceof HTTPException && error.status === 415)
+      return c.json(
+        apiError(
+          "UNSUPPORTED_MEDIA_TYPE",
+          "Unsupported request Content-Type",
+          c.get("requestId")
+        ),
+        415
       )
     if (error instanceof GroupError)
       return c.json(

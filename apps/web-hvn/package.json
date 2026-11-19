@@ -22,7 +22,7 @@
     "@workspace/account": "workspace:*",
     "@workspace/catalog": "workspace:*",
     "@workspace/ui": "workspace:*",
-    "better-auth": "1.7.2",
+    "better-auth": "1.7.22",
     "date-fns": "4.4.0",
     "lucide-react": "^1.34.0",
     "next": "16.4.6",
@@ -30,7 +30,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "streamdown": "^2.6.0",
-    "zod": "4.4.3"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@serwist/cli": "^9.5.12",

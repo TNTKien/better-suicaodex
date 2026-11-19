@@ -87,6 +87,10 @@ Migrations create the schema, integrity checks, System group, 76 tags, and a
 closed common chest. Add manga, chapters, groups, and Shop stock through the
 management tools. No old database or content import is required.
 
+For existing installations, apply pending migrations before starting the updated
+API. The Better Auth migration stops on duplicate provider/account identities
+instead of merging accounts automatically.
+
 **4. Start development.**
 
 ```sh

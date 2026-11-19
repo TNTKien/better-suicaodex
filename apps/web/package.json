@@ -27,7 +27,7 @@
     "@workspace/account": "workspace:*",
     "@workspace/catalog": "workspace:*",
     "@workspace/ui": "workspace:*",
-    "better-auth": "1.7.2",
+    "better-auth": "1.7.22",
     "bowser": "^2.14.1",
     "date-fns": "4.4.0",
     "embla-carousel-autoplay": "^8.6.0",
@@ -39,7 +39,7 @@
     "react-dom": "19.2.4",
     "react-hook-form": "^7.87.0",
     "streamdown": "^2.6.0",
-    "zod": "4.4.3",
+    "zod": "4.6.7",
     "zustand": "^5.0.15"
   },
   "devDependencies": {

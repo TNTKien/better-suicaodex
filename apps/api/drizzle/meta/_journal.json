@@ -22,6 +22,13 @@
       "when": 1792426675363,
       "tag": "0002_seed_tags",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795087327576,
+      "tag": "0003_better_auth_account_identity",
+      "breakpoints": true
     }
   ]
 }

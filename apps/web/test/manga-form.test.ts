@@ -65,4 +65,14 @@ assert.equal(
   false
 )
 
+assert.equal(
+  mangaFormSchema.safeParse({ ...input, title: "😀".repeat(127) + "a" })
+    .success,
+  true
+)
+assert.equal(
+  mangaFormSchema.safeParse({ ...input, title: "😀".repeat(128) }).success,
+  false
+)
+
 console.log("Manga form checks passed")

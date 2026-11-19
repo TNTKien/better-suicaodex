@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 
 import {
@@ -114,7 +115,12 @@ const repeatableIds = z.preprocess(
 )
 
 export const MangaCatalogQuerySchema = PageQuerySchema.extend({
-  q: z.string().trim().min(1).max(160).optional(),
+  q: z
+    .string()
+    .trim()
+    .min(1)
+    .check(...utf16MaxLength(160))
+    .optional(),
   sort: z
     .enum(["latestChapter", "publishedAt", "title", "year"])
     .default("latestChapter"),
@@ -125,7 +131,7 @@ export const MangaCatalogQuerySchema = PageQuerySchema.extend({
     .string()
     .trim()
     .min(2)
-    .max(35)
+    .check(...utf16MaxLength(35))
     .regex(/^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/)
     .optional(),
   includeTag: repeatableIds,
@@ -335,7 +341,12 @@ const TranslationGroupListSchema = z
   })
   .openapi("TranslationGroupList")
 const TranslationGroupListQuerySchema = PageQuerySchema.extend({
-  q: z.string().trim().min(1).max(100).optional(),
+  q: z
+    .string()
+    .trim()
+    .min(1)
+    .check(...utf16MaxLength(100))
+    .optional(),
 }).openapi("TranslationGroupListQuery")
 
 const PersonListSchema = z
@@ -344,7 +355,12 @@ const PersonListSchema = z
 
 export const PersonListQuerySchema = z
   .object({
-    q: z.string().trim().min(1).max(160).optional(),
+    q: z
+      .string()
+      .trim()
+      .min(1)
+      .check(...utf16MaxLength(160))
+      .optional(),
     role: z.enum(["author", "artist"]).optional(),
     id: repeatableIds,
     limit: z.coerce.number().int().min(1).max(50).default(10),

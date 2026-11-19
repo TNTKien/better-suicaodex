@@ -7805,6 +7805,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limit exceeded",
             "content": {
@@ -8525,6 +8535,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limit exceeded",
             "content": {
@@ -8946,6 +8966,16 @@
           },
           "413": {
             "description": "Request body exceeds 16 KiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -9444,6 +9474,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "503": {
             "description": "SuicaoCoin disabled",
             "content": {
@@ -9540,6 +9580,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -9612,6 +9662,16 @@
           },
           "413": {
             "description": "The uploaded image is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -9970,6 +10030,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Image processor is busy",
             "content": {
@@ -10113,6 +10183,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Image processor is busy",
             "content": {
@@ -10243,6 +10323,16 @@
           },
           "413": {
             "description": "Request body exceeds limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -10629,6 +10719,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Image processor is busy",
             "content": {
@@ -10814,6 +10914,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Image processor is busy",
             "content": {
@@ -10959,6 +11069,16 @@
           },
           "413": {
             "description": "Request body exceeds limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -11371,6 +11491,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Image processor is busy",
             "content": {
@@ -11515,6 +11645,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Image processor is busy",
             "content": {
@@ -11625,6 +11765,16 @@
           },
           "413": {
             "description": "Request body exceeds limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -11872,6 +12022,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Image processor is busy",
             "content": {
@@ -12087,6 +12247,16 @@
           },
           "413": {
             "description": "Request rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -12389,6 +12559,16 @@
           },
           "413": {
             "description": "Request rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -13075,6 +13255,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -13663,6 +13853,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -13995,6 +14195,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -14132,6 +14342,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -14253,6 +14473,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -14367,6 +14597,16 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -14499,6 +14739,16 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -14708,6 +14958,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       },
@@ -14801,6 +15061,16 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -14937,6 +15207,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -15055,6 +15335,16 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -15263,6 +15553,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -15381,6 +15681,16 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -15865,6 +16175,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -16048,6 +16368,16 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -17352,6 +17682,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Comment cooldown or duplicate content window",
             "content": {
@@ -17538,6 +17878,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Comment cooldown or duplicate content window",
             "content": {
@@ -17653,6 +18003,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       },
@@ -17744,6 +18104,16 @@
           },
           "409": {
             "description": "Comment state changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -17905,6 +18275,16 @@
           },
           "404": {
             "description": "Content is not visible or readable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -18279,6 +18659,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -18554,6 +18944,16 @@
           },
           "404": {
             "description": "Manga is not visible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -19203,6 +19603,16 @@
                 }
               }
             }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -19310,6 +19720,16 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -19598,6 +20018,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -19715,6 +20145,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -20112,6 +20552,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -20228,6 +20678,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -20332,6 +20792,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -20899,6 +21369,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -21025,6 +21505,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -21130,6 +21620,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -21244,6 +21744,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -21576,6 +22086,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -21810,6 +22330,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -22025,6 +22555,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -22307,6 +22847,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -22545,6 +23095,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -22655,6 +23215,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -22794,6 +23364,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -22957,6 +23537,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -23136,6 +23726,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -23254,6 +23854,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -23416,6 +24026,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -23702,6 +24322,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -23863,6 +24493,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -24239,6 +24879,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "503": {
             "description": "View tracking is not configured",
             "content": {
@@ -24602,6 +25252,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -24876,6 +25536,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -25004,6 +25674,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -25165,6 +25845,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -25977,6 +26667,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -26134,6 +26834,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -26270,6 +26980,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -26390,6 +27110,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -26822,6 +27552,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -26970,6 +27710,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {
@@ -27129,6 +27879,16 @@
               }
             }
           },
+          "415": {
+            "description": "Unsupported request Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Success",
             "content": {
@@ -27264,6 +28024,16 @@
           },
           "413": {
             "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported request Content-Type",
             "content": {
               "application/json": {
                 "schema": {

@@ -1,3 +1,4 @@
+import { utf16MaxLength } from "../../shared/string-length.js"
 import { createRoute, z } from "@hono/zod-openapi"
 import { CoinAmountSchema } from "../coin/contract.js"
 
@@ -85,7 +86,12 @@ export const PublicProfileSchema = z
 
 export const UpdateProfileSchema = z
   .object({
-    bio: z.string().trim().max(2_000).nullable().optional(),
+    bio: z
+      .string()
+      .trim()
+      .check(...utf16MaxLength(2_000))
+      .nullable()
+      .optional(),
     isPublic: z.boolean().optional(),
   })
   .strict()
@@ -101,7 +107,7 @@ const profileParams = z.object({
   id: z
     .string()
     .min(1)
-    .max(128)
+    .check(...utf16MaxLength(128))
     .openapi({ param: { in: "path", name: "id" } }),
 })
 
