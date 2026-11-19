@@ -1,4 +1,5 @@
-import { createHash, randomUUID } from "node:crypto"
+import { createHash } from "node:crypto"
+import { v7 as uuidv7 } from "uuid"
 import { eq, sql } from "drizzle-orm"
 import type { Database } from "../../db/client.js"
 import { coinLedger, coinOperation, coinWallet } from "../../db/schema.js"
@@ -82,7 +83,7 @@ async function apply(
   const createdAt = new Date()
   const receipt: CoinReceipt = {
     operationKey: input.key,
-    transactionGroup: randomUUID(),
+    transactionGroup: uuidv7(),
     createdAt: createdAt.toISOString(),
     entries: [],
   }
@@ -123,7 +124,7 @@ async function apply(
     wallet.balance = balance
     wallet.sequence += 1n
     receipt.entries.push({
-      id: randomUUID(),
+      id: uuidv7(),
       walletId: wallet.id,
       owner: entry.owner,
       mode: entry.mode,

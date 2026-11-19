@@ -1,5 +1,6 @@
 import type { OpenAPIHono } from "@hono/zod-openapi"
-import { createHash, randomUUID } from "node:crypto"
+import { createHash } from "node:crypto"
+import { v7 as uuidv7 } from "uuid"
 import { addHours, subMinutes } from "date-fns"
 import { and, eq, isNull, lte, or, sql } from "drizzle-orm"
 import { bodyLimit } from "hono/body-limit"
@@ -290,7 +291,7 @@ export function registerMangaCoverRoute(
     const image = await processCover(file)
     const now = dependencies.now?.() ?? new Date()
     const expiresAt = addHours(now, sessionTtlHours)
-    const id = randomUUID()
+    const id = uuidv7()
     const [session] = await dependencies.database
       .insert(coverUploadSession)
       .values({

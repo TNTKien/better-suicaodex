@@ -723,6 +723,7 @@ describe("10E.1 D-F: reward and wallet API", () => {
       .from(coinViewReceipt)
       .where(eq(coinViewReceipt.chapterId, manga.chapterId))
     expect(receipt!.allocations).toHaveLength(3)
+    expect(receipt!.eventId[14]).toBe("7")
   })
 
   test("E: unrelated views serialize group carry; no eligible group still counts normally", async () => {

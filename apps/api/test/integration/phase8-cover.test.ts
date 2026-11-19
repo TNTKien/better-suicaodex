@@ -348,6 +348,7 @@ describe.serial("Phase 8 manga cover", () => {
     const staged = (await stagedResponse.json()) as {
       data: { id: string; previewUrl: string }
     }
+    expect(staged.data.id[14]).toBe("7")
     expect(staged.data.previewUrl).toContain(staged.data.id)
     expect(staged.data.previewUrl).not.toContain("staging.example.com")
     expect(staged.data.previewUrl).toContain("/uploads/covers/tmp/")
@@ -377,6 +378,11 @@ describe.serial("Phase 8 manga cover", () => {
       state: "attached",
     })
     expect(attached?.stagingCleanedAt).toBeInstanceOf(Date)
+    const [savedCover] = await runtime.database
+      .select({ id: cover.id })
+      .from(cover)
+      .where(eq(cover.id, staged.data.id))
+    expect(savedCover?.id).toBe(staged.data.id)
 
     const replacementResponse = await stage(
       new Blob([source], { type: "image/jpeg" }),

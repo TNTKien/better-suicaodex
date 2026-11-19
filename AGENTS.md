@@ -8,6 +8,11 @@ This version has breaking changes - APIs, conventions, and file structure may al
 - Commit messages must follow the Conventional Commits specification.
 - Do not add `Co-Authored-By` trailers or equivalent AI/assistant attribution to commits, pull requests, or related Git/GitHub content.
 
+# Identifier Conventions
+- Use UUIDv7 for newly generated application data IDs; preserve existing IDs.
+- Keep cryptographically random generation for technical tokens, including lock/claim tokens, view-session cookies, idempotency keys, and asset filenames.
+- Keep Better Auth ID/token generation unchanged.
+
 # Workspace
 - Bun monorepo: `apps/web` (main Next.js frontend), `apps/web-hvn` (alternate frontend), `apps/api` (Hono/PostgreSQL), `apps/og-image` (Bun OG renderer).
 - Shared UI, account and catalog behavior belongs in `packages/`; preserve each frontend's presentation.

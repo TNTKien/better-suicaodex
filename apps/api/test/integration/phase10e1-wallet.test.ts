@@ -152,6 +152,8 @@ describe("10E.1 A-C: coin foundation (PostgreSQL)", () => {
     )
     for (const result of results) expect(result).toEqual(results[0])
     expect(CoinReceiptSchema.parse(results[0])).toEqual(results[0])
+    expect(results[0]!.transactionGroup[14]).toBe("7")
+    for (const entry of results[0]!.entries) expect(entry.id[14]).toBe("7")
     expect(await apply(input)).toEqual(results[0])
     await balance(owner, "5")
     for (const conflicting of [

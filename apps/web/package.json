@@ -39,6 +39,7 @@
     "react-dom": "19.2.4",
     "react-hook-form": "^7.87.0",
     "streamdown": "^2.6.0",
+    "uuid": "14.0.3",
     "zod": "4.6.7",
     "zustand": "^5.0.15"
   },

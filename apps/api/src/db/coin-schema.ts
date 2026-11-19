@@ -161,7 +161,10 @@ export const coinViewReceipt = pgTable(
     mangaId: uuid("manga_id")
       .notNull()
       .references(() => manga.id, { onDelete: "restrict" }),
-    eventId: uuid("event_id").notNull().defaultRandom().unique(),
+    eventId: uuid("event_id")
+      .notNull()
+      .default(sql`public.uuid_generate_v7()`)
+      .unique(),
     acceptedAt: instant("accepted_at").notNull(),
     expiresAt: instant("expires_at").notNull(),
     allocations: jsonb("allocations")

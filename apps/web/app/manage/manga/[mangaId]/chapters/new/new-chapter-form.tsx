@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { v7 as uuidv7 } from "uuid"
 import {
   type ChangeEvent,
   type ReactNode,
@@ -991,7 +992,7 @@ function ChapterForm({
           attempted: false,
           file,
           height: null,
-          id: crypto.randomUUID(),
+          id: uuidv7(),
           name: file.name,
           preview: await readPreview(file),
           progress: 0,
@@ -1075,7 +1076,7 @@ function ChapterForm({
         attempted: true,
         file,
         height: null,
-        id: crypto.randomUUID(),
+        id: uuidv7(),
         name: file.name,
         preview: await readPreview(file),
         progress: 0,

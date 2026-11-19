@@ -1,0 +1,1 @@
+ALTER TABLE "coin_view_receipt" ALTER COLUMN "event_id" SET DEFAULT public.uuid_generate_v7();
