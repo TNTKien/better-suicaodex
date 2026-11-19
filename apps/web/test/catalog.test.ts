@@ -1,8 +1,23 @@
 import assert from "node:assert/strict"
-import { coverSrcSet } from "@workspace/catalog/images"
+import { coverSrcSet, originalCover } from "@workspace/catalog/images"
 
 const coverUrl = "https://images.example.test/covers/manga/cover.512.webp"
 const coverCandidates = `${coverUrl.replace(".512.webp", ".256.webp")} 256w, ${coverUrl} 512w`
+for (const variant of [256, 512]) {
+  for (const path of [
+    "covers/0199f711-739b-7000-8000-000000000001/cover",
+    "covers/external-cover/original.jpg",
+  ]) {
+    assert.equal(
+      originalCover(`https://images.test/${path}.${variant}.webp`),
+      `https://images.test/${path}.webp`
+    )
+  }
+}
+for (const url of ["https://images.test/full.webp", `${coverUrl}?token=1`])
+  assert.equal(originalCover(url), url)
+assert.equal(originalCover(null), null)
+
 for (const width of [512, 700, null]) {
   assert.equal(coverSrcSet({ url: coverUrl, width }), coverCandidates)
   assert.equal(

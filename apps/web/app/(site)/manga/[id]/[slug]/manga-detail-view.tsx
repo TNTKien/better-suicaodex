@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { cover256, coverSrcSet } from "@workspace/catalog/images"
+import { cover256, coverSrcSet, originalCover } from "@workspace/catalog/images"
 import type { ReactNode } from "react"
 import { BookmarkIcon, EyeIcon, MessagesSquareIcon } from "lucide-react"
 
@@ -12,6 +12,7 @@ import {
 } from "@/lib/catalog"
 import { Badge } from "@workspace/ui/components/badge"
 import { buttonVariants } from "@workspace/ui/components/button"
+import { ImagePreview } from "@workspace/ui/components/image-preview"
 import { cn } from "@workspace/ui/lib/utils"
 
 import { MangaDescription } from "./manga-description"
@@ -122,16 +123,24 @@ function MangaHero({
     <section className="relative">
       <div className="relative mx-auto grid max-w-480 grid-cols-[8rem_minmax(0,1fr)] gap-x-4 gap-y-5 px-4 pt-6 pb-8 [grid-template-areas:'cover_title'_'actions_actions'_'info_info'] sm:grid-cols-[10rem_minmax(0,1fr)] sm:px-6 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-6 md:gap-y-3 md:pt-8 md:[grid-template-areas:'cover_title'_'cover_actions'_'cover_info']">
         <div className="self-start overflow-hidden drop-shadow-md [grid-area:cover]">
-          <AssetImage
+          <ImagePreview
             alt={`Bìa truyện ${manga.title}`}
-            className="aspect-5/7 h-auto w-full rounded-md object-cover drop-shadow-md"
-            eager
+            fallbackSrc={manga.cover?.url ?? null}
             height={coverHeight}
-            src={manga.cover?.url ?? null}
-            srcSet={coverSrcSet(manga.cover)}
-            sizes="(min-width: 768px) 208px, (min-width: 640px) 160px, 128px"
+            src={originalCover(manga.cover?.url ?? null)}
             width={coverWidth}
-          />
+          >
+            <AssetImage
+              alt={`Bìa truyện ${manga.title}`}
+              className="aspect-5/7 h-auto w-full rounded-md object-cover drop-shadow-md"
+              eager
+              height={coverHeight}
+              src={manga.cover?.url ?? null}
+              srcSet={coverSrcSet(manga.cover)}
+              sizes="(min-width: 768px) 208px, (min-width: 640px) 160px, 128px"
+              width={coverWidth}
+            />
+          </ImagePreview>
         </div>
 
         <header className="flex min-w-0 flex-col justify-between gap-4 drop-shadow-md [grid-area:title] md:min-h-64">

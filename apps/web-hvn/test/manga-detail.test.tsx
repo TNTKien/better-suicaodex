@@ -222,6 +222,8 @@ try {
   assert.match(html, /Đăng nhập để theo dõi truyện/)
   assert.match(html, /loginto-follow\.webp/)
   assert.match(html, /cover\.512\.webp/)
+  assert.match(html, /aria-label="Phóng to Bìa truyện Truyện &lt;script&gt;"/)
+  assert.doesNotMatch(html, /src="https:\/\/images.example.test\/cover.webp"/)
   assert.match(html, /srcSet="[^"]+256w, [^"]+512w"/)
   assert.match(html, /sizes="\(min-width: 768px\) 244px, 300px"/)
   assert.equal((html.match(/doc-online\.webp/g) ?? []).length, 2)
