@@ -4,6 +4,12 @@ import { ResizeFit, Transformer } from "@napi-rs/image"
 export const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 export type Manga = { title: string; creators: string; coverUrl: string | null }
+export type Chapter = {
+  title: string
+  chapterLabel: string
+  groups: string
+  coverUrl: string | null
+}
 export type Group = {
   title: string
   description: string
@@ -38,7 +44,7 @@ export async function readLimited(response: Response, maxBytes: number) {
 }
 
 async function getPublicResource(
-  resource: "manga" | "groups",
+  resource: "manga" | "groups" | "chapters",
   id: string,
   apiUrl: string,
   fetcher: Fetch
@@ -125,6 +131,53 @@ export async function getManga(id: string, apiUrl: string, fetcher: Fetch) {
       .slice(0, 1_000),
     coverUrl: body.cover?.url ?? null,
   } satisfies Manga
+}
+
+export async function getChapter(id: string, apiUrl: string, fetcher: Fetch) {
+  const body = await getPublicResource("chapters", id, apiUrl, fetcher)
+  if (body === undefined) return null
+  if (
+    !body ||
+    body.id !== id ||
+    !body.manga ||
+    typeof body.manga.title !== "string" ||
+    !body.manga.title.trim() ||
+    body.manga.title.length > 10_000 ||
+    ![body.volume, body.number, body.title].every(
+      (value) =>
+        value === null || (typeof value === "string" && value.length <= 10_000)
+    ) ||
+    !Array.isArray(body.groups) ||
+    (body.manga.cover !== null &&
+      (!body.manga.cover || typeof body.manga.cover.url !== "string"))
+  ) {
+    throw new Error("Invalid chapter API response")
+  }
+  const names = body.groups.map((group: unknown) => {
+    if (
+      !group ||
+      typeof group !== "object" ||
+      !("name" in group) ||
+      typeof group.name !== "string" ||
+      !group.name.trim() ||
+      group.name.length > 10_000
+    ) {
+      throw new Error("Invalid chapter group")
+    }
+    return group.name.trim()
+  })
+  const volume = body.volume ? `Tập ${body.volume} · ` : ""
+  const number = body.number ? `Chương ${body.number}` : "Oneshot"
+  return {
+    title: body.manga.title,
+    chapterLabel:
+      `${volume}${number}${body.title ? ` - ${body.title}` : ""}`.slice(
+        0,
+        1_000
+      ),
+    groups: [...new Set<string>(names)].join(", ").slice(0, 1_000),
+    coverUrl: body.manga.cover?.url ?? null,
+  } satisfies Chapter
 }
 
 export function cover512(

@@ -1,5 +1,9 @@
 import assert from "node:assert/strict"
-import { getGroupOgImageUrl, getMangaOgImageUrl } from "../lib/og-image"
+import {
+  getChapterOgImageUrl,
+  getGroupOgImageUrl,
+  getMangaOgImageUrl,
+} from "../lib/og-image"
 
 const original = process.env.OG_IMAGE_URL
 const id = "01a12efd-abfe-73d5-b5d6-a3e08b3831b7"
@@ -13,6 +17,10 @@ try {
     getGroupOgImageUrl(id),
     `http://localhost:3003/og-image/group/${id}.png`
   )
+  assert.equal(
+    getChapterOgImageUrl(id),
+    `http://localhost:3003/og-image/chapter/${id}.png`
+  )
   process.env.OG_IMAGE_URL = "http://localhost:3003/"
   assert.equal(
     getMangaOgImageUrl(id),
@@ -21,6 +29,10 @@ try {
   assert.equal(
     getGroupOgImageUrl(id),
     `http://localhost:3003/og-image/group/${id}.png`
+  )
+  assert.equal(
+    getChapterOgImageUrl(id),
+    `http://localhost:3003/og-image/chapter/${id}.png`
   )
   for (const value of [
     "file:///etc/passwd",
@@ -32,6 +44,7 @@ try {
     process.env.OG_IMAGE_URL = value
     assert.throws(() => getMangaOgImageUrl(id), /OG_IMAGE_URL/)
     assert.throws(() => getGroupOgImageUrl(id), /OG_IMAGE_URL/)
+    assert.throws(() => getChapterOgImageUrl(id), /OG_IMAGE_URL/)
   }
 } finally {
   if (original === undefined) delete process.env.OG_IMAGE_URL

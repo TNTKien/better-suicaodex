@@ -6,7 +6,11 @@ export function getGroupOgImageUrl(id: string) {
   return getOgImageUrl("group", id)
 }
 
-function getOgImageUrl(resource: "manga" | "group", id: string) {
+export function getChapterOgImageUrl(id: string) {
+  return getOgImageUrl("chapter", id)
+}
+
+function getOgImageUrl(resource: "manga" | "chapter" | "group", id: string) {
   const origin = new URL(process.env.OG_IMAGE_URL ?? "http://localhost:3003")
   if (
     !["http:", "https:"].includes(origin.protocol) ||

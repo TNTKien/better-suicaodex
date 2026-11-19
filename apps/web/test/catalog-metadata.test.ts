@@ -18,12 +18,27 @@ const person = {
   description: null,
 }
 const tag = { id, slug: "comedy", name: "Comedy" }
+const chapter = {
+  id,
+  volume: "2",
+  number: "1.5",
+  title: "Khởi đầu",
+  manga: { title: "Truyện tiếng Việt" },
+}
 let visible = true
+let chapterCalls = 0
 mock.module("server-only", () => ({}))
+mock.module("../app/(reader)/chapter/[id]/reader-client", () => ({
+  ReaderClient: () => null,
+}))
 mock.module("@/lib/api", () => ({
   getTag: async () => (visible ? tag : null),
   getPerson: async () => (visible ? person : null),
   getGroup: async () => (visible ? group : null),
+  getChapter: async () => {
+    chapterCalls++
+    return visible ? chapter : null
+  },
   getMangaList: async () => {
     throw new Error("Unexpected catalog fetch")
   },
@@ -48,6 +63,8 @@ const { generateMetadata: artist } =
 const { generateMetadata: groupMetadata } =
   await import("../app/(site)/group/[id]/[[...slug]]/page")
 const { metadata: search } = await import("../app/(site)/advanced-search/page")
+const { generateMetadata: chapterMetadata } =
+  await import("../app/(reader)/chapter/[id]/page")
 const params = Promise.resolve({ id, slug: "stale-slug" })
 const groupParams = Promise.resolve({ id, slug: ["stale-slug"] })
 
@@ -113,6 +130,27 @@ assert.deepEqual(search.robots, { index: false, follow: true })
 const originalOgUrl = process.env.OG_IMAGE_URL
 try {
   process.env.OG_IMAGE_URL = "https://og.test"
+  const chapterData = await chapterMetadata({ params: Promise.resolve({ id }) })
+  const chapterTitle = "Truyện tiếng Việt - Tập 2 · Chương 1.5 - Khởi đầu"
+  const chapterImage = {
+    url: `https://og.test/og-image/chapter/${id}.png`,
+    width: 1200,
+    height: 630,
+    alt: chapterTitle,
+  }
+  canonical(chapterData, `/chapter/${id}`)
+  assert.equal(chapterData.title, chapterTitle)
+  assert.equal(chapterData.openGraph?.url, `/chapter/${id}`)
+  assert.equal(chapterData.openGraph?.title, chapterTitle)
+  assert.deepEqual(chapterData.openGraph?.images, [chapterImage])
+  assert.equal(chapterData.twitter?.card, "summary_large_image")
+  assert.deepEqual(chapterData.twitter?.images, [chapterImage])
+  assert.equal(chapterCalls, 1)
+  const invalidChapter = await chapterMetadata({
+    params: Promise.resolve({ id: "not-a-uuid" }),
+  })
+  assert.equal(invalidChapter.openGraph, undefined)
+  assert.equal(chapterCalls, 1)
   const metadata = await groupMetadata({
     params: groupParams,
     searchParams: Promise.resolve({ page: "2" }),
@@ -144,8 +182,16 @@ try {
   })
   assert.equal(missing.alternates, undefined)
   assert.equal(missing.openGraph, undefined)
+  const missingChapter = await chapterMetadata({
+    params: Promise.resolve({ id }),
+  })
+  assert.equal(missingChapter.alternates, undefined)
+  assert.equal(missingChapter.openGraph, undefined)
+  assert.equal(missingChapter.twitter, undefined)
 } finally {
   if (originalOgUrl === undefined) delete process.env.OG_IMAGE_URL
   else process.env.OG_IMAGE_URL = originalOgUrl
 }
-console.log("Catalog canonical, robots and group metadata checks passed")
+console.log(
+  "Catalog canonical, robots, group and chapter metadata checks passed"
+)

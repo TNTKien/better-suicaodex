@@ -9,7 +9,13 @@ import { createApp } from "../src/app"
 import { ImageCache } from "../src/cache"
 import { readConfig } from "../src/config"
 import { renderImage } from "../src/render"
-import { cover512, getAvatar, getCover, type Fetch } from "../src/upstream"
+import {
+  cover512,
+  getAvatar,
+  getChapter,
+  getCover,
+  type Fetch,
+} from "../src/upstream"
 
 const id = "01a12efd-abfe-73d5-b5d6-a3e08b3831b7"
 const otherId = "01a12efd-abfe-73d5-b5d6-a3e08b3831b8"
@@ -25,6 +31,18 @@ const manga = {
   cover: { url: coverUrl },
   authors: [{ name: "Nguyễn Văn A" }],
   artists: [{ name: "Nguyễn Văn A" }, { name: "Trần B" }],
+}
+const chapter = {
+  id,
+  volume: "3",
+  number: "32.5",
+  title: "Lời hứa của chúng mình",
+  manga: { title: manga.title, cover: manga.cover },
+  groups: [
+    { name: "Nhóm dịch A" },
+    { name: "Nhóm dịch B" },
+    { name: "Nhóm dịch A" },
+  ],
 }
 const pixels = Buffer.alloc(512 * 720 * 4)
 for (let i = 0; i < pixels.length; i += 4) {
@@ -134,6 +152,7 @@ test("bad IDs never call the API; upstream errors remain uncached errors", async
   }) as Fetch)
   for (const request of [
     "/og-image/manga/not-a-uuid.png",
+    "/og-image/chapter/not-a-uuid.png",
     `/og-image/manga/${id}`,
     "/other",
   ]) {
@@ -174,10 +193,162 @@ test("same-ID requests share work and excess unique jobs get 503", async () => {
   expect(busy.headers.get("cache-control")).toBe("no-store")
   expect(apiCalls).toBe(1)
   expect((await app.request(`/og-image/group/${id}.png`)).status).toBe(503)
+  expect((await app.request(`/og-image/chapter/${id}.png`)).status).toBe(503)
   gate.resolve()
   expect((await first).status).toBe(200)
   expect((await duplicate).status).toBe(200)
   expect(renders).toBe(1)
+})
+
+test("chapters render manga covers, chapter details and groups; cache rechecks visibility", async () => {
+  let current: typeof chapter | null = chapter
+  let apiCalls = 0,
+    coverCalls = 0,
+    renders = 0
+  const app = createApp(
+    config,
+    cache(),
+    async (...args) => {
+      renders++
+      expect(args[0]).toEqual({
+        title: current!.manga.title,
+        chapterLabel: `Tập 3 · Chương 32.5 - ${current!.title}`,
+        groups: [...new Set(current!.groups.map((group) => group.name))].join(
+          ", "
+        ),
+        coverUrl,
+      })
+      return renderImage(...args)
+    },
+    (async (input, options) => {
+      expect(options?.credentials).toBe("omit")
+      expect(options?.redirect).toBe("error")
+      expect(options?.signal).toBeDefined()
+      expect(options?.headers).toBeUndefined()
+      if (String(input) === `${config.apiUrl}/v1/chapters/${id}`) {
+        apiCalls++
+        return current
+          ? Response.json(current)
+          : new Response(null, { status: 404 })
+      }
+      expect(String(input)).toBe(coverUrl)
+      coverCalls++
+      return new Response(new Uint8Array(webp), {
+        headers: { "Content-Type": "image/webp" },
+      })
+    }) as Fetch
+  )
+  const chapterPath = `/og-image/chapter/${id}.png`
+  const first = await app.request(chapterPath)
+  expect(first.status).toBe(200)
+  expect(first.headers.get("content-type")).toBe("image/png")
+  expect(first.headers.get("cache-control")).toContain("s-maxage=3600")
+  expect(first.headers.get("x-og-cache")).toBe("MISS")
+  const png = Buffer.from(await first.arrayBuffer())
+  expect(imageSize(png)).toMatchObject({
+    width: 1200,
+    height: 630,
+    type: "png",
+  })
+  const rgba = await new Transformer(png).rawPixels()
+  const offset = (315 * 1200 + 1000) * 4
+  expect([...rgba.subarray(offset, offset + 4)]).toEqual([240, 90, 50, 255])
+  const second = await app.request(chapterPath)
+  expect(second.headers.get("x-og-cache")).toBe("HIT")
+  expect(Buffer.from(await second.arrayBuffer())).toEqual(png)
+  expect([apiCalls, coverCalls, renders]).toEqual([2, 1, 1])
+
+  current = { ...chapter, title: "Tiêu đề chương mới" }
+  expect((await app.request(chapterPath)).headers.get("x-og-cache")).toBe(
+    "MISS"
+  )
+  current = { ...current, groups: [{ name: "Nhóm dịch mới" }] }
+  expect((await app.request(chapterPath)).headers.get("x-og-cache")).toBe(
+    "MISS"
+  )
+  expect(renders).toBe(3)
+  current = null
+  const hidden = await app.request(chapterPath)
+  expect(hidden.status).toBe(404)
+  expect(hidden.headers.get("cache-control")).toBe("no-store")
+  expect(renders).toBe(3)
+}, 20_000)
+
+test("chapter projection handles oneshots, zero, missing covers/groups and separate cache keys", async () => {
+  const oneshot = {
+    ...chapter,
+    volume: null,
+    number: null,
+    title: null,
+    manga: { ...chapter.manga, cover: null },
+    groups: [],
+  }
+  expect(
+    await getChapter(id, config.apiUrl, async () => Response.json(oneshot))
+  ).toEqual({
+    title: manga.title,
+    chapterLabel: "Oneshot",
+    groups: "",
+    coverUrl: null,
+  })
+  expect(
+    await getChapter(id, config.apiUrl, async () =>
+      Response.json({
+        ...oneshot,
+        number: "0",
+        title: "Khởi đầu",
+      })
+    )
+  ).toMatchObject({ chapterLabel: "Chương 0 - Khởi đầu" })
+
+  const app = createApp(config, cache(), renderImage, (async (input) => {
+    if (String(input) === `${config.apiUrl}/v1/chapters/${id}`)
+      return Response.json(oneshot)
+    expect(String(input)).toBe(`${config.apiUrl}/v1/manga/${id}`)
+    return Response.json({ ...manga, cover: null })
+  }) as Fetch)
+  const chapterPath = `/og-image/chapter/${id}.png`
+  const result = await app.request(chapterPath)
+  expect(result.status).toBe(200)
+  expect(imageSize(Buffer.from(await result.arrayBuffer()))).toMatchObject({
+    width: 1200,
+    height: 630,
+  })
+  expect((await app.request(path)).headers.get("x-og-cache")).toBe("MISS")
+  expect((await app.request(chapterPath)).headers.get("x-og-cache")).toBe("HIT")
+}, 20_000)
+
+test("invalid chapter payloads and upstream failures do not produce cacheable images", async () => {
+  let renders = 0
+  for (const response of [
+    Response.json(null),
+    Response.json({ data: chapter }),
+    Response.json({ ...chapter, id: otherId }),
+    Response.json({ ...chapter, number: 32 }),
+    Response.json({ ...chapter, volume: undefined }),
+    Response.json({ ...chapter, title: {} }),
+    Response.json({ ...chapter, manga: null }),
+    Response.json({ ...chapter, manga: { ...chapter.manga, title: "" } }),
+    Response.json({ ...chapter, manga: { ...chapter.manga, cover: {} } }),
+    Response.json({ ...chapter, groups: null }),
+    Response.json({ ...chapter, groups: [{ name: " " }] }),
+    Response.json({ ...chapter, groups: [null] }),
+    new Response(null, { status: 503 }),
+  ]) {
+    const app = createApp(
+      config,
+      cache(),
+      async () => {
+        renders++
+        return Buffer.from("unexpected")
+      },
+      async () => response
+    )
+    const result = await app.request(`/og-image/chapter/${id}.png`)
+    expect(result.status).toBe(502)
+    expect(result.headers.get("cache-control")).toBe("no-store")
+  }
+  expect(renders).toBe(0)
 })
 
 test("groups render avatars or bundled Kokkoro, isolate cache and recheck visibility", async () => {

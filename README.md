@@ -30,7 +30,7 @@ interfaces, publishing tools, and a shared backend.
 - Comments, translation groups, and group permissions.
 - Manga/chapter publishing, image uploads, and moderation tools.
 - Optional avatar frames, Coin, Shop, and Gacha.
-- Sitemap, structured data, dynamic manga/group share images, and service-worker caching.
+- Sitemap, structured data, dynamic manga/chapter/group share images, and service-worker caching.
 - Main and HVN frontends sharing the same accounts, catalog, and application logic.
 
 ## Tech Stack

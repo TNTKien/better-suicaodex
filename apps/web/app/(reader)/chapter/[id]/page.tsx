@@ -4,8 +4,10 @@ import { Suspense } from "react"
 
 import { SiteHeader } from "@/components/site-header"
 import { JsonLd } from "@/components/json-ld"
+import { siteConfig } from "@/config/site"
 import { getBrowserApiBaseUrl, getChapter } from "@/lib/api"
 import { chapterLabel, isUuid } from "@/lib/catalog"
+import { getChapterOgImageUrl } from "@/lib/og-image"
 import { getChapterStructuredData } from "@/lib/structured-data"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 
@@ -20,10 +22,35 @@ export async function generateMetadata({ params }: { params: Params }) {
 
   if (!chapter) return { title: "Không tìm thấy chương" } satisfies Metadata
 
+  const canonical = `/chapter/${chapter.id}`
+  const title = `${chapter.manga.title} - ${chapterLabel(chapter)}`
+  const description = `Đọc ${chapterLabel(chapter)} của ${chapter.manga.title}.`
+  const image = {
+    url: getChapterOgImageUrl(chapter.id),
+    width: 1200,
+    height: 630,
+    alt: title,
+  }
+
   return {
-    alternates: { canonical: `/chapter/${chapter.id}` },
-    description: `Đọc ${chapterLabel(chapter)} của ${chapter.manga.title}.`,
-    title: `${chapter.manga.title} - ${chapterLabel(chapter)}`,
+    alternates: { canonical },
+    description,
+    title,
+    openGraph: {
+      type: "website",
+      locale: "vi_VN",
+      siteName: siteConfig.name,
+      title,
+      description,
+      url: canonical,
+      images: [image],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
   } satisfies Metadata
 }
 

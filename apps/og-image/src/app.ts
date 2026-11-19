@@ -8,14 +8,16 @@ import {
   getAvatar,
   getManga,
   getGroup,
+  getChapter,
   uuidPattern,
   type Fetch,
   type Manga,
+  type Chapter,
   type Group,
 } from "./upstream"
 
 type Render = (
-  subject: Manga | Group,
+  subject: Manga | Chapter | Group,
   cover: string | null,
   host: string
 ) => Promise<Buffer>
@@ -48,7 +50,7 @@ export function createApp(
   )
 
   async function image(
-    resource: "manga" | "group",
+    resource: "manga" | "chapter" | "group",
     id: string
   ): Promise<Result> {
     try {
@@ -56,12 +58,14 @@ export function createApp(
       const subject =
         resource === "manga"
           ? await getManga(id, config.apiUrl, fetcher)
-          : await getGroup(id, config.apiUrl, fetcher)
+          : resource === "chapter"
+            ? await getChapter(id, config.apiUrl, fetcher)
+            : await getGroup(id, config.apiUrl, fetcher)
       if (!subject) return { status: 404 }
       const key = `${resource}:${id}`
       const fingerprint = createHash("sha256")
         .update(
-          JSON.stringify([6, subject, config.siteHost, config.assetOrigin])
+          JSON.stringify([7, subject, config.siteHost, config.assetOrigin])
         )
         .digest("hex")
       const cached = cache.get(key, fingerprint)
@@ -85,7 +89,8 @@ export function createApp(
 
   app.get("/og-image/:resource/:file", async (c) => {
     const resource = c.req.param("resource")
-    if (resource !== "manga" && resource !== "group") return c.notFound()
+    if (resource !== "manga" && resource !== "chapter" && resource !== "group")
+      return c.notFound()
     const file = c.req.param("file")
     if (!file.endsWith(".png")) return c.notFound()
     const id = file.slice(0, -4).toLowerCase()
