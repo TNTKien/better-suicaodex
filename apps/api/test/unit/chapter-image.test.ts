@@ -21,10 +21,10 @@ const source = (width: number, height: number) =>
 
 describe("chapter page transform", () => {
   test("resizes normal pages by height and long strips by width", async () => {
-    const normal = await transformChapterPage(await source(1200, 2400))
+    const normal = await transformChapterPage(await source(1500, 3000))
     expect({ width: normal.width, height: normal.height }).toEqual({
-      width: 900,
-      height: 1800,
+      width: 1200,
+      height: 2400,
     })
 
     const longStrip = await transformChapterPage(await source(1200, 4800))
