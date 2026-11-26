@@ -13,6 +13,7 @@ import type { ReaderMode } from "../lib/reader"
 const react = { ...React }
 const hooks: unknown[] = []
 const effects: (() => void | (() => void))[] = []
+const layoutEffects: (() => void)[] = []
 let cursor = 0
 mock.module("react", () => ({
   ...react,
@@ -33,6 +34,7 @@ mock.module("react", () => ({
     return hooks[index]
   },
   useEffect: (effect: (typeof effects)[number]) => effects.push(effect),
+  useLayoutEffect: (effect: () => void) => layoutEffects.push(effect),
 }))
 const client = new QueryClient()
 mock.module("@tanstack/react-query", () => ({
@@ -82,19 +84,28 @@ mock.module("../modules/reading/local-history", () => ({
   useLocalReadingHistory: () => [{ chapterId: "alternate" }],
 }))
 let mode: ReaderMode = "classic"
+let limitWidth = true
+let currentPage = 0
+let readerReady = false
 mock.module("zustand", () => ({
   useStore: () => ({
     mode,
+    limitWidth,
     chapterError: "",
     chapters: null,
     chromeVisible: true,
-    currentPage: 0,
-    ready: false,
+    currentPage,
+    ready: readerReady,
     sheetOpen: false,
     hydrate: () => 0,
     setChromeVisible: () => undefined,
     setCurrentPage: () => undefined,
-    setMode: () => undefined,
+    setMode: (nextMode: ReaderMode) => {
+      mode = nextMode
+    },
+    setLimitWidth: (nextLimit: boolean) => {
+      limitWidth = nextLimit
+    },
     setSheetOpen: () => undefined,
     toggleChrome: () => undefined,
     updateRequestState: () => undefined,
@@ -173,11 +184,26 @@ mock.module("@workspace/ui/components/drawer", () => ({
   DrawerTitle: wrapper,
   DrawerClose: wrapper,
 }))
+let changeWidth: (checked: boolean) => void
+mock.module("@workspace/ui/components/switch", () => ({
+  Switch: ({
+    checked,
+    id,
+    onCheckedChange,
+  }: {
+    checked: boolean
+    id: string
+    onCheckedChange: typeof changeWidth
+  }) => {
+    changeWidth = onCheckedChange
+    return <button id={id} role="switch" aria-checked={checked} />
+  },
+}))
 const notices: { type: string }[] = []
 mock.module("@workspace/ui/components/toast", () => ({
   toast: { add: (notice: (typeof notices)[number]) => notices.push(notice) },
 }))
-const { ReaderClient } =
+const { ReaderClient, ReaderModeDialog } =
   await import("../app/(reader)/chapter/[id]/reader-client")
 const { canNavigateChapter, chapterNavigationOptions } =
   await import("../modules/reading/chapter-navigation")
@@ -269,18 +295,23 @@ globalThis.fetch = async (input, init) => {
   return Response.json({ data: result }, { status: failed ? 429 : 200 })
 }
 const tick = () => new Promise<void>((resolve) => setImmediate(resolve))
+let readerTree: React.ReactNode
+function TestReader() {
+  // eslint-disable-next-line react-hooks/globals -- Capture JSX only in this SSR harness to attach fake DOM refs before layout effects.
+  readerTree = ReaderClient({
+    apiBaseUrl: "https://api.example.test",
+    chapter,
+    header: <div>Header</div>,
+  })
+  return readerTree
+}
 function render() {
   cursor = 0
   controls.length = 0
   links.length = 0
   effects.length = 0
-  const html = renderToStaticMarkup(
-    <ReaderClient
-      apiBaseUrl="https://api.example.test"
-      chapter={chapter}
-      header={<div>Header</div>}
-    />
-  )
+  layoutEffects.length = 0
+  const html = renderToStaticMarkup(<TestReader />)
   effects.at(-1)!()
   return html
 }
@@ -302,12 +333,75 @@ function key(value: string) {
   } as unknown as KeyboardEvent)
   return prevented
 }
+
+type SettingsElement = React.ReactElement<{
+  children?: React.ReactNode
+  onClick?: () => void
+  checked?: boolean
+  onCheckedChange?: (checked: boolean) => void
+  onModeChange?: (mode: ReaderMode) => void
+  onLimitWidthChange?: (limitWidth: boolean) => void
+  ref?: React.RefObject<HTMLElement | null>
+  role?: string
+  className?: string
+}>
+function settingsElements(node: React.ReactNode): SettingsElement[] {
+  if (!react.isValidElement<SettingsElement["props"]>(node)) return []
+  return [
+    node,
+    ...react.Children.toArray(node.props.children).flatMap(settingsElements),
+  ]
+}
+
+const selectedModes: ReaderMode[] = []
+const selectedWidths: boolean[] = []
+const dialogOpenChanges: boolean[] = []
+const settingsProps = {
+  isLongStrip: false,
+  limitWidth: false,
+  mode: "classic" as ReaderMode,
+  onLimitWidthChange: (checked: boolean) => selectedWidths.push(checked),
+  onModeChange: (nextMode: ReaderMode) => selectedModes.push(nextMode),
+  onOpenChange: (open: boolean) => dialogOpenChanges.push(open),
+  open: true,
+  finalFocus: { current: null },
+}
+const classicSettings = settingsElements(ReaderModeDialog(settingsProps))
+const modeCards = classicSettings.filter((el) => el.type === "button")
+assert.equal(modeCards.length, 2, "Mode selection has no confirmation button")
+modeCards[1]!.props.onClick!()
+assert.deepEqual(
+  selectedModes,
+  ["zen"],
+  "Selecting a card immediately changes the mode"
+)
+assert.deepEqual(dialogOpenChanges, [], "Selecting a mode keeps settings open")
+const widthSwitch = classicSettings.find((el) => el.props.onCheckedChange)!
+assert.equal(widthSwitch.props.checked, false)
+widthSwitch.props.onCheckedChange!(true)
+assert.deepEqual(selectedWidths, [true])
+assert.equal(
+  settingsElements(ReaderModeDialog({ ...settingsProps, mode: "zen" })).some(
+    (el) => el.props.onCheckedChange
+  ),
+  false,
+  "Zen never exposes the width limit"
+)
+const longStripSettings = settingsElements(
+  ReaderModeDialog({ ...settingsProps, isLongStrip: true })
+)
+assert.equal(longStripSettings.filter((el) => el.type === "button").length, 1)
+assert(
+  longStripSettings.some((el) => el.props.onCheckedChange),
+  "Long strips still support Classic width settings"
+)
 try {
   assert.equal(canNavigateChapter(boundary), false)
   assert.equal(canNavigateChapter({ ...choice, state: "unordered" }), false)
   assert.equal(canNavigateChapter(choice), true)
   assert.equal(canNavigateChapter(ready), true)
   render()
+  assert.ok(controls.find((c) => c["aria-label"] === "Cài đặt reader"))
   assert.equal(requests.length, 0)
   assert.equal(
     controls.find((c) => c["aria-label"] === "Chương sau")?.disabled,
@@ -447,6 +541,99 @@ try {
   }
   render()
   assert.equal(key("PageUp"), false)
+
+  assert.match(render(), /max-w-6xl/)
+  const settingsButton = controls.find(
+    (c) => c["aria-label"] === "Cài đặt reader"
+  )!
+  settingsButton.onClick!({} as React.MouseEvent<HTMLButtonElement>)
+  assert.match(render(), /Giới hạn chiều rộng/)
+  assert.equal(
+    key("PageUp"),
+    false,
+    "Hotkeys are blocked while settings are open"
+  )
+  changeWidth!(false)
+  const wideReader = render()
+  assert.doesNotMatch(wideReader, /max-w-6xl/)
+  assert.match(wideReader, /role="dialog"/, "Width changes keep settings open")
+  mode = "zen"
+  const zenSettings = render()
+  assert.match(zenSettings, /role="dialog"/)
+  assert.doesNotMatch(zenSettings, /Giới hạn chiều rộng/)
+  closeDialog!()
+  assert.doesNotMatch(render(), /role="dialog"/)
+
+  chapter = { ...chapter, manga: { ...chapter.manga, isLongStrip: true } }
+  render()
+  controls.find((c) => c["aria-label"] === "Cài đặt reader")!.onClick!(
+    {} as React.MouseEvent<HTMLButtonElement>
+  )
+  const longStripDialog = render()
+  assert.match(longStripDialog, /role="dialog"/)
+  assert.match(longStripDialog, /Giới hạn chiều rộng/)
+  assert.doesNotMatch(longStripDialog, /Zen UI/)
+  closeDialog!()
+  render()
+
+  chapter = {
+    ...chapter,
+    manga: { ...chapter.manga, isLongStrip: false },
+    pages: Array.from({ length: 6 }, (_, position) => ({
+      ...chapter.pages[0]!,
+      position,
+    })),
+  }
+  mode = "classic"
+  currentPage = 4
+  readerReady = true
+  render()
+  controls.find((c) => c["aria-label"] === "Cài đặt reader")!.onClick!(
+    {} as React.MouseEvent<HTMLButtonElement>
+  )
+  render()
+  const settings = () =>
+    settingsElements(readerTree).find((el) => el.props.onLimitWidthChange)!
+  const scrolls: { selector: string; options: ScrollIntoViewOptions }[] = []
+  const pageRoot = {
+    querySelector: (selector: string) => ({
+      scrollIntoView: (options: ScrollIntoViewOptions) =>
+        scrolls.push({ selector, options }),
+    }),
+  } as unknown as HTMLElement
+  settings().props.onModeChange!("zen")
+  assert.match(render(), /role="dialog"/)
+  const zenRoot = settingsElements(readerTree).find(
+    (el) => el.props.ref && el.props.className?.includes("snap-x")
+  )!
+  zenRoot.props.ref!.current = pageRoot
+  layoutEffects.forEach((effect) => effect())
+  assert.deepEqual(
+    scrolls.at(-1),
+    {
+      selector: '[data-reader-page="4"]',
+      options: { behavior: "instant", block: "nearest", inline: "center" },
+    },
+    "Classic to Zen must position page 5 before paint, while settings remain open"
+  )
+  settings().props.onModeChange!("classic")
+  assert.match(render(), /role="dialog"/)
+  const classicRoot = settingsElements(readerTree).find(
+    (el) => el.props.role === "list"
+  )!
+  classicRoot.props.ref!.current = pageRoot
+  layoutEffects.forEach((effect) => effect())
+  assert.deepEqual(
+    scrolls.at(-1),
+    {
+      selector: '[data-reader-page="4"]',
+      options: { behavior: "instant" },
+    },
+    "Zen to Classic must position page 5 without waiting for dialog dismissal"
+  )
+  assert.equal(currentPage, 4)
+  closeDialog!()
+  render()
 } finally {
   globalThis.fetch = originalFetch
   if (originalWindow) globalThis.window = originalWindow

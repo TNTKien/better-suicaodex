@@ -17,6 +17,7 @@ type ReaderState = {
   chapters: ChapterList | null
   chromeVisible: boolean
   currentPage: number
+  limitWidth: boolean
   mode: ReaderMode
   ready: boolean
   sheetOpen: boolean
@@ -28,6 +29,7 @@ type ReaderStore = ReaderState & {
   hydrate: (chapterId: string, pageCount: number) => number
   setChromeVisible: (visible: boolean) => void
   setCurrentPage: (chapterId: string, pageCount: number, page: number) => void
+  setLimitWidth: (limitWidth: boolean) => void
   setMode: (mode: ReaderMode) => void
   setSheetOpen: (open: boolean) => void
   toggleChrome: () => void
@@ -41,18 +43,27 @@ const initialState: ReaderState = {
   chapters: null,
   chromeVisible: true,
   currentPage: 0,
+  limitWidth: true,
   mode: defaultMode,
   ready: false,
   sheetOpen: false,
 }
 
-function readPreferences(value: unknown) {
+function readPreferences(
+  value: unknown
+): Pick<ReaderState, "mode" | "limitWidth"> {
   const stored =
     typeof value === "object" && value !== null
       ? (value as Record<string, unknown>)
       : {}
-  if (stored.mode === "zen" || stored.mode === "single-page") return "zen"
-  return "classic"
+  return {
+    mode:
+      stored.mode === "zen" || stored.mode === "single-page"
+        ? "zen"
+        : "classic",
+    limitWidth:
+      typeof stored.limitWidth === "boolean" ? stored.limitWidth : true,
+  }
 }
 
 function defaultBrowserMode() {
@@ -62,28 +73,33 @@ function defaultBrowserMode() {
     : "zen"
 }
 
-function saveMode(mode: ReaderMode) {
+function savePreferences(
+  preferences: Pick<ReaderState, "mode" | "limitWidth">
+) {
   if (typeof window === "undefined") return
   try {
-    window.localStorage.setItem(preferencesKey, JSON.stringify({ mode }))
+    window.localStorage.setItem(preferencesKey, JSON.stringify(preferences))
   } catch {
     return
   }
 }
 
 export function createReaderStore() {
-  return createStore<ReaderStore>((set) => ({
+  return createStore<ReaderStore>((set, get) => ({
     ...initialState,
     hydrate: (_chapterId, pageCount) => {
       let currentPage = 0
       let mode = defaultMode
+      let limitWidth = true
 
       if (typeof window !== "undefined") {
         try {
           const preferences = window.localStorage.getItem(preferencesKey)
-          mode = preferences
+          const stored = preferences
             ? readPreferences(JSON.parse(preferences))
-            : defaultBrowserMode()
+            : { mode: defaultBrowserMode(), limitWidth: true }
+          mode = stored.mode
+          limitWidth = stored.limitWidth
           currentPage = readerPageFromHash(window.location.hash, pageCount)
         } catch {
           try {
@@ -95,7 +111,7 @@ export function createReaderStore() {
       }
 
       currentPage = clampPage(currentPage, pageCount)
-      set({ currentPage, mode, ready: true })
+      set({ currentPage, mode, limitWidth, ready: true })
       saveCurrentPage(pageCount, currentPage)
       return currentPage
     },
@@ -107,7 +123,11 @@ export function createReaderStore() {
     },
     setMode: (mode) => {
       set({ mode })
-      saveMode(mode)
+      savePreferences({ mode, limitWidth: get().limitWidth })
+    },
+    setLimitWidth: (limitWidth) => {
+      set({ limitWidth })
+      savePreferences({ mode: get().mode, limitWidth })
     },
     setSheetOpen: (sheetOpen) => set({ sheetOpen }),
     toggleChrome: () =>
