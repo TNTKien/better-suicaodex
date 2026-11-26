@@ -247,3 +247,50 @@ readerStore.getState().setCurrentPage("chapter", 10, 5)
 assert.equal(readerStore.getState().currentPage, 5)
 readerStore.getState().setCurrentPage("chapter", 10, 99)
 assert.equal(readerStore.getState().currentPage, 9)
+
+const originalWindow = globalThis.window
+const preferences = new Map<string, string>()
+globalThis.window = {
+  localStorage: {
+    getItem: (key: string) => preferences.get(key) ?? null,
+    setItem: (key: string, value: string) => preferences.set(key, value),
+    removeItem: (key: string) => preferences.delete(key),
+  },
+  location: { hash: "#page-4" },
+} as unknown as Window & typeof globalThis
+try {
+  const key = "redive:reader:preferences:v1"
+  preferences.set(key, JSON.stringify({ mode: "single-page" }))
+  const oldPreferences = createReaderStore()
+  oldPreferences.getState().hydrate("chapter", 10)
+  assert.equal(oldPreferences.getState().mode, "zen")
+  assert.equal(oldPreferences.getState().limitWidth, true)
+  oldPreferences.getState().setLimitWidth(false)
+  oldPreferences.getState().setMode("classic")
+  assert.deepEqual(JSON.parse(preferences.get(key)!), {
+    mode: "classic",
+    limitWidth: false,
+  })
+  oldPreferences.getState().setMode("zen")
+  const reloaded = createReaderStore()
+  reloaded.getState().hydrate("another-chapter", 10)
+  assert.equal(reloaded.getState().limitWidth, false)
+  assert.equal(reloaded.getState().mode, "zen")
+  assert.equal(reloaded.getState().currentPage, 3)
+  reloaded.getState().setLimitWidth(true)
+  assert.deepEqual(JSON.parse(preferences.get(key)!), {
+    mode: "zen",
+    limitWidth: true,
+  })
+  preferences.set(key, JSON.stringify({ mode: "classic", limitWidth: "false" }))
+  const invalidWidth = createReaderStore()
+  invalidWidth.getState().hydrate("chapter", 10)
+  assert.equal(invalidWidth.getState().limitWidth, true)
+  window.localStorage.setItem = () => {
+    throw new Error("Storage unavailable")
+  }
+  assert.doesNotThrow(() => invalidWidth.getState().setLimitWidth(false))
+  assert.equal(invalidWidth.getState().limitWidth, false)
+} finally {
+  globalThis.window = originalWindow
+}

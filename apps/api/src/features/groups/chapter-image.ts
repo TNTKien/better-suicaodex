@@ -15,7 +15,7 @@ export const CHAPTER_MAX_PAGES = 220
 export const CHAPTER_SESSION_MAX_SOURCE_BYTES = 512 * 1024 * 1024
 export const CHAPTER_ACTOR_MAX_ACTIVE_SESSIONS = 5
 
-const NORMAL_PAGE_MAX_HEIGHT = 1800
+const NORMAL_PAGE_MAX_HEIGHT = 2400
 const LONG_STRIP_MAX_WIDTH = 1000
 const LONG_STRIP_MIN_RATIO = 3
 
@@ -91,7 +91,7 @@ export async function transformChapterPage(input: Uint8Array) {
             : { height: NORMAL_PAGE_MAX_HEIGHT, withoutEnlargement: true }
         )
         .webp({
-          quality: 77,
+          quality: 95,
           effort: 6,
           preset: "drawing",
           smartSubsample: true,

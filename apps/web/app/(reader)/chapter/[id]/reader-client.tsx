@@ -11,9 +11,17 @@ import {
   GalleryHorizontalIcon,
   GalleryVerticalIcon,
   MessagesSquareIcon,
+  SettingsIcon,
   XIcon,
 } from "lucide-react"
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react"
 import { preconnect, preload } from "react-dom"
 import { useStore } from "zustand"
 
@@ -49,10 +57,11 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
+import { Field, FieldLabel } from "@workspace/ui/components/field"
+import { Switch } from "@workspace/ui/components/switch"
 import {
   Empty,
   EmptyDescription,
@@ -129,22 +138,31 @@ function ReaderModePicker({
   )
 }
 
-function ReaderModeDialog({
+export function ReaderModeDialog({
+  isLongStrip,
+  limitWidth,
   mode,
-  onConfirm,
+  onLimitWidthChange,
+  onModeChange,
   onOpenChange,
   open,
+  finalFocus,
 }: {
+  isLongStrip: boolean
+  limitWidth: boolean
   mode: ReaderMode
-  onConfirm: (mode: ReaderMode) => void
+  onLimitWidthChange: (limitWidth: boolean) => void
+  onModeChange: (mode: ReaderMode) => void
   onOpenChange: (open: boolean) => void
   open: boolean
+  finalFocus: React.RefObject<HTMLButtonElement | null>
 }) {
-  const [selected, setSelected] = useState(mode)
-
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent
+        className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-2xl"
+        finalFocus={finalFocus}
+      >
         <DialogHeader>
           <DialogTitle>Chọn giao diện đọc</DialogTitle>
           <DialogDescription>
@@ -152,16 +170,16 @@ function ReaderModeDialog({
             từ Cứu Truyện
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={cn("grid gap-3", !isLongStrip && "sm:grid-cols-2")}>
           <button
-            aria-pressed={selected === "classic"}
+            aria-pressed={mode === "classic"}
             className={cn(
               "rounded-xl border p-4 text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              selected === "classic"
+              mode === "classic"
                 ? "border-primary bg-primary/10"
                 : "border-border hover:bg-muted"
             )}
-            onClick={() => setSelected("classic")}
+            onClick={() => onModeChange("classic")}
             type="button"
           >
             <GalleryVerticalIcon className="mb-4 size-7" />
@@ -174,32 +192,43 @@ function ReaderModeDialog({
               Cổ điển, tôn trọng.
             </span>
           </button>
-          <button
-            aria-pressed={selected === "zen"}
-            className={cn(
-              "rounded-xl border p-4 text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              selected === "zen"
-                ? "border-primary bg-primary/10"
-                : "border-border hover:bg-muted"
-            )}
-            onClick={() => setSelected("zen")}
-            type="button"
-          >
-            <GalleryHorizontalIcon className="mb-4 size-7" />
-            <span className="block font-heading text-lg font-semibold">
-              Zen UI
-            </span>
-            <span className="mt-1 block text-sm text-muted-foreground">
-              Đọc từng trang, chạm 2 cạnh hoặc dùng phím mũi tên ngang để chuyển
-              trang.
-              <br />
-              Hiện đại, độc lạ.
-            </span>
-          </button>
+          {isLongStrip ? null : (
+            <button
+              aria-pressed={mode === "zen"}
+              className={cn(
+                "rounded-xl border p-4 text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                mode === "zen"
+                  ? "border-primary bg-primary/10"
+                  : "border-border hover:bg-muted"
+              )}
+              onClick={() => onModeChange("zen")}
+              type="button"
+            >
+              <GalleryHorizontalIcon className="mb-4 size-7" />
+              <span className="block font-heading text-lg font-semibold">
+                Zen UI
+              </span>
+              <span className="mt-1 block text-sm text-muted-foreground">
+                Đọc từng trang, chạm 2 cạnh hoặc dùng phím mũi tên ngang để
+                chuyển trang.
+                <br />
+                Hiện đại, độc lạ.
+              </span>
+            </button>
+          )}
         </div>
-        <DialogFooter>
-          <Button onClick={() => onConfirm(selected)}>Xác nhận</Button>
-        </DialogFooter>
+        {mode === "classic" ? (
+          <Field orientation="horizontal">
+            <Switch
+              checked={limitWidth}
+              id="reader-limit-width"
+              onCheckedChange={onLimitWidthChange}
+            />
+            <FieldLabel htmlFor="reader-limit-width" className="text-base">
+              Giới hạn chiều rộng
+            </FieldLabel>
+          </Field>
+        ) : null}
       </DialogContent>
     </Dialog>
   )
@@ -436,6 +465,12 @@ export function ReaderClient({
   const isMobile = useIsMobile()
   const router = useRouter()
   const classicPagesRef = useRef<HTMLDivElement>(null)
+  const settingsButtonRef = useRef<HTMLButtonElement>(null)
+  const widthAnchorRef = useRef<{
+    page: number
+    fraction: number
+    viewportY: number
+  } | null>(null)
   const zenRef = useRef<HTMLDivElement>(null)
   const initialPageHashRef = useRef(false)
   const restoreClassicRef = useRef(false)
@@ -453,10 +488,12 @@ export function ReaderClient({
     chromeVisible,
     currentPage,
     hydrate,
+    limitWidth,
     mode: preferredMode,
     ready,
     setChromeVisible,
     setCurrentPage: setReaderPage,
+    setLimitWidth,
     setMode,
     setSheetOpen,
     sheetOpen,
@@ -535,8 +572,42 @@ export function ReaderClient({
     []
   )
 
+  const restoreClassicPosition = useCallback(() => {
+    const anchor = widthAnchorRef.current
+    const node = classicPagesRef.current?.querySelector<HTMLElement>(
+      `[data-reader-page="${anchor?.page ?? currentPage}"]`
+    )
+    if (!node) return
+    if (anchor) {
+      const rect = node.getBoundingClientRect()
+      window.scrollBy({
+        top: rect.top + anchor.fraction * rect.height - anchor.viewportY,
+        behavior: "instant",
+      })
+    } else node.scrollIntoView({ behavior: "instant" })
+  }, [currentPage])
+
+  useLayoutEffect(() => {
+    if (!ready) return
+    if (
+      mode === "classic" &&
+      (widthAnchorRef.current || restoreClassicRef.current)
+    ) {
+      restoreClassicPosition()
+    } else if (mode === "zen" && zenInitialTargetRef.current === "page") {
+      scrollZenTarget(currentPage, "instant")
+    }
+  }, [
+    currentPage,
+    limitWidth,
+    mode,
+    ready,
+    restoreClassicPosition,
+    scrollZenTarget,
+  ])
+
   useEffect(() => {
-    if (!ready || mode !== "classic") return
+    if (!ready || mode !== "classic" || helpOpen) return
     const nodes =
       classicPagesRef.current?.querySelectorAll<HTMLElement>(
         "[data-reader-page]"
@@ -544,6 +615,7 @@ export function ReaderClient({
     if (!nodes?.length) return
     const observer = new IntersectionObserver(
       (entries) => {
+        if (widthAnchorRef.current || restoreClassicRef.current) return
         const visible = entries
           .filter(({ isIntersecting }) => isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
@@ -558,21 +630,23 @@ export function ReaderClient({
     )
     nodes.forEach((node) => observer.observe(node))
     return () => observer.disconnect()
-  }, [chapter.id, mode, pageCount, ready, setReaderPage])
+  }, [chapter.id, helpOpen, mode, pageCount, ready, setReaderPage])
 
   useEffect(() => {
-    if (!ready || mode !== "classic" || !restoreClassicRef.current) return
-    restoreClassicRef.current = false
+    if (!ready || mode !== "classic" || helpOpen) return
+    const anchor = widthAnchorRef.current
+    if (!anchor && !restoreClassicRef.current) return
+    // Reapply after the modal releases its scroll lock, without delaying the preview.
     const frame = requestAnimationFrame(() => {
-      classicPagesRef.current
-        ?.querySelector<HTMLElement>(`[data-reader-page="${currentPage}"]`)
-        ?.scrollIntoView()
+      restoreClassicPosition()
+      restoreClassicRef.current = false
+      widthAnchorRef.current = null
     })
     return () => cancelAnimationFrame(frame)
-  }, [currentPage, mode, ready])
+  }, [helpOpen, limitWidth, mode, ready, restoreClassicPosition])
 
   useEffect(() => {
-    if (!ready || mode !== "zen") return
+    if (!ready || mode !== "zen" || helpOpen) return
     const root = zenRef.current
     const nodes = root?.querySelectorAll<HTMLElement>(
       "[data-reader-page], [data-zen-stage]"
@@ -621,6 +695,7 @@ export function ReaderClient({
     return () => observer.disconnect()
   }, [
     chapter.id,
+    helpOpen,
     mode,
     pageCount,
     readerStore,
@@ -635,7 +710,7 @@ export function ReaderClient({
       zenInitializedRef.current = false
       return
     }
-    if (zenInitializedRef.current) return
+    if (helpOpen || zenInitializedRef.current) return
     zenInitializedRef.current = true
     const target =
       zenInitialTargetRef.current ??
@@ -645,7 +720,7 @@ export function ReaderClient({
       scrollZenTarget(target === "page" ? currentPage : target, "auto")
     )
     return () => cancelAnimationFrame(frame)
-  }, [currentPage, mode, ready, scrollZenTarget])
+  }, [currentPage, helpOpen, mode, ready, scrollZenTarget])
 
   const moveZenPage = useCallback(
     (delta: -1 | 1) => {
@@ -747,20 +822,51 @@ export function ReaderClient({
   function changeMode(nextMode: ReaderMode) {
     if (chapter.manga.isLongStrip && nextMode === "zen") return
     if (nextMode === mode) return
+    widthAnchorRef.current = null
     if (nextMode === "classic") restoreClassicRef.current = true
-    else zenInitialTargetRef.current = "page"
+    else {
+      zenInitialTargetRef.current = "page"
+      zenStageRef.current = "page"
+      setZenStage("page")
+    }
     setChromeVisible(true)
     setMode(nextMode)
   }
 
-  function confirmMode(nextMode: ReaderMode) {
+  function selectMode(nextMode: ReaderMode) {
     changeMode(nextMode)
     try {
       window.localStorage.setItem(readerConfirmedKey, "true")
     } catch {
       // Storage can be unavailable in privacy modes.
     }
-    setHelpOpen(false)
+  }
+
+  function changeWidthLimit(nextLimit: boolean) {
+    if (mode !== "classic") return
+    if (!widthAnchorRef.current) {
+      const node = classicPagesRef.current?.querySelector<HTMLElement>(
+        `[data-reader-page="${currentPage}"]`
+      )
+      const rect = node?.getBoundingClientRect()
+      if (
+        rect &&
+        rect.height > 0 &&
+        rect.top < window.innerHeight &&
+        rect.bottom > 0
+      ) {
+        const viewportY = Math.max(
+          rect.top,
+          Math.min(window.innerHeight / 2, rect.bottom)
+        )
+        widthAnchorRef.current = {
+          page: currentPage,
+          fraction: (viewportY - rect.top) / rect.height,
+          viewportY,
+        }
+      }
+    }
+    setLimitWidth(nextLimit)
   }
 
   async function loadChapters(page = 1) {
@@ -855,7 +961,8 @@ export function ReaderClient({
             {chapter.pages.map((page, index) => (
               <div
                 className={cn(
-                  "relative mx-auto flex w-full max-w-6xl justify-center",
+                  "relative mx-auto flex w-full justify-center",
+                  limitWidth && "max-w-6xl",
                   chapter.manga.isLongStrip ? "px-0" : "mb-6 px-2"
                 )}
                 data-reader-page={index}
@@ -1070,6 +1177,18 @@ export function ReaderClient({
           )}
         </Button>
         <Button
+          aria-label="Cài đặt reader"
+          aria-haspopup="dialog"
+          aria-expanded={helpOpen}
+          className="size-11 rounded-none md:size-10"
+          onClick={() => setHelpOpen(true)}
+          ref={settingsButtonRef}
+          size="icon-lg"
+          variant="secondary"
+        >
+          <SettingsIcon />
+        </Button>
+        <Button
           aria-label="Về đầu chapter"
           className="size-11 rounded-none md:size-10"
           onClick={scrollToStart}
@@ -1080,15 +1199,19 @@ export function ReaderClient({
         </Button>
       </nav>
 
-      {chapter.manga.isLongStrip ? null : (
-        <ReaderModeDialog
-          key={`${mode}-${helpOpen}`}
-          mode={mode}
-          onConfirm={confirmMode}
-          onOpenChange={setHelpOpen}
-          open={helpOpen}
-        />
-      )}
+      <ReaderModeDialog
+        isLongStrip={chapter.manga.isLongStrip}
+        limitWidth={limitWidth}
+        mode={mode}
+        onModeChange={selectMode}
+        onLimitWidthChange={changeWidthLimit}
+        onOpenChange={(open) => {
+          if (!open) selectMode(mode)
+          setHelpOpen(open)
+        }}
+        open={helpOpen}
+        finalFocus={settingsButtonRef}
+      />
 
       {navigationChoice ? (
         <ChapterReleaseDialog
