@@ -37,15 +37,39 @@ mock.module("react", () => ({
   useLayoutEffect: (effect: () => void) => layoutEffects.push(effect),
 }))
 const client = new QueryClient()
+type IndexItem = Pick<ChapterSummary, "id" | "number" | "volume">
+type AggregateOptions = {
+  queryKey: unknown[]
+  enabled: boolean
+  queryFn: (context: { signal: AbortSignal }) => Promise<IndexItem[]>
+}
+let aggregateOptions: AggregateOptions
+let aggregateResponse: IndexItem[] = []
+let aggregateData: IndexItem[] | undefined
+let aggregateError: Error | null = null
+let aggregateRefetches = 0
 mock.module("@tanstack/react-query", () => ({
   queryOptions: (options: unknown) => options,
   useQueryClient: () => client,
-  useQuery: (options: { queryKey: unknown[] }) => {
+  useQuery: (options: AggregateOptions) => {
     assert.ok(
       !options.queryKey.includes("navigation-releases"),
       "Navigation lookup must not run on mount"
     )
-    return { data: [] }
+    aggregateOptions = options
+    return {
+      data: aggregateData,
+      isPending: !aggregateData && !aggregateError,
+      isError: Boolean(aggregateError),
+      error: aggregateError,
+      refetch: async () => {
+        aggregateRefetches++
+        aggregateError = null
+        aggregateData = await options.queryFn({
+          signal: new AbortController().signal,
+        })
+      },
+    }
   },
 }))
 const pushes: string[] = []
@@ -91,8 +115,6 @@ mock.module("zustand", () => ({
   useStore: () => ({
     mode,
     limitWidth,
-    chapterError: "",
-    chapters: null,
     chromeVisible: true,
     currentPage,
     ready: readerReady,
@@ -108,7 +130,6 @@ mock.module("zustand", () => ({
     },
     setSheetOpen: () => undefined,
     toggleChrome: () => undefined,
-    updateRequestState: () => undefined,
   }),
 }))
 type Control = React.ComponentProps<"button">
@@ -148,6 +169,7 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 )
 let closeDialog: () => void
 let finalFocus: React.RefObject<HTMLElement | null>
+let initialFocus: React.RefObject<HTMLElement | null> | undefined
 mock.module("@workspace/ui/components/dialog", () => ({
   Dialog: ({
     open,
@@ -165,11 +187,14 @@ mock.module("@workspace/ui/components/dialog", () => ({
   DialogContent: ({
     children,
     finalFocus: focus,
+    initialFocus: initial,
   }: {
     children: React.ReactNode
     finalFocus: typeof finalFocus
+    initialFocus?: typeof initialFocus
   }) => {
     finalFocus = focus
+    initialFocus = initial
     return <div>{children}</div>
   },
   DialogHeader: wrapper,
@@ -288,6 +313,11 @@ globalThis.window = {
 globalThis.document = { activeElement: trigger } as unknown as Document
 globalThis.fetch = async (input, init) => {
   requests.push({ url: String(input), init })
+  if (new URL(String(input)).pathname.endsWith("/aggregate"))
+    return Response.json(
+      { data: aggregateResponse },
+      { status: failed ? 429 : 200 }
+    )
   if (releaseRequest)
     await new Promise<void>((resolve) => {
       releaseRequest = resolve
@@ -341,7 +371,7 @@ type SettingsElement = React.ReactElement<{
   onCheckedChange?: (checked: boolean) => void
   onModeChange?: (mode: ReaderMode) => void
   onLimitWidthChange?: (limitWidth: boolean) => void
-  ref?: React.RefObject<HTMLElement | null>
+  ref?: React.Ref<HTMLElement>
   role?: string
   className?: string
 }>
@@ -402,6 +432,7 @@ try {
   assert.equal(canNavigateChapter(ready), true)
   render()
   assert.ok(controls.find((c) => c["aria-label"] === "Cài đặt reader"))
+  assert.equal(aggregateOptions!.enabled, false, "Chapter index is lazy")
   assert.equal(requests.length, 0)
   assert.equal(
     controls.find((c) => c["aria-label"] === "Chương sau")?.disabled,
@@ -606,7 +637,9 @@ try {
   const zenRoot = settingsElements(readerTree).find(
     (el) => el.props.ref && el.props.className?.includes("snap-x")
   )!
-  zenRoot.props.ref!.current = pageRoot
+  const zenRootRef = zenRoot.props.ref
+  assert.ok(zenRootRef && typeof zenRootRef === "object")
+  zenRootRef.current = pageRoot
   layoutEffects.forEach((effect) => effect())
   assert.deepEqual(
     scrolls.at(-1),
@@ -621,7 +654,9 @@ try {
   const classicRoot = settingsElements(readerTree).find(
     (el) => el.props.role === "list"
   )!
-  classicRoot.props.ref!.current = pageRoot
+  const classicRootRef = classicRoot.props.ref
+  assert.ok(classicRootRef && typeof classicRootRef === "object")
+  classicRootRef.current = pageRoot
   layoutEffects.forEach((effect) => effect())
   assert.deepEqual(
     scrolls.at(-1),
@@ -632,6 +667,98 @@ try {
     "Zen to Classic must position page 5 without waiting for dialog dismissal"
   )
   assert.equal(currentPage, 4)
+  closeDialog!()
+  render()
+
+  aggregateResponse = Array.from({ length: 250 }, (_, index) => ({
+    id: `picker-${index}`,
+    number: String(index),
+    volume: String(Math.floor(index / 50) + 1),
+  }))
+  aggregateResponse[150] = { id: chapter.id, number: "150.5", volume: "4" }
+  aggregateResponse[249] = { id: "oneshot", number: null, volume: null }
+  const openPicker = () =>
+    controls.find((c) => c["aria-label"] === "Chọn chapter")!.onClick!(
+      {} as React.MouseEvent<HTMLButtonElement>
+    )
+  const requestsBeforePicker = requests.length
+  openPicker()
+  assert.match(render(), /Đang tải/)
+  assert.equal(aggregateOptions!.enabled, true)
+  const currentButton = {
+    offsetTop: 980,
+    offsetHeight: 32,
+  } as HTMLButtonElement
+  const listRoot = {
+    clientHeight: 300,
+    scrollTop: 0,
+    querySelector: (selector: string) => {
+      assert.equal(selector, '[aria-current="page"]')
+      return currentButton
+    },
+  } as unknown as HTMLDivElement
+  const attachList = () => {
+    const node = settingsElements(readerTree).find(
+      (element) => typeof element.props.ref === "function"
+    )!
+    assert.ok(node.props.className?.includes("relative"))
+    const ref = node.props.ref
+    assert.equal(typeof ref, "function")
+    ;(ref as (node: HTMLDivElement | null) => void)(listRoot)
+  }
+  attachList()
+  assert.equal(listRoot.scrollTop, 0, "Pending data must not scroll the reader")
+  aggregateData = await aggregateOptions!.queryFn({
+    signal: new AbortController().signal,
+  })
+  const picker = render()
+  assert.equal(requests.length, requestsBeforePicker + 1)
+  assert.match(
+    requests.at(-1)!.url,
+    /\/manga\/manga\/aggregate\?sort=volume&direction=desc$/
+  )
+  assert.equal(requests.at(-1)!.init?.credentials, "omit")
+  assert.equal(requests.at(-1)!.init?.cache, "no-store")
+  assert.doesNotMatch(picker, /Tải thêm/)
+  assert.match(picker, /150\.5/)
+  assert.match(picker, /Oneshot/)
+  assert.match(picker, /aria-current="page"/)
+  assert.equal(
+    controls.filter((c) => c.title?.startsWith("Vol.") || c.title === "Oneshot")
+      .length,
+    250
+  )
+  attachList()
+  assert.equal(
+    listRoot.scrollTop,
+    846,
+    "Loaded current chapter is centered inside the dialog"
+  )
+  assert.equal(initialFocus!.current, currentButton)
+  assert.equal(currentPage, 4, "Opening the picker preserves the reader page")
+  closeDialog!()
+  render()
+  assert.equal(aggregateOptions!.enabled, false)
+  listRoot.scrollTop = 0
+  openPicker()
+  render()
+  attachList()
+  assert.equal(
+    listRoot.scrollTop,
+    846,
+    "Reopening centers the current chapter again"
+  )
+  aggregateData = undefined
+  aggregateError = new Error("Không thể tải danh sách chapter")
+  assert.match(render(), /role="alert"/)
+  controls.find((c) => c.children === "Thử lại")!.onClick!(
+    {} as React.MouseEvent<HTMLButtonElement>
+  )
+  await tick()
+  assert.equal(aggregateRefetches, 1)
+  assert.match(render(), /150\.5/)
+  aggregateData = []
+  assert.match(render(), /Truyện chưa có chapter nào/)
   closeDialog!()
   render()
 } finally {

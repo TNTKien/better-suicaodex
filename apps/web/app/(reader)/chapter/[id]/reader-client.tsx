@@ -24,6 +24,7 @@ import {
 } from "react"
 import { preconnect, preload } from "react-dom"
 import { useStore } from "zustand"
+import { useQuery } from "@tanstack/react-query"
 
 import { AssetImage } from "@/components/asset-image"
 import {
@@ -47,7 +48,8 @@ import { ChapterReleaseDialog } from "@/modules/reading/chapter-release-dialog"
 import {
   canNavigateChapter,
   useAdjacentChapter,
-  loadReaderChapters,
+  readerChapterIndexOptions,
+  useChapterPickerScroll,
   type ChapterNavigationDirection,
 } from "@/modules/reading/chapter-navigation"
 import type { components } from "@/src/lib/generated/api"
@@ -80,7 +82,6 @@ import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 import { cn } from "@workspace/ui/lib/utils"
 
 type ChapterDetail = components["schemas"]["ChapterDetail"]
-type ChapterList = components["schemas"]["ChapterList"]
 type ZenStage = "end" | "intro" | "page"
 
 const chapterHref = (id: string) => `/chapter/${id}`
@@ -483,8 +484,6 @@ export function ReaderClient({
   const [zenStage, setZenStage] = useState<ZenStage>("intro")
   const [readerStore] = useState(createReaderStore)
   const {
-    chapterError,
-    chapters,
     chromeVisible,
     currentPage,
     hydrate,
@@ -498,8 +497,18 @@ export function ReaderClient({
     setSheetOpen,
     sheetOpen,
     toggleChrome,
-    updateRequestState,
   } = useStore(readerStore)
+
+  const chapters = useQuery({
+    ...readerChapterIndexOptions(apiBaseUrl, chapter.manga.id),
+    enabled: chapterDialogOpen,
+  })
+  const { initialFocus: chapterInitialFocus, listRef: chapterListRef } =
+    useChapterPickerScroll(
+      chapterDialogOpen,
+      chapter.id,
+      chapters.isError ? undefined : chapters.data
+    )
 
   const pageCount = chapter.pages.length
   const mode = resolveReaderMode(preferredMode, chapter.manga.isLongStrip)
@@ -869,32 +878,8 @@ export function ReaderClient({
     setLimitWidth(nextLimit)
   }
 
-  async function loadChapters(page = 1) {
-    updateRequestState({ chapterError: "" })
-    try {
-      const result = await loadReaderChapters<ChapterList>(
-        apiBaseUrl,
-        chapter.manga.id,
-        page
-      )
-      const current = readerStore.getState().chapters
-      updateRequestState({
-        chapters:
-          page === 1
-            ? result
-            : { ...result, data: [...(current?.data ?? []), ...result.data] },
-      })
-    } catch (error) {
-      updateRequestState({
-        chapterError:
-          error instanceof Error ? error.message : "Không thể tải chapter",
-      })
-    }
-  }
-
   function openChapters() {
     setChapterDialogOpen(true)
-    if (readerStore.getState().chapters === null) void loadChapters()
   }
 
   const primarySource = (page: ChapterDetail["pages"][number]) =>
@@ -1143,6 +1128,9 @@ export function ReaderClient({
           )}
         </Button>
         <Button
+          aria-label="Chọn chapter"
+          aria-haspopup="dialog"
+          aria-expanded={chapterDialogOpen}
           className="relative h-11 min-w-0 flex-1 justify-center overflow-hidden rounded-none px-3 md:h-10"
           onClick={openChapters}
           variant="ghost"
@@ -1232,60 +1220,73 @@ export function ReaderClient({
       ) : null}
 
       <Dialog onOpenChange={setChapterDialogOpen} open={chapterDialogOpen}>
-        <DialogContent className="sm:max-w-xl">
+        <DialogContent
+          className="sm:max-w-xl"
+          initialFocus={chapterInitialFocus}
+        >
           <DialogHeader>
             <DialogTitle>Chọn chapter</DialogTitle>
             <DialogDescription>{chapter.manga.title}</DialogDescription>
           </DialogHeader>
-          {chapterError ? (
-            <div className="flex flex-col gap-2">
-              <p className="text-sm text-destructive">{chapterError}</p>
-              <Button onClick={() => void loadChapters()} variant="outline">
-                Thử lại
-              </Button>
-            </div>
-          ) : chapters ? (
-            <div className="flex max-h-[60dvh] flex-col gap-4 overflow-y-auto pr-1">
-              {groupChaptersByVolume(chapters.data).map(
-                ({ chapters: volumeChapters, volume }) => (
-                  <section
-                    className="flex flex-col gap-2"
-                    key={volume ?? "none"}
-                  >
-                    <h3 className="font-heading text-sm font-semibold">
-                      {volume ? `Volume ${volume}` : "No Volume"}
-                    </h3>
-                    <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-                      {volumeChapters.map((item) => (
-                        <Button
-                          className="min-w-0"
-                          key={item.id}
-                          onClick={() => navigateChapter(item.id)}
-                          title={readerChapterLabel(item)}
-                          variant={
-                            item.id === chapter.id ? "default" : "secondary"
-                          }
-                        >
-                          {item.number ?? "Oneshot"}
-                        </Button>
-                      ))}
-                    </div>
-                  </section>
-                )
-              )}
-              {chapters.meta.page < chapters.meta.totalPages ? (
+          <div
+            className="relative flex max-h-[60dvh] flex-col gap-4 overflow-y-auto overscroll-contain pr-1"
+            ref={chapterListRef}
+          >
+            {chapters.isError ? (
+              <div className="flex flex-col gap-2" role="alert">
+                <p className="text-sm text-destructive">
+                  {chapters.error.message}
+                </p>
                 <Button
-                  className="mt-4 w-full"
-                  onClick={() => void loadChapters(chapters.meta.page + 1)}
+                  onClick={() => void chapters.refetch()}
                   variant="outline"
                 >
-                  Tải thêm
+                  Thử lại
                 </Button>
-              ) : null}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">Đang tải…</p>
-          )}
+              </div>
+            ) : chapters.isPending ? (
+              <p className="text-sm text-muted-foreground" role="status">
+                Đang tải…
+              </p>
+            ) : !chapters.data.length ? (
+              <p className="text-sm text-muted-foreground">
+                Truyện chưa có chapter nào.
+              </p>
+            ) : (
+              <>
+                {groupChaptersByVolume(chapters.data).map(
+                  ({ chapters: volumeChapters, volume }) => (
+                    <section
+                      className="flex flex-col gap-2"
+                      key={volume ?? "none"}
+                    >
+                      <h3 className="font-heading text-sm font-semibold">
+                        {volume ? `Volume ${volume}` : "No Volume"}
+                      </h3>
+                      <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                        {volumeChapters.map((item) => (
+                          <Button
+                            className="min-w-0"
+                            key={item.id}
+                            onClick={() => navigateChapter(item.id)}
+                            title={readerChapterLabel({ ...item, title: null })}
+                            aria-current={
+                              item.id === chapter.id ? "page" : undefined
+                            }
+                            variant={
+                              item.id === chapter.id ? "default" : "secondary"
+                            }
+                          >
+                            {item.number ?? "Oneshot"}
+                          </Button>
+                        ))}
+                      </div>
+                    </section>
+                  )
+                )}
+              </>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 

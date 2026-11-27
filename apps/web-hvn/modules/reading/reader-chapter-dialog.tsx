@@ -1,10 +1,13 @@
 "use client"
 
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import type { RefObject } from "react"
 import { groupChaptersByVolume } from "@workspace/catalog/chapters"
 import { readerChapterLabel } from "@workspace/account/notifications-presentation"
-import { loadReaderChapters } from "@workspace/account/reader-navigation"
+import {
+  readerChapterIndexOptions,
+  useChapterPickerScroll,
+} from "@workspace/account/reader-navigation"
 import { Button } from "@workspace/ui/components/button"
 import { Spinner } from "@workspace/ui/components/spinner"
 import {
@@ -16,7 +19,7 @@ import {
 } from "@workspace/ui/components/dialog"
 import type { components } from "@/src/lib/generated/api"
 
-type ChapterList = components["schemas"]["ChapterList"]
+type ChapterIndexItem = components["schemas"]["ChapterIndexItem"]
 
 export function ReaderChapterDialog({
   apiBaseUrl,
@@ -33,28 +36,25 @@ export function ReaderChapterDialog({
   onChoose: (id: string) => void
   finalFocus: RefObject<HTMLElement | null>
 }) {
-  const chapters = useInfiniteQuery({
-    queryKey: ["catalog", apiBaseUrl, "reader-chapters", chapter.manga.id],
+  const chapters = useQuery({
+    ...readerChapterIndexOptions<ChapterIndexItem>(
+      apiBaseUrl,
+      chapter.manga.id
+    ),
     enabled: open,
-    initialPageParam: 1,
-    staleTime: 60_000,
-    retry: false,
-    queryFn: ({ pageParam, signal }) =>
-      loadReaderChapters<ChapterList>(
-        apiBaseUrl,
-        chapter.manga.id,
-        pageParam,
-        signal
-      ),
-    getNextPageParam: ({ meta }) =>
-      meta.page < meta.totalPages ? meta.page + 1 : undefined,
   })
-  const items = chapters.data?.pages.flatMap(({ data }) => data) ?? []
+  const { initialFocus, listRef } = useChapterPickerScroll(
+    open,
+    chapter.id,
+    chapters.isError ? undefined : chapters.data
+  )
+  const items = chapters.isError ? [] : (chapters.data ?? [])
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="hvn-reading-dialog sm:max-w-xl"
         finalFocus={finalFocus}
+        initialFocus={initialFocus}
       >
         <DialogHeader>
           <DialogTitle className="hvn-login-heading hvn-login-heading-info pr-12">
@@ -62,7 +62,10 @@ export function ReaderChapterDialog({
           </DialogTitle>
           <DialogDescription>{chapter.manga.title}</DialogDescription>
         </DialogHeader>
-        <div className="flex max-h-[60dvh] flex-col gap-4 overflow-y-auto px-3 pb-3">
+        <div
+          className="relative flex max-h-[60dvh] flex-col gap-4 overflow-y-auto overscroll-contain px-3 pb-3"
+          ref={listRef}
+        >
           {chapters.isError ? (
             <div role="alert" className="flex flex-col gap-2">
               <p>{chapters.error.message}</p>
@@ -90,7 +93,7 @@ export function ReaderChapterDialog({
                     <Button
                       className="hvn-reader-chapter-choice min-w-0"
                       key={item.id}
-                      title={readerChapterLabel(item)}
+                      title={readerChapterLabel({ ...item, title: null })}
                       aria-current={item.id === chapter.id ? "page" : undefined}
                       onClick={() => onChoose(item.id)}
                     >
@@ -103,15 +106,6 @@ export function ReaderChapterDialog({
           )}
           {!chapters.isPending && !chapters.isError && !items.length ? (
             <p>Truyện chưa có chương nào.</p>
-          ) : null}
-          {chapters.hasNextPage ? (
-            <Button
-              className="hvn-copy-manga-link"
-              disabled={chapters.isFetchingNextPage}
-              onClick={() => void chapters.fetchNextPage()}
-            >
-              {chapters.isFetchingNextPage ? <Spinner /> : null}Tải thêm
-            </Button>
           ) : null}
         </div>
       </DialogContent>

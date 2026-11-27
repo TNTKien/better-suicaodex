@@ -5,16 +5,10 @@ import {
   saveReaderPage as saveCurrentPage,
 } from "@workspace/account/reader-position"
 
-import type { components } from "@/src/lib/generated/api"
-
-type ChapterList = components["schemas"]["ChapterList"]
-
 export { readerImageSource } from "@workspace/catalog/images"
 
 export type ReaderMode = "classic" | "zen"
 type ReaderState = {
-  chapterError: string
-  chapters: ChapterList | null
   chromeVisible: boolean
   currentPage: number
   limitWidth: boolean
@@ -22,8 +16,6 @@ type ReaderState = {
   ready: boolean
   sheetOpen: boolean
 }
-
-type ReaderRequestState = Pick<ReaderState, "chapterError" | "chapters">
 
 type ReaderStore = ReaderState & {
   hydrate: (chapterId: string, pageCount: number) => number
@@ -33,14 +25,11 @@ type ReaderStore = ReaderState & {
   setMode: (mode: ReaderMode) => void
   setSheetOpen: (open: boolean) => void
   toggleChrome: () => void
-  updateRequestState: (state: Partial<ReaderRequestState>) => void
 }
 
 const preferencesKey = "redive:reader:preferences:v1"
 const defaultMode: ReaderMode = "classic"
 const initialState: ReaderState = {
-  chapterError: "",
-  chapters: null,
   chromeVisible: true,
   currentPage: 0,
   limitWidth: true,
@@ -132,7 +121,6 @@ export function createReaderStore() {
     setSheetOpen: (sheetOpen) => set({ sheetOpen }),
     toggleChrome: () =>
       set(({ chromeVisible }) => ({ chromeVisible: !chromeVisible })),
-    updateRequestState: (state) => set(state),
   }))
 }
 

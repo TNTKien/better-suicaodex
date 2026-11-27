@@ -13,6 +13,21 @@ function browserApp() {
   return app
 }
 
+test("chapter aggregate reads use the service bucket without matching lookalike routes", async () => {
+  const app = new Hono()
+  app.use("*", globalRateLimiter({ internalApiKey: "chapter-index-test-key" }))
+  app.all("*", (c) => c.json({ policy: c.get("rateLimitPolicy") }))
+  const headers = { "X-Internal-API-Key": "chapter-index-test-key" }
+  expect(
+    await (await app.request("/v1/manga/id/aggregate", { headers })).json()
+  ).toEqual({ policy: "service" })
+  expect(
+    await (
+      await app.request("/v1/manga/id/aggregate-extra", { headers })
+    ).json()
+  ).toEqual({ policy: "manga" })
+})
+
 const domains = [
   [
     "user",
@@ -59,6 +74,7 @@ const domains = [
     [
       "/v1/manga",
       "/v1/manga/manga-id/reading-entry",
+      "/v1/manga/manga-id/aggregate",
       "/v1/chapters/chapter-id/navigation-releases",
       "/v1/chapters/chapter-id/view",
       "/v1/comments/comment-id",

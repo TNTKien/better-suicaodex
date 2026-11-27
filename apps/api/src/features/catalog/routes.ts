@@ -36,6 +36,7 @@ import {
   getChapterNavigationReleasesRoute,
   getGroupRoute,
   getMangaRoute,
+  getMangaAggregateRoute,
   getMangaReadingEntryRoute,
   getMangaRecommendationsRoute,
   getPersonRoute,
@@ -50,11 +51,13 @@ import {
 } from "./contract.js"
 import type {
   ChapterDetail,
+  ChapterIndex,
   ChapterList,
   ChapterSummary,
   LatestChapterList,
   MangaCatalogQuery,
   MangaChapterListQuery,
+  MangaChapterIndexQuery,
   MangaDetail,
   MangaList,
   MangaPreview,
@@ -381,6 +384,27 @@ const chapterAscending = [
   desc(chapter.publishedAt),
   asc(chapter.id),
 ] as const
+
+function chapterPositionOrder(
+  direction: MangaChapterListQuery["direction"],
+  sort: MangaChapterListQuery["sort"]
+) {
+  const byVolume = sort === "volume"
+  const positionVolume = byVolume ? chapterVolume : readingVolume
+  return [
+    ...(!byVolume ? [asc(chapter.language)] : []),
+    direction === "asc"
+      ? sql`${positionVolume} asc nulls last`
+      : byVolume
+        ? sql`${positionVolume} desc nulls first`
+        : sql`${positionVolume} desc nulls last`,
+    direction === "asc"
+      ? sql`${chapter.number} asc nulls last`
+      : sql`${chapter.number} desc nulls last`,
+    ...(byVolume ? [asc(chapter.language)] : []),
+    asc(chapter.readingKey),
+  ]
+}
 
 export function resolveAssetUrl(baseUrl: string, storageKey: string) {
   if (
@@ -1618,6 +1642,47 @@ function mapChapter(
   }
 }
 
+async function loadChapterIndex(
+  database: Pick<Database, "select">,
+  mangaId: string,
+  query: MangaChapterIndexQuery,
+  visibility: CatalogVisibility
+): Promise<ChapterIndex | null> {
+  const [owner] = await database
+    .select({ id: manga.id })
+    .from(manga)
+    .where(and(eq(manga.id, mangaId), visibleManga(visibility)))
+    .limit(1)
+  if (!owner) return null
+
+  const rows = await database
+    .select({
+      id: chapter.id,
+      volume: chapterVolume,
+      number: chapter.number,
+    })
+    .from(chapter)
+    .leftJoin(mangaVolume, eq(mangaVolume.id, chapter.volumeId))
+    .where(
+      and(
+        eq(chapter.mangaId, mangaId),
+        readableChapter(visibility),
+        query.language ? eq(chapter.language, query.language) : undefined
+      )
+    )
+    .orderBy(
+      ...chapterPositionOrder(query.direction, query.sort),
+      ...chapterAscending
+    )
+  return {
+    data: rows.map((row) => ({
+      id: row.id,
+      volume: normalizeDecimal(row.volume),
+      number: normalizeDecimal(row.number),
+    })),
+  }
+}
+
 async function loadChapterList(
   database: Pick<Database, "select">,
   mangaId: string,
@@ -1672,19 +1737,7 @@ async function loadChapterList(
         chapter.number,
         positionVolume
       )
-      .orderBy(
-        ...(!byVolume ? [asc(chapter.language)] : []),
-        direction === "asc"
-          ? sql`${positionVolume} asc nulls last`
-          : byVolume
-            ? sql`${positionVolume} desc nulls first`
-            : sql`${positionVolume} desc nulls last`,
-        direction === "asc"
-          ? sql`${chapter.number} asc nulls last`
-          : sql`${chapter.number} desc nulls last`,
-        ...(byVolume ? [asc(chapter.language)] : []),
-        asc(chapter.readingKey)
-      )
+      .orderBy(...chapterPositionOrder(direction, sort))
       .limit(limit)
       .offset((page - 1) * limit),
   ])
@@ -2033,6 +2086,22 @@ export function registerCatalogRoutes(
           visibility,
           query.language
         ),
+      { isolationLevel: "repeatable read", accessMode: "read only" }
+    )
+    return value
+      ? c.json(value, 200)
+      : c.json(
+          apiError("NOT_FOUND", "Manga not found", c.get("requestId")),
+          404
+        )
+  })
+
+  app.openapi(getMangaAggregateRoute, async (c) => {
+    c.header("Cache-Control", "no-store")
+    const { id } = c.req.valid("param")
+    const query = c.req.valid("query")
+    const value = await database.transaction(
+      (tx) => loadChapterIndex(tx, id, query, visibility),
       { isolationLevel: "repeatable read", accessMode: "read only" }
     )
     return value

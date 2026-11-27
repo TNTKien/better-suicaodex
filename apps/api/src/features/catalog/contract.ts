@@ -149,6 +149,12 @@ export const MangaChapterListQuerySchema = PageQuerySchema.extend({
   language: MangaCatalogQuerySchema.shape.language,
 }).openapi("MangaChapterListQuery")
 
+export const MangaChapterIndexQuerySchema = MangaChapterListQuerySchema.pick({
+  sort: true,
+  direction: true,
+  language: true,
+}).openapi("MangaChapterIndexQuery")
+
 export const CoverSchema = z
   .object({
     url: z.url(),
@@ -229,6 +235,16 @@ export const ChapterSummarySchema = z
     statistics: ChapterStatisticsSchema,
   })
   .openapi("ChapterSummary")
+
+const ChapterIndexItemSchema = ChapterSummarySchema.pick({
+  id: true,
+  number: true,
+  volume: true,
+}).openapi("ChapterIndexItem")
+
+const ChapterIndexSchema = z
+  .object({ data: z.array(ChapterIndexItemSchema) })
+  .openapi("ChapterIndex")
 
 export const MangaReadingEntrySchema = z
   .object({ data: z.array(ChapterSummarySchema) })
@@ -448,6 +464,17 @@ export const listMangaChaptersRoute = createRoute({
   responses: responses(ChapterListSchema, "Readable chapters"),
 })
 
+export const getMangaAggregateRoute = createRoute({
+  method: "get",
+  path: "/v1/manga/{id}/aggregate",
+  tags: ["catalog"],
+  summary: "Get the complete lightweight chapter index",
+  description:
+    "Returns the ID, chapter number and volume of every readable release without pagination. Uses the same ordering, language filter and visibility as the chapter list, including alternative releases.",
+  request: { params: idParams, query: MangaChapterIndexQuerySchema },
+  responses: responses(ChapterIndexSchema, "Complete readable chapter index"),
+})
+
 export const getMangaReadingEntryRoute = createRoute({
   method: "get",
   path: "/v1/manga/{id}/reading-entry",
@@ -574,6 +601,9 @@ export const listPeopleRoute = createRoute({
 export type MangaSummary = z.infer<typeof MangaSummarySchema>
 export type MangaCatalogQuery = z.infer<typeof MangaCatalogQuerySchema>
 export type MangaChapterListQuery = z.infer<typeof MangaChapterListQuerySchema>
+export type MangaChapterIndexQuery = z.infer<
+  typeof MangaChapterIndexQuerySchema
+>
 export type MangaDetail = z.infer<typeof MangaDetailSchema>
 export type MangaPreview = z.infer<typeof MangaPreviewSchema>
 export type ChapterSummary = z.infer<typeof ChapterSummarySchema>
@@ -581,6 +611,7 @@ export type ChapterDetail = z.infer<typeof ChapterDetailSchema>
 export type MangaList = z.infer<typeof MangaListSchema>
 export type MangaRecommendations = z.infer<typeof MangaRecommendationsSchema>
 export type ChapterList = z.infer<typeof ChapterListSchema>
+export type ChapterIndex = z.infer<typeof ChapterIndexSchema>
 export type LatestChapterList = z.infer<typeof LatestChapterListSchema>
 export type RandomManga = z.infer<typeof RandomMangaSchema>
 export type TagSummary = z.infer<typeof TagSummarySchema>

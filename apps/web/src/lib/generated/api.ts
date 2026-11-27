@@ -12844,6 +12844,69 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/manga/{id}/aggregate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the complete lightweight chapter index
+         * @description Returns the ID, chapter number and volume of every readable release without pagination. Uses the same ordering, language filter and visibility as the chapter list, including alternative releases.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    direction?: components["schemas"]["SortDirection"];
+                    language?: string;
+                    sort?: "reading" | "volume";
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Complete readable chapter index */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ChapterIndex"];
+                    };
+                };
+                /** @description Request validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Resource not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/manga/{id}/chapters": {
         parameters: {
             query?: never;
@@ -17090,6 +17153,14 @@ export interface components {
         ChapterFinalizeInput: {
             expectedVersion: number;
             pageIds: components["schemas"]["Id"][];
+        };
+        ChapterIndex: {
+            data: components["schemas"]["ChapterIndexItem"][];
+        };
+        ChapterIndexItem: {
+            id: components["schemas"]["Id"];
+            number: string | null;
+            volume: string | null;
         };
         ChapterList: {
             data: components["schemas"]["ChapterSummary"][];
