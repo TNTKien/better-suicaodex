@@ -4339,6 +4339,45 @@
           "releases"
         ]
       },
+      "ChapterIndex": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChapterIndexItem"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "ChapterIndexItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "volume": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "volume"
+        ]
+      },
       "ChapterNavigationReleases": {
         "type": "object",
         "properties": {
@@ -16831,6 +16870,90 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ChapterList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/manga/{id}/aggregate": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "Get the complete lightweight chapter index",
+        "description": "Returns the ID, chapter number and volume of every readable release without pagination. Uses the same ordering, language filter and visibility as the chapter list, including alternative releases.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "in": "path",
+            "name": "id"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "reading",
+                "volume"
+              ],
+              "default": "reading"
+            },
+            "required": false,
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "$ref": "#/components/schemas/SortDirection"
+            },
+            "required": false,
+            "name": "direction",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 35,
+              "pattern": "^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"
+            },
+            "required": false,
+            "name": "language",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Complete readable chapter index",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChapterIndex"
                 }
               }
             }

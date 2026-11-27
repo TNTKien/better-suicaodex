@@ -14,7 +14,7 @@ const serviceReadPaths = [
   /^\/v1\/manga\/?$/,
   /^\/v1\/manga\/random\/?$/,
   /^\/v1\/manga\/[^/]+\/?$/,
-  /^\/v1\/manga\/[^/]+\/(?:chapters|recommendations)\/?$/,
+  /^\/v1\/manga\/[^/]+\/(?:chapters|aggregate|recommendations)\/?$/,
   /^\/v1\/chapters\/[^/]+\/?$/,
   /^\/v1\/comments\/recent\/?$/,
   /^\/v1\/tags\/?$/,
