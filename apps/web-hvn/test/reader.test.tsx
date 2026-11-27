@@ -36,41 +36,25 @@ mock.module("react", () => ({
   },
   useEffect: () => undefined,
 }))
-type ChapterList = {
-  data: ChapterSummary[]
-  meta: { page: number; totalPages: number }
-}
+type IndexItem = Pick<ChapterSummary, "id" | "number" | "volume">
 type ListOptions = {
   enabled: boolean
-  queryFn: (context: {
-    pageParam: number
-    signal: AbortSignal
-  }) => Promise<ChapterList>
-  getNextPageParam: (page: ChapterList) => number | undefined
+  queryFn: (context: { signal: AbortSignal }) => Promise<IndexItem[]>
 }
 const client = new QueryClient()
 let listOptions: ListOptions
-let pages: ChapterList[] = []
+let items: IndexItem[] | undefined
 let listError: Error | null = null
-let fetchingNext = false
-let nextPageRequests = 0
 mock.module("@tanstack/react-query", () => ({
   queryOptions: (options: unknown) => options,
   useQueryClient: () => client,
-  useInfiniteQuery: (options: ListOptions) => {
+  useQuery: (options: ListOptions) => {
     listOptions = options
     return {
-      data: pages.length ? { pages } : undefined,
-      isPending: !pages.length && !listError,
+      data: items,
+      isPending: !items && !listError,
       isError: Boolean(listError),
       error: listError,
-      hasNextPage: pages.length
-        ? options.getNextPageParam(pages.at(-1)!) !== undefined
-        : false,
-      isFetchingNextPage: fetchingNext,
-      fetchNextPage: async () => {
-        nextPageRequests++
-      },
       refetch: async () => {
         listError = null
       },
@@ -211,11 +195,15 @@ globalThis.fetch = async (input, init) => {
   requests.push({ url, init })
   if (url.pathname.endsWith("navigation-releases"))
     return Response.json({ data: releases })
-  assert.match(url.pathname, /manga\/.*\/chapters$/)
-  assert.equal(url.searchParams.get("limit"), "100")
+  assert.match(url.pathname, /manga\/.*\/aggregate$/)
+  assert.equal(url.searchParams.get("sort"), "volume")
+  assert.equal(url.searchParams.get("direction"), "desc")
+  assert.equal(url.searchParams.has("limit"), false)
+  assert.equal(url.searchParams.has("page"), false)
   return Response.json({
-    data: [release, { ...importedRelease, volume: null }],
-    meta: { page: Number(url.searchParams.get("page")), totalPages: 2 },
+    data: [release, { ...importedRelease, volume: null }, chapter].map(
+      ({ id, number, volume }) => ({ id, number, volume })
+    ),
   })
 }
 const trigger = {} as HTMLElement
@@ -341,36 +329,18 @@ try {
   assert.equal(listOptions!.enabled, true)
   assert.equal(finalFocus!.current, trigger)
   const first = await listOptions!.queryFn({
-    pageParam: 1,
     signal: new AbortController().signal,
   })
-  pages = [first]
-  assert.equal(listOptions!.getNextPageParam(first), 2)
+  items = first
   const pickerHtml = render()
   assert.match(pickerHtml, /Volume 2/)
   assert.match(pickerHtml, /No Volume/)
-  assert.match(pickerHtml, /Bản gốc/)
-  assert.match(pickerHtml, /Bản nhập/)
-  click("Tải thêm")
-  assert.equal(nextPageRequests, 1)
-  fetchingNext = true
-  render()
-  assert.equal(
-    controls.find(
-      (button) =>
-        button.children instanceof Array && button.children.includes("Tải thêm")
-    )?.disabled,
-    true
-  )
-  fetchingNext = false
-  const second = await listOptions!.queryFn({
-    pageParam: 2,
-    signal: new AbortController().signal,
-  })
-  assert.equal(listOptions!.getNextPageParam(second), undefined)
-  assert.equal(requests.at(-1)!.url.searchParams.get("page"), "2")
-  render()
-  controls.find((button) => button.title?.includes("Bản nhập"))!.onClick!({
+  assert.match(pickerHtml, /aria-current="page"/)
+  assert.doesNotMatch(pickerHtml, /Tải thêm/)
+  assert.equal(first.length, 3)
+  assert.equal(requests.at(-1)!.init?.credentials, "omit")
+  assert.equal(requests.at(-1)!.init?.cache, "no-store")
+  controls.find((button) => button.title === "Ch. 11")!.onClick!({
     currentTarget: trigger,
   } as React.MouseEvent<HTMLButtonElement>)
   assert.equal(pushes.at(-1), "/chapter/imported")

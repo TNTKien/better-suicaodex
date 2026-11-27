@@ -116,29 +116,60 @@ export function useAdjacentChapter<T>({
   return { loading, choice, setChoice, trigger, openAdjacentChapter }
 }
 
-export async function loadReaderChapters<T>(
+export function readerChapterIndexOptions<T>(
   apiBaseUrl: string,
-  mangaId: string,
-  page = 1,
-  signal?: AbortSignal
+  mangaId: string
 ) {
-  const response = await fetch(
-    new URL(
-      `/v1/manga/${encodeURIComponent(mangaId)}/chapters?limit=100&page=${page}`,
-      apiBaseUrl
-    ),
-    { headers: { accept: "application/json" }, signal }
+  return queryOptions({
+    queryKey: ["catalog", apiBaseUrl, "reader-aggregate", mangaId],
+    staleTime: 0,
+    gcTime: 5 * 60_000,
+    retry: false,
+    refetchOnWindowFocus: false,
+    queryFn: async ({ signal }) => {
+      const response = await fetch(
+        new URL(
+          `/v1/manga/${encodeURIComponent(mangaId)}/aggregate?sort=volume&direction=desc`,
+          apiBaseUrl
+        ),
+        {
+          cache: "no-store",
+          credentials: "omit",
+          headers: { accept: "application/json" },
+          redirect: "error",
+          signal: AbortSignal.any([signal, AbortSignal.timeout(8_000)]),
+        }
+      )
+      if (!response.ok)
+        throw new Error("Không thể tải danh sách chapter. Vui lòng thử lại.")
+      const body = (await response.json()) as { data: T[] }
+      return body.data
+    },
+  })
+}
+
+export function useChapterPickerScroll(
+  open: boolean,
+  chapterId: string,
+  items: readonly { id: string }[] | undefined
+) {
+  const initialFocus = useRef<HTMLButtonElement | null>(null)
+  const listRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      initialFocus.current = null
+      if (!node || !open || !items?.some(({ id }) => id === chapterId)) return
+      const current = node.querySelector<HTMLButtonElement>(
+        '[aria-current="page"]'
+      )
+      if (!current) return
+      initialFocus.current = current
+      // The list is positioned so offsets ignore the popup's opening transform.
+      node.scrollTop = Math.max(
+        0,
+        current.offsetTop - (node.clientHeight - current.offsetHeight) / 2
+      )
+    },
+    [chapterId, items, open]
   )
-  const body = (await response.json().catch(() => null)) as
-    T | { error?: { message?: string } } | null
-  if (!response.ok) {
-    throw new Error(
-      (typeof body === "object" &&
-        body &&
-        "error" in body &&
-        body.error?.message) ||
-        "Không thể kết nối tới máy chủ"
-    )
-  }
-  return body as T
+  return { initialFocus, listRef }
 }
