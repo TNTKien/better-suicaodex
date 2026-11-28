@@ -18,7 +18,7 @@ export function resolveAdminRedirect(
   if (accountStatus === "guest") return loginPage ? null : "/admin/login"
   if (accountStatus !== "authenticated") return null
   if (accessStatus === "denied") return "/"
-  if (loginPage && accessStatus === "allowed") return "/admin/groups"
+  if (loginPage && accessStatus === "allowed") return "/admin/dashboard"
   return null
 }
 

@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto"
 
+import { subMinutes } from "date-fns"
 import { Redis } from "ioredis"
 
 import type { CacheEnv } from "./env.js"
@@ -179,6 +180,46 @@ export class BusinessCache {
           this.#degrade(error)
         }
       }
+    } catch (error) {
+      this.#degrade(error)
+      return null
+    }
+  }
+
+  async touchPresence(site: "main" | "hvn", visitor: string) {
+    if (!(await this.#available())) return false
+    const now = new Date()
+    try {
+      await this.#client!.eval(
+        `
+        redis.call("ZREMRANGEBYSCORE", KEYS[1], "-inf", ARGV[1])
+        redis.call("ZADD", KEYS[1], ARGV[2], ARGV[3])
+        redis.call("ZREMRANGEBYRANK", KEYS[1], 0, -250001)
+        redis.call("EXPIRE", KEYS[1], 120)
+        return 1
+      `,
+        1,
+        `${this.#prefix}:presence:${site}`,
+        subMinutes(now, 1).getTime(),
+        now.getTime(),
+        visitor
+      )
+      return true
+    } catch (error) {
+      this.#degrade(error)
+      return false
+    }
+  }
+
+  async onlinePresence() {
+    if (!(await this.#available())) return null
+    const cutoff = `(${subMinutes(new Date(), 1).getTime()}`
+    try {
+      const [main, hvn] = await Promise.all([
+        this.#client!.zcount(`${this.#prefix}:presence:main`, cutoff, "+inf"),
+        this.#client!.zcount(`${this.#prefix}:presence:hvn`, cutoff, "+inf"),
+      ])
+      return { main, hvn, total: main + hvn }
     } catch (error) {
       this.#degrade(error)
       return null

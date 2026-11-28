@@ -15,6 +15,22 @@ const valid = {
 }
 
 describe("runtime environment", () => {
+  test("validates the optional HVN origin for presence on custom deployments", () => {
+    expect(parseRuntimeEnv(valid).HVN_WEB_ORIGIN).toBeUndefined()
+    expect(
+      parseRuntimeEnv({ ...valid, HVN_WEB_ORIGIN: "https://hvn.example/" })
+        .HVN_WEB_ORIGIN
+    ).toBe("https://hvn.example")
+    for (const value of [
+      "*",
+      "https://hvn.example/path",
+      "https://hvn.example,https://other.example",
+    ])
+      expect(() =>
+        parseRuntimeEnv({ ...valid, HVN_WEB_ORIGIN: value })
+      ).toThrow("HVN_WEB_ORIGIN")
+  })
+
   test("normalizes origins and applies cache defaults", () => {
     const env = parseRuntimeEnv({
       ...valid,

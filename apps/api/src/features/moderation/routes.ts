@@ -41,7 +41,9 @@ import {
 } from "../../shared/web-origins.js"
 import type { Auth } from "../account/auth.js"
 import { freshSessionUser } from "../account/guard.js"
-import { normalizeDecimal } from "../catalog/routes.js"
+import { normalizeDecimal, type CatalogVisibility } from "../catalog/routes.js"
+import { dashboardRoute, presenceRoute } from "../dashboard/contract.js"
+import { dashboardStatistics } from "../dashboard/statistics.js"
 import {
   addForbiddenWords,
   deleteForbiddenWord,
@@ -104,7 +106,7 @@ import {
 } from "./contract.js"
 import { latestModerationReasons } from "./service.js"
 
-type Dependencies = {
+type Dependencies = CatalogVisibility & {
   assetBaseUrl: string
   avatarFramesEnabled?: boolean
   auth?: Auth
@@ -350,6 +352,7 @@ export function registerModerationRoutes(
     "/v1/admin/tags/*",
     "/v1/admin/users/*",
     "/v1/admin/audit/*",
+    "/v1/admin/dashboard/*",
   ]) {
     app.use(base, async (c, next) => {
       c.header("Cache-Control", "private, no-store")
@@ -401,6 +404,23 @@ export function registerModerationRoutes(
         400
       )
     return c.json(result, 200)
+  })
+
+  app.openapi(dashboardRoute, async (c) =>
+    c.json(await dashboardStatistics(dependencies.database, dependencies), 200)
+  )
+  app.openapi(presenceRoute, async (c) => {
+    const online = await dependencies.cache.onlinePresence()
+    if (!online)
+      return c.json(
+        apiError(
+          "PRESENCE_UNAVAILABLE",
+          "Presence is unavailable",
+          c.get("requestId")
+        ),
+        503
+      )
+    return c.json(online, 200)
   })
 
   app.openapi(listModerationUsersRoute, async (c) =>

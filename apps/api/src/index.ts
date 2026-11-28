@@ -53,6 +53,7 @@ async function main() {
     },
     webOrigin: env.WEB_ORIGIN,
     allowedWebOrigins: env.WEB_ALLOWED_ORIGINS,
+    hvnOrigin: env.HVN_WEB_ORIGIN,
   })
   const server = serve({ fetch: app.fetch, port: env.PORT }, (info) => {
     logger("info", "server.started", { port: info.port })

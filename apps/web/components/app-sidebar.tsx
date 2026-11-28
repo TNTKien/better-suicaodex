@@ -6,6 +6,7 @@ import { Suspense, type ComponentProps, useState } from "react"
 import {
   BookOpenIcon,
   BookmarkIcon,
+  ChartColumnIcon,
   ChevronRightIcon,
   CompassIcon,
   FrameIcon,
@@ -121,6 +122,7 @@ const manageNavigation: WorkspaceNavigationItem[] = [
 ]
 
 const adminNavigation: WorkspaceNavigationItem[] = [
+  { title: "Tổng quan", url: "/admin/dashboard", icon: ChartColumnIcon },
   { title: "Nhóm dịch", url: "/admin/groups", icon: UsersIcon },
   { title: "Người dùng", url: "/admin/users", icon: UserCogIcon },
   { title: "Khung avatar", url: "/admin/avatar-frames", icon: FrameIcon },

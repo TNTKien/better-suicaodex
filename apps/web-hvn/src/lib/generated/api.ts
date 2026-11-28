@@ -2440,6 +2440,121 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Catalog totals and daily growth */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminDashboard"];
+                    };
+                };
+                /** @description Request failed */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Request failed */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/dashboard/online": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Active browsers in the past minute */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminPresence"];
+                    };
+                };
+                /** @description Request failed */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Request failed */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Request failed */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/admin/groups": {
         parameters: {
             query?: never;
@@ -15915,6 +16030,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/presence/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Presence updated */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Request failed */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Request failed */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/profiles/{id}": {
         parameters: {
             query?: never;
@@ -16929,11 +17095,26 @@ export interface components {
             updatedAt: components["schemas"]["Timestamp"];
             version: number;
         };
+        AdminDashboard: {
+            dates: string[];
+            metrics: {
+                chapters: components["schemas"]["DashboardMetric"];
+                comments: components["schemas"]["DashboardMetric"];
+                manga: components["schemas"]["DashboardMetric"];
+                members: components["schemas"]["DashboardMetric"];
+                views: components["schemas"]["DashboardMetric"];
+            };
+        };
         AdminGroupManagement: components["schemas"]["GroupManagement"] & {
             creator: {
                 id: string;
                 name: string;
             } | null;
+        };
+        AdminPresence: {
+            hvn: number;
+            main: number;
+            total: number;
         };
         AdminTag: {
             /** @enum {string} */
@@ -17416,6 +17597,10 @@ export interface components {
                 role: "user" | "member" | "leader" | "admin";
                 updatedAt: components["schemas"]["Timestamp"];
             };
+        };
+        DashboardMetric: {
+            daily: number[];
+            total: number;
         };
         ForbiddenWord: {
             createdAt: components["schemas"]["Timestamp"];

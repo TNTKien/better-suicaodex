@@ -2325,6 +2325,91 @@
           "createdAt"
         ]
       },
+      "AdminDashboard": {
+        "type": "object",
+        "properties": {
+          "dates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "metrics": {
+            "type": "object",
+            "properties": {
+              "manga": {
+                "$ref": "#/components/schemas/DashboardMetric"
+              },
+              "chapters": {
+                "$ref": "#/components/schemas/DashboardMetric"
+              },
+              "views": {
+                "$ref": "#/components/schemas/DashboardMetric"
+              },
+              "comments": {
+                "$ref": "#/components/schemas/DashboardMetric"
+              },
+              "members": {
+                "$ref": "#/components/schemas/DashboardMetric"
+              }
+            },
+            "required": [
+              "manga",
+              "chapters",
+              "views",
+              "comments",
+              "members"
+            ]
+          }
+        },
+        "required": [
+          "dates",
+          "metrics"
+        ]
+      },
+      "DashboardMetric": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "daily": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "required": [
+          "total",
+          "daily"
+        ]
+      },
+      "AdminPresence": {
+        "type": "object",
+        "properties": {
+          "main": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "hvn": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "main",
+          "hvn",
+          "total"
+        ]
+      },
       "AdminUserSummary": {
         "type": "object",
         "properties": {
@@ -12619,6 +12704,38 @@
         }
       }
     },
+    "/v1/presence/heartbeat": {
+      "post": {
+        "tags": [
+          "presence"
+        ],
+        "responses": {
+          "204": {
+            "description": "Presence updated"
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/admin/audit": {
       "get": {
         "tags": [
@@ -12816,6 +12933,94 @@
           },
           "413": {
             "description": "Request body is too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/dashboard": {
+      "get": {
+        "tags": [
+          "moderation"
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalog totals and daily growth",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminDashboard"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/dashboard/online": {
+      "get": {
+        "tags": [
+          "moderation"
+        ],
+        "responses": {
+          "200": {
+            "description": "Active browsers in the past minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPresence"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request failed",
             "content": {
               "application/json": {
                 "schema": {
