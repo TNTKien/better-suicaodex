@@ -26,6 +26,7 @@ import { registerModerationRoutes } from "./features/moderation/routes.js"
 import { GroupError, requireGroupAdmin } from "./features/groups/service.js"
 import { registerChapterRoutes } from "./features/groups/chapter.js"
 import { registerRankingRoutes } from "./features/ranking/routes.js"
+import { registerHeartbeat } from "./features/dashboard/heartbeat.js"
 import { registerViewRoutes } from "./features/views/routes.js"
 import {
   apiError,
@@ -73,6 +74,7 @@ type AppOptions = {
   readiness?: Readiness
   rateLimit?: GlobalRateLimitOptions
   webOrigin?: string
+  hvnOrigin?: string
   allowedWebOrigins?: readonly string[]
   viewTracking?: {
     now?: () => Date
@@ -274,12 +276,18 @@ export function createApp(options: AppOptions = {}) {
       webOrigin: webOrigins,
       uploadConfigured: options.imageServer2UploadEnabled ?? false,
     })
+    registerHeartbeat(
+      app,
+      options.catalog.cache,
+      webOrigins[0]!,
+      options.hvnOrigin ?? "http://localhost:3002",
+      webOrigins,
+      production
+    )
     registerModerationRoutes(app, {
-      assetBaseUrl: options.catalog.assetBaseUrl,
+      ...options.catalog,
       avatarFramesEnabled: options.avatarFramesEnabled ?? false,
       auth: options.auth,
-      cache: options.catalog.cache,
-      database: options.catalog.database,
       webOrigin: webOrigins,
     })
     registerCatalogRoutes(app, options.catalog)

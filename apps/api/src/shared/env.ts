@@ -104,6 +104,7 @@ const RuntimeEnvSchema = z
       .default("development"),
     PORT: positiveInteger.max(65_535).default(3001),
     WEB_ORIGIN: origin,
+    HVN_WEB_ORIGIN: origin.optional(),
     WEB_ALLOWED_ORIGINS: additionalWebOrigins,
     DATABASE_URL: postgresUrl,
     BETTER_AUTH_SECRET: z.string().min(32),

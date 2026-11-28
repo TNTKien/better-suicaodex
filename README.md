@@ -132,6 +132,7 @@ credentials, query strings, or fragments.
 | `BETTER_AUTH_URL` | API/auth origin, locally `http://localhost:3001`. OAuth callbacks use this origin. |
 | `WEB_ORIGIN` | Main frontend origin, locally `http://localhost:3000`. Also used for auth redirects. |
 | `WEB_ALLOWED_ORIGINS` | Comma-separated additional frontend origins; include `http://localhost:3002` for HVN. Exact origins only; no wildcards. |
+| `HVN_WEB_ORIGIN` | HVN origin used by the dashboard's online visitor counts (defaults to `http://localhost:3002`). Also include it in `WEB_ALLOWED_ORIGINS`. |
 | `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` | Discord OAuth credentials. Both are required by API validation; real credentials are needed for Discord sign-in. |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | Additional OAuth credentials, required when `NODE_ENV=production`. Development uses Discord only. |
 | `ASSET_BASE_URL` | Public image origin, matching the frontend and OG asset settings. |
@@ -180,6 +181,12 @@ for browser uploads from both frontend origins and image reads from the public o
 **Optional API features and tuning**
 
 Defaults in the API example are enough for basic local use.
+
+The admin dashboard at `/admin/dashboard` shows five catalog totals with 30-day
+charts. Online counts include guests and members active within the last 60 seconds,
+split by main web and HVN. Enable Redis to collect online counts; statistics remain
+available without Redis. The optional Redis integration suite uses a separate local
+`TEST_REDIS_URL` and skips when that variable is unset.
 
 | Variable | Purpose / default |
 | --- | --- |

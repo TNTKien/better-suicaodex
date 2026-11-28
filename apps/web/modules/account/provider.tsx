@@ -3,6 +3,7 @@
 import { createContext, useContext } from "react"
 import { useAccountState as useSharedAccountState } from "@workspace/account/provider"
 
+import { usePresenceHeartbeat } from "@workspace/account/presence"
 import { useReadingHistorySync } from "@/modules/reading/sync"
 import type { CurrentAccount } from "./api"
 
@@ -10,6 +11,7 @@ export type { AccountStatus } from "@workspace/account/provider"
 
 function useAccountState(apiBaseUrl: string) {
   const value = useSharedAccountState<CurrentAccount>(apiBaseUrl)
+  usePresenceHeartbeat(value.apiBaseUrl)
   useReadingHistorySync(
     apiBaseUrl,
     value.status === "authenticated" ? (value.user?.id ?? null) : null

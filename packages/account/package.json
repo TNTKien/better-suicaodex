@@ -39,6 +39,7 @@
     "./notifications": "./src/notifications.ts",
     "./notifications-api": "./src/notifications-api.ts",
     "./notifications-presentation": "./src/notifications-presentation.ts",
+    "./presence": "./src/presence.ts",
     "./provider": "./src/provider.ts",
     "./reader-navigation": "./src/reader-navigation.ts",
     "./reader-progress": "./src/reader-progress.ts",

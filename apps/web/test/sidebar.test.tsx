@@ -83,6 +83,7 @@ const adminMarkup = renderSidebar("/admin/groups", true, "admin")
 const adminNavigation = adminMarkup.match(
   /<nav aria-label="Điều hướng quản trị">([\s\S]*?)<\/nav>/
 )![1]!
+assert.match(adminNavigation, /href="\/admin\/dashboard"/)
 assert.match(adminNavigation, /href="\/admin\/groups"/)
 assert.match(adminNavigation, /href="\/admin\/users"/)
 assert.match(adminNavigation, /href="\/admin\/avatar-frames"/)
@@ -123,7 +124,7 @@ assert.equal(resolveAdminRedirect("authenticated", "denied", false), "/")
 assert.equal(resolveAdminRedirect("authenticated", "denied", true), "/")
 assert.equal(
   resolveAdminRedirect("authenticated", "allowed", true),
-  "/admin/groups"
+  "/admin/dashboard"
 )
 assert.equal(resolveAdminRedirect("authenticated", "allowed", false), null)
 
