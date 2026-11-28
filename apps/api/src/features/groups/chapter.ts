@@ -2354,15 +2354,16 @@ export function registerChapterRoutes(
         const target = context.target!
         if (target.version !== expectedVersion) stale(target.version)
         const now = dependencies.now?.() ?? new Date()
-        if (uploadSessionId)
-          await lockSession(
-            tx,
-            context,
-            groupId,
-            chapterId,
-            uploadSessionId,
-            now
-          )
+        const uploadSession = uploadSessionId
+          ? await lockSession(
+              tx,
+              context,
+              groupId,
+              chapterId,
+              uploadSessionId,
+              now
+            )
+          : undefined
         const volume = await resolveVolume(
           tx,
           mangaId,
@@ -2401,14 +2402,61 @@ export function registerChapterRoutes(
           .where(
             and(eq(chapter.id, chapterId), eq(chapter.version, expectedVersion))
           )
-        if (uploadSessionId)
+        if (uploadSession) {
+          let unchangedPages = false
+          if (uploadSession.mode === "replacement") {
+            const publishedPages = await tx
+              .select()
+              .from(chapterPage)
+              .where(eq(chapterPage.chapterId, chapterId))
+              .orderBy(asc(chapterPage.position))
+            const uploadPages = await tx
+              .select()
+              .from(chapterUploadPage)
+              .where(eq(chapterUploadPage.sessionId, uploadSession.id))
+            const pagesById = new Map(
+              uploadPages.map((page) => [page.id, page])
+            )
+            unchangedPages =
+              publishedPages.length === uploadSession.orderedPageIds.length &&
+              uploadPages.length === publishedPages.length &&
+              publishedPages.every((page, position) => {
+                const uploaded = pagesById.get(
+                  uploadSession.orderedPageIds[position]!
+                )
+                return (
+                  uploaded?.state === "ready" &&
+                  uploaded.publishedOriginalKey === page.originalKey &&
+                  uploaded.publishedOptimizedKey === page.optimizedKey &&
+                  uploaded.width === page.width &&
+                  uploaded.height === page.height &&
+                  uploaded.publishedOptimizedWidth === page.optimizedWidth &&
+                  uploaded.publishedOptimizedHeight === page.optimizedHeight
+                )
+              })
+          }
           await tx
             .update(chapterUploadSession)
             .set({
               expectedChapterVersion: expectedVersion + 1,
+              // Close metadata-only edits without creating a new image generation.
+              ...(unchangedPages ? { state: "cancelled" as const } : {}),
               updatedAt: now,
             })
-            .where(eq(chapterUploadSession.id, uploadSessionId))
+            .where(eq(chapterUploadSession.id, uploadSession.id))
+          if (unchangedPages)
+            await audit(
+              tx,
+              actor,
+              "chapter.upload_cancelled",
+              "chapter",
+              chapterId,
+              "chapter images unchanged",
+              { sessionId: uploadSession.id, state: uploadSession.state },
+              { sessionId: uploadSession.id, state: "cancelled" },
+              now
+            )
+        }
         if (target.publicationState === "published")
           await recomputeMangaProjection(tx, mangaId, now)
         await audit(

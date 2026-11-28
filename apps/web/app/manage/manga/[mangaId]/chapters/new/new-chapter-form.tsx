@@ -903,7 +903,12 @@ function ChapterForm({
               headers: { "Content-Type": "application/json" },
             }
           )
-      if (!uploadSession) return saved
+      // Metadata-only edits close an unchanged replacement session on the API.
+      if (
+        !uploadSession ||
+        saved.data.activeUploadSession?.id !== uploadSession.id
+      )
+        return saved
       try {
         const finalized = await finalize(saved.data)
         rememberSession({
@@ -1245,14 +1250,16 @@ function ChapterForm({
   ) {
     form.clearErrors("root")
     try {
-      const hasUpload = Boolean(sessionRef.current)
-      await save.mutateAsync({ selectedPages: pagesRef.current, values })
+      const saved = await save.mutateAsync({
+        selectedPages: pagesRef.current,
+        values,
+      })
       resetDraft()
       onSaved()
       toast.add({
         type: "success",
         title: editing
-          ? hasUpload
+          ? saved.data.activeUploadSession?.state === "finalizing"
             ? "Đã lưu, chương đang được xử lý"
             : "Đã lưu thay đổi chương"
           : "Đã gửi chương để xử lý",

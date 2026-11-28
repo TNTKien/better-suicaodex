@@ -12,6 +12,7 @@ import { addMinutes, subMinutes } from "date-fns"
 import { and, eq, sql } from "drizzle-orm"
 import { migrate } from "drizzle-orm/node-postgres/migrator"
 import sharp from "sharp"
+import { v7 as uuidv7 } from "uuid"
 
 import { createApp } from "../../src/app"
 import {
@@ -1985,6 +1986,156 @@ describe.serial("Phase 8C/8D chapter management", () => {
       failed: 0,
     })
   })
+
+  for (const [index, scenario] of [
+    "unchanged",
+    "reverted-order",
+    "added-then-removed",
+    "reordered",
+    "added",
+    "removed",
+    "replaced",
+  ].entries()) {
+    test(`metadata save only keeps an image session for real changes: ${scenario}`, async () => {
+      const number = String(9000 + index)
+      const fixture = await createFinalizeFixture(number, 2)
+      expect(
+        (await processChapterFinalizeJobs(chapterDependencies)).failed
+      ).toBe(0)
+      const chapterPath = `/v1/contribution/groups/${groupId}/manga/${mangaId}/chapters/${fixture.targetId}`
+      const publishedPages = await runtime.database
+        .select()
+        .from(chapterPage)
+        .where(eq(chapterPage.chapterId, fixture.targetId))
+        .orderBy(chapterPage.position)
+      const opened = await request(`${chapterPath}/uploads`, "POST", {
+        mode: "replacement",
+        expectedVersion: 2,
+      })
+      expect(opened.status).toBe(200)
+      const { data: session } = (await opened.json()) as {
+        data: { id: string; orderedPageIds: string[] }
+      }
+      const sessionPath = `${chapterPath}/uploads/${session.id}`
+      const pageIds = [...session.orderedPageIds]
+      if (scenario === "reordered" || scenario === "reverted-order") {
+        pageIds.reverse()
+        expect(
+          (await request(`${sessionPath}/order`, "PUT", { pageIds })).status
+        ).toBe(200)
+        if (scenario === "reverted-order") pageIds.reverse()
+      }
+      if (["added", "replaced", "added-then-removed"].includes(scenario)) {
+        const pageId = uuidv7()
+        const source = await sharp({
+          create: { width: 50, height: 70, channels: 3, background: "blue" },
+        })
+          .webp()
+          .toBuffer()
+        expect(
+          (
+            await uploadPage(
+              `${chapterPath}/uploads`,
+              session.id,
+              pageId,
+              new Blob([source], { type: "image/webp" })
+            )
+          ).status
+        ).toBe(200)
+        if (scenario === "added-then-removed") {
+          expect(
+            (await request(`${sessionPath}/pages/${pageId}`, "DELETE")).status
+          ).toBe(204)
+        } else if (scenario === "replaced") {
+          expect(
+            (await request(`${sessionPath}/pages/${pageIds[0]}`, "DELETE"))
+              .status
+          ).toBe(204)
+          pageIds[0] = pageId
+        } else pageIds.push(pageId)
+      }
+      if (scenario === "removed") {
+        expect(
+          (await request(`${sessionPath}/pages/${pageIds.pop()}`, "DELETE"))
+            .status
+        ).toBe(204)
+      }
+      expect(
+        (await request(`${sessionPath}/order`, "PUT", { pageIds })).status
+      ).toBe(200)
+      // A resumed editor must compare with published pages, not its loaded draft.
+      expect((await request(sessionPath)).status).toBe(200)
+      const saved = await request(chapterPath, "PUT", {
+        expectedVersion: 2,
+        uploadSessionId: session.id,
+        number,
+        volumeNumber: null,
+        language: "vi",
+        title: "Metadata changed",
+      })
+      expect(saved.status).toBe(200)
+      const { data } = (await saved.json()) as {
+        data: {
+          version: number
+          activeUploadSession: { id: string; state: string } | null
+        }
+      }
+      expect(data.version).toBe(3)
+      const changed = ["reordered", "added", "removed", "replaced"].includes(
+        scenario
+      )
+      expect(data.activeUploadSession).toEqual(
+        changed
+          ? expect.objectContaining({ id: session.id, state: "open" })
+          : null
+      )
+      if (changed) {
+        expect(
+          (
+            await request(`${sessionPath}/finalize`, "POST", {
+              expectedVersion: data.version,
+              pageIds,
+            })
+          ).status
+        ).toBe(202)
+      } else {
+        expect(
+          await runtime.database
+            .select({ state: chapterUploadSession.state })
+            .from(chapterUploadSession)
+            .where(eq(chapterUploadSession.id, session.id))
+        ).toEqual([{ state: "cancelled" }])
+      }
+      expect(
+        await processChapterFinalizeJobs(chapterDependencies)
+      ).toMatchObject({
+        processed: changed ? 1 : 0,
+        failed: 0,
+      })
+      expect(
+        await runtime.database
+          .select({ pagesVersion: chapter.pagesVersion })
+          .from(chapter)
+          .where(eq(chapter.id, fixture.targetId))
+      ).toEqual([{ pagesVersion: changed ? 2 : 1 }])
+      if (!changed) {
+        expect(
+          await runtime.database
+            .select()
+            .from(chapterPage)
+            .where(eq(chapterPage.chapterId, fixture.targetId))
+            .orderBy(chapterPage.position)
+        ).toEqual(publishedPages)
+        await cleanupChapterUploads(runtime.database, storage, {
+          apply: true,
+          now: addMinutes(new Date(), 3),
+        })
+        expect(
+          publishedPages.every((page) => objects.has(page.originalKey))
+        ).toBe(true)
+      }
+    })
+  }
 
   test("keeps chapters manageable while the manga is hidden", async () => {
     const root = `/v1/contribution/groups/${groupId}/manga/${mangaId}`
